@@ -53,8 +53,7 @@ public class Entry implements ApplicationListener
 
         for (Terrain t : terrain)
         {
-            Rectangle rect = player.getCollisionRect();
-            t.isTouching(rect);
+            CollisionResolver.resolve(player, t);
         }
 
         float cameraSpeed = 4f;

@@ -8,11 +8,13 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 
-public class Player
+public class Player implements ICollision
 {
     Rectangle collisionRectangle = new Rectangle();
 
     Vector2 position = new Vector2();
+    float width = 2;
+    float height = 2;
 
     float speed = 4;
 
@@ -42,12 +44,36 @@ public class Player
     void draw(ShapeRenderer sh)
     {
         sh.setColor(Color.RED);
-        sh.rect(position.x, position.y, 2, 2);
+        sh.rect(position.x - width / 2, position.y - height / 2, 2, 2);
     }
 
     public Rectangle getCollisionRect()
     {
-        collisionRectangle.set(position.x, position.y, 2, 2);
+        collisionRectangle.set(position.x - width / 2, position.y - height / 2, 2, 2);
         return collisionRectangle;
+    }
+
+    @Override
+    public void resolve(Side side, ICollision collidedWith)
+    {
+        Rectangle r = collidedWith.getCollisionRect();
+
+        if (side == Side.Left)
+        {
+            position.x = r.x - width / 2;
+        }
+        else if (side == Side.Right)
+        {
+            position.x = r.x + r.width + width / 2;
+        }
+
+        if (side == Side.Top)
+        {
+            position.y = r.y + r.height + height / 2;
+        }
+        else if (side == Side.Bottom)
+        {
+            position.y = r.y - height / 2;
+        }
     }
 }
