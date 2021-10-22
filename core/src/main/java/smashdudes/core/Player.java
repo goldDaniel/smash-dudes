@@ -1,44 +1,36 @@
 package smashdudes.core;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-
+import smashdudes.core.playerstate.*;
 
 public class Player implements ICollision
 {
     Rectangle collisionRectangle = new Rectangle();
 
-    Vector2 position = new Vector2();
-    float width = 2;
-    float height = 2;
+    public Vector2 position = new Vector2();
+    public float width = 2;
+    public float height = 2;
 
-    float speed = 4;
+    public Vector2 velocity = new Vector2();
+
+    public InputConfig inputConfig;
+
+    public float speed = 8;
+
+    private PlayerState currState = new InAirState(this);
+
+    public Player(InputConfig inputConfig)
+    {
+        this.inputConfig = inputConfig;
+    }
 
     void update(float dt)
     {
-        Vector2 velocity = new Vector2();
-        if (Gdx.input.isKeyPressed(Input.Keys.A))
-        {
-            velocity.x--;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.D))
-        {
-            velocity.x++;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.W))
-        {
-            velocity.y++;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.S))
-        {
-            velocity.y--;
-        }
-        velocity.nor().scl(speed * dt);
-        position.add(velocity);
+        currState.update(dt);
     }
 
     void draw(ShapeRenderer sh)
@@ -47,6 +39,7 @@ public class Player implements ICollision
         sh.rect(position.x - width / 2, position.y - height / 2, 2, 2);
     }
 
+    @Override
     public Rectangle getCollisionRect()
     {
         collisionRectangle.set(position.x - width / 2, position.y - height / 2, 2, 2);
@@ -56,24 +49,11 @@ public class Player implements ICollision
     @Override
     public void resolve(Side side, ICollision collidedWith)
     {
-        Rectangle r = collidedWith.getCollisionRect();
+        currState.resolve(side, collidedWith);
+    }
 
-        if (side == Side.Left)
-        {
-            position.x = r.x - width / 2;
-        }
-        else if (side == Side.Right)
-        {
-            position.x = r.x + r.width + width / 2;
-        }
-
-        if (side == Side.Top)
-        {
-            position.y = r.y + r.height + height / 2;
-        }
-        else if (side == Side.Bottom)
-        {
-            position.y = r.y - height / 2;
-        }
+    public void setNextState(PlayerState nextState)
+    {
+        currState = nextState;
     }
 }

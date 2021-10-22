@@ -6,6 +6,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -23,7 +24,8 @@ public class Entry implements ApplicationListener
     OrthographicCamera camera;
     ShapeRenderer sh;
 
-    Player player = new Player();
+    Player player1 = new Player(new InputConfig(Input.Keys.A, Input.Keys.D, Input.Keys.W, Input.Keys.S));
+    Player player2 = new Player(new InputConfig(Input.Keys.J, Input.Keys.L, Input.Keys.I, Input.Keys.K));
     Terrain[] terrain = new Terrain[3];
 
     @Override
@@ -49,39 +51,33 @@ public class Entry implements ApplicationListener
     {
         float dt = Gdx.graphics.getDeltaTime();
 
-        player.update(dt);
+        player1.update(dt);
+        player2.update(dt);
+
+        //CollisionResolver.resolve(player2, player1);
 
         for (Terrain t : terrain)
         {
-            CollisionResolver.resolve(player, t);
+            CollisionResolver.resolve(player1, t);
+            CollisionResolver.resolve(player2, t);
         }
 
-        float cameraSpeed = 4f;
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT))
-        {
-            camera.translate(-dt * cameraSpeed, 0);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-        {
-            camera.translate(dt * cameraSpeed, 0);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.UP))
-        {
-            camera.translate(0, dt * cameraSpeed);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
-        {
-            camera.translate(0, -dt * cameraSpeed);
-        }
+        camera.position.x = (player1.position.x + player2.position.x) / 2;
+        camera.position.y = (player1.position.y + player2.position.y) / 2;
+
+        float dist = player1.position.dst(player2.position) / (WORLD_WIDTH / 2);
+
+        camera.zoom = Math.max(dist, 1f);
+
         camera.update();
-
 
         ScreenUtils.clear(Color.BLACK);
 
         sh.setProjectionMatrix(camera.combined);
         sh.begin(ShapeRenderer.ShapeType.Filled);
 
-        player.draw(sh);
+        player1.draw(sh);
+        player2.draw(sh);
 
         for (Terrain t : terrain)
         {
