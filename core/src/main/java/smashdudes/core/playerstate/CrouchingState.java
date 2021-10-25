@@ -5,13 +5,18 @@ import com.badlogic.gdx.math.Rectangle;
 import smashdudes.core.ICollision;
 import smashdudes.core.Player;
 
-public class OnGroundState extends PlayerState
+public class CrouchingState extends PlayerState
 {
-    protected boolean onGround = false;
+    private boolean onGround = true;
 
-    public OnGroundState(Player player)
+    private float crouchingSpeed = 0.5f;
+    private float crouchHeight = 0.5f;
+
+    public CrouchingState(Player player)
     {
         super(player);
+        player.height *= crouchHeight;
+        player.position.y -= player.height / 2;
     }
 
     @Override
@@ -26,21 +31,26 @@ public class OnGroundState extends PlayerState
         {
             player.velocity.x++;
         }
-        player.velocity.x *= player.speed;
+        player.velocity.x *= crouchingSpeed * player.speed;
 
         player.velocity.y = 0;
+
+        if (!Gdx.input.isKeyPressed(player.inputConfig.down))
+        {
+            resetPlayer();
+            player.setNextState(new OnGroundState(player));
+        }
+
         if (Gdx.input.isKeyPressed(player.inputConfig.up))
         {
+            resetPlayer();
             player.velocity.y = player.ySpeed;
             player.setNextState(new InAirState(player));
-        }
-        else if (Gdx.input.isKeyPressed(player.inputConfig.down))
-        {
-            player.setNextState(new CrouchingState(player));
         }
 
         if (!onGround)
         {
+            resetPlayer();
             player.setNextState(new InAirState(player));
         }
 
@@ -68,5 +78,11 @@ public class OnGroundState extends PlayerState
             player.position.y = r.y + r.height + player.height / 2;
             onGround = true;
         }
+    }
+
+    private void resetPlayer()
+    {
+        player.position.y += player.height / 2;
+        player.height /= crouchHeight;
     }
 }
