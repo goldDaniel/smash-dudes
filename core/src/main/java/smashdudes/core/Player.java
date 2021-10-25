@@ -1,11 +1,10 @@
 package smashdudes.core;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import smashdudes.core.playerstate.*;
+import smashdudes.core.movementstate.*;
 
 public class Player implements ICollision
 {
@@ -18,15 +17,17 @@ public class Player implements ICollision
     public Vector2 velocity = new Vector2();
 
     public InputConfig inputConfig;
+    public Color colour;
 
     public float ySpeed = 11;
     public float speed = 8;
 
-    private PlayerState currState = new InAirState(this);
+    private MovementState currState = new InAirState(this);
 
-    public Player(InputConfig inputConfig)
+    public Player(InputConfig inputConfig, Color colour)
     {
         this.inputConfig = inputConfig;
+        this.colour = colour;
     }
 
     void update(float dt)
@@ -36,7 +37,7 @@ public class Player implements ICollision
 
     void draw(ShapeRenderer sh)
     {
-        sh.setColor(Color.RED);
+        sh.setColor(colour);
         sh.rect(position.x - width / 2, position.y - height / 2, width, height);
     }
 
@@ -53,7 +54,7 @@ public class Player implements ICollision
         currState.resolve(side, collidedWith);
     }
 
-    public void setNextState(PlayerState nextState)
+    public void setNextState(MovementState nextState)
     {
         currState = nextState;
     }

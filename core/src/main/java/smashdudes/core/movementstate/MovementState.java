@@ -1,13 +1,13 @@
-package smashdudes.core.playerstate;
+package smashdudes.core.movementstate;
 
 import smashdudes.core.ICollision;
 import smashdudes.core.Player;
 
-public abstract class PlayerState
+public abstract class MovementState
 {
     protected Player player;
 
-    public PlayerState(Player player)
+    public MovementState(Player player)
     {
         this.player = player;
     }

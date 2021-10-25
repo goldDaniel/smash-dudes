@@ -1,11 +1,11 @@
-package smashdudes.core.playerstate;
+package smashdudes.core.movementstate;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import smashdudes.core.ICollision;
 import smashdudes.core.Player;
 
-public class OnGroundState extends PlayerState
+public class OnGroundState extends MovementState
 {
     protected boolean onGround = false;
 

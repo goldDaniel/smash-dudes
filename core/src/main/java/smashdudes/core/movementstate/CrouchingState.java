@@ -1,17 +1,23 @@
-package smashdudes.core.playerstate;
+package smashdudes.core.movementstate;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import smashdudes.core.ICollision;
 import smashdudes.core.Player;
 
-public class InAirState extends PlayerState
+public class CrouchingState extends MovementState
 {
-    private boolean hasLanded = false;
+    private boolean onGround = true;
 
-    public InAirState(Player player)
+    private float crouchingSpeed = 0.5f;
+    private float crouchHeight = 0.5f;
+
+    public CrouchingState(Player player)
     {
         super(player);
+
+        player.height *= crouchHeight;
+        player.position.y -= player.height / 2;
     }
 
     @Override
@@ -26,13 +32,26 @@ public class InAirState extends PlayerState
         {
             player.velocity.x++;
         }
-        player.velocity.x *= player.speed;
+        player.velocity.x *= crouchingSpeed * player.speed;
 
-        player.velocity.y -= 10 * dt;
-        if (hasLanded)
+        if (!onGround)
         {
+            resetPlayer();
+            player.setNextState(new InAirState(player));
+        }
+        else if (Gdx.input.isKeyPressed(player.inputConfig.up))
+        {
+            resetPlayer();
+            player.velocity.y = player.ySpeed;
+            player.setNextState(new InAirState(player));
+        }
+        else if (!Gdx.input.isKeyPressed(player.inputConfig.down))
+        {
+            resetPlayer();
             player.setNextState(new OnGroundState(player));
         }
+
+        onGround = false;
 
         player.position.add(player.velocity.x * dt, player.velocity.y * dt);
     }
@@ -54,12 +73,13 @@ public class InAirState extends PlayerState
         if (side == ICollision.Side.Top)
         {
             player.position.y = r.y + r.height + player.height / 2;
-            hasLanded = true;
+            onGround = true;
         }
-        else if (side == ICollision.Side.Bottom)
-        {
-            player.position.y = r.y - player.height / 2;
-            player.velocity.y = 0;
-        }
+    }
+
+    private void resetPlayer()
+    {
+        player.position.y += player.height / 2;
+        player.height /= crouchHeight;
     }
 }

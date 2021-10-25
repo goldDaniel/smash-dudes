@@ -1,23 +1,18 @@
-package smashdudes.core.playerstate;
+package smashdudes.core.movementstate;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import smashdudes.core.ICollision;
 import smashdudes.core.Player;
 
-public class CrouchingState extends PlayerState
+public class InAirState extends MovementState
 {
-    private boolean onGround = true;
+    // implement double jumping in this class (i.e., instance var hasdoublejumped)
+    private boolean hasLanded = false;
 
-    private float crouchingSpeed = 0.5f;
-    private float crouchHeight = 0.5f;
-
-    public CrouchingState(Player player)
+    public InAirState(Player player)
     {
         super(player);
-
-        player.height *= crouchHeight;
-        player.position.y -= player.height / 2;
     }
 
     @Override
@@ -32,26 +27,13 @@ public class CrouchingState extends PlayerState
         {
             player.velocity.x++;
         }
-        player.velocity.x *= crouchingSpeed * player.speed;
+        player.velocity.x *= player.speed;
 
-        if (!onGround)
+        player.velocity.y -= 10 * dt;
+        if (hasLanded)
         {
-            resetPlayer();
-            player.setNextState(new InAirState(player));
-        }
-        else if (Gdx.input.isKeyPressed(player.inputConfig.up))
-        {
-            resetPlayer();
-            player.velocity.y = player.ySpeed;
-            player.setNextState(new InAirState(player));
-        }
-        else if (!Gdx.input.isKeyPressed(player.inputConfig.down))
-        {
-            resetPlayer();
             player.setNextState(new OnGroundState(player));
         }
-
-        onGround = false;
 
         player.position.add(player.velocity.x * dt, player.velocity.y * dt);
     }
@@ -73,13 +55,12 @@ public class CrouchingState extends PlayerState
         if (side == ICollision.Side.Top)
         {
             player.position.y = r.y + r.height + player.height / 2;
-            onGround = true;
+            hasLanded = true;
         }
-    }
-
-    private void resetPlayer()
-    {
-        player.position.y += player.height / 2;
-        player.height /= crouchHeight;
+        else if (side == ICollision.Side.Bottom)
+        {
+            player.position.y = r.y - player.height / 2;
+            player.velocity.y = 0;
+        }
     }
 }
