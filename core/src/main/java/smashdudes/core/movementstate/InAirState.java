@@ -1,15 +1,16 @@
-package smashdudes.core.playerstate;
+package smashdudes.core.movementstate;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import smashdudes.core.ICollision;
 import smashdudes.core.Player;
 
-public class OnGroundState extends PlayerState
+public class InAirState extends MovementState
 {
-    private boolean onGround = false;
+    // implement double jumping in this class (i.e., instance var hasdoublejumped)
+    private boolean hasLanded = false;
 
-    public OnGroundState(Player player)
+    public InAirState(Player player)
     {
         super(player);
     }
@@ -28,19 +29,11 @@ public class OnGroundState extends PlayerState
         }
         player.velocity.x *= player.speed;
 
-        player.velocity.y = 0;
-        if (Gdx.input.isKeyPressed(player.inputConfig.up))
+        player.velocity.y -= 10 * dt;
+        if (hasLanded)
         {
-            player.velocity.y = 11;
-            player.setNextState(new InAirState(player));
+            player.setNextState(new OnGroundState(player));
         }
-
-        if (!onGround)
-        {
-            player.setNextState(new InAirState(player));
-        }
-
-        onGround = false;
 
         player.position.add(player.velocity.x * dt, player.velocity.y * dt);
     }
@@ -62,7 +55,12 @@ public class OnGroundState extends PlayerState
         if (side == ICollision.Side.Top)
         {
             player.position.y = r.y + r.height + player.height / 2;
-            onGround = true;
+            hasLanded = true;
+        }
+        else if (side == ICollision.Side.Bottom)
+        {
+            player.position.y = r.y - player.height / 2;
+            player.velocity.y = 0;
         }
     }
 }

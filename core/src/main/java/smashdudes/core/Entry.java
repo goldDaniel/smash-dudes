@@ -20,12 +20,14 @@ public class Entry implements ApplicationListener
     public static float WORLD_WIDTH = 20;
     public static float WORLD_HEIGHT = 12;
 
+    private float accumulatedTime = 0;
+
     Viewport viewport;
     OrthographicCamera camera;
     ShapeRenderer sh;
 
-    Player player1 = new Player(new InputConfig(Input.Keys.A, Input.Keys.D, Input.Keys.W, Input.Keys.S));
-    Player player2 = new Player(new InputConfig(Input.Keys.J, Input.Keys.L, Input.Keys.I, Input.Keys.K));
+    Player player1 = new Player(new InputConfig(Input.Keys.A, Input.Keys.D, Input.Keys.W, Input.Keys.S), Color.GOLD);
+    Player player2 = new Player(new InputConfig(Input.Keys.J, Input.Keys.L, Input.Keys.I, Input.Keys.K), Color.CYAN);
     Terrain[] terrain = new Terrain[3];
 
     @Override
@@ -50,26 +52,33 @@ public class Entry implements ApplicationListener
     public void render()
     {
         float dt = Gdx.graphics.getDeltaTime();
+        float step = 1 / 60f;
 
-        player1.update(dt);
-        player2.update(dt);
-
-        //CollisionResolver.resolve(player2, player1);
-
-        for (Terrain t : terrain)
+        accumulatedTime += dt;
+        while (accumulatedTime >= step)
         {
-            CollisionResolver.resolve(player1, t);
-            CollisionResolver.resolve(player2, t);
+            player1.update(step);
+            player2.update(step);
+
+            //CollisionResolver.resolve(player2, player1);
+
+            for (Terrain t : terrain)
+            {
+                CollisionResolver.resolve(player1, t);
+                CollisionResolver.resolve(player2, t);
+            }
+
+            camera.position.x = (player1.position.x + player2.position.x) / 2;
+            camera.position.y = (player1.position.y + player2.position.y) / 2;
+
+            float dist = player1.position.dst(player2.position) / (WORLD_WIDTH / 2);
+
+            //camera.zoom = Math.max(dist, 1f);
+
+            camera.update();
+
+            accumulatedTime -= step;
         }
-
-        camera.position.x = (player1.position.x + player2.position.x) / 2;
-        camera.position.y = (player1.position.y + player2.position.y) / 2;
-
-        float dist = player1.position.dst(player2.position) / (WORLD_WIDTH / 2);
-
-        camera.zoom = Math.max(dist, 1f);
-
-        camera.update();
 
         ScreenUtils.clear(Color.BLACK);
 
