@@ -62,12 +62,12 @@ public class Entry implements ApplicationListener
             CollisionResolver.resolve(player2, t);
         }
 
-        camera.position.x = (player1.position.x + player2.position.x) / 2;
-        camera.position.y = (player1.position.y + player2.position.y) / 2;
+        //camera.position.x = (player1.position.x + player2.position.x) / 2;
+        //camera.position.y = (player1.position.y + player2.position.y) / 2;
 
         float dist = player1.position.dst(player2.position) / (WORLD_WIDTH / 2);
 
-        camera.zoom = Math.max(dist, 1f);
+        //camera.zoom = Math.max(dist, 1f);
 
         camera.update();
 

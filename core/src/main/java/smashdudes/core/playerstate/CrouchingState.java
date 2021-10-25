@@ -15,6 +15,7 @@ public class CrouchingState extends PlayerState
     public CrouchingState(Player player)
     {
         super(player);
+
         player.height *= crouchHeight;
         player.position.y -= player.height / 2;
     }
@@ -33,25 +34,21 @@ public class CrouchingState extends PlayerState
         }
         player.velocity.x *= crouchingSpeed * player.speed;
 
-        player.velocity.y = 0;
-
-        if (!Gdx.input.isKeyPressed(player.inputConfig.down))
+        if (!onGround)
         {
             resetPlayer();
-            player.setNextState(new OnGroundState(player));
+            player.setNextState(new InAirState(player));
         }
-
-        if (Gdx.input.isKeyPressed(player.inputConfig.up))
+        else if (Gdx.input.isKeyPressed(player.inputConfig.up))
         {
             resetPlayer();
             player.velocity.y = player.ySpeed;
             player.setNextState(new InAirState(player));
         }
-
-        if (!onGround)
+        else if (!Gdx.input.isKeyPressed(player.inputConfig.down))
         {
             resetPlayer();
-            player.setNextState(new InAirState(player));
+            player.setNextState(new OnGroundState(player));
         }
 
         onGround = false;

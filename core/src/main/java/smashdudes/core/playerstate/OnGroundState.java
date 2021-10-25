@@ -28,8 +28,11 @@ public class OnGroundState extends PlayerState
         }
         player.velocity.x *= player.speed;
 
-        player.velocity.y = 0;
-        if (Gdx.input.isKeyPressed(player.inputConfig.up))
+        if (!onGround)
+        {
+            player.setNextState(new InAirState(player));
+        }
+        else if (Gdx.input.isKeyPressed(player.inputConfig.up))
         {
             player.velocity.y = player.ySpeed;
             player.setNextState(new InAirState(player));
@@ -37,11 +40,6 @@ public class OnGroundState extends PlayerState
         else if (Gdx.input.isKeyPressed(player.inputConfig.down))
         {
             player.setNextState(new CrouchingState(player));
-        }
-
-        if (!onGround)
-        {
-            player.setNextState(new InAirState(player));
         }
 
         onGround = false;
