@@ -1,13 +1,23 @@
 package smashdudes.core.movementstate;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import smashdudes.core.ICollision;
 import smashdudes.core.Player;
 
 public class OnGroundState extends MovementState
 {
-    protected boolean onGround = false;
+    private boolean onGround = false;
+
+    private boolean isAttacking = false;
+
+    private boolean attackingLeft = false;
+    private float attackSpeed = 15f;
+    private float attackDist = 1.75f;
+    private float attackX = 0;
 
     public OnGroundState(Player player)
     {
@@ -28,6 +38,7 @@ public class OnGroundState extends MovementState
         }
         player.velocity.x *= player.speed;
 
+        player.velocity.y = -0.001f;
         if (!onGround)
         {
             player.setNextState(new InAirState(player));
@@ -43,8 +54,60 @@ public class OnGroundState extends MovementState
         }
 
         onGround = false;
-
         player.position.add(player.velocity.x * dt, player.velocity.y * dt);
+
+        if(!isAttacking)
+        {
+            if(Gdx.input.isKeyJustPressed(Input.Keys.E))
+            {
+                isAttacking = true;
+                attackingLeft = false;
+            }
+            else if(Gdx.input.isKeyJustPressed(Input.Keys.Q))
+            {
+                isAttacking = true;
+                attackingLeft = true;
+            }
+        }
+
+        if(isAttacking)
+        {
+            if(attackingLeft)
+            {
+                attackX -= attackSpeed * dt;
+            }
+            else
+            {
+                attackX += attackSpeed * dt;
+            }
+
+            if(Math.abs(attackX) >= attackDist)
+            {
+                isAttacking = false;
+                attackX = 0;
+            }
+        }
+    }
+
+    @Override
+    public void draw(ShapeRenderer sh)
+    {
+        super.draw(sh);
+
+        if(isAttacking)
+        {
+            float attackSize = 0.75f;
+            sh.setColor(Color.WHITE);
+
+            if(attackingLeft)
+            {
+                sh.rect(player.position.x - attackSize +  attackX, player.position.y + attackSize / 2, attackSize, attackSize);
+            }
+            else
+            {
+                sh.rect(player.position.x + attackX, player.position.y + attackSize / 2, attackSize, attackSize);
+            }
+        }
     }
 
     @Override

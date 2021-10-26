@@ -27,9 +27,10 @@ public class InAirState extends MovementState
         {
             player.velocity.x++;
         }
+
         player.velocity.x *= player.speed;
 
-        player.velocity.y -= 10 * dt;
+        player.velocity.y -= player.gravity * dt;
         if (hasLanded)
         {
             player.setNextState(new OnGroundState(player));

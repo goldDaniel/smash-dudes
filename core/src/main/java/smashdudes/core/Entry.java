@@ -38,7 +38,7 @@ public class Entry implements ApplicationListener
         viewport = new ExtendViewport(camera.viewportWidth, camera.viewportHeight, camera);
         terrain[0] = new Terrain(-8, 1, 3, 0.5f);
         terrain[1] = new Terrain(5, 1, 3, 0.5f);
-        terrain[2] = new Terrain(-10, -5, 20, 0.5f);
+        terrain[2] = new Terrain(-20, -5, 40, 0.5f);
     }
 
     @Override
@@ -67,18 +67,14 @@ public class Entry implements ApplicationListener
                 CollisionResolver.resolve(player1, t);
                 CollisionResolver.resolve(player2, t);
             }
-
-            camera.position.x = (player1.position.x + player2.position.x) / 2;
-            camera.position.y = (player1.position.y + player2.position.y) / 2;
-
-            float dist = player1.position.dst(player2.position) / (WORLD_WIDTH / 2);
-
-            //camera.zoom = Math.max(dist, 1f);
-
-            camera.update();
-
             accumulatedTime -= step;
         }
+        camera.position.x = (player1.position.x + player2.position.x) / 2;
+        camera.position.y = (player1.position.y + player2.position.y) / 2;
+
+        float dist = player1.position.dst(player2.position) / (WORLD_WIDTH / 2);
+        camera.zoom = Math.max(dist, 1.2f);
+        camera.update();
 
         ScreenUtils.clear(Color.BLACK);
 

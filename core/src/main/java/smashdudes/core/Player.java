@@ -19,8 +19,10 @@ public class Player implements ICollision
     public InputConfig inputConfig;
     public Color colour;
 
-    public float ySpeed = 11;
+    public float ySpeed = 25;
     public float speed = 8;
+
+    public final float gravity = 50;
 
     private MovementState currState = new InAirState(this);
 
@@ -37,8 +39,7 @@ public class Player implements ICollision
 
     void draw(ShapeRenderer sh)
     {
-        sh.setColor(colour);
-        sh.rect(position.x - width / 2, position.y - height / 2, width, height);
+        currState.draw(sh);
     }
 
     @Override
