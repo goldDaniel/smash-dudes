@@ -34,6 +34,7 @@ public class CrouchingState extends MovementState
         }
         player.velocity.x *= crouchingSpeed * player.speed;
 
+        player.velocity.y = -0.001f;
         if (!onGround)
         {
             resetPlayer();

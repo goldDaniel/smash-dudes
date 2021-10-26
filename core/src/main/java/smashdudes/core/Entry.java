@@ -2,6 +2,7 @@ package smashdudes.core;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -36,9 +37,9 @@ public class Entry implements ApplicationListener
         sh = new ShapeRenderer();
         camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
         viewport = new ExtendViewport(camera.viewportWidth, camera.viewportHeight, camera);
-        terrain[0] = new Terrain(-8, 1, 3, 0.5f);
-        terrain[1] = new Terrain(5, 1, 3, 0.5f);
-        terrain[2] = new Terrain(-10, -5, 20, 0.5f);
+        terrain[0] = new Terrain(-4, 2, 3, 0.5f);
+        terrain[1] = new Terrain(4, 2, 3, 0.5f);
+        terrain[2] = new Terrain(-0, -1, 40, 0.5f);
     }
 
     @Override
@@ -52,7 +53,7 @@ public class Entry implements ApplicationListener
     public void render()
     {
         float dt = Gdx.graphics.getDeltaTime();
-        float step = 1 / 60f;
+        float step = 1 / (float)Gdx.graphics.getDisplayMode().refreshRate;
 
         accumulatedTime += dt;
         while (accumulatedTime >= step)
@@ -60,25 +61,22 @@ public class Entry implements ApplicationListener
             player1.update(step);
             player2.update(step);
 
-            //CollisionResolver.resolve(player2, player1);
-
             for (Terrain t : terrain)
             {
                 CollisionResolver.resolve(player1, t);
                 CollisionResolver.resolve(player2, t);
             }
 
-            camera.position.x = (player1.position.x + player2.position.x) / 2;
-            camera.position.y = (player1.position.y + player2.position.y) / 2;
-
-            float dist = player1.position.dst(player2.position) / (WORLD_WIDTH / 2);
-
-            //camera.zoom = Math.max(dist, 1f);
-
-            camera.update();
-
             accumulatedTime -= step;
         }
+
+        camera.position.x = (player1.position.x + player2.position.x) / 2;
+        camera.position.y = (player1.position.y + player2.position.y) / 2;
+
+        float dist = player1.position.dst(player2.position) / (WORLD_WIDTH / 2);
+
+        camera.zoom = Math.max(dist, 1.2f);
+        camera.update();
 
         ScreenUtils.clear(Color.BLACK);
 

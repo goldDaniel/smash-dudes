@@ -6,21 +6,20 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import smashdudes.core.movementstate.*;
 
-public class Player implements ICollision
+public class Player extends Entity implements ICollision
 {
     Rectangle collisionRectangle = new Rectangle();
 
-    public Vector2 position = new Vector2();
     public float width = 2;
     public float height = 2;
-
-    public Vector2 velocity = new Vector2();
 
     public InputConfig inputConfig;
     public Color colour;
 
-    public float ySpeed = 11;
+    public float ySpeed = 25;
     public float speed = 8;
+
+    public final float gravity = 50;
 
     private MovementState currState = new InAirState(this);
 
@@ -37,8 +36,13 @@ public class Player implements ICollision
 
     void draw(ShapeRenderer sh)
     {
-        sh.setColor(colour);
-        sh.rect(position.x - width / 2, position.y - height / 2, width, height);
+        currState.draw(sh);
+    }
+
+    @Override
+    public Entity getEntity()
+    {
+        return this;
     }
 
     @Override
