@@ -17,6 +17,8 @@ public interface ICollision
         return other.getCollisionRect().overlaps(this.getCollisionRect());
     }
 
+    Entity getEntity();
+
     Rectangle getCollisionRect();
 
     void resolve(Side side, ICollision collidedWith);

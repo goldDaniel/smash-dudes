@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import smashdudes.core.Entity;
 import smashdudes.core.ICollision;
 import smashdudes.core.Player;
 
@@ -56,21 +57,20 @@ public class OnGroundState extends MovementState
         onGround = false;
         player.position.add(player.velocity.x * dt, player.velocity.y * dt);
 
-        if(!isAttacking)
+        if (!isAttacking)
         {
-            if(Gdx.input.isKeyJustPressed(Input.Keys.E))
+            if (Gdx.input.isKeyJustPressed(Input.Keys.E))
             {
                 isAttacking = true;
                 attackingLeft = false;
             }
-            else if(Gdx.input.isKeyJustPressed(Input.Keys.Q))
+            else if (Gdx.input.isKeyJustPressed(Input.Keys.Q))
             {
                 isAttacking = true;
                 attackingLeft = true;
             }
         }
-
-        if(isAttacking)
+        else
         {
             if(attackingLeft)
             {
