@@ -2,8 +2,10 @@ package smashdudes.core;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
@@ -15,10 +17,9 @@ import javax.xml.stream.events.EndElement;
  */
 public class Entry implements ApplicationListener
 {
-
     Engine ecsEngine;
 
-    private void buildPlayer(InputConfig config, Color color)
+    private Entity buildPlayer(InputConfig config, Color color)
     {
         Entity player = ecsEngine.createEntity();
 
@@ -42,9 +43,11 @@ public class Entry implements ApplicationListener
         collider.colliderWidth = 2;
         collider.colliderHeight = 2;
         player.addComponent(collider);
+
+        return player;
     }
 
-    public void buildTerrain(float x, float y, float w, float h)
+    public Entity buildTerrain(float x, float y, float w, float h)
     {
         Entity terrain = ecsEngine.createEntity();
 
@@ -64,6 +67,8 @@ public class Entry implements ApplicationListener
         td.color = Color.GREEN;
 
         terrain.addComponent(td);
+
+        return terrain;
     }
 
     @Override
@@ -75,8 +80,8 @@ public class Entry implements ApplicationListener
         buildPlayer(new InputConfig(Input.Keys.J,Input.Keys.L,Input.Keys.I,Input.Keys.K), Color.RED);
 
         buildTerrain(0, -5, 30, 0.75f);
-        buildTerrain(6, 2.5f, 5, 0.5f);
-        buildTerrain(-6, 2.5f, 5, 0.5f);
+        buildTerrain(6, 2.5f, 5, 0.1f);
+        buildTerrain(-6, 2.5f, 5, 0.1f);
     }
 
     @Override

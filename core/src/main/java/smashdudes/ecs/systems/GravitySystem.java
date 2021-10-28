@@ -30,7 +30,7 @@ public class GravitySystem extends GameSystem
         GravityComponent g = entity.getComponent(GravityComponent.class);
 
         v.velocity.y -= g.gravityStrength * dt;
-        MathUtils.clamp(v.velocity.y, terminalVelocity, Float.MAX_VALUE);
+        v.velocity.y = MathUtils.clamp(v.velocity.y, terminalVelocity, Float.MAX_VALUE);
     }
 
 
@@ -41,11 +41,14 @@ public class GravitySystem extends GameSystem
         {
             TerrainCollisionEvent e = (TerrainCollisionEvent)event;
 
-            if(e.collisionSide == TerrainCollisionSystem.CollisionSide.Top ||
-               e.collisionSide == TerrainCollisionSystem.CollisionSide.Bottom)
+            VelocityComponent v = e.entity.getComponent(VelocityComponent.class);
+            if(e.collisionSide == TerrainCollisionSystem.CollisionSide.Top)
             {
-                VelocityComponent v = e.entity.getComponent(VelocityComponent.class);
                 v.velocity.y = 0;
+            }
+            if(e.collisionSide == TerrainCollisionSystem.CollisionSide.Bottom)
+            {
+                if(v.velocity.y > 0) v.velocity.y = 0;
             }
         }
     }

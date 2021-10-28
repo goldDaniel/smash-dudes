@@ -65,6 +65,7 @@ public class TerrainCollisionSystem extends GameSystem
         r0.width = c.colliderWidth;
         r0.height = c.colliderHeight;
 
+        boolean onGround = false;
         for(Terrain t : terrain)
         {
             Rectangle r1 = new Rectangle();
@@ -80,6 +81,7 @@ public class TerrainCollisionSystem extends GameSystem
 
                 if(side == CollisionSide.Top)
                 {
+                    onGround = true;
                     p.position.y = t.pos.position.y + c.colliderHeight / 2 + t.terrain.height / 2;
                 }
                 else if(side == CollisionSide.Bottom)
@@ -99,7 +101,21 @@ public class TerrainCollisionSystem extends GameSystem
             {
                 engine.addEvent(new TerrainCollisionEvent(entity, null));
             }
+        }
 
+        if(onGround)
+        {
+            if(entity.getComponent(OnGroundComponent.class) == null)
+            {
+                entity.addComponent(new OnGroundComponent());
+            }
+        }
+        else
+        {
+            if(entity.getComponent(OnGroundComponent.class) != null)
+            {
+                entity.removeComponent(OnGroundComponent.class);
+            }
         }
     }
 
