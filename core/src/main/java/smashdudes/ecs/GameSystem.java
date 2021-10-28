@@ -43,14 +43,20 @@ public abstract class GameSystem
     {
         Array<Entity> result = new Array<>();
 
-        for(Class<? extends Component> component : components)
+        for(Entity entity : engine.getEntities())
         {
-            for(Entity entity : engine.getEntities())
+            boolean valid = true;
+            for(Class<? extends Component> component : components)
             {
-                if(entity.getComponent(component) != null)
+                if(entity.getComponent(component) == null)
                 {
-                    result.add(entity);
+                    valid = false;
                 }
+            }
+
+            if(valid)
+            {
+                result.add(entity);
             }
         }
 

@@ -51,6 +51,6 @@ public class Entity
             }
         }
 
-        throw new IllegalStateException("Attempting to get component entity does not have!");
+        return null;
     }
 }

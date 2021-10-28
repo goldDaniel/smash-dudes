@@ -2,6 +2,7 @@ package smashdudes.ecs;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
+import smashdudes.ecs.systems.GravitySystem;
 import smashdudes.ecs.systems.InputSystem;
 import smashdudes.ecs.systems.MovementSystem;
 import smashdudes.ecs.systems.RenderSystem;
@@ -18,6 +19,7 @@ public class Engine
         rs = new RenderSystem(this);
 
         systems.add(new InputSystem(this));
+        systems.add(new GravitySystem(this));
         systems.add(new MovementSystem(this));
         systems.add(rs);
     }

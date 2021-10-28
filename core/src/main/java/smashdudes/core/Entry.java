@@ -5,10 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
-import smashdudes.ecs.components.DrawComponent;
-import smashdudes.ecs.components.InputConfigComponent;
-import smashdudes.ecs.components.PositionComponent;
-import smashdudes.ecs.components.VelocityComponent;
+import smashdudes.ecs.components.*;
 
 /**
  * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms.
@@ -27,6 +24,7 @@ public class Entry implements ApplicationListener
 
         player.addComponent(new PositionComponent());
         player.addComponent(new VelocityComponent());
+        player.addComponent(new GravityComponent(2));
 
         InputConfigComponent i = new InputConfigComponent();
         i.config = new InputConfig(Input.Keys.A, Input.Keys.D, Input.Keys.W, Input.Keys.S);

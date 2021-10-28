@@ -31,17 +31,6 @@ public class InputSystem extends GameSystem
         {
             v.velocity.x++;
         }
-
-        v.velocity.y = 0;
-        if(Gdx.input.isKeyPressed(i.config.down))
-        {
-            v.velocity.y--;
-        }
-        if(Gdx.input.isKeyPressed(i.config.up))
-        {
-            v.velocity.y++;
-        }
-
-        v.velocity.nor().scl(5f);
+        v.velocity.x *= 5f;
     }
 }
