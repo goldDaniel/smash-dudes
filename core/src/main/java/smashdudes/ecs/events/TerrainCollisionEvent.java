@@ -5,11 +5,12 @@ import smashdudes.ecs.systems.TerrainCollisionSystem;
 
 public class TerrainCollisionEvent extends Event
 {
+    public final Entity entity;
     public final TerrainCollisionSystem.CollisionSide collisionSide;
 
     public TerrainCollisionEvent(Entity entity, TerrainCollisionSystem.CollisionSide side)
     {
-        super(entity);
+        this.entity = entity;
         this.collisionSide = side;
     }
 }

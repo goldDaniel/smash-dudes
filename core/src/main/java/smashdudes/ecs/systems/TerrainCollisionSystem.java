@@ -1,6 +1,5 @@
 package smashdudes.ecs.systems;
 
-import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import smashdudes.ecs.Component;
@@ -77,7 +76,7 @@ public class TerrainCollisionSystem extends GameSystem
             if(r0.overlaps(r1))
             {
                 CollisionSide side = getCollisionSide(r0, r1);
-                engine.postEvent(new TerrainCollisionEvent(entity, side));
+                engine.addEvent(new TerrainCollisionEvent(entity, side));
 
                 if(side == CollisionSide.Top)
                 {
@@ -96,6 +95,11 @@ public class TerrainCollisionSystem extends GameSystem
                     p.position.x = t.pos.position.x + c.colliderWidth / 2 + t.terrain.width / 2;
                 }
             }
+            else
+            {
+                engine.addEvent(new TerrainCollisionEvent(entity, null));
+            }
+
         }
     }
 

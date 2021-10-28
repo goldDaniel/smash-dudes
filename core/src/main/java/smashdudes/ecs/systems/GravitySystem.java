@@ -42,7 +42,7 @@ public class GravitySystem extends GameSystem
             TerrainCollisionEvent e = (TerrainCollisionEvent)event;
 
             if(e.collisionSide == TerrainCollisionSystem.CollisionSide.Top ||
-               e.collisionSide == TerrainCollisionSystem.CollisionSide.Bottom )
+               e.collisionSide == TerrainCollisionSystem.CollisionSide.Bottom)
             {
                 VelocityComponent v = e.entity.getComponent(VelocityComponent.class);
                 v.velocity.y = 0;

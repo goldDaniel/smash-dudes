@@ -42,9 +42,9 @@ public class JumpInputSystem extends GameSystem
         {
             TerrainCollisionEvent e = (TerrainCollisionEvent)event;
 
+            JumpComponent j = e.entity.getComponent(JumpComponent.class);
             if(e.collisionSide == TerrainCollisionSystem.CollisionSide.Top)
             {
-                JumpComponent j = e.entity.getComponent(JumpComponent.class);
                 j.enable();
             }
         }

@@ -24,6 +24,7 @@ public class Engine
         systems.add(new JumpInputSystem(this));
         systems.add(new MovementSystem(this));
         systems.add(new TerrainCollisionSystem(this));
+        systems.add(new CameraSystem(this));
         systems.add(rs);
     }
 
@@ -85,7 +86,7 @@ public class Engine
         }
     }
 
-    public void postEvent(Event event)
+    public void addEvent(Event event)
     {
         events.addLast(event);
     }

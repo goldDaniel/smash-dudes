@@ -10,6 +10,8 @@ import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.DrawComponent;
 import smashdudes.ecs.components.PositionComponent;
+import smashdudes.ecs.events.CameraUpdateEvent;
+import smashdudes.ecs.events.Event;
 
 public class RenderSystem extends GameSystem
 {
@@ -27,6 +29,8 @@ public class RenderSystem extends GameSystem
         super(engine);
         registerComponentType(PositionComponent.class);
         registerComponentType(DrawComponent.class);
+
+        registerEventType(CameraUpdateEvent.class);
 
         camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
         camera.zoom = 1.2f;
@@ -64,5 +68,15 @@ public class RenderSystem extends GameSystem
     public void postUpdate()
     {
         sh.end();
+    }
+
+    @Override
+    public void handleEvent(Event event)
+    {
+        CameraUpdateEvent e = (CameraUpdateEvent)event;
+
+        this.camera = e.camera;
+        viewport.setCamera(camera);
+        viewport.apply();
     }
 }
