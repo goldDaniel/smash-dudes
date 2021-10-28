@@ -8,7 +8,6 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
-import smashdudes.ecs.GameSystem;
 import smashdudes.ecs.components.DrawComponent;
 import smashdudes.ecs.components.PositionComponent;
 

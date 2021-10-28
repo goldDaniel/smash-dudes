@@ -1,19 +1,18 @@
 package smashdudes.ecs.systems;
 
+import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import smashdudes.ecs.Component;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
-import smashdudes.ecs.GameSystem;
-import smashdudes.ecs.components.PositionComponent;
-import smashdudes.ecs.components.StaticTerrainComponent;
-import smashdudes.ecs.components.TerrainColliderComponent;
+import smashdudes.ecs.components.*;
+import smashdudes.ecs.events.TerrainCollisionEvent;
 
 
 public class TerrainCollisionSystem extends GameSystem
 {
-    private enum CollisionSide
+    public enum CollisionSide
     {
         Left,
         Right,
@@ -78,10 +77,23 @@ public class TerrainCollisionSystem extends GameSystem
             if(r0.overlaps(r1))
             {
                 CollisionSide side = getCollisionSide(r0, r1);
+                engine.postEvent(new TerrainCollisionEvent(entity, side));
 
                 if(side == CollisionSide.Top)
                 {
                     p.position.y = t.pos.position.y + c.colliderHeight / 2 + t.terrain.height / 2;
+                }
+                else if(side == CollisionSide.Bottom)
+                {
+                    p.position.y = t.pos.position.y - c.colliderHeight / 2 - t.terrain.height / 2;
+                }
+                else if(side == CollisionSide.Left)
+                {
+                    p.position.x = t.pos.position.x - c.colliderWidth / 2 - t.terrain.width / 2;
+                }
+                else if(side == CollisionSide.Right)
+                {
+                    p.position.x = t.pos.position.x + c.colliderWidth / 2 + t.terrain.width / 2;
                 }
             }
         }

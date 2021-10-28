@@ -3,7 +3,6 @@ package smashdudes.ecs.systems;
 import com.badlogic.gdx.Gdx;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
-import smashdudes.ecs.GameSystem;
 import smashdudes.ecs.components.InputConfigComponent;
 import smashdudes.ecs.components.VelocityComponent;
 

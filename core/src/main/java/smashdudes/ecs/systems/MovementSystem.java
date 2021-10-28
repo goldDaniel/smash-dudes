@@ -2,7 +2,6 @@ package smashdudes.ecs.systems;
 
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
-import smashdudes.ecs.GameSystem;
 import smashdudes.ecs.components.PositionComponent;
 import smashdudes.ecs.components.VelocityComponent;
 

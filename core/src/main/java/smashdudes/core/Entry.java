@@ -24,7 +24,8 @@ public class Entry implements ApplicationListener
 
         player.addComponent(new PositionComponent());
         player.addComponent(new VelocityComponent());
-        player.addComponent(new GravityComponent(2));
+        player.addComponent(new JumpComponent(20));
+        player.addComponent(new GravityComponent(25));
 
         InputConfigComponent i = new InputConfigComponent();
         i.config = new InputConfig(Input.Keys.A, Input.Keys.D, Input.Keys.W, Input.Keys.S);
@@ -40,6 +41,7 @@ public class Entry implements ApplicationListener
         collider.colliderWidth = 2;
         collider.colliderHeight = 2;
         player.addComponent(collider);
+
 
 
         Entity terrain = ecsEngine.createEntity();
