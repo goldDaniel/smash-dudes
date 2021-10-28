@@ -36,6 +36,10 @@ public class Entry implements ApplicationListener
         d.height = 2;
         player.addComponent(d);
 
+        TerrainColliderComponent collider = new TerrainColliderComponent();
+        collider.colliderWidth = 2;
+        collider.colliderHeight = 2;
+        player.addComponent(collider);
 
 
         Entity terrain = ecsEngine.createEntity();

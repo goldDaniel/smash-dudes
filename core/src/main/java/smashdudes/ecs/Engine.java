@@ -2,10 +2,7 @@ package smashdudes.ecs;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
-import smashdudes.ecs.systems.GravitySystem;
-import smashdudes.ecs.systems.InputSystem;
-import smashdudes.ecs.systems.MovementSystem;
-import smashdudes.ecs.systems.RenderSystem;
+import smashdudes.ecs.systems.*;
 
 public class Engine
 {
@@ -20,6 +17,7 @@ public class Engine
 
         systems.add(new InputSystem(this));
         systems.add(new GravitySystem(this));
+        systems.add(new TerrainCollisionSystem(this));
         systems.add(new MovementSystem(this));
         systems.add(rs);
     }
@@ -32,10 +30,28 @@ public class Engine
         return e;
     }
 
-
-    public Array<Entity> getEntities()
+    public Array<Entity> getEntities(Array<Class<? extends Component>> components)
     {
-        return entities;
+        Array<Entity> result = new Array<>();
+
+        for(Entity entity : entities)
+        {
+            boolean valid = true;
+            for(Class<? extends Component> component : components)
+            {
+                if(entity.getComponent(component) == null)
+                {
+                    valid = false;
+                }
+            }
+
+            if(valid)
+            {
+                result.add(entity);
+            }
+        }
+
+        return result;
     }
 
     public void update()

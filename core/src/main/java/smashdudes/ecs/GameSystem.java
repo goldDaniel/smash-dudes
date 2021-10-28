@@ -4,7 +4,7 @@ import com.badlogic.gdx.utils.Array;
 
 public abstract class GameSystem
 {
-    protected final Engine engine;
+    public final Engine engine;
 
     private final Array<Class<? extends Component>> components = new Array<>();
 
@@ -41,25 +41,6 @@ public abstract class GameSystem
 
     private Array<Entity> getEntities()
     {
-        Array<Entity> result = new Array<>();
-
-        for(Entity entity : engine.getEntities())
-        {
-            boolean valid = true;
-            for(Class<? extends Component> component : components)
-            {
-                if(entity.getComponent(component) == null)
-                {
-                    valid = false;
-                }
-            }
-
-            if(valid)
-            {
-                result.add(entity);
-            }
-        }
-
-        return result;
+        return engine.getEntities(components);
     }
 }
