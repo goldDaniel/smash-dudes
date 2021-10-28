@@ -48,7 +48,10 @@ public abstract class GameSystem
     {
         if(events.contains(event.getClass(), true))
         {
-            handleEvent(event);
+            if(engine.getEntities(components).contains(event.entity, true))
+            {
+                handleEvent(event);
+            }
         }
     }
 
