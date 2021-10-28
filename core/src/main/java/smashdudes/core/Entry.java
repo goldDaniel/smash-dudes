@@ -35,6 +35,28 @@ public class Entry implements ApplicationListener
         d.width = 2;
         d.height = 2;
         player.addComponent(d);
+
+
+
+        Entity terrain = ecsEngine.createEntity();
+        float terrainWidth = 20f;
+        float terrainHeight = 0.75f;
+
+        PositionComponent tp = new PositionComponent();
+        tp.position.y = -5;
+        terrain.addComponent(tp);
+
+        StaticTerrainComponent t = new StaticTerrainComponent();
+        t.width = terrainWidth;
+        t.height = terrainHeight;
+        terrain.addComponent(t);
+
+        DrawComponent td = new DrawComponent();
+        td.width = terrainWidth;
+        td.height = terrainHeight;
+        td.color = Color.GREEN;
+
+        terrain.addComponent(td);
     }
 
     @Override

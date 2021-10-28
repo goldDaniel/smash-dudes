@@ -4,7 +4,7 @@ import com.badlogic.gdx.utils.Array;
 
 public abstract class GameSystem
 {
-    private final Engine engine;
+    protected final Engine engine;
 
     private final Array<Class<? extends Component>> components = new Array<>();
 

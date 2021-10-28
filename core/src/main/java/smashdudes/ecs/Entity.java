@@ -7,6 +7,8 @@ public class Entity
     private static int nextID = 1;
     public final int ID = nextID++;
 
+    protected Entity() {}
+
     private Array<Component> components = new Array<>();
 
     public<T extends Component> void removeComponent(Class<T> clazz)
