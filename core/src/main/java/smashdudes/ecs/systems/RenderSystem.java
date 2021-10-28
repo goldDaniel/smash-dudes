@@ -16,7 +16,7 @@ public class RenderSystem extends GameSystem
     private final int WORLD_WIDTH = 20;
     private final int WORLD_HEIGHT = 12;
 
-    private Camera camera;
+    private OrthographicCamera camera;
     private ExtendViewport viewport;
 
     private ShapeRenderer sh;
@@ -29,6 +29,8 @@ public class RenderSystem extends GameSystem
         registerComponentType(DrawComponent.class);
 
         camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
+        camera.zoom = 1.2f;
+
         viewport = new ExtendViewport(WORLD_WIDTH,WORLD_HEIGHT, camera);
         sh = new ShapeRenderer();
     }
