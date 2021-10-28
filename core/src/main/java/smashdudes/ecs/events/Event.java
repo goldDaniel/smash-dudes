@@ -10,5 +10,4 @@ public abstract class Event
     {
         this.entity = entity;
     }
-
 }

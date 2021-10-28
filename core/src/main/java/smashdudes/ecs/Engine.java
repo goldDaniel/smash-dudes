@@ -20,8 +20,8 @@ public class Engine
         rs = new RenderSystem(this);
 
         systems.add(new InputSystem(this));
-        systems.add(new JumpInputSystem(this));
         systems.add(new GravitySystem(this));
+        systems.add(new JumpInputSystem(this));
         systems.add(new MovementSystem(this));
         systems.add(new TerrainCollisionSystem(this));
         systems.add(rs);
@@ -35,7 +35,7 @@ public class Engine
         return e;
     }
 
-    public Array<Entity> getEntities(Array<Class<? extends Component>> components)
+    public Array<Entity> getEntities(Array<Class<? extends Component>> components, boolean includeDisabled)
     {
         Array<Entity> result = new Array<>();
 
@@ -45,7 +45,7 @@ public class Engine
             for(Class<? extends Component> component : components)
             {
                 Component comp = entity.getComponent(component);
-                if(comp == null || !comp.isEnabled())
+                if(comp == null || (!includeDisabled && !comp.isEnabled()))
                 {
                     valid = false;
                 }
@@ -60,9 +60,15 @@ public class Engine
         return result;
     }
 
+
+    public Array<Entity> getEntities(Array<Class<? extends Component>> components)
+    {
+        return getEntities(components, false);
+    }
+
     public void update()
     {
-        float dt = Gdx.graphics.getDeltaTime();
+        float dt = 1f/Gdx.graphics.getDisplayMode().refreshRate;
 
         for(GameSystem s : systems)
         {
@@ -74,7 +80,7 @@ public class Engine
             Event e = events.removeFirst();
             for(GameSystem s : systems)
             {
-                s.recieveEvent(e);
+                s.receiveEvent(e);
             }
         }
     }

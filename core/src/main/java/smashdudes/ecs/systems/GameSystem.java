@@ -44,11 +44,11 @@ public abstract class GameSystem
         postUpdate();
     }
 
-    public final void recieveEvent(Event event)
+    public final void receiveEvent(Event event)
     {
         if(events.contains(event.getClass(), true))
         {
-            if(engine.getEntities(components).contains(event.entity, true))
+            if(engine.getEntities(components, true).contains(event.entity, true))
             {
                 handleEvent(event);
             }
