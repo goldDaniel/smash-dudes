@@ -1,6 +1,7 @@
 package smashdudes.ecs.systems;
 
 import com.badlogic.gdx.Gdx;
+import smashdudes.core.Collisions;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.CharacterInputComponent;
@@ -31,9 +32,14 @@ public class CharacterJumpInputSystem extends GameSystem
 
         if(i.currentState.up)
         {
-            if (j.remainingJumps == j.maxJumps)
+            if (j.remainingJumps == j.maxJumps && entity.getComponent(OnGroundComponent.class) != null)
             {
                 v.velocity.y = j.jumpStrength;
+            }
+            else if (j.remainingJumps == j.maxJumps)
+            {
+                j.remainingJumps--;
+                v.velocity.y = j.extraJumpStrength;
             }
             else if (j.remainingJumps < j.maxJumps)
             {
@@ -56,7 +62,7 @@ public class CharacterJumpInputSystem extends GameSystem
             TerrainCollisionEvent e = (TerrainCollisionEvent)event;
 
             JumpComponent j = e.entity.getComponent(JumpComponent.class);
-            if(e.collisionSide == TerrainCollisionSystem.CollisionSide.Top)
+            if(e.collisionSide == Collisions.CollisionSide.Top)
             {
                 j.enable();
                 j.remainingJumps = j.maxJumps;

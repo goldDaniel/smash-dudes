@@ -2,6 +2,7 @@ package smashdudes.ecs.systems;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
+import smashdudes.core.Collisions;
 import smashdudes.ecs.Component;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
@@ -11,14 +12,6 @@ import smashdudes.ecs.events.TerrainCollisionEvent;
 
 public class TerrainCollisionSystem extends GameSystem
 {
-    public enum CollisionSide
-    {
-        Left,
-        Right,
-        Top,
-        Bottom,
-    }
-
     private class Terrain
     {
         public PositionComponent pos;
@@ -76,30 +69,26 @@ public class TerrainCollisionSystem extends GameSystem
 
             if(r0.overlaps(r1))
             {
-                CollisionSide side = getCollisionSide(r0, r1);
+                Collisions.CollisionSide side = Collisions.getCollisionSide(r0, r1);
                 engine.addEvent(new TerrainCollisionEvent(entity, side));
 
-                if(side == CollisionSide.Top)
+                if(side == Collisions.CollisionSide.Top)
                 {
                     onGround = true;
                     p.position.y = t.pos.position.y + c.colliderHeight / 2 + t.terrain.height / 2;
                 }
-                else if(side == CollisionSide.Bottom)
+                else if(side == Collisions.CollisionSide.Bottom)
                 {
                     p.position.y = t.pos.position.y - c.colliderHeight / 2 - t.terrain.height / 2;
                 }
-                else if(side == CollisionSide.Left)
+                else if(side == Collisions.CollisionSide.Left)
                 {
                     p.position.x = t.pos.position.x - c.colliderWidth / 2 - t.terrain.width / 2;
                 }
-                else if(side == CollisionSide.Right)
+                else if(side == Collisions.CollisionSide.Right)
                 {
                     p.position.x = t.pos.position.x + c.colliderWidth / 2 + t.terrain.width / 2;
                 }
-            }
-            else
-            {
-                engine.addEvent(new TerrainCollisionEvent(entity, null));
             }
         }
 
@@ -123,62 +112,5 @@ public class TerrainCollisionSystem extends GameSystem
     public void postUpdate()
     {
         terrain.clear();
-    }
-
-    /**
-     * Returns side Rectangle is colliding with relative to r0.
-     */
-    private static CollisionSide getCollisionSide(Rectangle r0, Rectangle r1)
-    {
-        CollisionSide result = null;
-        //horizontal side
-        boolean left = r0.x + r0.width / 2 < r1.x + r1.width / 2;
-        //vertical side
-        boolean above = r0.y + r0.height / 2 > r1.y + r1.height / 2;
-
-        //holds how deep the r1ect is inside the tile on each axis
-        float horizontalDif;
-        float verticalDif;
-
-        //determine the differences for depth
-        if (left)
-        {
-            horizontalDif = r0.x + r0.width - r1.x;
-        }
-        else
-        {
-            horizontalDif = r1.x + r1.width - r0.x;
-        }
-
-        if (above)
-        {
-            verticalDif = r1.y + r1.height - r0.y;
-        }
-        else
-        {
-            verticalDif = r0.y + r0.height - r1.y;
-        }
-
-        if (horizontalDif < verticalDif)
-        {
-            if (left)
-            {
-                result = CollisionSide.Left;
-            }
-            else
-            {
-                result = CollisionSide.Right;
-            }
-        }
-        else if (above)
-        {
-            result = CollisionSide.Top;
-        }
-        else
-        {
-            result = CollisionSide.Bottom;
-        }
-
-        return result;
     }
 }

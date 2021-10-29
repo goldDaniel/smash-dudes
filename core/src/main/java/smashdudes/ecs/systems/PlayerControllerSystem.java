@@ -28,7 +28,7 @@ public class PlayerControllerSystem extends GameSystem
         KeyState nextState = new KeyState();
         nextState.left = Gdx.input.isKeyPressed(pc.config.left);
         nextState.right = Gdx.input.isKeyPressed(pc.config.right);
-        nextState.up = Gdx.input.isKeyPressed(pc.config.up);
+        nextState.up = Gdx.input.isKeyJustPressed(pc.config.up);
         nextState.down = Gdx.input.isKeyPressed(pc.config.down);
 
         ci.currentState = nextState;

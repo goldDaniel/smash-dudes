@@ -1,6 +1,7 @@
 package smashdudes.ecs.systems;
 
 import com.badlogic.gdx.math.MathUtils;
+import smashdudes.core.Collisions;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.GravityComponent;
@@ -41,11 +42,11 @@ public class GravitySystem extends GameSystem
             TerrainCollisionEvent e = (TerrainCollisionEvent)event;
 
             VelocityComponent v = e.entity.getComponent(VelocityComponent.class);
-            if(e.collisionSide == TerrainCollisionSystem.CollisionSide.Top)
+            if(e.collisionSide == Collisions.CollisionSide.Top)
             {
                 v.velocity.y = 0;
             }
-            if(e.collisionSide == TerrainCollisionSystem.CollisionSide.Bottom)
+            if(e.collisionSide == Collisions.CollisionSide.Bottom)
             {
                 if(v.velocity.y > 0) v.velocity.y = 0;
             }
