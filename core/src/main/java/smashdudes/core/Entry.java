@@ -2,15 +2,10 @@ package smashdudes.core;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
-
-import javax.xml.stream.events.EndElement;
 
 /**
  * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms.
@@ -26,12 +21,14 @@ public class Entry implements ApplicationListener
         player.addComponent(new PlayerComponent());
         player.addComponent(new PositionComponent());
         player.addComponent(new VelocityComponent());
-        player.addComponent(new JumpComponent(20));
-        player.addComponent(new GravityComponent(25));
+        player.addComponent(new JumpComponent(30));
+        player.addComponent(new GravityComponent(60));
 
-        InputConfigComponent i = new InputConfigComponent();
-        i.config = config;
+        CharacterInputComponent i = new CharacterInputComponent();
         player.addComponent(i);
+
+        PlayerControllerComponent pc = new PlayerControllerComponent(config);
+        player.addComponent(pc);
 
         DrawComponent d = new DrawComponent();
         d.color = color;
