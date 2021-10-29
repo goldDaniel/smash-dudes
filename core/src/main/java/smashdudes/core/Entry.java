@@ -74,7 +74,11 @@ public class Entry implements ApplicationListener
         ecsEngine = new Engine();
 
         buildPlayer(new InputConfig(Input.Keys.A,Input.Keys.D,Input.Keys.W,Input.Keys.S), Color.GOLD);
-        buildPlayer(new InputConfig(Input.Keys.J,Input.Keys.L,Input.Keys.I,Input.Keys.K), Color.RED);
+
+        Entity ai = buildPlayer(new InputConfig(Input.Keys.J,Input.Keys.L,Input.Keys.I,Input.Keys.K), Color.RED);
+        ai.removeComponent(PlayerControllerComponent.class);
+        ai.addComponent(new AIControllerComponent());
+
 
         buildTerrain(0, -5, 30, 0.75f);
         buildTerrain(6, 2.5f, 5, 0.1f);
