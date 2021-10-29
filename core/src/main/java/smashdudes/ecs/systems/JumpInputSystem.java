@@ -30,11 +30,22 @@ public class JumpInputSystem extends GameSystem
         InputConfigComponent i = entity.getComponent(InputConfigComponent.class);
         VelocityComponent v = entity.getComponent(VelocityComponent.class);
         JumpComponent j = entity.getComponent(JumpComponent.class);
-
-        if(Gdx.input.isKeyJustPressed(i.config.up))
+        if (Gdx.input.isKeyJustPressed(i.config.up)) // jumping from ground has up = 51, in air it's up = 37
         {
-            v.velocity.y = j.jumpStrength;
-            j.disable();
+            if (j.remainingJumps == j.maxJumps && j.maxJumps >= 1)
+            {
+                v.velocity.y = j.jumpStrength;
+            }
+            else if (j.remainingJumps < j.maxJumps && j.remainingJumps > 0)
+            {
+                v.velocity.y = j.extraJumpStrength;
+            }
+
+            j.remainingJumps--;
+            if (j.remainingJumps == 0)
+            {
+                j.disable();
+            }
 
             entity.removeComponent(OnGroundComponent.class);
         }
@@ -51,6 +62,7 @@ public class JumpInputSystem extends GameSystem
             if(e.collisionSide == TerrainCollisionSystem.CollisionSide.Top)
             {
                 j.enable();
+                j.remainingJumps = j.maxJumps;
             }
         }
     }

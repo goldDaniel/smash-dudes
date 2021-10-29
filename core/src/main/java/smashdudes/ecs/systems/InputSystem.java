@@ -30,6 +30,6 @@ public class InputSystem extends GameSystem
         {
             v.velocity.x++;
         }
-        v.velocity.x *= 5f;
+        v.velocity.x *= 15f;
     }
 }

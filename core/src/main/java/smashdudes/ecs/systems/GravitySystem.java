@@ -1,7 +1,6 @@
 package smashdudes.ecs.systems;
 
 import com.badlogic.gdx.math.MathUtils;
-import org.graalvm.compiler.loop.MathUtil;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.GravityComponent;

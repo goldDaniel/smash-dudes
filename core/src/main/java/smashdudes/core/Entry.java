@@ -26,7 +26,7 @@ public class Entry implements ApplicationListener
         player.addComponent(new PlayerComponent());
         player.addComponent(new PositionComponent());
         player.addComponent(new VelocityComponent());
-        player.addComponent(new JumpComponent(20));
+        player.addComponent(new JumpComponent(20, 12, 2));
         player.addComponent(new GravityComponent(25));
 
         InputConfigComponent i = new InputConfigComponent();
