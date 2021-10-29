@@ -2,7 +2,6 @@ package smashdudes.ecs.events;
 
 import smashdudes.core.Collisions;
 import smashdudes.ecs.Entity;
-import smashdudes.ecs.systems.TerrainCollisionSystem;
 
 public class TerrainCollisionEvent extends Event
 {

@@ -10,7 +10,7 @@ import smashdudes.ecs.components.*;
 import smashdudes.ecs.events.TerrainCollisionEvent;
 
 
-public class TerrainCollisionSystem extends GameSystem
+public class StaticTerrainCollisionSystem extends GameSystem
 {
     private class Terrain
     {
@@ -20,7 +20,7 @@ public class TerrainCollisionSystem extends GameSystem
 
     private Array<Terrain> terrain;
 
-    public TerrainCollisionSystem(Engine engine)
+    public StaticTerrainCollisionSystem(Engine engine)
     {
         super(engine);
         terrain = new Array<>();
@@ -58,7 +58,6 @@ public class TerrainCollisionSystem extends GameSystem
         r0.width = c.colliderWidth;
         r0.height = c.colliderHeight;
 
-        boolean onGround = false;
         for(Terrain t : terrain)
         {
             Rectangle r1 = new Rectangle();
@@ -74,8 +73,17 @@ public class TerrainCollisionSystem extends GameSystem
 
                 if(side == Collisions.CollisionSide.Top)
                 {
-                    onGround = true;
                     p.position.y = t.pos.position.y + c.colliderHeight / 2 + t.terrain.height / 2;
+
+                    if (entity.getComponent(InAirComponent.class) != null)
+                    {
+                        entity.removeComponent(InAirComponent.class);
+                    }
+
+                    if (entity.getComponent(OnGroundComponent.class) == null)
+                    {
+                        entity.addComponent(new OnGroundComponent());
+                    }
                 }
                 else if(side == Collisions.CollisionSide.Bottom)
                 {
@@ -90,18 +98,13 @@ public class TerrainCollisionSystem extends GameSystem
                     p.position.x = t.pos.position.x + c.colliderWidth / 2 + t.terrain.width / 2;
                 }
             }
-        }
 
-        if(onGround)
-        {
-            if(entity.getComponent(OnGroundComponent.class) == null)
+            if (entity.getComponent(InAirComponent.class) == null && entity.getComponent(OnGroundComponent.class) == null)
             {
                 entity.addComponent(new OnGroundComponent());
             }
-        }
-        else
-        {
-            if(entity.getComponent(OnGroundComponent.class) != null)
+
+            if (entity.getComponent(InAirComponent.class) != null && entity.getComponent(OnGroundComponent.class) != null)
             {
                 entity.removeComponent(OnGroundComponent.class);
             }

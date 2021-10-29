@@ -24,8 +24,12 @@ public class Engine
         systems.add(new AIControllerSystem(this));
         systems.add(new GravitySystem(this));
         systems.add(new CharacterJumpInputSystem(this));
+        systems.add(new DynamicTerrainMovementSystem(this));
+        systems.add(new OrbitingTerrainMovementSystem(this));
         systems.add(new MovementSystem(this));
-        systems.add(new TerrainCollisionSystem(this));
+        systems.add(new InAirSystem(this));
+        systems.add(new StaticTerrainCollisionSystem(this));
+        systems.add(new DynamicTerrainCollisionSystem(this));
         systems.add(new CameraSystem(this));
         systems.add(rs);
     }
@@ -71,7 +75,7 @@ public class Engine
 
     public void update()
     {
-        float dt = 1f/Gdx.graphics.getDisplayMode().refreshRate;
+        float dt = 1f/60;
 
         for(GameSystem s : systems)
         {

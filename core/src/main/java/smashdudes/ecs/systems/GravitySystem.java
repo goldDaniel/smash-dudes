@@ -6,6 +6,7 @@ import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.GravityComponent;
 import smashdudes.ecs.components.JumpComponent;
+import smashdudes.ecs.components.OnGroundComponent;
 import smashdudes.ecs.components.VelocityComponent;
 import smashdudes.ecs.events.Event;
 import smashdudes.ecs.events.TerrainCollisionEvent;
@@ -44,7 +45,7 @@ public class GravitySystem extends GameSystem
             VelocityComponent v = e.entity.getComponent(VelocityComponent.class);
             if(e.collisionSide == Collisions.CollisionSide.Top)
             {
-                v.velocity.y = 0;
+                if(v.velocity.y < 0) v.velocity.y = 0;
             }
             if(e.collisionSide == Collisions.CollisionSide.Bottom)
             {

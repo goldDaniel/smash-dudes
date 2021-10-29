@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
+import smashdudes.ecs.systems.MovementSystem;
 
 /**
  * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms.
@@ -23,6 +24,7 @@ public class Entry implements ApplicationListener
         player.addComponent(new VelocityComponent());
         player.addComponent(new JumpComponent(20, 12, 2));
         player.addComponent(new GravityComponent(25));
+        player.addComponent(new InAirComponent());
 
         CharacterInputComponent i = new CharacterInputComponent();
         player.addComponent(i);
@@ -82,7 +84,24 @@ public class Entry implements ApplicationListener
 
         buildTerrain(0, -5, 30, 0.75f);
         buildTerrain(6, 2.5f, 5, 0.1f);
-        buildTerrain(-6, 2.5f, 5, 0.1f);
+
+        Entity e = buildTerrain(-6, 2.5f, 5, 0.1f);
+
+        e.removeComponent(StaticTerrainComponent.class);
+        DynamicTerrainComponent d = new DynamicTerrainComponent();
+        d.prevPos.set(-6, 2.5f);
+        d.width = 5;
+        d.height = 0.1f;
+        e.addComponent(d);
+
+        VelocityComponent v = new VelocityComponent();
+        e.addComponent(v);
+
+        OrbitingComponent o = new OrbitingComponent();
+        o.orbitYAxis = true;
+        o.orbitXAxis = true;
+        o.orbitOrigin.set(-6, 3.5f);
+        e.addComponent(o);
     }
 
     @Override

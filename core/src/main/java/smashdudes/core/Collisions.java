@@ -1,7 +1,6 @@
 package smashdudes.core;
 
 import com.badlogic.gdx.math.Rectangle;
-import smashdudes.ecs.systems.TerrainCollisionSystem;
 
 public class Collisions
 {

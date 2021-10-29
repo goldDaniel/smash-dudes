@@ -46,6 +46,7 @@ public class CameraSystem extends GameSystem
         Vector2 max = new Vector2(Float.MIN_VALUE, Float.MIN_VALUE);;
 
         Vector2 averagePosition = new Vector2();
+        positions.add(new Vector2());
         for(Vector2 p : positions)
         {
             if(p.x < min.x) min.x = p.x;
@@ -59,7 +60,7 @@ public class CameraSystem extends GameSystem
         averagePosition.scl(1f/positions.size);
 
         camera.position.lerp(new Vector3(averagePosition, 0), 1/50f);
-        camera.zoom = MathUtils.lerp(camera.zoom, MathUtils.clamp(max.dst(min) * 0.1f, 1.2f, 2.2f), 1/50f);
+        camera.zoom = MathUtils.lerp(camera.zoom, MathUtils.clamp(max.dst(min) * 0.1f, 1.2f, 200.2f), 1/50f);
 
         engine.addEvent(new CameraUpdateEvent(camera));
     }

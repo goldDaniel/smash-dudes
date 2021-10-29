@@ -4,10 +4,7 @@ import com.badlogic.gdx.Gdx;
 import smashdudes.core.Collisions;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
-import smashdudes.ecs.components.CharacterInputComponent;
-import smashdudes.ecs.components.JumpComponent;
-import smashdudes.ecs.components.OnGroundComponent;
-import smashdudes.ecs.components.VelocityComponent;
+import smashdudes.ecs.components.*;
 import smashdudes.ecs.events.Event;
 import smashdudes.ecs.events.TerrainCollisionEvent;
 
@@ -32,7 +29,7 @@ public class CharacterJumpInputSystem extends GameSystem
 
         if(i.currentState.up)
         {
-            if (j.remainingJumps == j.maxJumps && entity.getComponent(OnGroundComponent.class) != null)
+            if (j.remainingJumps == j.maxJumps && entity.getComponent(InAirComponent.class) == null)
             {
                 v.velocity.y = j.jumpStrength;
             }
