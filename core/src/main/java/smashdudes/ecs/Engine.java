@@ -19,9 +19,11 @@ public class Engine
     {
         rs = new RenderSystem(this);
 
-        systems.add(new InputSystem(this));
+        systems.add(new CharacterInputSystem(this));
+        systems.add(new PlayerControllerSystem(this));
+        systems.add(new AIControllerSystem(this));
         systems.add(new GravitySystem(this));
-        systems.add(new JumpInputSystem(this));
+        systems.add(new CharacterJumpInputSystem(this));
         systems.add(new MovementSystem(this));
         systems.add(new TerrainCollisionSystem(this));
         systems.add(new CameraSystem(this));
