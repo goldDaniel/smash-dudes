@@ -2,15 +2,10 @@ package smashdudes.core;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
-
-import javax.xml.stream.events.EndElement;
 
 /**
  * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms.
@@ -29,9 +24,11 @@ public class Entry implements ApplicationListener
         player.addComponent(new JumpComponent(20, 12, 2));
         player.addComponent(new GravityComponent(25));
 
-        InputConfigComponent i = new InputConfigComponent();
-        i.config = config;
+        CharacterInputComponent i = new CharacterInputComponent();
         player.addComponent(i);
+
+        PlayerControllerComponent pc = new PlayerControllerComponent(config);
+        player.addComponent(pc);
 
         DrawComponent d = new DrawComponent();
         d.color = color;
@@ -77,7 +74,11 @@ public class Entry implements ApplicationListener
         ecsEngine = new Engine();
 
         buildPlayer(new InputConfig(Input.Keys.A,Input.Keys.D,Input.Keys.W,Input.Keys.S), Color.GOLD);
-        buildPlayer(new InputConfig(Input.Keys.J,Input.Keys.L,Input.Keys.I,Input.Keys.K), Color.RED);
+
+        Entity ai = buildPlayer(new InputConfig(Input.Keys.J,Input.Keys.L,Input.Keys.I,Input.Keys.K), Color.RED);
+        ai.removeComponent(PlayerControllerComponent.class);
+        ai.addComponent(new AIControllerComponent());
+
 
         buildTerrain(0, -5, 30, 0.75f);
         buildTerrain(6, 2.5f, 5, 0.1f);
