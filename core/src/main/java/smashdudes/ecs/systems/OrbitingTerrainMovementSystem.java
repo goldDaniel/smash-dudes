@@ -29,12 +29,16 @@ public class OrbitingTerrainMovementSystem extends GameSystem
 
         d.prevPos.set(p.position);
 
-        Vector2 posRelToOrigin = p.position.sub(o.orbitOrigin);
+        Vector2 posRelToOrigin = new Vector2().set(p.position);
+        posRelToOrigin.sub(o.orbitOrigin);
         posRelToOrigin.nor();
 
-        float angle;
+        float angle = (float) Math.atan(posRelToOrigin.y / posRelToOrigin.x);
 
-        angle = (float) Math.atan(posRelToOrigin.y / posRelToOrigin.x);
+        if (v.velocity.x == 0 && v.velocity.y == 0)
+        {
+             v.velocity = new Vector2().set(posRelToOrigin).rotateRad((float)Math.PI / 2);
+        }
 
         if (o.orbitXAxis)
         {
