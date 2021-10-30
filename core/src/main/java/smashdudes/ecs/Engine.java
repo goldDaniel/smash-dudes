@@ -22,13 +22,11 @@ public class Engine
         systems.add(new CharacterInputSystem(this));
         systems.add(new PlayerControllerSystem(this));
         systems.add(new AIControllerSystem(this));
-        systems.add(new SprintingSystem(this));
         systems.add(new GravitySystem(this));
         systems.add(new CharacterJumpInputSystem(this));
         systems.add(new DynamicTerrainMovementSystem(this));
         systems.add(new OrbitingTerrainMovementSystem(this));
         systems.add(new MovementSystem(this));
-        systems.add(new InAirSystem(this));
         systems.add(new StaticTerrainCollisionSystem(this));
         systems.add(new DynamicTerrainCollisionSystem(this));
         systems.add(new CameraSystem(this));

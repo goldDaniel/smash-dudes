@@ -8,6 +8,7 @@ import smashdudes.ecs.Component;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
+import smashdudes.ecs.events.Event;
 import smashdudes.ecs.events.TerrainCollisionEvent;
 
 public class DynamicTerrainCollisionSystem extends GameSystem
@@ -28,6 +29,7 @@ public class DynamicTerrainCollisionSystem extends GameSystem
 
         registerComponentType(PositionComponent.class);
         registerComponentType(TerrainColliderComponent.class);
+        registerComponentType(OnGroundComponent.class);
     }
 
     @Override
@@ -53,6 +55,7 @@ public class DynamicTerrainCollisionSystem extends GameSystem
     {
         PositionComponent p = entity.getComponent(PositionComponent.class);
         TerrainColliderComponent c = entity.getComponent(TerrainColliderComponent.class);
+        OnGroundComponent g = entity.getComponent(OnGroundComponent.class);
 
         Rectangle r0 = new Rectangle();
         r0.x = p.position.x - c.colliderWidth / 2;
@@ -79,15 +82,9 @@ public class DynamicTerrainCollisionSystem extends GameSystem
 
                     Vector2 diff = new Vector2().add(t.pos.position).sub(t.terrain.prevPos);
                     p.position = p.position.add(diff);
-
-                    if (entity.getComponent(InAirComponent.class) != null)
+                    if (!g.isEnabled())
                     {
-                        entity.removeComponent(InAirComponent.class);
-                    }
-
-                    if (entity.getComponent(OnGroundComponent.class) == null)
-                    {
-                        entity.addComponent(new OnGroundComponent());
+                        g.enable();
                     }
                 }
                 else if(side == Collisions.CollisionSide.Bottom)
@@ -103,15 +100,6 @@ public class DynamicTerrainCollisionSystem extends GameSystem
                     p.position.x = t.pos.position.x + c.colliderWidth / 2 + t.terrain.width / 2;
                 }
             }
-
-            if (entity.getComponent(InAirComponent.class) == null && entity.getComponent(OnGroundComponent.class) == null)
-            {
-                entity.addComponent(new OnGroundComponent());
-            }
-            else if (entity.getComponent(InAirComponent.class) != null && entity.getComponent(OnGroundComponent.class) != null)
-            {
-                entity.removeComponent(OnGroundComponent.class);
-            }
         }
     }
 
@@ -119,5 +107,11 @@ public class DynamicTerrainCollisionSystem extends GameSystem
     public void postUpdate()
     {
         terrain.clear();
+    }
+
+    @Override
+    protected void handleEvent(Event event)
+    {
+
     }
 }

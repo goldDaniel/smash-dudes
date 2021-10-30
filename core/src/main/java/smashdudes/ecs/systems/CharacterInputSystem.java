@@ -13,6 +13,7 @@ public class CharacterInputSystem extends GameSystem
         super(engine);
         registerComponentType(CharacterInputComponent.class);
         registerComponentType(VelocityComponent.class);
+        registerComponentType(SprintingComponent.class);
     }
 
     @Override
@@ -20,6 +21,7 @@ public class CharacterInputSystem extends GameSystem
     {
         CharacterInputComponent i = entity.getComponent(CharacterInputComponent.class);
         VelocityComponent v = entity.getComponent(VelocityComponent.class);
+        SprintingComponent s = entity.getComponent(SprintingComponent.class);
 
         v.velocity.x = 0;
         if(i.currentState.left)
@@ -32,13 +34,10 @@ public class CharacterInputSystem extends GameSystem
         }
         v.velocity.x *= 10f;
 
-        if(i.currentState.sprint && entity.getComponent(SprintingComponent.class) == null)
+        if(i.currentState.sprint)
         {
-            entity.addComponent(new SprintingComponent(3f));
-        }
-        else if (entity.getComponent(SprintingComponent.class) != null)
-        {
-            entity.removeComponent(SprintingComponent.class);
+            v.velocity.x = s.percentFaster * v.velocity.x;
+            v.velocity.y = s.percentFaster * v.velocity.y;
         }
     }
 }
