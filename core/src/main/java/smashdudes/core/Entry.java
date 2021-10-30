@@ -22,7 +22,7 @@ public class Entry implements ApplicationListener
         player.addComponent(new PlayerComponent());
         player.addComponent(new PositionComponent());
         player.addComponent(new VelocityComponent());
-        player.addComponent(new JumpComponent(20, 12, 2));
+        player.addComponent(new JumpComponent(15, 20, 2));
         player.addComponent(new GravityComponent(25));
         player.addComponent(new InAirComponent());
 
@@ -98,9 +98,8 @@ public class Entry implements ApplicationListener
         e.addComponent(v);
 
         OrbitingComponent o = new OrbitingComponent();
-        o.orbitYAxis = true;
-        o.orbitXAxis = true;
         o.orbitOrigin.set(-6, 3.5f);
+        o.orbitSpeed = (float)Math.PI;
         e.addComponent(o);
     }
 

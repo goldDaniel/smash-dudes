@@ -6,7 +6,5 @@ import smashdudes.ecs.Component;
 public class OrbitingComponent extends Component
 {
     public Vector2 orbitOrigin = new Vector2();
-
-    public boolean orbitXAxis;
-    public boolean orbitYAxis;
+    public float orbitSpeed;
 }
