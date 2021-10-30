@@ -27,7 +27,6 @@ public class StaticTerrainCollisionSystem extends GameSystem
         terrain = new Array<>();
         registerComponentType(PositionComponent.class);
         registerComponentType(TerrainColliderComponent.class);
-        registerComponentType(OnGroundComponent.class);
     }
 
     @Override
@@ -54,12 +53,15 @@ public class StaticTerrainCollisionSystem extends GameSystem
         PositionComponent p = entity.getComponent(PositionComponent.class);
         TerrainColliderComponent c = entity.getComponent(TerrainColliderComponent.class);
         OnGroundComponent g = entity.getComponent(OnGroundComponent.class);
+        InAirComponent a = entity.getComponent(InAirComponent.class);
 
         Rectangle r0 = new Rectangle();
         r0.x = p.position.x - c.colliderWidth / 2;
         r0.y = p.position.y - c.colliderHeight / 2;
         r0.width = c.colliderWidth;
         r0.height = c.colliderHeight;
+
+        g.disable();
 
         for(Terrain t : terrain)
         {
@@ -77,10 +79,8 @@ public class StaticTerrainCollisionSystem extends GameSystem
                 if(side == Collisions.CollisionSide.Top)
                 {
                     p.position.y = t.pos.position.y + c.colliderHeight / 2 + t.terrain.height / 2;
-                    if (!g.isEnabled())
-                    {
-                        g.enable();
-                    }
+                    g.enable();
+                    a.disable();
                 }
                 else if(side == Collisions.CollisionSide.Bottom)
                 {
@@ -102,11 +102,5 @@ public class StaticTerrainCollisionSystem extends GameSystem
     public void postUpdate()
     {
         terrain.clear();
-    }
-
-    @Override
-    protected void handleEvent(Event event)
-    {
-
     }
 }

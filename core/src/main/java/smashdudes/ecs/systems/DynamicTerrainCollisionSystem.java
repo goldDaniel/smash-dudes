@@ -29,7 +29,6 @@ public class DynamicTerrainCollisionSystem extends GameSystem
 
         registerComponentType(PositionComponent.class);
         registerComponentType(TerrainColliderComponent.class);
-        registerComponentType(OnGroundComponent.class);
     }
 
     @Override
@@ -56,12 +55,15 @@ public class DynamicTerrainCollisionSystem extends GameSystem
         PositionComponent p = entity.getComponent(PositionComponent.class);
         TerrainColliderComponent c = entity.getComponent(TerrainColliderComponent.class);
         OnGroundComponent g = entity.getComponent(OnGroundComponent.class);
+        InAirComponent a = entity.getComponent(InAirComponent.class);
 
         Rectangle r0 = new Rectangle();
         r0.x = p.position.x - c.colliderWidth / 2;
         r0.y = p.position.y - c.colliderHeight / 2;
         r0.width = c.colliderWidth;
         r0.height = c.colliderHeight;
+
+        g.disable();
 
         for(Terrain t : terrain)
         {
@@ -82,10 +84,8 @@ public class DynamicTerrainCollisionSystem extends GameSystem
 
                     Vector2 diff = new Vector2().add(t.pos.position).sub(t.terrain.prevPos);
                     p.position = p.position.add(diff);
-                    if (!g.isEnabled())
-                    {
-                        g.enable();
-                    }
+                    g.enable();
+                    a.disable();
                 }
                 else if(side == Collisions.CollisionSide.Bottom)
                 {
@@ -107,11 +107,5 @@ public class DynamicTerrainCollisionSystem extends GameSystem
     public void postUpdate()
     {
         terrain.clear();
-    }
-
-    @Override
-    protected void handleEvent(Event event)
-    {
-
     }
 }

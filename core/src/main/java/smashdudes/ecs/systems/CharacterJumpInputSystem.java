@@ -27,13 +27,15 @@ public class CharacterJumpInputSystem extends GameSystem
         VelocityComponent v = entity.getComponent(VelocityComponent.class);
         JumpComponent j = entity.getComponent(JumpComponent.class);
         InAirComponent a = entity.getComponent(InAirComponent.class);
+        OnGroundComponent g = entity.getComponent(OnGroundComponent.class);
 
         if(i.currentState.up && !i.previousState.up)
         {
-            if (j.remainingJumps == j.maxJumps && !a.isEnabled())
+            if (j.remainingJumps == j.maxJumps && g.isEnabled())
             {
                 v.velocity.y = j.jumpStrength;
                 a.enable();
+                g.disable();
             }
             else if (j.remainingJumps == j.maxJumps)
             {
@@ -62,10 +64,12 @@ public class CharacterJumpInputSystem extends GameSystem
 
             JumpComponent j = e.entity.getComponent(JumpComponent.class);
             InAirComponent a = e.entity.getComponent(InAirComponent.class);
+            OnGroundComponent g = e.entity.getComponent(OnGroundComponent.class);
             if(e.collisionSide == Collisions.CollisionSide.Top)
             {
                 j.enable();
                 a.disable();
+                g.enable();
                 j.remainingJumps = j.maxJumps;
             }
         }
