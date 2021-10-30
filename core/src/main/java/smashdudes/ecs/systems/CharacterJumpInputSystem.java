@@ -27,7 +27,7 @@ public class CharacterJumpInputSystem extends GameSystem
         VelocityComponent v = entity.getComponent(VelocityComponent.class);
         JumpComponent j = entity.getComponent(JumpComponent.class);
 
-        if(i.currentState.up)
+        if(i.currentState.up && !i.previousState.up)
         {
             if (j.remainingJumps == j.maxJumps && entity.getComponent(InAirComponent.class) == null)
             {

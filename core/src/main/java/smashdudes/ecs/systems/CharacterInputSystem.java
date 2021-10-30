@@ -3,6 +3,7 @@ package smashdudes.ecs.systems;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.CharacterInputComponent;
+import smashdudes.ecs.components.SprintingComponent;
 import smashdudes.ecs.components.VelocityComponent;
 
 public class CharacterInputSystem extends GameSystem
@@ -30,5 +31,14 @@ public class CharacterInputSystem extends GameSystem
             v.velocity.x++;
         }
         v.velocity.x *= 10f;
+
+        if(i.currentState.sprint && entity.getComponent(SprintingComponent.class) == null)
+        {
+            entity.addComponent(new SprintingComponent(3f));
+        }
+        else if (entity.getComponent(SprintingComponent.class) != null)
+        {
+            entity.removeComponent(SprintingComponent.class);
+        }
     }
 }
