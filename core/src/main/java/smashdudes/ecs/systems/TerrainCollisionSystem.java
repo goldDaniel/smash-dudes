@@ -38,12 +38,8 @@ public class TerrainCollisionSystem extends GameSystem
     @Override
     public void preUpdate()
     {
-        Array<Class<? extends Component>> types = new Array<>();
-        types.add(PositionComponent.class);
-        types.add(StaticTerrainComponent.class);
-        Array<Entity> terrainEntities = engine.getEntities(types);
-
-        for(Entity e : terrainEntities)
+        Array<Entity> entities = engine.getEntities(PositionComponent.class, StaticTerrainComponent.class);
+        for(Entity e : entities)
         {
             Terrain t = new Terrain();
             t.pos = e.getComponent(PositionComponent.class);

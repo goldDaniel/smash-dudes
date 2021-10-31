@@ -63,6 +63,10 @@ public class Engine
         return result;
     }
 
+    public Array<Entity> getEntities(Class<? extends Component>... components)
+    {
+        return getEntities(components);
+    }
 
     public Array<Entity> getEntities(Array<Class<? extends Component>> components)
     {
