@@ -38,7 +38,32 @@ public class Engine
         return e;
     }
 
-    public Array<Entity> getEntities(Array<Class<? extends Component>> components, boolean includeDisabled)
+    public Array<Entity> getEntities(boolean includeDisabled, Class<? extends Component>... components)
+    {
+        Array<Entity> result = new Array<>();
+
+        for(Entity entity : entities)
+        {
+            boolean valid = true;
+            for(Class<? extends Component> component : components)
+            {
+                Component comp = entity.getComponent(component);
+                if(comp == null || (!includeDisabled && !comp.isEnabled()))
+                {
+                    valid = false;
+                }
+            }
+
+            if(valid)
+            {
+                result.add(entity);
+            }
+        }
+
+        return result;
+    }
+
+    public Array<Entity> getEntities(boolean includeDisabled, Array<Class<? extends Component>> components)
     {
         Array<Entity> result = new Array<>();
 
@@ -65,12 +90,12 @@ public class Engine
 
     public Array<Entity> getEntities(Class<? extends Component>... components)
     {
-        return getEntities(components);
+        return getEntities(false, components);
     }
 
     public Array<Entity> getEntities(Array<Class<? extends Component>> components)
     {
-        return getEntities(components, false);
+        return getEntities(false, components);
     }
 
     public void update()
