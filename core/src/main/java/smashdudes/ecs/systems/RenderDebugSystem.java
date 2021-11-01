@@ -2,17 +2,17 @@ package smashdudes.ecs.systems;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
-import smashdudes.ecs.components.SpriteDrawComponent;
+import smashdudes.ecs.components.DebugDrawComponent;
 import smashdudes.ecs.components.PositionComponent;
 import smashdudes.ecs.events.CameraUpdateEvent;
 import smashdudes.ecs.events.Event;
 
-public class RenderSystem extends GameSystem
+public class RenderDebugSystem extends GameSystem
 {
     private final int WORLD_WIDTH = 20;
     private final int WORLD_HEIGHT = 12;
@@ -20,14 +20,14 @@ public class RenderSystem extends GameSystem
     private OrthographicCamera camera;
     private ExtendViewport viewport;
 
-    private SpriteBatch sb;
+    private ShapeRenderer sh;
 
 
-    public RenderSystem(Engine engine)
+    public RenderDebugSystem(Engine engine)
     {
         super(engine);
         registerComponentType(PositionComponent.class);
-        registerComponentType(SpriteDrawComponent.class);
+        registerComponentType(DebugDrawComponent.class);
 
         registerEventType(CameraUpdateEvent.class);
 
@@ -35,7 +35,7 @@ public class RenderSystem extends GameSystem
         camera.zoom = 1.2f;
 
         viewport = new ExtendViewport(WORLD_WIDTH,WORLD_HEIGHT, camera);
-        sb = new SpriteBatch();
+        sh = new ShapeRenderer();
     }
 
     public void resize(int w, int h)
@@ -49,23 +49,24 @@ public class RenderSystem extends GameSystem
     {
         ScreenUtils.clear(Color.BLACK);
 
-        sb.setProjectionMatrix(camera.combined);
-        sb.begin();
+        sh.setProjectionMatrix(camera.combined);
+        sh.begin(ShapeRenderer.ShapeType.Filled);
     }
 
     @Override
     public void updateEntity(Entity entity, float dt)
     {
         PositionComponent p = entity.getComponent(PositionComponent.class);
-        SpriteDrawComponent d = entity.getComponent(SpriteDrawComponent.class);
+        DebugDrawComponent d = entity.getComponent(DebugDrawComponent.class);
 
-        sb.draw(d.sprite, p.position.x - d.width / 2, p.position.y - d.height / 2, d.width, d.height);
+        sh.setColor(d.color);
+        sh.rect(p.position.x - d.width / 2, p.position.y - d.height / 2, d.width, d.height);
     }
 
     @Override
     public void postUpdate()
     {
-        sb.end();
+        sh.end();
     }
 
     @Override

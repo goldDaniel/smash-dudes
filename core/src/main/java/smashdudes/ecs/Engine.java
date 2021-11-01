@@ -13,11 +13,11 @@ public class Engine
 
     private Queue<Event> events = new Queue<>();
 
-    private RenderSystem rs;
+    private RenderDebugSystem rs;
 
     public Engine()
     {
-        rs = new RenderSystem(this);
+        rs = new RenderDebugSystem(this);
 
         systems.add(new CharacterInputSystem(this));
         systems.add(new PlayerControllerSystem(this));
