@@ -21,12 +21,14 @@ public class RenderSystem extends GameSystem
     private OrthographicCamera camera;
     private ExtendViewport viewport;
 
-    private ShapeRenderer sh;
+    private final ShapeRenderer sh;
 
 
-    public RenderSystem(Engine engine)
+    public RenderSystem(Engine engine, ShapeRenderer sh)
     {
         super(engine);
+        this.sh = sh;
+
         registerComponentType(PositionComponent.class);
         registerComponentType(DrawComponent.class);
 
@@ -36,7 +38,6 @@ public class RenderSystem extends GameSystem
         camera.zoom = 1.2f;
 
         viewport = new ExtendViewport(WORLD_WIDTH,WORLD_HEIGHT, camera);
-        sh = new ShapeRenderer();
     }
 
     public void resize(int w, int h)
@@ -48,8 +49,6 @@ public class RenderSystem extends GameSystem
     @Override
     public void preUpdate()
     {
-        ScreenUtils.clear(Color.BLACK);
-
         sh.setProjectionMatrix(camera.combined);
         sh.begin(ShapeRenderer.ShapeType.Filled);
     }

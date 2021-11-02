@@ -1,8 +1,11 @@
 package smashdudes.ecs;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Queue;
+import com.badlogic.gdx.utils.ScreenUtils;
+import smashdudes.core.RenderResources;
 import smashdudes.ecs.events.Event;
 import smashdudes.ecs.systems.*;
 
@@ -17,7 +20,7 @@ public class Engine
 
     public Engine()
     {
-        rs = new RenderSystem(this);
+        rs = new RenderSystem(this, RenderResources.getShapeRenderer());
 
         systems.add(new CharacterInputSystem(this));
         systems.add(new PlayerControllerSystem(this));
@@ -98,10 +101,8 @@ public class Engine
         return getEntities(false, components);
     }
 
-    public void update()
+    public void update(float dt)
     {
-        float dt = 1f/Gdx.graphics.getDisplayMode().refreshRate;
-
         for(GameSystem s : systems)
         {
             s.update(dt);
@@ -121,7 +122,6 @@ public class Engine
     {
         events.addLast(event);
     }
-
 
     public void resize(int w, int h)
     {
