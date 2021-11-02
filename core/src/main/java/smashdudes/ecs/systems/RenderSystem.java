@@ -4,12 +4,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.SpriteDrawComponent;
 import smashdudes.ecs.components.PositionComponent;
-import smashdudes.ecs.events.CameraUpdateEvent;
 import smashdudes.ecs.events.Event;
 
 public class RenderSystem extends GameSystem
@@ -18,7 +17,7 @@ public class RenderSystem extends GameSystem
     private final int WORLD_HEIGHT = 12;
 
     private OrthographicCamera camera;
-    private ExtendViewport viewport;
+    private Viewport viewport;
 
     private SpriteBatch sb;
 
@@ -29,13 +28,17 @@ public class RenderSystem extends GameSystem
         registerComponentType(PositionComponent.class);
         registerComponentType(SpriteDrawComponent.class);
 
-        registerEventType(CameraUpdateEvent.class);
-
-        camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
-        camera.zoom = 1.2f;
-
-        viewport = new ExtendViewport(WORLD_WIDTH,WORLD_HEIGHT, camera);
         sb = new SpriteBatch();
+    }
+
+    public void setCamera(OrthographicCamera camera)
+    {
+        this.camera = camera;
+    }
+
+    public void setViewport(Viewport viewport)
+    {
+        this.viewport = viewport;
     }
 
     public void resize(int w, int h)
@@ -66,15 +69,5 @@ public class RenderSystem extends GameSystem
     public void postUpdate()
     {
         sb.end();
-    }
-
-    @Override
-    public void handleEvent(Event event)
-    {
-        CameraUpdateEvent e = (CameraUpdateEvent)event;
-
-        this.camera = e.camera;
-        viewport.setCamera(camera);
-        viewport.apply();
     }
 }

@@ -1,8 +1,10 @@
 package smashdudes.ecs;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Queue;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import smashdudes.ecs.events.Event;
 import smashdudes.ecs.systems.*;
 
@@ -13,11 +15,13 @@ public class Engine
 
     private Queue<Event> events = new Queue<>();
 
-    private RenderDebugSystem rs;
+    private RenderDebugSystem drs;
+    private RenderSystem rs;
 
     public Engine()
     {
-        rs = new RenderDebugSystem(this);
+        rs = new RenderSystem(this);
+        drs = new RenderDebugSystem(this);
 
         systems.add(new CharacterInputSystem(this));
         systems.add(new PlayerControllerSystem(this));
@@ -26,8 +30,26 @@ public class Engine
         systems.add(new CharacterJumpInputSystem(this));
         systems.add(new MovementSystem(this));
         systems.add(new TerrainCollisionSystem(this));
-        systems.add(new CameraSystem(this));
+
+        int WORLD_WIDTH = 20;
+        int WORLD_HEIGHT = 12;
+
+        OrthographicCamera camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
+        camera.zoom = 1.2f;
+
+        ExtendViewport viewport = new ExtendViewport(WORLD_WIDTH,WORLD_HEIGHT, camera);
+
+        CameraSystem cs = new CameraSystem(this);
+        cs.setCamera(camera);
+        drs.setCamera(camera);
+        rs.setCamera(camera);
+
+        drs.setViewport(viewport);
+        rs.setViewport(viewport);
+
+        systems.add(cs);
         systems.add(rs);
+        systems.add(drs);
     }
 
     public Entity createEntity()
@@ -126,5 +148,6 @@ public class Engine
     public void resize(int w, int h)
     {
         rs.resize(w, h);
+        drs.resize(w, h);
     }
 }
