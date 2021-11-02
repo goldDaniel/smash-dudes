@@ -9,7 +9,6 @@ import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.SpriteDrawComponent;
 import smashdudes.ecs.components.PositionComponent;
-import smashdudes.ecs.events.Event;
 
 public class RenderSystem extends GameSystem
 {

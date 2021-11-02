@@ -55,4 +55,10 @@ public class Entity
 
         return null;
     }
+
+    public boolean hasComponent(Class<? extends Component> clazz)
+    {
+        return getComponent(clazz) != null;
+    }
+
 }
