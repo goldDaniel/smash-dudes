@@ -30,7 +30,7 @@ public class Entry implements ApplicationListener
         PlayerControllerComponent pc = new PlayerControllerComponent(config);
         player.addComponent(pc);
 
-        DrawComponent d = new DrawComponent();
+        DebugDrawComponent d = new DebugDrawComponent();
         d.color = color;
         d.width = 2;
         d.height = 2;
@@ -58,7 +58,7 @@ public class Entry implements ApplicationListener
         t.height = h;
         terrain.addComponent(t);
 
-        DrawComponent td = new DrawComponent();
+        DebugDrawComponent td = new DebugDrawComponent();
         td.width = w;
         td.height = h;
         td.color = Color.GREEN;

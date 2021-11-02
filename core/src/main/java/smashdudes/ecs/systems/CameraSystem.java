@@ -9,7 +9,6 @@ import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.PlayerComponent;
 import smashdudes.ecs.components.PositionComponent;
-import smashdudes.ecs.events.CameraUpdateEvent;
 
 public class CameraSystem extends GameSystem
 {
@@ -20,10 +19,14 @@ public class CameraSystem extends GameSystem
     public CameraSystem(Engine engine)
     {
         super(engine);
-        camera = new OrthographicCamera(20, 12);
 
         registerComponentType(PositionComponent.class);
         registerComponentType(PlayerComponent.class);
+    }
+
+    public void setCamera(OrthographicCamera camera)
+    {
+        this.camera = camera;
     }
 
     @Override
@@ -60,7 +63,6 @@ public class CameraSystem extends GameSystem
 
         camera.position.lerp(new Vector3(averagePosition, 0), 1/50f);
         camera.zoom = MathUtils.lerp(camera.zoom, MathUtils.clamp(max.dst(min) * 0.1f, 1.2f, 2.2f), 1/50f);
-
-        engine.addEvent(new CameraUpdateEvent(camera));
+        camera.update();
     }
 }

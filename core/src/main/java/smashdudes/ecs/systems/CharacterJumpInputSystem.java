@@ -1,6 +1,5 @@
 package smashdudes.ecs.systems;
 
-import com.badlogic.gdx.Gdx;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.CharacterInputComponent;
