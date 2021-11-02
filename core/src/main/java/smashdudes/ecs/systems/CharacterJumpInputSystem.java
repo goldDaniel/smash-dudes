@@ -1,13 +1,14 @@
 package smashdudes.ecs.systems;
 
+import com.badlogic.gdx.math.MathUtils;
+import smashdudes.core.Collisions;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.CharacterInputComponent;
 import smashdudes.ecs.components.JumpComponent;
-import smashdudes.ecs.components.OnGroundComponent;
 import smashdudes.ecs.components.VelocityComponent;
-import smashdudes.ecs.events.Event;
 import smashdudes.ecs.events.TerrainCollisionEvent;
+import smashdudes.ecs.events.Event;
 
 public class CharacterJumpInputSystem extends GameSystem
 {
@@ -17,8 +18,6 @@ public class CharacterJumpInputSystem extends GameSystem
         registerComponentType(VelocityComponent.class);
         registerComponentType(CharacterInputComponent.class);
         registerComponentType(JumpComponent.class);
-        registerComponentType(OnGroundComponent.class);
-
 
         registerEventType(TerrainCollisionEvent.class);
     }
@@ -30,12 +29,10 @@ public class CharacterJumpInputSystem extends GameSystem
         VelocityComponent v = entity.getComponent(VelocityComponent.class);
         JumpComponent j = entity.getComponent(JumpComponent.class);
 
-        if(i.currentState.up)
+        if(i.currentState.up && MathUtils.isEqual(v.velocity.y, 0))
         {
             v.velocity.y = j.jumpStrength;
             j.disable();
-
-            entity.removeComponent(OnGroundComponent.class);
         }
     }
 
@@ -47,7 +44,7 @@ public class CharacterJumpInputSystem extends GameSystem
             TerrainCollisionEvent e = (TerrainCollisionEvent)event;
 
             JumpComponent j = e.entity.getComponent(JumpComponent.class);
-            if(e.collisionSide == TerrainCollisionSystem.CollisionSide.Top)
+            if(e.collisionSide == Collisions.CollisionSide.Top)
             {
                 j.enable();
             }
