@@ -19,18 +19,16 @@ public class RenderSystem extends GameSystem
     private OrthographicCamera camera;
     private Viewport viewport;
 
-    private SpriteBatch sb;
+    private final SpriteBatch sb;
 
 
-    public RenderSystem(Engine engine, ShapeRenderer sh)
+    public RenderSystem(Engine engine, SpriteBatch sb)
     {
         super(engine);
-        this.sh = sh;
+        this.sb = sb;
 
         registerComponentType(PositionComponent.class);
         registerComponentType(SpriteDrawComponent.class);
-
-        sb = new SpriteBatch();
     }
 
     public void setCamera(OrthographicCamera camera)

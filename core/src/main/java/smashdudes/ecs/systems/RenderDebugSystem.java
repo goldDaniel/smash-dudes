@@ -18,16 +18,16 @@ public class RenderDebugSystem extends GameSystem
     private OrthographicCamera camera;
     private Viewport viewport;
 
-    private ShapeRenderer sh;
+    private final ShapeRenderer sh;
 
 
-    public RenderDebugSystem(Engine engine)
+    public RenderDebugSystem(Engine engine, ShapeRenderer sh)
     {
         super(engine);
+        this.sh = sh;
+
         registerComponentType(PositionComponent.class);
         registerComponentType(DebugDrawComponent.class);
-
-        sh = new ShapeRenderer();
     }
 
     public void setCamera(OrthographicCamera camera)
