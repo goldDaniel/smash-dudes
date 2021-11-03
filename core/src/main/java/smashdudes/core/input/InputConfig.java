@@ -1,4 +1,4 @@
-package smashdudes.core;
+package smashdudes.core.input;
 
 import com.badlogic.gdx.Input;
 

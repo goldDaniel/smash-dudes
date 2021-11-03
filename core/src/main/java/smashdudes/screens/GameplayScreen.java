@@ -4,14 +4,18 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.ScreenUtils;
-import smashdudes.core.InputConfig;
+import smashdudes.core.input.GameInputHandler;
+import smashdudes.core.input.GameInputRetriever;
+import smashdudes.core.input.InputConfig;
 import smashdudes.core.PlayerHandle;
+import smashdudes.core.input.KeyboardInputListener;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
 
 public class GameplayScreen extends GameScreen
 {
+    private GameInputHandler inputHandler = new GameInputHandler();
     private Engine ecsEngine;
 
     public GameplayScreen(Game game)
@@ -19,11 +23,13 @@ public class GameplayScreen extends GameScreen
         super(game);
         ecsEngine = new Engine();
 
-        buildPlayer(new InputConfig(Input.Keys.A,Input.Keys.D,Input.Keys.W,Input.Keys.S), Color.GOLD);
+        InputConfig config = new InputConfig(Input.Keys.A,Input.Keys.D,Input.Keys.W,Input.Keys.S);
+        KeyboardInputListener listener = new KeyboardInputListener(config);
 
-        Entity ai = buildPlayer(new InputConfig(Input.Keys.J,Input.Keys.L,Input.Keys.I,Input.Keys.K), Color.RED);
-        ai.removeComponent(PlayerControllerComponent.class);
-        ai.addComponent(new AIControllerComponent());
+        PlayerControllerComponent pc = new PlayerControllerComponent(listener);
+        Entity player = buildPlayer(Color.GOLD);
+        player.addComponent(pc);
+        inputHandler.register(player.getComponent(PlayerComponent.class).handle, listener);
 
 
         buildTerrain(0, -5, 30, 0.75f);
@@ -52,7 +58,7 @@ public class GameplayScreen extends GameScreen
         ecsEngine.resize(width, height);
     }
 
-    private Entity buildPlayer(InputConfig config, Color color)
+    private Entity buildPlayer(Color color)
     {
         Entity player = ecsEngine.createEntity();
 
@@ -65,8 +71,6 @@ public class GameplayScreen extends GameScreen
         CharacterInputComponent i = new CharacterInputComponent();
         player.addComponent(i);
 
-        PlayerControllerComponent pc = new PlayerControllerComponent(config);
-        player.addComponent(pc);
 
         DebugDrawComponent d = new DebugDrawComponent();
         d.color = color;

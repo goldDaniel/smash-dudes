@@ -1,7 +1,7 @@
 package smashdudes.ecs.systems;
 
 import com.badlogic.gdx.Gdx;
-import smashdudes.core.KeyState;
+import smashdudes.core.input.InputState;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.CharacterInputComponent;
@@ -25,11 +25,11 @@ public class PlayerControllerSystem extends GameSystem
 
         ci.previousState = ci.currentState;
 
-        KeyState nextState = new KeyState();
-        nextState.left = Gdx.input.isKeyPressed(pc.config.left);
-        nextState.right = Gdx.input.isKeyPressed(pc.config.right);
-        nextState.up = Gdx.input.isKeyPressed(pc.config.up);
-        nextState.down = Gdx.input.isKeyPressed(pc.config.down);
+        InputState nextState = new InputState();
+        nextState.left = pc.retriever.getLeft();
+        nextState.right = pc.retriever.getRight();
+        nextState.up = pc.retriever.getUp();
+        nextState.down = pc.retriever.getDown();
 
         ci.currentState = nextState;
     }
