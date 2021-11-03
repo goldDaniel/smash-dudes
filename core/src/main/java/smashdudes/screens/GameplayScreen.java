@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.ScreenUtils;
 import smashdudes.core.InputConfig;
+import smashdudes.core.PlayerHandle;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
@@ -55,7 +56,7 @@ public class GameplayScreen extends GameScreen
     {
         Entity player = ecsEngine.createEntity();
 
-        player.addComponent(new PlayerComponent());
+        player.addComponent(new PlayerComponent(new PlayerHandle()));
         player.addComponent(new PositionComponent());
         player.addComponent(new VelocityComponent());
         player.addComponent(new JumpComponent(30));
