@@ -38,12 +38,13 @@ public class GameplayScreen extends GameScreen
         buildTerrain(6, 2.5f, 5, 0.1f);
         buildTerrain(-6, 2.5f, 5, 0.1f);
 
-        Gdx.input.setInputProcessor(inputHandler.getInputProcessor());
     }
 
     @Override
     public void update(float dt)
     {
+        Gdx.input.setInputProcessor(inputHandler.getInputProcessor());
+
         ScreenUtils.clear(Color.BLACK);
         ecsEngine.update(dt);
     }
