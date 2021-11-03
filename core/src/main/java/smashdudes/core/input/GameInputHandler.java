@@ -2,18 +2,23 @@ package smashdudes.core.input;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 import smashdudes.core.PlayerHandle;
 
 public class GameInputHandler
 {
+    private Array<PlayerHandle> handles = new Array<>();
     private ArrayMap<PlayerHandle, GameInputRetriever> retrievers = new ArrayMap<>();
 
     private InputMultiplexer multiplexer = new InputMultiplexer();
 
-    public GameInputHandler()
+    protected GameInputHandler(){}
+
+    public InputProcessor getInputProcessor()
     {
-        Gdx.input.setInputProcessor(multiplexer);
+        return multiplexer;
     }
 
     public GameInputRetriever getGameInput(PlayerHandle handle)
@@ -23,14 +28,22 @@ public class GameInputHandler
         return retrievers.get(handle);
     }
 
-    public void register(PlayerHandle handle, KeyboardInputListener inputListener)
+    protected Iterable<PlayerHandle> getHandles()
     {
+        return handles;
+    }
+
+    protected void register(PlayerHandle handle, KeyboardInputListener inputListener)
+    {
+        handles.add(handle);
+
         retrievers.put(handle, inputListener);
         multiplexer.addProcessor(inputListener);
     }
 
-    public void register(PlayerHandle handle, ControllerInputListener inputListener)
+    protected void register(PlayerHandle handle, ControllerInputListener inputListener)
     {
+        handles.add(handle);
         retrievers.put(handle, inputListener);
     }
 }

@@ -39,7 +39,20 @@ public class ControllerInputListener extends ControllerAdapter implements GameIn
     public boolean axisMoved (Controller controller, int axisIndex, float value)
     {
         float deadzone = 0.2f;
-        if(Math.abs(value) < deadzone) return false;
+        if(Math.abs(value) < deadzone)
+        {
+            if(axisIndex == SDL.SDL_CONTROLLER_AXIS_LEFTX)
+            {
+                state.left = false;
+                state.right = false;
+            }
+            else if(axisIndex == SDL.SDL_CONTROLLER_AXIS_LEFTX)
+            {
+                state.down = false;
+            }
+
+            return false;
+        }
 
         if(axisIndex == SDL.SDL_CONTROLLER_AXIS_LEFTX)
         {

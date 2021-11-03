@@ -1,6 +1,7 @@
 package smashdudes.screens;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -15,28 +16,29 @@ import smashdudes.ecs.components.*;
 
 public class GameplayScreen extends GameScreen
 {
-    private GameInputHandler inputHandler = new GameInputHandler();
+    private GameInputHandler inputHandler;
     private Engine ecsEngine;
 
-    public GameplayScreen(Game game)
+    public GameplayScreen(Game game, Iterable<PlayerHandle> players, GameInputHandler inputHandler)
     {
         super(game);
+        this.inputHandler = inputHandler;
         ecsEngine = new Engine();
 
-        InputConfig config = new InputConfig(Input.Keys.A,Input.Keys.D,Input.Keys.W,Input.Keys.S);
-        KeyboardInputListener listener = new KeyboardInputListener(config);
 
-        PlayerControllerComponent pc = new PlayerControllerComponent(listener);
-        Entity player = buildPlayer(Color.GOLD);
-        player.addComponent(pc);
-        inputHandler.register(player.getComponent(PlayerComponent.class).handle, listener);
+        for(PlayerHandle p : players)
+        {
+            Entity player = buildPlayer(p, Color.GOLD);
 
+            PlayerControllerComponent pc = new PlayerControllerComponent(inputHandler.getGameInput(p));
+            player.addComponent(pc);
+        }
 
         buildTerrain(0, -5, 30, 0.75f);
         buildTerrain(6, 2.5f, 5, 0.1f);
         buildTerrain(-6, 2.5f, 5, 0.1f);
 
-        ecsEngine.update(0);
+        Gdx.input.setInputProcessor(inputHandler.getInputProcessor());
     }
 
     @Override
@@ -58,11 +60,11 @@ public class GameplayScreen extends GameScreen
         ecsEngine.resize(width, height);
     }
 
-    private Entity buildPlayer(Color color)
+    private Entity buildPlayer(PlayerHandle handle, Color color)
     {
         Entity player = ecsEngine.createEntity();
 
-        player.addComponent(new PlayerComponent(new PlayerHandle()));
+        player.addComponent(new PlayerComponent(handle));
         player.addComponent(new PositionComponent());
         player.addComponent(new VelocityComponent());
         player.addComponent(new JumpComponent(30));
