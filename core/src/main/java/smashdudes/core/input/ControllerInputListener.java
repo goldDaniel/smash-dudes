@@ -4,6 +4,9 @@ import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerAdapter;
 import org.libsdl.SDL;
 
+/**
+ * Listens for controller input and allows retrieval of state through the GameInputRetriever interface
+ */
 public class ControllerInputListener extends ControllerAdapter implements GameInputRetriever
 {
     private InputState state = new InputState();

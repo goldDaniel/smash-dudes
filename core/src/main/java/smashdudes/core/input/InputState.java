@@ -1,5 +1,9 @@
 package smashdudes.core.input;
 
+
+/**
+ * Holds the button states for our input
+ */
 public class InputState
 {
     public boolean left  = false;

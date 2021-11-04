@@ -2,6 +2,9 @@ package smashdudes.core.input;
 
 import com.badlogic.gdx.InputAdapter;
 
+/**
+ * Listens for keyboard input and allows retrieval of state through the GameInputRetriever interface
+ */
 public class KeyboardInputListener extends InputAdapter implements GameInputRetriever
 {
 

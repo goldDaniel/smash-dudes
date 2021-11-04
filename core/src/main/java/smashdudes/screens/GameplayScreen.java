@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Colors;
 import com.badlogic.gdx.utils.ScreenUtils;
 import smashdudes.core.input.GameInputHandler;
 import smashdudes.core.input.GameInputRetriever;
@@ -37,7 +38,6 @@ public class GameplayScreen extends GameScreen
         buildTerrain(0, -5, 30, 0.75f);
         buildTerrain(6, 2.5f, 5, 0.1f);
         buildTerrain(-6, 2.5f, 5, 0.1f);
-
     }
 
     @Override

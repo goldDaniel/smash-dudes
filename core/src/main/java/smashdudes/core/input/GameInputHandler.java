@@ -1,15 +1,20 @@
 package smashdudes.core.input;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 import smashdudes.core.PlayerHandle;
 
+/**
+ * This class is responsible for handling the data related to input for gameplay
+ */
 public class GameInputHandler
 {
+    //list of all player handles
     private Array<PlayerHandle> handles = new Array<>();
+
+    //a mapping of player handles and their input devices
     private ArrayMap<PlayerHandle, GameInputRetriever> retrievers = new ArrayMap<>();
 
     private InputMultiplexer multiplexer = new InputMultiplexer();
