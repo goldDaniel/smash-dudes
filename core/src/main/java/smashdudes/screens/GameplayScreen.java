@@ -19,9 +19,9 @@ public class GameplayScreen extends GameScreen
         super(game);
         ecsEngine = new Engine();
 
-        buildPlayer(new InputConfig(Input.Keys.A,Input.Keys.D,Input.Keys.W,Input.Keys.S), Color.GOLD);
+        buildPlayer(new InputConfig(Input.Keys.A,Input.Keys.D,Input.Keys.W,Input.Keys.S));
 
-        Entity ai = buildPlayer(new InputConfig(Input.Keys.J,Input.Keys.L,Input.Keys.I,Input.Keys.K), Color.RED);
+        Entity ai = buildPlayer(new InputConfig(Input.Keys.J,Input.Keys.L,Input.Keys.I,Input.Keys.K));
         ai.removeComponent(PlayerControllerComponent.class);
         ai.addComponent(new AIControllerComponent());
 
@@ -52,7 +52,7 @@ public class GameplayScreen extends GameScreen
         ecsEngine.resize(width, height);
     }
 
-    private Entity buildPlayer(InputConfig config, Color color)
+    private Entity buildPlayer(InputConfig config)
     {
         Entity player = ecsEngine.createEntity();
 
@@ -69,7 +69,6 @@ public class GameplayScreen extends GameScreen
         player.addComponent(pc);
 
         DebugDrawComponent d = new DebugDrawComponent();
-        d.color = color;
         d.width = 2;
         d.height = 2;
         player.addComponent(d);

@@ -1,0 +1,47 @@
+{
+  "assets": "build assets",
+  "dependencies":
+  {
+    "terrain":
+    [
+      {
+        "texture": "path/to/texture/terrain_image0.png",
+        "position": [0,-5],
+        "dim":
+        {
+          "width": 30,
+          "height": 0.75
+        }
+      },
+      {
+        "texture": "path/to/texture/terrain_image1.png",
+        "position": [6,2.5],
+        "dim":
+        {
+          "width": 5,
+          "height": 0.1
+        }
+      },
+      {
+        "texture": "path/to/texture/terrain_image2.png",
+        "position": [-6,2.5],
+        "dim":
+        {
+          "width": 5,
+          "height": 0.1
+        }
+      }
+    ],
+    "player template":
+      {
+        "name": "Nathan",
+        "texture": "path/to/texture/character_image0.png",
+        "hitbox width": 2,
+        "draw width": 2,
+        "hitbox height": 2,
+        "draw height": 2,
+        "jump velocity": 30,
+        "gravity": 60
+      }
+  }
+}
