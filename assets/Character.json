@@ -1,4 +1,28 @@
 {
   "jump_strength" : 30,
-  "gravity": 60
+  "gravity": 60,
+  "weight": 10,
+  "terrain_collider": [2, 2],
+  "animations":
+  [
+    {
+      "texture_path": "path/to/texture.png",
+      "frames":
+      [
+        {
+          "texture_region": [1.2, 3.6, -4, 0],
+          "hitboxes":
+          [
+            [0, 0, 2, 2],
+            [0, 2, 2, 0]
+          ],
+          "hurtboxes":
+          [
+            [0, 0, 2, 2],
+            [0, 2, 2, 0]
+          ]
+        }
+      ]
+    }
+  ]
 }
