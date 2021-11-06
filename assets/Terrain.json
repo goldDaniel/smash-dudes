@@ -3,7 +3,7 @@
   "terrain":
   [
     {
-      "texture": "ArrowTest.png",
+      "texture": "textures/ArrowTest.png",
       "position": [0,-5],
       "dim":
       {
@@ -12,7 +12,7 @@
       }
     },
     {
-      "texture": "ArrowTest.png",
+      "texture": "textures/ArrowTest.png",
       "position": [6,2.5],
       "dim":
       {
@@ -21,7 +21,7 @@
       }
     },
     {
-      "texture": "ArrowTest.png",
+      "texture": "textures/ArrowTest.png",
       "position": [-6,2.5],
       "dim":
       {
