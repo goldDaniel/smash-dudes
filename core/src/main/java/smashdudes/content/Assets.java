@@ -7,7 +7,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-public class Assets {
+public class Assets
+{
     public AssetManager manager = new AssetManager();
 
     public static final AssetDescriptor<Texture> someTexture =

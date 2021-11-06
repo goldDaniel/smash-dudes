@@ -5,5 +5,5 @@ import smashdudes.ecs.Component;
 
 public class PositionComponent extends Component
 {
-    public Vector2 position = new Vector2();
+    public final Vector2 position = new Vector2();
 }

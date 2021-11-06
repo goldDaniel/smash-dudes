@@ -5,7 +5,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Colors;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
+import smashdudes.content.LoadContent;
 import smashdudes.core.input.GameInputHandler;
 import smashdudes.core.input.GameInputRetriever;
 import smashdudes.core.input.InputConfig;
@@ -37,9 +40,11 @@ public class GameplayScreen extends GameScreen
             player.addComponent(pc);
         }
 
-        buildTerrain(0, -5, 30, 0.75f);
-        buildTerrain(6, 2.5f, 5, 0.1f);
-        buildTerrain(-6, 2.5f, 5, 0.1f);
+        Array<LoadContent.TerrainDTO> terrainData = LoadContent.loadTerrainData("build.json");
+        for (LoadContent.TerrainDTO data : terrainData)
+        {
+            buildTerrain(data.position, data.width, data.height);
+        }
     }
 
     @Override
@@ -101,13 +106,12 @@ public class GameplayScreen extends GameScreen
         return player;
     }
 
-    public Entity buildTerrain(float x, float y, float w, float h)
+    public Entity buildTerrain(Vector2 position, float w, float h)
     {
         Entity terrain = ecsEngine.createEntity();
 
         PositionComponent tp = new PositionComponent();
-        tp.position.x = x;
-        tp.position.y = y;
+        tp.position.set(position);
         terrain.addComponent(tp);
 
         StaticTerrainComponent t = new StaticTerrainComponent();
