@@ -1,7 +1,9 @@
-package smashdudes.core;
+package smashdudes.core.input;
 
-import com.badlogic.gdx.Input;
 
+/**
+ * Holds the keyboard input configuration
+ */
 public class InputConfig
 {
     public final int left;

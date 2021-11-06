@@ -1,42 +1,64 @@
 package smashdudes.screens;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Colors;
 import com.badlogic.gdx.utils.ScreenUtils;
-import smashdudes.core.InputConfig;
+import smashdudes.core.input.GameInputHandler;
+import smashdudes.core.input.GameInputRetriever;
+import smashdudes.core.input.InputConfig;
 import smashdudes.core.PlayerHandle;
+import smashdudes.core.input.KeyboardInputListener;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
 
 public class GameplayScreen extends GameScreen
 {
+    private GameInputHandler inputHandler;
     private Engine ecsEngine;
 
-    public GameplayScreen(Game game)
+    public GameplayScreen(Game game, Iterable<PlayerHandle> players, GameInputHandler inputHandler)
     {
         super(game);
+        this.inputHandler = inputHandler;
         ecsEngine = new Engine();
 
-        buildPlayer(new InputConfig(Input.Keys.A,Input.Keys.D,Input.Keys.W,Input.Keys.S), Color.GOLD);
 
-        Entity ai = buildPlayer(new InputConfig(Input.Keys.J,Input.Keys.L,Input.Keys.I,Input.Keys.K), Color.RED);
-        ai.removeComponent(PlayerControllerComponent.class);
-        ai.addComponent(new AIControllerComponent());
+        for(PlayerHandle p : players)
+        {
+            Entity player = buildPlayer(p, Color.GOLD);
 
+            GameInputRetriever retriever = inputHandler.getGameInput(p);
+
+            PlayerControllerComponent pc = new PlayerControllerComponent(retriever);
+            player.addComponent(pc);
+        }
 
         buildTerrain(0, -5, 30, 0.75f);
         buildTerrain(6, 2.5f, 5, 0.1f);
         buildTerrain(-6, 2.5f, 5, 0.1f);
+    }
 
-        ecsEngine.update(0);
+    @Override
+    public void show()
+    {
+        Gdx.input.setInputProcessor(inputHandler.getInputProcessor());
+    }
+
+    @Override
+    public void hide()
+    {
+        Gdx.input.setInputProcessor(null);
     }
 
     @Override
     public void update(float dt)
     {
         ScreenUtils.clear(Color.BLACK);
+
         ecsEngine.update(dt);
     }
 
@@ -52,11 +74,11 @@ public class GameplayScreen extends GameScreen
         ecsEngine.resize(width, height);
     }
 
-    private Entity buildPlayer(InputConfig config, Color color)
+    private Entity buildPlayer(PlayerHandle handle, Color color)
     {
         Entity player = ecsEngine.createEntity();
 
-        player.addComponent(new PlayerComponent(new PlayerHandle()));
+        player.addComponent(new PlayerComponent(handle));
         player.addComponent(new PositionComponent());
         player.addComponent(new VelocityComponent());
         player.addComponent(new JumpComponent(30));
@@ -65,8 +87,6 @@ public class GameplayScreen extends GameScreen
         CharacterInputComponent i = new CharacterInputComponent();
         player.addComponent(i);
 
-        PlayerControllerComponent pc = new PlayerControllerComponent(config);
-        player.addComponent(pc);
 
         DebugDrawComponent d = new DebugDrawComponent();
         d.color = color;

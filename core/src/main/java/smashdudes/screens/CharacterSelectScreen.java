@@ -8,10 +8,15 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
+import smashdudes.core.PlayerHandle;
 import smashdudes.core.RenderResources;
+import smashdudes.core.input.GameInputAssigner;
 
 public class CharacterSelectScreen extends GameScreen
 {
+
+    public GameInputAssigner inputAssigner = new GameInputAssigner();
+
     public CharacterSelectScreen(Game game)
     {
         super(game);
@@ -20,7 +25,13 @@ public class CharacterSelectScreen extends GameScreen
     @Override
     public void show()
     {
+        inputAssigner.startListening();
+    }
 
+    @Override
+    public void hide()
+    {
+        inputAssigner.stopListening();
     }
 
     @Override
@@ -28,7 +39,7 @@ public class CharacterSelectScreen extends GameScreen
     {
         if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER))
         {
-            game.setScreen(new GameplayScreen(game));
+            game.setScreen(new GameplayScreen(game, inputAssigner.getPlayerHandles(), inputAssigner.getGameInputHandler()));
         }
     }
 
@@ -48,7 +59,20 @@ public class CharacterSelectScreen extends GameScreen
         Matrix4 proj = new Matrix4().setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         s.setProjectionMatrix(proj);
         s.begin();
-        font.draw(s, "Press enter to continue", Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+        font.getData().setScale(2);
+
+        font.draw(s, "Press -SPACE- on keyboard to join", Gdx.graphics.getWidth() / 2 - 220, Gdx.graphics.getHeight() - 60);
+        font.draw(s, "Press -A- on controller to join", Gdx.graphics.getWidth() / 2 - 160, Gdx.graphics.getHeight() - 120);
+
+        int x = 10;
+        for(PlayerHandle h : inputAssigner.getPlayerHandles())
+        {
+            font.draw(s, "PlayerID: " + h.ID, x, Gdx.graphics.getHeight() / 2);
+            x += 200;
+        }
+
+
+        font.draw(s, "Press enter to play", Gdx.graphics.getWidth() / 2 - 120, Gdx.graphics.getHeight() / 4);
         s.end();
     }
 }

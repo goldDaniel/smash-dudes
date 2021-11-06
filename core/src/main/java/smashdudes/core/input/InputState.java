@@ -1,15 +1,19 @@
-package smashdudes.core;
+package smashdudes.core.input;
 
-public class KeyState
+
+/**
+ * Holds the button states for our input
+ */
+public class InputState
 {
     public boolean left  = false;
     public boolean right = false;
     public boolean up    = false;
     public boolean down  = false;
 
-    public KeyState() {}
+    public InputState() {}
 
-    public KeyState(KeyState state)
+    public InputState(InputState state)
     {
         this.left   = state.left;
         this.right  = state.right;
