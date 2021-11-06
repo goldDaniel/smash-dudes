@@ -1,10 +1,10 @@
 package smashdudes.ecs.components;
 
-import smashdudes.core.KeyState;
+import smashdudes.core.input.InputState;
 import smashdudes.ecs.Component;
 
 public class CharacterInputComponent extends Component
 {
-    public KeyState previousState = new KeyState();
-    public KeyState currentState = new KeyState();
+    public InputState previousState = new InputState();
+    public InputState currentState = new InputState();
 }

@@ -24,6 +24,10 @@ configure(subprojects) {
 	}
 }
 
+ext {
+	gdxControllersVersion = '2.0.1' // see badges above for latest versions
+}
+
 subprojects {
 	version = '0.0.1'
 	ext.appName = 'smash-dudes'

@@ -49,8 +49,6 @@ public class RenderSystem extends GameSystem
     @Override
     public void preUpdate()
     {
-        ScreenUtils.clear(Color.BLACK);
-
         sb.setProjectionMatrix(camera.combined);
         sb.begin();
     }

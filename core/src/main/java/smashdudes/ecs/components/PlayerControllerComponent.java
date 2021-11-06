@@ -1,14 +1,15 @@
 package smashdudes.ecs.components;
 
-import smashdudes.core.InputConfig;
+import smashdudes.core.input.GameInputRetriever;
+import smashdudes.core.input.InputConfig;
 import smashdudes.ecs.Component;
 
 public class PlayerControllerComponent extends Component
 {
-    public InputConfig config;
+    public final GameInputRetriever retriever;
 
-    public PlayerControllerComponent(InputConfig config)
+    public PlayerControllerComponent(GameInputRetriever config)
     {
-        this.config = config;
+        this.retriever = config;
     }
 }
