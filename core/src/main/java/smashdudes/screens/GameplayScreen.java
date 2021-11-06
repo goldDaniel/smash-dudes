@@ -38,7 +38,7 @@ public class GameplayScreen extends GameScreen
             player.addComponent(pc);
         }
 
-        Array<DTO.Terrain> terrainData = LoadContent.loadTerrainData("build.json");
+        Array<DTO.Terrain> terrainData = LoadContent.loadTerrainData("Terrain.json");
         for (DTO.Terrain data : terrainData)
         {
             buildTerrain(data.position, data.width, data.height, data.textureFilePath);
