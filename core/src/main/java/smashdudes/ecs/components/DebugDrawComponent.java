@@ -5,7 +5,7 @@ import smashdudes.ecs.Component;
 
 public class DebugDrawComponent extends Component
 {
-    public Color color = Color.MAGENTA;
+    public Color color = Color.GOLD;
     public float width;
     public float height;
 }

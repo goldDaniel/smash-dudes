@@ -2,15 +2,16 @@ package smashdudes.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Colors;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
+import smashdudes.content.DTO;
+import smashdudes.content.LoadContent;
+import smashdudes.core.RenderResources;
 import smashdudes.core.input.GameInputHandler;
 import smashdudes.core.input.GameInputRetriever;
-import smashdudes.core.input.InputConfig;
 import smashdudes.core.PlayerHandle;
-import smashdudes.core.input.KeyboardInputListener;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
@@ -26,10 +27,10 @@ public class GameplayScreen extends GameScreen
         this.inputHandler = inputHandler;
         ecsEngine = new Engine();
 
-
+        DTO.Character characterData = LoadContent.loadCharacterData("Character.json");
         for(PlayerHandle p : players)
         {
-            Entity player = buildPlayer(p, Color.GOLD);
+            Entity player = buildPlayer(p, Color.GOLD, characterData.jumpStrength, characterData.gravity);
 
             GameInputRetriever retriever = inputHandler.getGameInput(p);
 
@@ -37,9 +38,11 @@ public class GameplayScreen extends GameScreen
             player.addComponent(pc);
         }
 
-        buildTerrain(0, -5, 30, 0.75f);
-        buildTerrain(6, 2.5f, 5, 0.1f);
-        buildTerrain(-6, 2.5f, 5, 0.1f);
+        Array<DTO.Terrain> terrainData = LoadContent.loadTerrainData("Terrain.json");
+        for (DTO.Terrain data : terrainData)
+        {
+            buildTerrain(data.position, data.width, data.height, data.textureFilePath);
+        }
     }
 
     @Override
@@ -57,7 +60,7 @@ public class GameplayScreen extends GameScreen
     @Override
     public void update(float dt)
     {
-        ScreenUtils.clear(Color.BLACK);
+        ScreenUtils.clear(Color.GRAY);
 
         ecsEngine.update(dt);
     }
@@ -74,25 +77,24 @@ public class GameplayScreen extends GameScreen
         ecsEngine.resize(width, height);
     }
 
-    private Entity buildPlayer(PlayerHandle handle, Color color)
+    private Entity buildPlayer(PlayerHandle handle, Color color, float jumpStrength, float gravity)
     {
         Entity player = ecsEngine.createEntity();
 
         player.addComponent(new PlayerComponent(handle));
         player.addComponent(new PositionComponent());
         player.addComponent(new VelocityComponent());
-        player.addComponent(new JumpComponent(30));
-        player.addComponent(new GravityComponent(60));
+        player.addComponent(new JumpComponent(jumpStrength));
+        player.addComponent(new GravityComponent(gravity));
 
         CharacterInputComponent i = new CharacterInputComponent();
         player.addComponent(i);
 
 
-        DebugDrawComponent d = new DebugDrawComponent();
-        d.color = color;
-        d.width = 2;
-        d.height = 2;
-        player.addComponent(d);
+        DebugDrawComponent dd = new DebugDrawComponent();
+        dd.width = 2;
+        dd.height = 2;
+        player.addComponent(dd);
 
         TerrainColliderComponent collider = new TerrainColliderComponent();
         collider.colliderWidth = 2;
@@ -102,13 +104,12 @@ public class GameplayScreen extends GameScreen
         return player;
     }
 
-    public Entity buildTerrain(float x, float y, float w, float h)
+    public Entity buildTerrain(Vector2 position, float w, float h, String textureFilePath)
     {
         Entity terrain = ecsEngine.createEntity();
 
         PositionComponent tp = new PositionComponent();
-        tp.position.x = x;
-        tp.position.y = y;
+        tp.position.set(position);
         terrain.addComponent(tp);
 
         StaticTerrainComponent t = new StaticTerrainComponent();
@@ -116,12 +117,17 @@ public class GameplayScreen extends GameScreen
         t.height = h;
         terrain.addComponent(t);
 
-        DebugDrawComponent td = new DebugDrawComponent();
-        td.width = w;
-        td.height = h;
-        td.color = Color.GREEN;
+        DebugDrawComponent dd = new DebugDrawComponent();
+        dd.width = w;
+        dd.height = h;
+        dd.color = Color.GREEN;
+        terrain.addComponent(dd);
 
-        terrain.addComponent(td);
+        DrawComponent d = new DrawComponent();
+        d.texture = RenderResources.getTexture(textureFilePath);
+        d.width = w;
+        d.height = h;
+        terrain.addComponent(d);
 
         return terrain;
     }

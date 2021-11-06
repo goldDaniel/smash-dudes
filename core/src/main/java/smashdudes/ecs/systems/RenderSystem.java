@@ -1,13 +1,11 @@
 package smashdudes.ecs.systems;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
-import smashdudes.ecs.components.SpriteDrawComponent;
+import smashdudes.ecs.components.DrawComponent;
 import smashdudes.ecs.components.PositionComponent;
 
 public class RenderSystem extends GameSystem
@@ -27,7 +25,7 @@ public class RenderSystem extends GameSystem
         this.sb = sb;
 
         registerComponentType(PositionComponent.class);
-        registerComponentType(SpriteDrawComponent.class);
+        registerComponentType(DrawComponent.class);
     }
 
     public void setCamera(OrthographicCamera camera)
@@ -57,9 +55,9 @@ public class RenderSystem extends GameSystem
     public void updateEntity(Entity entity, float dt)
     {
         PositionComponent p = entity.getComponent(PositionComponent.class);
-        SpriteDrawComponent d = entity.getComponent(SpriteDrawComponent.class);
+        DrawComponent d = entity.getComponent(DrawComponent.class);
 
-        sb.draw(d.sprite, p.position.x - d.width / 2, p.position.y - d.height / 2, d.width, d.height);
+        sb.draw(d.texture, p.position.x - d.width / 2, p.position.y - d.height / 2, d.width, d.height);
     }
 
     @Override

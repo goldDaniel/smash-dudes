@@ -1,0 +1,33 @@
+{
+  "stage_name": "test stage",
+  "terrain":
+  [
+    {
+      "texture": "ArrowTest.png",
+      "position": [0,-5],
+      "dim":
+      {
+        "width": 30,
+        "height": 0.75
+      }
+    },
+    {
+      "texture": "ArrowTest.png",
+      "position": [6,2.5],
+      "dim":
+      {
+        "width": 5,
+        "height": 0.1
+      }
+    },
+    {
+      "texture": "ArrowTest.png",
+      "position": [-6,2.5],
+      "dim":
+      {
+        "width": 5,
+        "height": 0.1
+      }
+    }
+  ]
+}
