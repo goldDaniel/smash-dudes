@@ -21,7 +21,19 @@ public class CharacterSelectScreen extends GameScreen
     public CharacterSelectScreen(Game game)
     {
         super(game);
+
+    }
+
+    @Override
+    public void show()
+    {
         inputAssigner.startListening();
+    }
+
+    @Override
+    public void hide()
+    {
+        inputAssigner.stopListening();
     }
 
     @Override
@@ -30,7 +42,6 @@ public class CharacterSelectScreen extends GameScreen
         if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER))
         {
             game.setScreen(new GameplayScreen(game, inputAssigner.getPlayerHandles(), inputAssigner.getGameInputHandler()));
-            inputAssigner.stopListening();
         }
     }
 
