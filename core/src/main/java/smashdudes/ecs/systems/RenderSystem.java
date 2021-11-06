@@ -12,9 +12,6 @@ import smashdudes.ecs.components.PositionComponent;
 
 public class RenderSystem extends GameSystem
 {
-    private final int WORLD_WIDTH = 20;
-    private final int WORLD_HEIGHT = 12;
-
     private OrthographicCamera camera;
     private Viewport viewport;
 

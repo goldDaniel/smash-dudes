@@ -5,6 +5,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Colors;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import smashdudes.core.input.GameInputHandler;
 import smashdudes.core.input.GameInputRetriever;
@@ -87,6 +89,19 @@ public class GameplayScreen extends GameScreen
         CharacterInputComponent i = new CharacterInputComponent();
         player.addComponent(i);
 
+        Array<AnimationComponent.AnimationFrame> frames = new Array<>();
+        frames.add(new AnimationComponent.AnimationFrame(new Texture("idle/knight_idle_1.png")));
+        frames.add(new AnimationComponent.AnimationFrame(new Texture("idle/knight_idle_2.png")));
+        frames.add(new AnimationComponent.AnimationFrame(new Texture("idle/knight_idle_3.png")));
+        frames.add(new AnimationComponent.AnimationFrame(new Texture("idle/knight_idle_4.png")));
+
+        AnimationComponent anim = new AnimationComponent(frames);
+        player.addComponent(anim);
+
+        SpriteDrawComponent sd = new SpriteDrawComponent();
+        sd.width = 2;
+        sd.height = 2;
+        player.addComponent(sd);
 
         DebugDrawComponent d = new DebugDrawComponent();
         d.color = color;

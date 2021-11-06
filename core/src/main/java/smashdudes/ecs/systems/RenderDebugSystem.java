@@ -50,7 +50,7 @@ public class RenderDebugSystem extends GameSystem
     public void preUpdate()
     {
         sh.setProjectionMatrix(camera.combined);
-        sh.begin(ShapeRenderer.ShapeType.Filled);
+        sh.begin(ShapeRenderer.ShapeType.Line);
     }
 
     @Override
