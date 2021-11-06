@@ -17,11 +17,9 @@ public class CharacterSelectScreen extends GameScreen
 
     public GameInputAssigner inputAssigner = new GameInputAssigner();
 
-
     public CharacterSelectScreen(Game game)
     {
         super(game);
-
     }
 
     @Override

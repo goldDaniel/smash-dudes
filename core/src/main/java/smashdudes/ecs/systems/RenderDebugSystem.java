@@ -49,8 +49,6 @@ public class RenderDebugSystem extends GameSystem
     @Override
     public void preUpdate()
     {
-        ScreenUtils.clear(Color.BLACK);
-
         sh.setProjectionMatrix(camera.combined);
         sh.begin(ShapeRenderer.ShapeType.Filled);
     }

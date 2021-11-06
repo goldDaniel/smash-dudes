@@ -31,7 +31,9 @@ public class GameplayScreen extends GameScreen
         {
             Entity player = buildPlayer(p, Color.GOLD);
 
-            PlayerControllerComponent pc = new PlayerControllerComponent(inputHandler.getGameInput(p));
+            GameInputRetriever retriever = inputHandler.getGameInput(p);
+
+            PlayerControllerComponent pc = new PlayerControllerComponent(retriever);
             player.addComponent(pc);
         }
 
@@ -41,11 +43,22 @@ public class GameplayScreen extends GameScreen
     }
 
     @Override
-    public void update(float dt)
+    public void show()
     {
         Gdx.input.setInputProcessor(inputHandler.getInputProcessor());
+    }
 
+    @Override
+    public void hide()
+    {
+        Gdx.input.setInputProcessor(null);
+    }
+
+    @Override
+    public void update(float dt)
+    {
         ScreenUtils.clear(Color.BLACK);
+
         ecsEngine.update(dt);
     }
 
