@@ -2,16 +2,20 @@ package smashdudes.ecs.systems;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ArrayMap;
 import smashdudes.core.Collisions;
 import smashdudes.ecs.Component;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
+import smashdudes.ecs.events.LandingEvent;
 import smashdudes.ecs.events.TerrainCollisionEvent;
 
 
 public class TerrainCollisionSystem extends GameSystem
 {
+    private ArrayMap<Entity, Boolean> onGroundLastFrame = new ArrayMap<>();
+
     private class Terrain
     {
         public PositionComponent pos;
@@ -45,6 +49,11 @@ public class TerrainCollisionSystem extends GameSystem
     @Override
     public void updateEntity(Entity entity, float dt)
     {
+        if (!onGroundLastFrame.containsKey(entity))
+        {
+            onGroundLastFrame.put(entity, false);
+        }
+
         PositionComponent p = entity.getComponent(PositionComponent.class);
         TerrainColliderComponent c = entity.getComponent(TerrainColliderComponent.class);
 
@@ -53,6 +62,8 @@ public class TerrainCollisionSystem extends GameSystem
         r0.y = p.position.y - c.colliderHeight / 2;
         r0.width = c.colliderWidth;
         r0.height = c.colliderHeight;
+
+        boolean touchedGround = false;
 
         for(Terrain t : terrain)
         {
@@ -70,6 +81,13 @@ public class TerrainCollisionSystem extends GameSystem
                 if(side == Collisions.CollisionSide.Top)
                 {
                     p.position.y = t.pos.position.y + c.colliderHeight / 2 + t.terrain.height / 2;
+
+                    if (!onGroundLastFrame.get(entity))
+                    {
+                        engine.addEvent(new LandingEvent(entity));
+                    }
+
+                    touchedGround = true;
                 }
                 else if(side == Collisions.CollisionSide.Bottom)
                 {
@@ -85,6 +103,8 @@ public class TerrainCollisionSystem extends GameSystem
                 }
             }
         }
+
+        onGroundLastFrame.put(entity, touchedGround);
     }
 
     @Override
