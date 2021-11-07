@@ -7,6 +7,7 @@ import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.CharacterInputComponent;
 import smashdudes.ecs.components.JumpComponent;
 import smashdudes.ecs.components.VelocityComponent;
+import smashdudes.ecs.events.JumpEvent;
 import smashdudes.ecs.events.TerrainCollisionEvent;
 import smashdudes.ecs.events.Event;
 
@@ -29,10 +30,11 @@ public class CharacterJumpInputSystem extends GameSystem
         VelocityComponent v = entity.getComponent(VelocityComponent.class);
         JumpComponent j = entity.getComponent(JumpComponent.class);
 
-        if(i.currentState.up && MathUtils.isEqual(v.velocity.y, 0))
+        if(i.currentState.up && v.velocity.y == 0)
         {
             v.velocity.y = j.jumpStrength;
             j.disable();
+            engine.addEvent(new JumpEvent(entity));
         }
     }
 

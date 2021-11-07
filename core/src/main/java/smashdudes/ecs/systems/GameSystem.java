@@ -67,7 +67,7 @@ public abstract class GameSystem
 
     protected void preUpdate() {}
 
-    protected abstract void updateEntity(Entity entity, float dt);
+    protected void updateEntity(Entity entity, float dt) { }
 
     protected void postUpdate() {}
 }
