@@ -22,6 +22,7 @@ public class Entry extends Game
     public void create()
     {
         RenderResources.init();
+        AudioResources.init();
 
         setScreen(new CharacterSelectScreen(this));
     }
