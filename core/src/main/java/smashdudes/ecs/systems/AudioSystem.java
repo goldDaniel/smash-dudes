@@ -1,5 +1,8 @@
 package smashdudes.ecs.systems;
 
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.utils.Queue;
+import smashdudes.audio.AudioEventReceiver;
 import smashdudes.core.AudioResources;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.events.Event;
@@ -9,6 +12,20 @@ import smashdudes.ecs.events.TerrainCollisionEvent;
 
 public class AudioSystem extends GameSystem
 {
+    private class Audio
+    {
+        private final Sound sound;
+        private final float volume;
+
+        private Audio(Sound sound, float volume)
+        {
+            this.sound = sound;
+            this.volume = volume;
+        }
+    }
+
+    private Queue<Audio> sounds = new Queue<>();
+
     public AudioSystem(Engine engine)
     {
         super(engine);
@@ -22,11 +39,23 @@ public class AudioSystem extends GameSystem
     {
         if (event instanceof JumpEvent)
         {
-            AudioResources.getSoundEffect("audio/Jump.wav").play(0.1f);
+            Sound s = AudioResources.getSoundEffect("audio/Jump.wav");
+            sounds.addLast(new Audio(s, 0.1f));
         }
         else if (event instanceof LandingEvent)
         {
-            AudioResources.getSoundEffect("audio/Land.wav").play(0.1f); // will machine gun audio
+            Sound s = AudioResources.getSoundEffect("audio/Land.wav");
+            sounds.addLast(new Audio(s, 0.1f));
+        }
+    }
+
+    @Override
+    protected void postUpdate()
+    {
+        while(sounds.notEmpty())
+        {
+            Audio a = sounds.removeFirst();
+            a.sound.play(a.volume);
         }
     }
 }
