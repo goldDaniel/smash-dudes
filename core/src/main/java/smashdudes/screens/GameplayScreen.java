@@ -101,7 +101,7 @@ public class GameplayScreen extends GameScreen
         AnimationComponent anim = new AnimationComponent(frames);
         player.addComponent(anim);
 
-        SpriteDrawComponent sd = new SpriteDrawComponent();
+        DrawComponent sd = new DrawComponent();
         sd.width = 2;
         sd.height = 2;
         player.addComponent(sd);

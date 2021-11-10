@@ -3,7 +3,7 @@ package smashdudes.ecs.systems;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.AnimationComponent;
-import smashdudes.ecs.components.SpriteDrawComponent;
+import smashdudes.ecs.components.DrawComponent;
 
 public class AnimationSystem extends GameSystem
 {
@@ -11,17 +11,17 @@ public class AnimationSystem extends GameSystem
     {
         super(engine);
         registerComponentType(AnimationComponent.class);
-        registerComponentType(SpriteDrawComponent.class);
+        registerComponentType(DrawComponent.class);
     }
 
     @Override
     protected void updateEntity(Entity entity, float dt)
     {
         AnimationComponent anim = entity.getComponent(AnimationComponent.class);
-        SpriteDrawComponent draw = entity.getComponent(SpriteDrawComponent.class);
+        DrawComponent draw = entity.getComponent(DrawComponent.class);
 
         anim.currentTime += dt;
 
-        draw.sprite = anim.currentAnimation.getKeyFrame(anim.currentTime).texture;
+        draw.texture = anim.currentAnimation.getKeyFrame(anim.currentTime).texture;
     }
 }
