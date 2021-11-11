@@ -3,9 +3,8 @@ package smashdudes.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Colors;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import smashdudes.content.DTO;
@@ -95,9 +94,13 @@ public class GameplayScreen extends GameScreen
         DTO.Animation animation = characterData.animations.get(1);
 
         Array<AnimationComponent.AnimationFrame> frames = new Array<>();
+        Array<Array<Rectangle>> hitboxes = new Array<>();
+        Array<Array<Rectangle>> hurtboxes = new Array<>();
         for (DTO.AnimationFrame frame : animation.frames)
         {
             frames.add(new AnimationComponent.AnimationFrame(new Texture(frame.texturePath)));
+            hitboxes.add(frame.hitboxes);
+            hurtboxes.add(frame.hurtboxes);
         }
 
         AnimationComponent anim = new AnimationComponent(frames);
@@ -113,9 +116,12 @@ public class GameplayScreen extends GameScreen
         dd.height = 2;
         player.addComponent(dd);
 
+        AnimationDebugComponent ad = new AnimationDebugComponent(hitboxes, hurtboxes);
+        player.addComponent(ad);
+
         TerrainColliderComponent collider = new TerrainColliderComponent();
-        collider.colliderWidth = 2;
-        collider.colliderHeight = 2;
+        collider.colliderWidth = characterData.terrainCollider.x;
+        collider.colliderHeight = characterData.terrainCollider.y;
         player.addComponent(collider);
 
         return player;

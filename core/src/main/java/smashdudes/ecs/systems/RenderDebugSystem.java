@@ -3,6 +3,8 @@ package smashdudes.ecs.systems;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import smashdudes.ecs.Engine;
@@ -60,7 +62,16 @@ public class RenderDebugSystem extends GameSystem
         DebugDrawComponent d = entity.getComponent(DebugDrawComponent.class);
 
         sh.setColor(d.color);
-        sh.rect(p.position.x - d.width / 2, p.position.y - d.height / 2, d.width, d.height);
+        float entityX = p.position.x - d.width / 2;
+        float entityY = p.position.y - d.height / 2;
+        sh.rect(entityX, entityY, d.width, d.height);
+
+        for (Rectangle hitbox : d.hitboxes)
+        {
+            sh.rect(hitbox.x + p.position.x - hitbox.width / 2, hitbox.y + p.position.y - hitbox.height / 2, hitbox.width, hitbox.height);
+        }
+
+        d.hitboxes = new Array<Rectangle>();
     }
 
     @Override
