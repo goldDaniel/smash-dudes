@@ -62,16 +62,16 @@ public class RenderDebugSystem extends GameSystem
         DebugDrawComponent d = entity.getComponent(DebugDrawComponent.class);
 
         sh.setColor(d.color);
-        float entityX = p.position.x - d.width / 2;
-        float entityY = p.position.y - d.height / 2;
-        sh.rect(entityX, entityY, d.width, d.height);
+        sh.rect(p.position.x - d.width / 2, p.position.y - d.height / 2, d.width, d.height);
 
         for (Rectangle hurtbox : d.hurtboxes)
         {
-            sh.rect(hurtbox.x + p.position.x - hurtbox.width / 2, hurtbox.y + p.position.y - hurtbox.height / 2, hurtbox.width, hurtbox.height);
+            float width = hurtbox.width * d.width;
+            float height = hurtbox.height * d.height;
+            sh.rect(hurtbox.x + p.position.x - width / 2, hurtbox.y + p.position.y - height / 2, width, height);
         }
 
-        d.hitboxes = new Array<Rectangle>();
+        d.hitboxes = new Array<>();
     }
 
     @Override
