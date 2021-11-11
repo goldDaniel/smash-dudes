@@ -21,8 +21,8 @@ public class AnimationDebugComponent extends Component
         this.hitboxes = hitboxes;
         this.hurtboxes = hurtboxes;
 
-        currentHitboxes = new Animation<Array<Rectangle>>(1f / 8f, hitboxes, Animation.PlayMode.LOOP);
+        currentHitboxes = new Animation<>(1f / 8f, hitboxes, Animation.PlayMode.LOOP);
 
-        currentHurtboxes = new Animation<Array<Rectangle>>(1f / 8f, hurtboxes, Animation.PlayMode.LOOP);
+        currentHurtboxes = new Animation<>(1f / 8f, hurtboxes, Animation.PlayMode.LOOP);
     }
 }
