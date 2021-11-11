@@ -13,22 +13,16 @@ public class AnimationDebugComponent extends Component
     public Array<Array<Rectangle>> hitboxes;
     public Array<Array<Rectangle>> hurtboxes;
 
-    public Array<Animation<Rectangle>> currentHitboxes = new Array<>();
-    public Array<Animation<Rectangle>> currentHurtboxes = new Array<>();
+    public Animation<Array<Rectangle>> currentHitboxes;
+    public Animation<Array<Rectangle>> currentHurtboxes;
 
     public AnimationDebugComponent(Array<Array<Rectangle>> hitboxes,  Array<Array<Rectangle>> hurtboxes)
     {
         this.hitboxes = hitboxes;
         this.hurtboxes = hurtboxes;
 
-        for (Array<Rectangle> hitbox : hitboxes)
-        {
-            currentHitboxes.add(new Animation<>(1f / 8f, hitbox, Animation.PlayMode.LOOP));
-        }
+        currentHitboxes = new Animation<Array<Rectangle>>(1f / 8f, hitboxes, Animation.PlayMode.LOOP);
 
-        for (Array<Rectangle> hurtbox : hurtboxes)
-        {
-            currentHurtboxes.add(new Animation<>(1f / 8f, hurtbox, Animation.PlayMode.LOOP));
-        }
+        currentHurtboxes = new Animation<Array<Rectangle>>(1f / 8f, hurtboxes, Animation.PlayMode.LOOP);
     }
 }

@@ -66,9 +66,9 @@ public class RenderDebugSystem extends GameSystem
         float entityY = p.position.y - d.height / 2;
         sh.rect(entityX, entityY, d.width, d.height);
 
-        for (Rectangle hitbox : d.hitboxes)
+        for (Rectangle hurtbox : d.hurtboxes)
         {
-            sh.rect(hitbox.x + p.position.x - hitbox.width / 2, hitbox.y + p.position.y - hitbox.height / 2, hitbox.width, hitbox.height);
+            sh.rect(hurtbox.x + p.position.x - hurtbox.width / 2, hurtbox.y + p.position.y - hurtbox.height / 2, hurtbox.width, hurtbox.height);
         }
 
         d.hitboxes = new Array<Rectangle>();

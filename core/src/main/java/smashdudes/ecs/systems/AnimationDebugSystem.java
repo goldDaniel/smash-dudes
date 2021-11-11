@@ -23,14 +23,6 @@ public class AnimationDebugSystem extends GameSystem
 
         danim.currentTime += dt;
 
-        for (int i = 0; i < danim.currentHitboxes.size; i++)
-        {
-            ddraw.hitboxes.add(danim.currentHitboxes.get(i).getKeyFrame(danim.currentTime));
-        }
-
-        for (int i = 0; i < danim.currentHurtboxes.size; i++)
-        {
-            //ddraw.hurtboxes.add(danim.currentHurtboxes.get(i).getKeyFrame(danim.currentTime));
-        }
+        ddraw.hurtboxes = danim.currentHurtboxes.getKeyFrame(danim.currentTime);
     }
 }
