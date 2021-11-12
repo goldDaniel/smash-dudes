@@ -70,8 +70,6 @@ public class RenderDebugSystem extends GameSystem
             float height = hurtbox.height * d.height;
             sh.rect(hurtbox.x + p.position.x - width / 2, hurtbox.y + p.position.y - height / 2, width, height);
         }
-
-        d.hitboxes = new Array<>();
     }
 
     @Override
