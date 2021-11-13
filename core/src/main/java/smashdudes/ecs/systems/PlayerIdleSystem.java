@@ -23,7 +23,7 @@ public class PlayerIdleSystem extends GameSystem
         CharacterInputComponent i = entity.getComponent(CharacterInputComponent.class);
         VelocityComponent v = entity.getComponent(VelocityComponent.class);
 
-        v.velocity.x = 0;
+        v.velocity.x *= 40 * dt;
         if(i.currentState.left || i.currentState.right)
         {
             entity.removeComponent(PlayerIdleComponent.class);

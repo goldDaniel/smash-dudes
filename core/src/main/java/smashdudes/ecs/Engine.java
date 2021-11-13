@@ -32,6 +32,7 @@ public class Engine
         systems.add(new GravitySystem(this));
         systems.add(new MovementSystem(this));
         systems.add(new TerrainCollisionSystem(this));
+        systems.add(new HitDetectionSystem(this));
         systems.add(new AudioSystem(this));
 
         systems.add(new AnimationSystem(this));
