@@ -98,10 +98,8 @@ public class GameplayScreen extends GameScreen
         Array<AnimationComponent.AnimationFrame> frames = new Array<>();
         for (DTO.AnimationFrame dtoFrame : animation.frames)
         {
-            AnimationComponent.AnimationFrame frame = new AnimationComponent.AnimationFrame(
-                                                                new Texture(dtoFrame.texturePath),
-                                                                dtoFrame.hitboxes,
-                                                                dtoFrame.hurtboxes);
+            AnimationComponent.AnimationFrame frame =
+                    new AnimationComponent.AnimationFrame(new Texture(dtoFrame.texturePath), dtoFrame.hitboxes, dtoFrame.hurtboxes);
             frames.add(frame);
         }
 
