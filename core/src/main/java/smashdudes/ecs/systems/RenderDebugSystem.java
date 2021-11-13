@@ -14,8 +14,6 @@ import smashdudes.ecs.components.PositionComponent;
 
 public class RenderDebugSystem extends GameSystem
 {
-    private final int WORLD_WIDTH = 20;
-    private final int WORLD_HEIGHT = 12;
 
     private OrthographicCamera camera;
     private Viewport viewport;
@@ -64,16 +62,33 @@ public class RenderDebugSystem extends GameSystem
         sh.setColor(d.color);
         sh.rect(p.position.x - d.width / 2, p.position.y - d.height / 2, d.width, d.height);
 
-        sh.setColor(Color.RED);
-        for (Rectangle hurtbox : d.hurtboxes)
-        {
-            sh.rect(hurtbox.x + p.position.x - hurtbox.width / 2, hurtbox.y + p.position.y - hurtbox.height / 2, hurtbox.width, hurtbox.height);
-        }
 
-        sh.setColor(Color.BLUE);
-        for (Rectangle hitbox : d.hitboxes)
+
+        if(d.facingLeft)
         {
-            sh.rect(hitbox.x + p.position.x - hitbox.width / 2, hitbox.y + p.position.y - hitbox.height / 2, hitbox.width, hitbox.height);
+            sh.setColor(Color.RED);
+            for (Rectangle hurtbox : d.hurtboxes)
+            {
+                sh.rect(hurtbox.x + p.position.x + hurtbox.width / 2, hurtbox.y + p.position.y - hurtbox.height / 2, -hurtbox.width, hurtbox.height);
+            }
+            sh.setColor(Color.BLUE);
+            for (Rectangle hitbox : d.hitboxes)
+            {
+                sh.rect(hitbox.x + p.position.x + hitbox.width / 2, hitbox.y + p.position.y - hitbox.height / 2, -hitbox.width, hitbox.height);
+            }
+        }
+        else
+        {
+            sh.setColor(Color.RED);
+            for (Rectangle hurtbox : d.hurtboxes)
+            {
+                sh.rect(hurtbox.x + p.position.x - hurtbox.width / 2, hurtbox.y + p.position.y - hurtbox.height / 2, hurtbox.width, hurtbox.height);
+            }
+            sh.setColor(Color.BLUE);
+            for (Rectangle hitbox : d.hitboxes)
+            {
+                sh.rect(hitbox.x + p.position.x - hitbox.width / 2, hitbox.y + p.position.y - hitbox.height / 2, hitbox.width, hitbox.height);
+            }
         }
 
         d.hitboxes = new Array<>();

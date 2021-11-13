@@ -28,8 +28,8 @@ public class AnimationComponent extends Component
     public float currentTime;
     public final Animation<AnimationFrame> currentAnimation;
 
-    public AnimationComponent(Array<AnimationFrame> frames)
+    public AnimationComponent(Array<AnimationFrame> frames, float frameDuration)
     {
-        currentAnimation = new Animation<>( 1f/8f, frames, Animation.PlayMode.LOOP);
+        currentAnimation = new Animation<>( frameDuration, frames, Animation.PlayMode.LOOP);
     }
 }

@@ -6,22 +6,116 @@
   "animations":
   [
     {
-      "uses_sprite_sheet": true,
-      "animation_name": "idle",
-      "texture_path": "path/to/texture.png",
+      "uses_sprite_sheet": false,
+      "animation_name": "run",
       "frames":
       [
         {
-          "texture_region": [1.2, 3.6, -4, 0],
+          "file_path": "run/knight_run_1.png",
           "hitboxes":
           [
-            [0, 0.35, 1, 0.75],
-            [0, 0.5, 0.5, 0.5]
           ],
           "hurtboxes":
           [
-            [0, 0.35, 1, 0.75],
-            [0, 0.5, 0.5, 0.5]
+          ]
+        },
+        {
+          "file_path": "run/knight_run_2.png",
+          "hitboxes":
+          [
+          ],
+          "hurtboxes":
+          [
+          ]
+        },
+        {
+          "file_path": "run/knight_run_3.png",
+          "hitboxes":
+          [
+          ],
+          "hurtboxes":
+          [
+          ]
+        },
+        {
+          "file_path": "run/knight_run_4.png",
+          "hitboxes":
+          [
+          ],
+          "hurtboxes":
+          [
+          ]
+        },
+        {
+          "file_path": "run/knight_run_5.png",
+          "hitboxes":
+          [
+          ],
+          "hurtboxes":
+          [
+          ]
+        },
+        {
+          "file_path": "run/knight_run_6.png",
+          "hitboxes":
+          [
+          ],
+          "hurtboxes":
+          [
+          ]
+        },
+        {
+          "file_path": "run/knight_run_7.png",
+          "hitboxes":
+          [
+          ],
+          "hurtboxes":
+          [
+          ]
+        },
+        {
+          "file_path": "run/knight_run_8.png",
+          "hitboxes":
+          [
+          ],
+          "hurtboxes":
+          [
+          ]
+        },
+        {
+          "file_path": "run/knight_run_9.png",
+          "hitboxes":
+          [
+          ],
+          "hurtboxes":
+          [
+          ]
+        },
+        {
+          "file_path": "run/knight_run_10.png",
+          "hitboxes":
+          [
+          ],
+          "hurtboxes":
+          [
+          ]
+        },
+        {
+          "file_path": "run/knight_run_11.png",
+          "hitboxes":
+          [
+          ],
+          "hurtboxes":
+          [
+          ]
+        },
+        {
+          "file_path": "run/knight_run_12.png",
+          "hitboxes":
+          [
+          ],
+          "hurtboxes":
+          [
           ]
         }
       ]

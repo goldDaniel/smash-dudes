@@ -1,11 +1,8 @@
 package smashdudes.ecs;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Queue;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import smashdudes.core.RenderResources;
 import smashdudes.ecs.events.Event;
@@ -26,8 +23,10 @@ public class Engine
         rs = new RenderSystem(this, RenderResources.getSpriteBatch());
         drs = new RenderDebugSystem(this, RenderResources.getShapeRenderer());
 
-        systems.add(new CharacterInputSystem(this));
+        systems.add(new PlayerIdleSystem(this));
+        systems.add(new PlayerRunningSystem(this));
         systems.add(new CharacterJumpInputSystem(this));
+        systems.add(new RenderDirectionSystem(this));
         systems.add(new PlayerControllerSystem(this));
         systems.add(new AIControllerSystem(this));
         systems.add(new GravitySystem(this));

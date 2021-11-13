@@ -15,7 +15,6 @@ public class RenderSystem extends GameSystem
 
     private final SpriteBatch sb;
 
-
     public RenderSystem(Engine engine, SpriteBatch sb)
     {
         super(engine);
@@ -54,7 +53,15 @@ public class RenderSystem extends GameSystem
         PositionComponent p = entity.getComponent(PositionComponent.class);
         DrawComponent d = entity.getComponent(DrawComponent.class);
 
-        sb.draw(d.texture, p.position.x - d.width / 2, p.position.y - d.height / 2, d.width, d.height);
+        if(d.facingLeft)
+        {
+            sb.draw(d.texture, p.position.x + d.width / 2, p.position.y - d.height / 2, -d.width, d.height);
+        }
+        else
+        {
+            sb.draw(d.texture, p.position.x - d.width / 2, p.position.y - d.height / 2, d.width, d.height);
+        }
+
     }
 
     @Override
