@@ -2,6 +2,7 @@ package smashdudes.ecs.systems;
 
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
+import smashdudes.ecs.components.AnimationComponent;
 import smashdudes.ecs.components.AnimationDebugComponent;
 import smashdudes.ecs.components.DebugDrawComponent;
 
@@ -11,6 +12,7 @@ public class AnimationDebugSystem extends GameSystem
     {
         super(engine);
 
+        registerComponentType(AnimationComponent.class);
         registerComponentType(AnimationDebugComponent.class);
         registerComponentType(DebugDrawComponent.class);
     }
@@ -18,11 +20,11 @@ public class AnimationDebugSystem extends GameSystem
     @Override
     protected void updateEntity(Entity entity, float dt)
     {
-        AnimationDebugComponent danim = entity.getComponent(AnimationDebugComponent.class);
+        AnimationComponent anim = entity.getComponent(AnimationComponent.class);
         DebugDrawComponent ddraw = entity.getComponent(DebugDrawComponent.class);
 
-        danim.currentTime += dt;
-
-        ddraw.hurtboxes = danim.currentHurtboxes.getKeyFrame(danim.currentTime);
+        AnimationComponent.AnimationFrame frame = anim.currentAnimation.getKeyFrame(anim.currentTime);
+        ddraw.hurtboxes = frame.hurtboxes;
+        ddraw.hitboxes = frame.hitboxes;
     }
 }

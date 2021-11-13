@@ -93,15 +93,20 @@ public class GameplayScreen extends GameScreen
 
         DTO.Animation animation = characterData.animations.get(1);
 
+
+
         Array<AnimationComponent.AnimationFrame> frames = new Array<>();
-        Array<Array<Rectangle>> hitboxes = new Array<>();
-        Array<Array<Rectangle>> hurtboxes = new Array<>();
-        for (DTO.AnimationFrame frame : animation.frames)
+        for (DTO.AnimationFrame dtoFrame : animation.frames)
         {
-            frames.add(new AnimationComponent.AnimationFrame(new Texture(frame.texturePath)));
-            hitboxes.add(frame.hitboxes);
-            hurtboxes.add(frame.hurtboxes);
+            AnimationComponent.AnimationFrame frame = new AnimationComponent.AnimationFrame(
+                                                                new Texture(dtoFrame.texturePath),
+                                                                dtoFrame.hitboxes,
+                                                                dtoFrame.hurtboxes);
+            frames.add(frame);
         }
+
+        AnimationDebugComponent ad = new AnimationDebugComponent();
+        player.addComponent(ad);
 
         AnimationComponent anim = new AnimationComponent(frames);
         player.addComponent(anim);
@@ -116,8 +121,7 @@ public class GameplayScreen extends GameScreen
         dd.height = 2;
         player.addComponent(dd);
 
-        AnimationDebugComponent ad = new AnimationDebugComponent(hitboxes, hurtboxes);
-        player.addComponent(ad);
+
 
         TerrainColliderComponent collider = new TerrainColliderComponent();
         collider.colliderWidth = characterData.terrainCollider.x;
