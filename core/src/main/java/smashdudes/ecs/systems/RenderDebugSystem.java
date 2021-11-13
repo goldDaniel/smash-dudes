@@ -62,16 +62,7 @@ public class RenderDebugSystem extends GameSystem
         sh.setColor(d.color);
         sh.rect(p.position.x - d.width / 2, p.position.y - d.height / 2, d.width, d.height);
 
-        int dir = 0;
-
-        if(d.facingLeft)
-        {
-            dir = -1;
-        }
-        else
-        {
-            dir = 1;
-        }
+        int dir = d.facingLeft ? -1 : 1;
 
         sh.setColor(Color.RED);
         for (Rectangle hurtbox : d.hurtboxes)
