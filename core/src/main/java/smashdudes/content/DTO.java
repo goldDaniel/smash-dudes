@@ -54,37 +54,55 @@ public class DTO
         }
     }
 
-    private static class Animation
+    public static class Animation
     {
         public String textureFilePath;
+        public String animationName;
+
+        public boolean usesSpriteSheet;
 
         public Array<AnimationFrame> frames = new Array<>();
 
         protected void setAnimation(JsonValue animationData)
         {
-            textureFilePath = animationData.get("texture_path").asString();
+            usesSpriteSheet = animationData.get("uses_sprite_sheet").asBoolean();
+            animationName = animationData.get("animation_name").asString();
+
+            if (usesSpriteSheet)
+            {
+                textureFilePath = animationData.get("texture_path").asString();
+            }
 
             JsonValue animationFrameData = animationData.get("frames");
             for (int i = 0; i < animationFrameData.size; i++)
             {
                 AnimationFrame frame = new AnimationFrame();
-                frame.setAnimationFrame(animationFrameData.get(i));
+                frame.setAnimationFrame(animationFrameData.get(i), usesSpriteSheet);
                 frames.add(frame);
             }
         }
     }
 
-    private static class AnimationFrame
+    public static class AnimationFrame
     {
         public Rectangle textureRegion;
 
         public Array<Rectangle> hitboxes = new Array<>();
         public Array<Rectangle> hurtboxes = new Array<>();
 
-        protected void setAnimationFrame(JsonValue animationFrameData)
+        public String texturePath;
+
+        protected void setAnimationFrame(JsonValue animationFrameData, boolean usesSpriteSheet)
         {
-            float[] textureData = animationFrameData.get("texture_region").asFloatArray();
-            textureRegion = new Rectangle(textureData[0], textureData[1], textureData[2], textureData[3]);
+            if (usesSpriteSheet)
+            {
+                float[] textureData = animationFrameData.get("texture_region").asFloatArray();
+                textureRegion = new Rectangle(textureData[0], textureData[1], textureData[2], textureData[3]);
+            }
+            else
+            {
+                texturePath = animationFrameData.get("file_path").asString();
+            }
 
             JsonValue hitboxData = animationFrameData.get("hitboxes");
             for (int i = 0; i < hitboxData.size; i++)

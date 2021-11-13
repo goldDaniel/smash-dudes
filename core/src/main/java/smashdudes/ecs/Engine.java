@@ -35,6 +35,9 @@ public class Engine
         systems.add(new TerrainCollisionSystem(this));
         systems.add(new AudioSystem(this));
 
+        systems.add(new AnimationSystem(this));
+        systems.add(new AnimationDebugSystem(this));
+
         int WORLD_WIDTH = 20;
         int WORLD_HEIGHT = 12;
 

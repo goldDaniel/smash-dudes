@@ -3,7 +3,8 @@ package smashdudes.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import smashdudes.content.DTO;
@@ -30,7 +31,7 @@ public class GameplayScreen extends GameScreen
         DTO.Character characterData = LoadContent.loadCharacterData("Character.json");
         for(PlayerHandle p : players)
         {
-            Entity player = buildPlayer(p, Color.GOLD, characterData.jumpStrength, characterData.gravity);
+            Entity player = buildPlayer(p, characterData);
 
             GameInputRetriever retriever = inputHandler.getGameInput(p);
 
@@ -41,7 +42,7 @@ public class GameplayScreen extends GameScreen
         Array<DTO.Terrain> terrainData = LoadContent.loadTerrainData("Terrain.json");
         for (DTO.Terrain data : terrainData)
         {
-            buildTerrain(data.position, data.width, data.height, data.textureFilePath);
+            buildTerrain(data);
         }
     }
 
@@ -77,56 +78,80 @@ public class GameplayScreen extends GameScreen
         ecsEngine.resize(width, height);
     }
 
-    private Entity buildPlayer(PlayerHandle handle, Color color, float jumpStrength, float gravity)
+    private Entity buildPlayer(PlayerHandle handle, DTO.Character characterData)
     {
         Entity player = ecsEngine.createEntity();
 
         player.addComponent(new PlayerComponent(handle));
         player.addComponent(new PositionComponent());
         player.addComponent(new VelocityComponent());
-        player.addComponent(new JumpComponent(jumpStrength));
-        player.addComponent(new GravityComponent(gravity));
+        player.addComponent(new JumpComponent(characterData.jumpStrength));
+        player.addComponent(new GravityComponent(characterData.gravity));
 
         CharacterInputComponent i = new CharacterInputComponent();
         player.addComponent(i);
 
+        DTO.Animation animation = characterData.animations.get(1);
+
+
+
+        Array<AnimationComponent.AnimationFrame> frames = new Array<>();
+        for (DTO.AnimationFrame dtoFrame : animation.frames)
+        {
+            AnimationComponent.AnimationFrame frame =
+                    new AnimationComponent.AnimationFrame(new Texture(dtoFrame.texturePath), dtoFrame.hitboxes, dtoFrame.hurtboxes);
+            frames.add(frame);
+        }
+
+        AnimationDebugComponent ad = new AnimationDebugComponent();
+        player.addComponent(ad);
+
+        AnimationComponent anim = new AnimationComponent(frames);
+        player.addComponent(anim);
+
+        DrawComponent sd = new DrawComponent();
+        sd.width = 2;
+        sd.height = 2;
+        player.addComponent(sd);
 
         DebugDrawComponent dd = new DebugDrawComponent();
         dd.width = 2;
         dd.height = 2;
         player.addComponent(dd);
 
+
+
         TerrainColliderComponent collider = new TerrainColliderComponent();
-        collider.colliderWidth = 2;
-        collider.colliderHeight = 2;
+        collider.colliderWidth = characterData.terrainCollider.x;
+        collider.colliderHeight = characterData.terrainCollider.y;
         player.addComponent(collider);
 
         return player;
     }
 
-    public Entity buildTerrain(Vector2 position, float w, float h, String textureFilePath)
+    public Entity buildTerrain(DTO.Terrain terrainData)
     {
         Entity terrain = ecsEngine.createEntity();
 
         PositionComponent tp = new PositionComponent();
-        tp.position.set(position);
+        tp.position.set(terrainData.position);
         terrain.addComponent(tp);
 
         StaticTerrainComponent t = new StaticTerrainComponent();
-        t.width = w;
-        t.height = h;
+        t.width = terrainData.width;
+        t.height = terrainData.height;
         terrain.addComponent(t);
 
         DebugDrawComponent dd = new DebugDrawComponent();
-        dd.width = w;
-        dd.height = h;
+        dd.width = terrainData.width;
+        dd.height = terrainData.height;
         dd.color = Color.GREEN;
         terrain.addComponent(dd);
 
         DrawComponent d = new DrawComponent();
-        d.texture = RenderResources.getTexture(textureFilePath);
-        d.width = w;
-        d.height = h;
+        d.texture = RenderResources.getTexture(terrainData.textureFilePath);
+        d.width = terrainData.width;
+        d.height = terrainData.height;
         terrain.addComponent(d);
 
         return terrain;
