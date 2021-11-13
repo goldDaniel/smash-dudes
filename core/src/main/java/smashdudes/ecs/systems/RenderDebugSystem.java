@@ -75,6 +75,9 @@ public class RenderDebugSystem extends GameSystem
         {
             sh.rect(hitbox.x + p.position.x - hitbox.width / 2, hitbox.y + p.position.y - hitbox.height / 2, hitbox.width, hitbox.height);
         }
+
+        d.hitboxes = new Array<>();
+        d.hurtboxes = new Array<>();
     }
 
     @Override
