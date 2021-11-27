@@ -3,6 +3,7 @@ package smashdudes.content;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.JsonValue;
 
 public class DTO
@@ -27,7 +28,7 @@ public class DTO
 
     public static class Character
     {
-        public Array<Animation> animations = new Array<>();
+        public ArrayMap<String, Animation> animations = new ArrayMap<>();
 
         public Vector2 terrainCollider = new Vector2();
 
@@ -49,7 +50,10 @@ public class DTO
             {
                 Animation animation = new Animation();
                 animation.setAnimation(animationData.get(i));
-                animations.add(animation);
+
+                String name = animationData.get(i).get("animation_name").asString();
+
+                animations.put(name, animation);
             }
         }
     }

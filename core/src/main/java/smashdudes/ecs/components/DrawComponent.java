@@ -8,4 +8,6 @@ public class DrawComponent extends Component
     public Texture texture;
     public float width;
     public float height;
+
+    public boolean facingLeft = false;
 }

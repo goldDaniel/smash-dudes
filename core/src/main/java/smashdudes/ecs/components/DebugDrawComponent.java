@@ -13,4 +13,6 @@ public class DebugDrawComponent extends Component
 
     public Array<Rectangle> hitboxes = new Array<>();
     public Array<Rectangle> hurtboxes = new Array<>();
+
+    public boolean facingLeft = false;
 }
