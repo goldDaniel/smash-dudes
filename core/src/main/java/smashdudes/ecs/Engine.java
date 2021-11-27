@@ -28,6 +28,7 @@ public class Engine
         systems.add(new CharacterJumpInputSystem(this));
         systems.add(new RenderDirectionSystem(this));
         systems.add(new PlayerControllerSystem(this));
+        systems.add(new CombatCollisionDetectionSystem(this));
         systems.add(new AIControllerSystem(this));
         systems.add(new GravitySystem(this));
         systems.add(new MovementSystem(this));
