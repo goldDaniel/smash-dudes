@@ -1,3 +1,2 @@
-include 'html', 'core', 'lwjgl3'
-include 'box-tool'
+include 'html', 'core', 'lwjgl3', 'box-tool'
 

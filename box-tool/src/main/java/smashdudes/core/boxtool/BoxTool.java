@@ -9,6 +9,10 @@ import imgui.ImGuiIO;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.File;
+
 public class BoxTool implements ApplicationListener
 {
 
@@ -42,7 +46,41 @@ public class BoxTool implements ApplicationListener
         ScreenUtils.clear(0,0,0,1);
         ImGui.newFrame();
 
-        ImGui.button("I am a button :)");
+        ImGui.beginMainMenuBar();
+        {
+            if(ImGui.beginMenu("File"))
+            {
+                if(ImGui.menuItem("New"))
+                {
+                    System.out.println("new");
+                }
+                if(ImGui.menuItem("Load..."))
+                {
+                    FileNameExtensionFilter filter = new FileNameExtensionFilter("json files (*.json)", "json");
+                    final JFileChooser fc = new JFileChooser();
+                    fc.setFileFilter(filter);
+
+                    int returnVal = fc.showOpenDialog(null);
+                    if (returnVal == JFileChooser.APPROVE_OPTION)
+                    {
+                        File file = fc.getSelectedFile();
+                    }
+                }
+
+                ImGui.endMenu();
+            }
+        }
+        ImGui.endMainMenuBar();
+
+        ImGui.begin("This is a window");
+
+        if(ImGui.button("This is a button"))
+        {
+            System.out.println("clicked");
+        }
+
+        ImGui.end();
+
 
         ImGui.render();
         imGuiGl3.renderDrawData(ImGui.getDrawData());
