@@ -34,7 +34,9 @@ public class HitDetectionSystem extends GameSystem
     {
         for (Entity e : entities)
         {
-            if (isHit(entity, e))
+            if(entity == e) continue;
+
+            if (hasEntityAttackedOther(entity, e))
             {
                 Vector2 attackLine = new Vector2(0, 1);
                 attackLine.nor();
@@ -43,35 +45,44 @@ public class HitDetectionSystem extends GameSystem
         }
     }
 
-    private boolean isHit(Entity thisEntity, Entity thatEntity)
+    private boolean hasEntityAttackedOther(Entity thisEntity, Entity thatEntity)
     {
-        AnimationComponent thisAnim = thisEntity.getComponent(AnimationComponent.class);
         PositionComponent thisPos = thisEntity.getComponent(PositionComponent.class);
-        PlayerComponent thisPlay = thisEntity.getComponent(PlayerComponent.class);
+        PlayerComponent thisPlayer = thisEntity.getComponent(PlayerComponent.class);
+        AnimationComponent thisAnim = thisEntity.getComponent(AnimationComponent.class);
 
-        Array<Rectangle> hurtboxes = thisAnim.currentAnimation.getKeyFrame(thisAnim.currentTime).hurtboxes;
-        int hurtDir = thisPlay.facingLeft ? -1 : 1;
+        PositionComponent otherPos = thatEntity.getComponent(PositionComponent.class);
+        PlayerComponent otherPlayer = thatEntity.getComponent(PlayerComponent.class);
+        AnimationComponent otherAnim = thatEntity.getComponent(AnimationComponent.class);
 
-        AnimationComponent thatAnim = thatEntity.getComponent(AnimationComponent.class);
-        PositionComponent thatPos = thatEntity.getComponent(PositionComponent.class);
-        PlayerComponent thatPlay = thatEntity.getComponent(PlayerComponent.class);
+        Array<Rectangle> thisHitboxes = thisAnim.currentAnimation.getKeyFrame(thisAnim.currentTime).hitboxes;
+        Array<Rectangle> otherHurtboxes = otherAnim.currentAnimation.getKeyFrame(otherAnim.currentTime).hurtboxes;
 
-        Array<Rectangle> hitboxes = thatAnim.currentAnimation.getKeyFrame(thatAnim.currentTime).hitboxes;
-        int hitDir = thatPlay.facingLeft ? -1 : 1;
+        int thisDir = thisPlayer.facingLeft ? -1 : 1;
+        int otherDir = otherPlayer.facingLeft ? -1 : 1;
 
-        for (Rectangle hurtbox : hurtboxes)
+        for(Rectangle hitboxRelative : thisHitboxes)
         {
-            Rectangle hurtboxRect = new Rectangle(thisPos.position.x + hurtDir * (hurtbox.x - hurtbox.width / 2), thisPos.position.y + hurtbox.y - hurtbox.height, hurtDir * hurtbox.width, hurtbox.height);
-            for (Rectangle hitbox : hitboxes)
+            Rectangle hitboxAbsolute = new Rectangle();
+            hitboxAbsolute.width = thisDir * hitboxRelative.width;
+            hitboxAbsolute.height = hitboxRelative.height;
+            hitboxAbsolute.x = thisDir * (hitboxRelative.x - hitboxRelative.width / 2)  + thisPos.position.x;
+            hitboxAbsolute.y = (hitboxRelative.y - hitboxRelative.height / 2) + thisPos.position.y;
+
+            for(Rectangle hurtboxRelative : otherHurtboxes)
             {
-                Rectangle hitboxRect = new Rectangle(thatPos.position.x + hitDir * (hitbox.x - hitbox.width / 2), thatPos.position.y + hitDir * (hitbox.y - hitbox.height / 2), hitDir * hitbox.width, hitbox.height);
-                if (hitboxRect.overlaps(hurtboxRect))
+                Rectangle hurtboxAbsolute = new Rectangle();
+                hurtboxAbsolute.width = otherDir * hurtboxRelative.width;
+                hurtboxAbsolute.height = hurtboxRelative.height;
+                hurtboxAbsolute.x = otherDir * (hurtboxRelative.x - hurtboxRelative.width / 2) + otherPos.position.x;
+                hurtboxAbsolute.y = (otherPos.position.y - hurtboxRelative.height / 2) + otherPos.position.y;
+
+                if(hitboxAbsolute.overlaps(hurtboxAbsolute))
                 {
                     return true;
                 }
             }
         }
-
         return false;
     }
 }
