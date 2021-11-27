@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Queue;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import smashdudes.audio.AudioEventReceiver;
 import smashdudes.core.RenderResources;
 import smashdudes.ecs.events.Event;
 import smashdudes.ecs.systems.*;
