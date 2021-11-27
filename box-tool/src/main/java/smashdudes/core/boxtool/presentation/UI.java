@@ -97,8 +97,8 @@ public class UI
         ImGui.end();
     }
 
-    ArrayMap<String, Array<FloatArray>> hitboxes = new ArrayMap<>();
-    ArrayMap<String, Array<FloatArray>> hurtboxes = new ArrayMap<>();
+    private ArrayMap<String, Array<FloatArray>> hitboxes = new ArrayMap<>();
+    private ArrayMap<String, Array<FloatArray>> hurtboxes = new ArrayMap<>();
     private void drawAnimationFrameData(String selectedAnimation)
     {
         ImGui.separator();
