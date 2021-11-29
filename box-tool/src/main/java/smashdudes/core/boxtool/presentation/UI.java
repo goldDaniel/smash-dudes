@@ -133,7 +133,6 @@ public class UI
 
     private void drawBoxEditor(String name, Array<Rectangle> boxes)
     {
-        //NOTE(daniel): we use this array to remove both hitboxes and hurtboxes.
         Array<Rectangle> toRemove = new Array<>();
         int boxCounter = 0;
         ImGui.text(name);
