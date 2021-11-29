@@ -3,15 +3,14 @@ package smashdudes.core.boxtool.presentation;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ScreenUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import smashdudes.content.DTO;
 import smashdudes.core.boxtool.logic.ContentService;
-
-import java.util.concurrent.locks.ReentrantLock;
 
 public class UI
 {
@@ -141,13 +140,12 @@ public class UI
 
                     String hitboxKey = "##" +  anim + frame + rect + hitboxCounter++;
                     float[] temp = {rect.x, rect.y, rect.width, rect.height};
-                    if(ImGui.inputFloat4(hitboxKey, temp))
-                    {
-                        rect.x = temp[0];
-                        rect.y = temp[1];
-                        rect.width = temp[2];
-                        rect.height = temp[3];
-                    }
+                    ImGui.inputFloat4(hitboxKey, temp);
+                    rect.x = temp[0];
+                    rect.y = temp[1];
+                    rect.width = temp[2];
+                    rect.height = temp[3];
+
                     ImGui.sameLine();
                     if(ImGui.button("Remove##hitbox" + hitboxKey))
                     {
@@ -173,13 +171,12 @@ public class UI
 
                     String hurtboxKey = "##" +  anim + frame + rect + hurtboxCounter++;
                     float[] temp = {rect.x, rect.y, rect.width, rect.height};
-                    if(ImGui.inputFloat4(hurtboxKey, temp))
-                    {
-                        rect.x = temp[0];
-                        rect.y = temp[1];
-                        rect.width = temp[2];
-                        rect.height = temp[3];
-                    }
+                    ImGui.inputFloat4(hurtboxKey, temp);
+                    rect.x = temp[0];
+                    rect.y = temp[1];
+                    rect.width = temp[2];
+                    rect.height = temp[3];
+
                     ImGui.sameLine();
                     if(ImGui.button("Remove##hurtbox" + hurtboxKey))
                     {

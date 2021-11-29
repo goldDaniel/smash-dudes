@@ -6,8 +6,6 @@ import smashdudes.core.boxtool.data.ContentRepo;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.lang.reflect.InvocationTargetException;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class ContentService
 {
@@ -31,7 +29,7 @@ public class ContentService
     {
         FileNameExtensionFilter filter = new FileNameExtensionFilter("json files (*.json)", "json");
         final JFileChooser fc = new JFileChooser(Gdx.files.getLocalStoragePath());
-        fc.setDialogTitle("Select a file to load...");
+        fc.setDialogTitle("Save your file...");
         fc.setFileFilter(filter);
 
         int returnVal = fc.showSaveDialog(null);
