@@ -11,6 +11,8 @@ import imgui.glfw.ImGuiImplGlfw;
 import smashdudes.content.DTO;
 import smashdudes.core.boxtool.logic.ContentService;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 public class UI
 {
     private ContentService service = new ContentService();
@@ -34,6 +36,7 @@ public class UI
         ImGui.newFrame();
 
         drawMainMenuBar();
+
 
         if(service.hasLoadedCharacter())
         {
@@ -70,22 +73,26 @@ public class UI
         ImGui.endMainMenuBar();
     }
 
-    private String selectedAnimation = null;
+    private DTO.Animation selectedAnimation = null;
     private void drawCharacterData()
     {
-        ImGui.begin("Character Data", ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove);
+        ImGui.begin("Character Data", ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoCollapse);
         ImGui.text(service.getFilename());
+        if(ImGui.button("Save"))
+        {
+            service.saveCharacter();
+        }
+
         ImGui.separator();
 
         DTO.Character data = service.getCharacter();
 
         ImGui.text("Animations");
-        for(ObjectMap.Entry<String, DTO.Animation> entry : data.animations)
+        for(DTO.Animation entry : data.animations)
         {
-            String animationName = entry.key;
-            if(ImGui.selectable(animationName, selectedAnimation == animationName))
+            if(ImGui.selectable(entry.animationName, selectedAnimation == entry))
             {
-                selectedAnimation = animationName;
+                selectedAnimation = entry;
             }
         }
 
@@ -97,14 +104,10 @@ public class UI
         ImGui.end();
     }
 
-    private ArrayMap<String, Array<FloatArray>> hitboxes = new ArrayMap<>();
-    private ArrayMap<String, Array<FloatArray>> hurtboxes = new ArrayMap<>();
-    private void drawAnimationFrameData(String selectedAnimation)
+    private void drawAnimationFrameData(DTO.Animation anim)
     {
         ImGui.separator();
         ImGui.text("Animation Frame Data");
-
-        DTO.Animation anim = service.getCharacter().animations.get(selectedAnimation);
 
         ImGui.labelText(anim.usesSpriteSheet + "", "Uses spritesheet");
         if(anim.usesSpriteSheet)
@@ -117,59 +120,77 @@ public class UI
         int frameNumber = 0;
         for(DTO.AnimationFrame frame : anim.frames)
         {
-            String frameName = "frame " + frameNumber++;
-            if(ImGui.collapsingHeader(frameName))
+            if(ImGui.collapsingHeader("frame " + frameNumber++))
             {
-                String hitboxKey = "##" +  selectedAnimation + frameName + "hitbox";
-                String hurtboxKey = "##" +  selectedAnimation + frameName + "hurtbox";
+                ImGui.pushID(frame.hashCode());
 
-                if(!hitboxes.containsKey(hitboxKey))
-                {
-                    hitboxes.put(hitboxKey, new Array<>());
-                    for(Rectangle rect : frame.hitboxes)
-                    {
-                        FloatArray arr = new FloatArray(4);
-                        arr.add(rect.x);
-                        arr.add(rect.y);
-                        arr.add(rect.width);
-                        arr.add(rect.height);
-                        hitboxes.get(hitboxKey).add(arr);
-                    }
-                }
+                //NOTE(daniel): we use this array to remove both hitboxes and hurtboxes.
+                Array<Rectangle> toRemove = new Array<>();
 
-                if(!hurtboxes.containsKey(hurtboxKey))
-                {
-                    hurtboxes.put(hurtboxKey, new Array<>());
-                    for(Rectangle rect : frame.hurtboxes)
-                    {
-                        FloatArray arr = new FloatArray(4);
-                        arr.add(rect.x);
-                        arr.add(rect.y);
-                        arr.add(rect.width);
-                        arr.add(rect.height);
-                        hurtboxes.get(hurtboxKey).add(arr);
-                    }
-                }
-
+                //HITBOXES//////////////////////////////////////////////////////////
+                int hitboxCounter = 0;
                 ImGui.text("Hitboxes");
-                int hitboxNumber = 0;
-                for(FloatArray rect : hitboxes.get(hitboxKey))
+                ImGui.sameLine();
+                if(ImGui.button("Add##hitbox"))
                 {
-                    if(ImGui.inputFloat4(hitboxKey + hitboxNumber++, rect.items))
-                    {
-                        service.updateHitboxes(selectedAnimation, frameNumber, hitboxes.get(hitboxKey));
-                    }
+                    frame.hitboxes.add(new Rectangle());
                 }
+                for(Rectangle rect : frame.hitboxes)
+                {
+                    ImGui.pushID(rect.hashCode());
 
-                ImGui.text("Hurtboxes");
-                int hurtboxNumber = 0;
-                for(FloatArray rect : hurtboxes.get(hurtboxKey))
-                {
-                    if(ImGui.inputFloat4(hurtboxKey + hurtboxNumber++, rect.items))
+                    String hitboxKey = "##" +  anim + frame + rect + hitboxCounter++;
+                    float[] temp = {rect.x, rect.y, rect.width, rect.height};
+                    if(ImGui.inputFloat4(hitboxKey, temp))
                     {
-                        service.updateHurtboxes(selectedAnimation, frameNumber, hurtboxes.get(hurtboxKey));
+                        rect.x = temp[0];
+                        rect.y = temp[1];
+                        rect.width = temp[2];
+                        rect.height = temp[3];
                     }
+                    ImGui.sameLine();
+                    if(ImGui.button("Remove##hitbox" + hitboxKey))
+                    {
+                        toRemove.add(rect);
+                    }
+
+                    ImGui.popID();
                 }
+                frame.hitboxes.removeAll(toRemove, true);
+                toRemove.clear();
+
+                //HURTBOXES//////////////////////////////////////////////////////////
+                int hurtboxCounter = 0;
+                ImGui.text("Hurtboxes");
+                ImGui.sameLine();
+                if(ImGui.button("Add##hurtbox"))
+                {
+                    frame.hurtboxes.add(new Rectangle());
+                }
+                for(Rectangle rect : frame.hurtboxes)
+                {
+                    ImGui.pushID(rect.hashCode());
+
+                    String hurtboxKey = "##" +  anim + frame + rect + hurtboxCounter++;
+                    float[] temp = {rect.x, rect.y, rect.width, rect.height};
+                    if(ImGui.inputFloat4(hurtboxKey, temp))
+                    {
+                        rect.x = temp[0];
+                        rect.y = temp[1];
+                        rect.width = temp[2];
+                        rect.height = temp[3];
+                    }
+                    ImGui.sameLine();
+                    if(ImGui.button("Remove##hurtbox" + hurtboxKey))
+                    {
+                        toRemove.add(rect);
+                    }
+
+                    ImGui.popID();
+                }
+                frame.hurtboxes.removeAll(toRemove, true);
+
+                ImGui.popID();
             }
         }
     }

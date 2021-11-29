@@ -6,6 +6,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.JsonValue;
 
+import java.util.ArrayList;
+
 public class DTO
 {
     public static class Terrain
@@ -28,7 +30,7 @@ public class DTO
 
     public static class Character
     {
-        public ArrayMap<String, Animation> animations = new ArrayMap<>();
+        public Array<Animation> animations = new Array<>();
 
         public Vector2 terrainCollider = new Vector2();
 
@@ -53,7 +55,7 @@ public class DTO
 
                 String name = animationData.get(i).get("animation_name").asString();
 
-                animations.put(name, animation);
+                animations.add(animation);
             }
         }
     }

@@ -126,9 +126,18 @@ public class GameplayScreen extends GameScreen
 
     public AnimationComponent loadPlayerAnimation(DTO.Character characterData, String animationName)
     {
-        DTO.Animation animation = characterData.animations.get(animationName);
+        DTO.Animation anim = null;
+        for(DTO.Animation a : characterData.animations)
+        {
+            if(a.animationName == animationName)
+            {
+                anim = a;
+                break;
+            }
+        }
+
         Array<AnimationComponent.AnimationFrame> frames = new Array<>();
-        for (DTO.AnimationFrame dtoFrame : animation.frames)
+        for (DTO.AnimationFrame dtoFrame : anim.frames)
         {
             AnimationComponent.AnimationFrame frame =
                     new AnimationComponent.AnimationFrame(new Texture(dtoFrame.texturePath), dtoFrame.hitboxes, dtoFrame.hurtboxes);
