@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
+import smashdudes.content.ContentRepo;
 import smashdudes.content.DTO;
 import smashdudes.content.LoadContent;
 import smashdudes.core.RenderResources;
@@ -28,7 +29,7 @@ public class GameplayScreen extends GameScreen
         this.inputHandler = inputHandler;
         ecsEngine = new Engine();
 
-        DTO.Character characterData = LoadContent.loadCharacterData("Character.json");
+        DTO.Character characterData = new ContentRepo().loadCharacter("Character.json");
         for(PlayerHandle p : players)
         {
             Entity player = buildPlayer(p, characterData);
@@ -126,9 +127,18 @@ public class GameplayScreen extends GameScreen
 
     public AnimationComponent loadPlayerAnimation(DTO.Character characterData, String animationName)
     {
-        DTO.Animation animation = characterData.animations.get(animationName);
+        DTO.Animation anim = null;
+        for(DTO.Animation a : characterData.animations)
+        {
+            if(a.animationName.equals(animationName))
+            {
+                anim = a;
+                break;
+            }
+        }
+
         Array<AnimationComponent.AnimationFrame> frames = new Array<>();
-        for (DTO.AnimationFrame dtoFrame : animation.frames)
+        for (DTO.AnimationFrame dtoFrame : anim.frames)
         {
             AnimationComponent.AnimationFrame frame =
                     new AnimationComponent.AnimationFrame(new Texture(dtoFrame.texturePath), dtoFrame.hitboxes, dtoFrame.hurtboxes);

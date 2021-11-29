@@ -3,7 +3,8 @@ package smashdudes.core.boxtool.presentation;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ScreenUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
@@ -34,6 +35,7 @@ public class UI
         ImGui.newFrame();
 
         drawMainMenuBar();
+
 
         if(service.hasLoadedCharacter())
         {
@@ -70,22 +72,26 @@ public class UI
         ImGui.endMainMenuBar();
     }
 
-    private String selectedAnimation = null;
+    private DTO.Animation selectedAnimation = null;
     private void drawCharacterData()
     {
-        ImGui.begin("Character Data", ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove);
+        ImGui.begin("Character Data", ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoCollapse);
         ImGui.text(service.getFilename());
+        if(ImGui.button("Save"))
+        {
+            service.saveCharacter();
+        }
+
         ImGui.separator();
 
         DTO.Character data = service.getCharacter();
 
         ImGui.text("Animations");
-        for(ObjectMap.Entry<String, DTO.Animation> entry : data.animations)
+        for(DTO.Animation entry : data.animations)
         {
-            String animationName = entry.key;
-            if(ImGui.selectable(animationName, selectedAnimation == animationName))
+            if(ImGui.selectable(entry.animationName, selectedAnimation == entry))
             {
-                selectedAnimation = animationName;
+                selectedAnimation = entry;
             }
         }
 
@@ -97,14 +103,10 @@ public class UI
         ImGui.end();
     }
 
-    private ArrayMap<String, Array<FloatArray>> hitboxes = new ArrayMap<>();
-    private ArrayMap<String, Array<FloatArray>> hurtboxes = new ArrayMap<>();
-    private void drawAnimationFrameData(String selectedAnimation)
+    private void drawAnimationFrameData(DTO.Animation anim)
     {
         ImGui.separator();
         ImGui.text("Animation Frame Data");
-
-        DTO.Animation anim = service.getCharacter().animations.get(selectedAnimation);
 
         ImGui.labelText(anim.usesSpriteSheet + "", "Uses spritesheet");
         if(anim.usesSpriteSheet)
@@ -117,60 +119,49 @@ public class UI
         int frameNumber = 0;
         for(DTO.AnimationFrame frame : anim.frames)
         {
-            String frameName = "frame " + frameNumber++;
-            if(ImGui.collapsingHeader(frameName))
+            if(ImGui.collapsingHeader("frame " + frameNumber++))
             {
-                String hitboxKey = "##" +  selectedAnimation + frameName + "hitbox";
-                String hurtboxKey = "##" +  selectedAnimation + frameName + "hurtbox";
+                ImGui.pushID(frame.hashCode());
 
-                if(!hitboxes.containsKey(hitboxKey))
-                {
-                    hitboxes.put(hitboxKey, new Array<>());
-                    for(Rectangle rect : frame.hitboxes)
-                    {
-                        FloatArray arr = new FloatArray(4);
-                        arr.add(rect.x);
-                        arr.add(rect.y);
-                        arr.add(rect.width);
-                        arr.add(rect.height);
-                        hitboxes.get(hitboxKey).add(arr);
-                    }
-                }
+                drawBoxEditor("Hitboxes", frame.hitboxes);
+                drawBoxEditor("Hurtboxes", frame.hurtboxes);
 
-                if(!hurtboxes.containsKey(hurtboxKey))
-                {
-                    hurtboxes.put(hurtboxKey, new Array<>());
-                    for(Rectangle rect : frame.hurtboxes)
-                    {
-                        FloatArray arr = new FloatArray(4);
-                        arr.add(rect.x);
-                        arr.add(rect.y);
-                        arr.add(rect.width);
-                        arr.add(rect.height);
-                        hurtboxes.get(hurtboxKey).add(arr);
-                    }
-                }
-
-                ImGui.text("Hitboxes");
-                int hitboxNumber = 0;
-                for(FloatArray rect : hitboxes.get(hitboxKey))
-                {
-                    if(ImGui.inputFloat4(hitboxKey + hitboxNumber++, rect.items))
-                    {
-                        service.updateHitboxes(selectedAnimation, frameNumber, hitboxes.get(hitboxKey));
-                    }
-                }
-
-                ImGui.text("Hurtboxes");
-                int hurtboxNumber = 0;
-                for(FloatArray rect : hurtboxes.get(hurtboxKey))
-                {
-                    if(ImGui.inputFloat4(hurtboxKey + hurtboxNumber++, rect.items))
-                    {
-                        service.updateHurtboxes(selectedAnimation, frameNumber, hurtboxes.get(hurtboxKey));
-                    }
-                }
+                ImGui.popID();
             }
         }
+    }
+
+    private void drawBoxEditor(String name, Array<Rectangle> boxes)
+    {
+        Array<Rectangle> toRemove = new Array<>();
+        int boxCounter = 0;
+        ImGui.text(name);
+        ImGui.sameLine();
+        if(ImGui.button("Add##" + name))
+        {
+            boxes.add(new Rectangle());
+        }
+        for(Rectangle rect : boxes)
+        {
+            ImGui.pushID(rect.hashCode());
+
+            String hitboxKey = "##" +  name + rect + boxCounter++;
+            float[] temp = {rect.x, rect.y, rect.width, rect.height};
+            ImGui.inputFloat4(hitboxKey, temp);
+            rect.x = temp[0];
+            rect.y = temp[1];
+            rect.width = temp[2];
+            rect.height = temp[3];
+
+            ImGui.sameLine();
+            if(ImGui.button("Remove##" + name + hitboxKey))
+            {
+                toRemove.add(rect);
+            }
+
+            ImGui.popID();
+        }
+        boxes.removeAll(toRemove, true);
+        toRemove.clear();
     }
 }
