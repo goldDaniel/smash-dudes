@@ -123,72 +123,46 @@ public class UI
             {
                 ImGui.pushID(frame.hashCode());
 
-                //NOTE(daniel): we use this array to remove both hitboxes and hurtboxes.
-                Array<Rectangle> toRemove = new Array<>();
-
-                //HITBOXES//////////////////////////////////////////////////////////
-                int hitboxCounter = 0;
-                ImGui.text("Hitboxes");
-                ImGui.sameLine();
-                if(ImGui.button("Add##hitbox"))
-                {
-                    frame.hitboxes.add(new Rectangle());
-                }
-                for(Rectangle rect : frame.hitboxes)
-                {
-                    ImGui.pushID(rect.hashCode());
-
-                    String hitboxKey = "##" +  anim + frame + rect + hitboxCounter++;
-                    float[] temp = {rect.x, rect.y, rect.width, rect.height};
-                    ImGui.inputFloat4(hitboxKey, temp);
-                    rect.x = temp[0];
-                    rect.y = temp[1];
-                    rect.width = temp[2];
-                    rect.height = temp[3];
-
-                    ImGui.sameLine();
-                    if(ImGui.button("Remove##hitbox" + hitboxKey))
-                    {
-                        toRemove.add(rect);
-                    }
-
-                    ImGui.popID();
-                }
-                frame.hitboxes.removeAll(toRemove, true);
-                toRemove.clear();
-
-                //HURTBOXES//////////////////////////////////////////////////////////
-                int hurtboxCounter = 0;
-                ImGui.text("Hurtboxes");
-                ImGui.sameLine();
-                if(ImGui.button("Add##hurtbox"))
-                {
-                    frame.hurtboxes.add(new Rectangle());
-                }
-                for(Rectangle rect : frame.hurtboxes)
-                {
-                    ImGui.pushID(rect.hashCode());
-
-                    String hurtboxKey = "##" +  anim + frame + rect + hurtboxCounter++;
-                    float[] temp = {rect.x, rect.y, rect.width, rect.height};
-                    ImGui.inputFloat4(hurtboxKey, temp);
-                    rect.x = temp[0];
-                    rect.y = temp[1];
-                    rect.width = temp[2];
-                    rect.height = temp[3];
-
-                    ImGui.sameLine();
-                    if(ImGui.button("Remove##hurtbox" + hurtboxKey))
-                    {
-                        toRemove.add(rect);
-                    }
-
-                    ImGui.popID();
-                }
-                frame.hurtboxes.removeAll(toRemove, true);
+                drawBoxEditor("Hitboxes", frame.hitboxes);
+                drawBoxEditor("Hurtboxes", frame.hurtboxes);
 
                 ImGui.popID();
             }
         }
+    }
+
+    private void drawBoxEditor(String name, Array<Rectangle> boxes)
+    {
+        //NOTE(daniel): we use this array to remove both hitboxes and hurtboxes.
+        Array<Rectangle> toRemove = new Array<>();
+        int boxCounter = 0;
+        ImGui.text(name);
+        ImGui.sameLine();
+        if(ImGui.button("Add##" + name))
+        {
+            boxes.add(new Rectangle());
+        }
+        for(Rectangle rect : boxes)
+        {
+            ImGui.pushID(rect.hashCode());
+
+            String hitboxKey = "##" +  name + rect + boxCounter++;
+            float[] temp = {rect.x, rect.y, rect.width, rect.height};
+            ImGui.inputFloat4(hitboxKey, temp);
+            rect.x = temp[0];
+            rect.y = temp[1];
+            rect.width = temp[2];
+            rect.height = temp[3];
+
+            ImGui.sameLine();
+            if(ImGui.button("Remove##" + name + hitboxKey))
+            {
+                toRemove.add(rect);
+            }
+
+            ImGui.popID();
+        }
+        boxes.removeAll(toRemove, true);
+        toRemove.clear();
     }
 }

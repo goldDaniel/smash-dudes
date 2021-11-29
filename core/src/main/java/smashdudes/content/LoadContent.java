@@ -46,14 +46,4 @@ public class LoadContent
 
         return data;
     }
-
-    public static DTO.Character loadCharacterData(String fileName)
-    {
-        JsonValue characterData = loadJson(fileName);
-
-        DTO.Character character = new DTO.Character();
-        character.setPlayerData(characterData);
-
-        return character;
-    }
 }

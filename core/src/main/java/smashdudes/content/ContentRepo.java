@@ -1,7 +1,6 @@
 package smashdudes.content;
 
 import com.badlogic.gdx.utils.Json;
-import smashdudes.content.DTO;
 
 import java.io.*;
 import java.util.Scanner;
