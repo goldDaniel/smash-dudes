@@ -1,4 +1,4 @@
-package smashdudes.core.boxtool.data;
+package smashdudes.content;
 
 import com.badlogic.gdx.utils.Json;
 import smashdudes.content.DTO;

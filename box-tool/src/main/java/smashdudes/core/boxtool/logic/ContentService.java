@@ -2,7 +2,7 @@ package smashdudes.core.boxtool.logic;
 
 import com.badlogic.gdx.Gdx;
 import smashdudes.content.DTO;
-import smashdudes.core.boxtool.data.ContentRepo;
+import smashdudes.content.ContentRepo;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
