@@ -50,13 +50,16 @@ public class UI
         {
             drawCharacterData();
 
-            sb.begin();
-            drawTexture(sb);
-            sb.end();
+            if (selectedAnimation != null && selectedAnimationFrame != null)
+            {
+                sb.begin();
+                drawTexture(sb);
+                sb.end();
 
-            sh.begin(ShapeRenderer.ShapeType.Line);
-            drawAttackData(sh);
-            sh.end();
+                sh.begin(ShapeRenderer.ShapeType.Line);
+                drawAttackData(sh);
+                sh.end();
+            }
         }
 
         ImGui.showDemoWindow();
@@ -121,6 +124,7 @@ public class UI
         ImGui.end();
     }
 
+    private DTO.AnimationFrame selectedAnimationFrame = null;
     private void drawAnimationFrameData(DTO.Animation anim)
     {
         ImGui.separator();
@@ -141,6 +145,10 @@ public class UI
             {
                 ImGui.pushID(frame.hashCode());
 
+                if(ImGui.button("Show frame"))
+                {
+                    selectedAnimationFrame = frame;
+                }
                 drawBoxEditor("Hitboxes", frame.hitboxes);
                 drawBoxEditor("Hurtboxes", frame.hurtboxes);
 
@@ -152,29 +160,20 @@ public class UI
     private void drawTexture(SpriteBatch sb)
     {
         DTO.Character character = service.getCharacter();
-        DTO.Animation anim = character.animations.get(1);
-        if (!anim.usesSpriteSheet)
-        {
-            sb.draw(RenderResources.getTexture(anim.frames.get(0).texturePath), 800 - 100 * character.drawDim.x / 2 , 400 - 100 * character.drawDim.y / 2, 100 * character.drawDim.x, 100 * character.drawDim.y);
-        }
+        sb.draw(RenderResources.getTexture(selectedAnimationFrame.texturePath), 800 - 100 * character.drawDim.x / 2 , 400 - 100 * character.drawDim.y / 2, 100 * character.drawDim.x, 100 * character.drawDim.y);
     }
 
     private void drawAttackData(ShapeRenderer sh)
     {
-        DTO.Character character = service.getCharacter();
-        DTO.Animation anim = character.animations.get(1);
-        if(!anim.usesSpriteSheet)
+        sh.setColor(Color.RED);
+        for(Rectangle hurtbox : selectedAnimationFrame.hurtboxes)
         {
-            sh.setColor(Color.RED);
-            for(Rectangle hurtbox : anim.frames.get(0).hurtboxes)
-            {
-                sh.rect(100 * (hurtbox.x - hurtbox.width / 2) + 800, 100 * (hurtbox.y - hurtbox.height / 2) + 400, 100 * hurtbox.width, 100 * hurtbox.height);
-            }
-            sh.setColor(Color.BLUE);
-            for(Rectangle hitbox : anim.frames.get(0).hitboxes)
-            {
-                sh.rect(100 * (hitbox.x - hitbox.width / 2) + 800, 100 * (hitbox.y - hitbox.height / 2) + 400, 100 * hitbox.width, 100 * hitbox.height);
-            }
+            sh.rect(100 * (hurtbox.x - hurtbox.width / 2) + 800, 100 * (hurtbox.y - hurtbox.height / 2) + 400, 100 * hurtbox.width, 100 * hurtbox.height);
+        }
+        sh.setColor(Color.BLUE);
+        for(Rectangle hitbox : selectedAnimationFrame.hitboxes)
+        {
+            sh.rect(100 * (hitbox.x - hitbox.width / 2) + 800, 100 * (hitbox.y - hitbox.height / 2) + 400, 100 * hitbox.width, 100 * hitbox.height);
         }
     }
 

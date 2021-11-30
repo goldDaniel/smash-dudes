@@ -13,6 +13,7 @@ public class ContentService
 
     private String filename = null;
     private DTO.Character character = null;
+    private DTO.AnimationFrame frame = null;
 
     public boolean hasLoadedCharacter()
     {
@@ -44,6 +45,16 @@ public class ContentService
     {
         return character;
     }
+
+    public void setFrame(DTO.AnimationFrame frame)
+    {
+        this.frame = frame;
+    }
+
+//    public DTO.AnimationFrame getFrame(int frameNum)
+//    {
+//        return character.animations;
+//    }
 
 
     public String getFilename()
