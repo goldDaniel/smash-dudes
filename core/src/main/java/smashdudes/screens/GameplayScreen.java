@@ -106,13 +106,13 @@ public class GameplayScreen extends GameScreen
 
 
         DrawComponent sd = new DrawComponent();
-        sd.width = 2;
-        sd.height = 2;
+        sd.width = characterData.drawDim.x;
+        sd.height = characterData.drawDim.y;
         player.addComponent(sd);
 
         DebugDrawComponent dd = new DebugDrawComponent();
-        dd.width = 2;
-        dd.height = 2;
+        dd.width = characterData.debugDim.x;
+        dd.height = characterData.debugDim.y;
         player.addComponent(dd);
 
 

@@ -2,6 +2,9 @@ package smashdudes.core.boxtool.presentation;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -10,6 +13,7 @@ import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import smashdudes.content.DTO;
+import smashdudes.core.RenderResources;
 import smashdudes.core.boxtool.logic.ContentService;
 
 public class UI
@@ -19,9 +23,14 @@ public class UI
     private ImGuiImplGlfw imGuiGlfw = new ImGuiImplGlfw();
     private ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
 
-    public UI()
+    private final SpriteBatch sb;
+    private final ShapeRenderer sh;
+
+    public UI(SpriteBatch sb, ShapeRenderer sh)
     {
         ImGui.createContext();
+        this.sb = sb;
+        this.sh = sh;
 
         long windowHandle = ((Lwjgl3Graphics) Gdx.graphics).getWindow().getWindowHandle();
         imGuiGlfw.init(windowHandle, true);
@@ -40,11 +49,20 @@ public class UI
         if(service.hasLoadedCharacter())
         {
             drawCharacterData();
+
+            sb.begin();
+            drawTexture(sb);
+            sb.end();
+
+            sh.begin(ShapeRenderer.ShapeType.Line);
+            drawAttackData(sh);
+            sh.end();
         }
 
         ImGui.showDemoWindow();
 
         ImGui.render();
+
         imGuiGl3.renderDrawData(ImGui.getDrawData());
     }
 
@@ -127,6 +145,35 @@ public class UI
                 drawBoxEditor("Hurtboxes", frame.hurtboxes);
 
                 ImGui.popID();
+            }
+        }
+    }
+
+    private void drawTexture(SpriteBatch sb)
+    {
+        DTO.Character character = service.getCharacter();
+        DTO.Animation anim = character.animations.get(1);
+        if (!anim.usesSpriteSheet)
+        {
+            sb.draw(RenderResources.getTexture(anim.frames.get(0).texturePath), 800 - 100 * character.drawDim.x / 2 , 400 - 100 * character.drawDim.y / 2, 100 * character.drawDim.x, 100 * character.drawDim.y);
+        }
+    }
+
+    private void drawAttackData(ShapeRenderer sh)
+    {
+        DTO.Character character = service.getCharacter();
+        DTO.Animation anim = character.animations.get(1);
+        if(!anim.usesSpriteSheet)
+        {
+            sh.setColor(Color.RED);
+            for(Rectangle hurtbox : anim.frames.get(0).hurtboxes)
+            {
+                sh.rect(100 * (hurtbox.x - hurtbox.width / 2) + 800, 100 * (hurtbox.y - hurtbox.height / 2) + 400, 100 * hurtbox.width, 100 * hurtbox.height);
+            }
+            sh.setColor(Color.BLUE);
+            for(Rectangle hitbox : anim.frames.get(0).hitboxes)
+            {
+                sh.rect(100 * (hitbox.x - hitbox.width / 2) + 800, 100 * (hitbox.y - hitbox.height / 2) + 400, 100 * hitbox.width, 100 * hitbox.height);
             }
         }
     }

@@ -33,7 +33,6 @@ public class ContentRepo
 
     public void saveCharacter(String filepath, DTO.Character character)
     {
-
         try
         {
             BufferedWriter writer = new BufferedWriter(new FileWriter(filepath));

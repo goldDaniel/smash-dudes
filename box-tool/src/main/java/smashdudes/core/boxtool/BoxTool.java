@@ -1,6 +1,7 @@
 package smashdudes.core.boxtool;
 
 import com.badlogic.gdx.ApplicationListener;
+import smashdudes.core.RenderResources;
 import smashdudes.core.boxtool.presentation.UI;
 
 public class BoxTool implements ApplicationListener
@@ -10,7 +11,9 @@ public class BoxTool implements ApplicationListener
     @Override
     public void create()
     {
-        ui = new UI();
+        RenderResources.init();
+
+        ui = new UI(RenderResources.getSpriteBatch(), RenderResources.getShapeRenderer());
     }
 
     @Override
