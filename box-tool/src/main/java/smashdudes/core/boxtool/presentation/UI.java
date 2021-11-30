@@ -3,12 +3,15 @@ package smashdudes.core.boxtool.presentation;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
@@ -27,11 +30,20 @@ public class UI
     private final SpriteBatch sb;
     private final ShapeRenderer sh;
 
+    private OrthographicCamera camera;
+    private Viewport viewport;
+
     public UI(SpriteBatch sb, ShapeRenderer sh)
     {
         ImGui.createContext();
         this.sb = sb;
         this.sh = sh;
+
+        int WORLD_WIDTH = 16;
+        int WORLD_HEIGHT = 9;
+
+        camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
+        viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
 
         long windowHandle = ((Lwjgl3Graphics) Gdx.graphics).getWindow().getWindowHandle();
         imGuiGlfw.init(windowHandle, true);
@@ -53,10 +65,12 @@ public class UI
 
             if (selectedAnimation != null && selectedAnimationFrame != null)
             {
+                sb.setProjectionMatrix(camera.combined);
                 sb.begin();
                 drawTexture(sb);
                 sb.end();
 
+                sh.setProjectionMatrix(camera.combined);
                 sh.begin(ShapeRenderer.ShapeType.Line);
                 drawAttackData(sh);
                 sh.end();
@@ -158,8 +172,8 @@ public class UI
         }
     }
 
-    private Vector2 texturePos = new Vector2(800, 400);
-    private float textureScale = 100;
+    private Vector2 texturePos = new Vector2(3, 0);
+    private float textureScale = 2;
     private void drawTexture(SpriteBatch sb)
     {
         DTO.Character character = service.getCharacter();
