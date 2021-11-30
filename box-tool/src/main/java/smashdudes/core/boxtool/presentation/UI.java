@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import imgui.ImGui;
@@ -157,10 +158,13 @@ public class UI
         }
     }
 
+    private Vector2 texturePos = new Vector2(800, 400);
+    private float textureScale = 100;
     private void drawTexture(SpriteBatch sb)
     {
         DTO.Character character = service.getCharacter();
-        sb.draw(RenderResources.getTexture(selectedAnimationFrame.texturePath), 800 - 100 * character.drawDim.x / 2 , 400 - 100 * character.drawDim.y / 2, 100 * character.drawDim.x, 100 * character.drawDim.y);
+        sb.draw(RenderResources.getTexture(selectedAnimationFrame.texturePath), texturePos.x - textureScale * character.drawDim.x / 2 ,
+                texturePos.y - textureScale * character.drawDim.y / 2, textureScale * character.drawDim.x, textureScale * character.drawDim.y);
     }
 
     private void drawAttackData(ShapeRenderer sh)
@@ -168,12 +172,14 @@ public class UI
         sh.setColor(Color.RED);
         for(Rectangle hurtbox : selectedAnimationFrame.hurtboxes)
         {
-            sh.rect(100 * (hurtbox.x - hurtbox.width / 2) + 800, 100 * (hurtbox.y - hurtbox.height / 2) + 400, 100 * hurtbox.width, 100 * hurtbox.height);
+            sh.rect(textureScale * (hurtbox.x - hurtbox.width / 2) + texturePos.x, textureScale * (hurtbox.y - hurtbox.height / 2) + texturePos.y,
+                    textureScale * hurtbox.width, textureScale * hurtbox.height);
         }
         sh.setColor(Color.BLUE);
         for(Rectangle hitbox : selectedAnimationFrame.hitboxes)
         {
-            sh.rect(100 * (hitbox.x - hitbox.width / 2) + 800, 100 * (hitbox.y - hitbox.height / 2) + 400, 100 * hitbox.width, 100 * hitbox.height);
+            sh.rect(textureScale * (hitbox.x - hitbox.width / 2) + texturePos.x, textureScale * (hitbox.y - hitbox.height / 2) + texturePos.y,
+                    textureScale * hitbox.width, textureScale * hitbox.height);
         }
     }
 
