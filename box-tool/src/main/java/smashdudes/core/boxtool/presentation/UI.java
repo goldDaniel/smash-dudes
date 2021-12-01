@@ -1,9 +1,11 @@
 package smashdudes.core.boxtool.presentation;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
@@ -16,9 +18,12 @@ import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
+import imgui.type.ImString;
 import smashdudes.content.DTO;
 import smashdudes.core.RenderResources;
 import smashdudes.core.boxtool.logic.ContentService;
+
+import java.util.Scanner;
 
 public class UI
 {
@@ -52,6 +57,7 @@ public class UI
 
     public void draw()
     {
+        float dt = Gdx.graphics.getDeltaTime();
         imGuiGlfw.newFrame();
         ScreenUtils.clear(0,0,0,1);
         ImGui.newFrame();
@@ -62,6 +68,16 @@ public class UI
         if(service.hasLoadedCharacter())
         {
             drawCharacterData();
+
+            if (selectedAnimation != null && playing)
+            {
+                playAnimation(dt);
+            }
+            else
+            {
+                currentAnimation = null;
+                currentTime = 0;
+            }
 
             if (selectedAnimationFrame != null)
             {
@@ -123,6 +139,14 @@ public class UI
         DTO.Character data = service.getCharacter();
 
         ImGui.text("Animations");
+
+        ImGui.sameLine();
+
+        if (ImGui.button("Add animation"))
+        {
+            drawNewAnimation();
+        }
+
         for(DTO.Animation entry : data.animations)
         {
             if(ImGui.selectable(entry.animationName, selectedAnimation == entry))
@@ -139,6 +163,12 @@ public class UI
         ImGui.end();
     }
 
+    public void drawNewAnimation()
+    {
+
+    }
+
+    boolean playing = false;
     private DTO.AnimationFrame selectedAnimationFrame = null;
     private void drawAnimationFrameData(DTO.Animation anim)
     {
@@ -153,9 +183,9 @@ public class UI
         }
         ImGui.labelText(anim.animationName, "Animation Name");
 
-        if (ImGui.button("Play animation"))
+        if (ImGui.button("Play/Pause animation"))
         {
-
+            playing = !playing;
         }
 
         ImGui.sameLine();
@@ -261,5 +291,28 @@ public class UI
         }
         boxes.removeAll(toRemove, true);
         toRemove.clear();
+    }
+
+    Animation<DTO.AnimationFrame> currentAnimation;
+    float currentTime = 0;
+    private void playAnimation(float dt)
+    {
+        float frameDuration = 0;
+        if (selectedAnimation.animationName.equals("idle"))
+        {
+            frameDuration = 1/8f;
+        }
+        else
+        {
+            frameDuration = 1/16f;
+        }
+
+        if (currentAnimation == null)
+        {
+            currentAnimation = new Animation<>(frameDuration, selectedAnimation.frames, Animation.PlayMode.LOOP);
+        }
+
+        currentTime += dt;
+        selectedAnimationFrame = currentAnimation.getKeyFrame(currentTime);
     }
 }
