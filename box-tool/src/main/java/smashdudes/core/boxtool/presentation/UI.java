@@ -63,7 +63,7 @@ public class UI
         {
             drawCharacterData();
 
-            if (selectedAnimation != null && selectedAnimationFrame != null)
+            if (selectedAnimationFrame != null)
             {
                 sb.setProjectionMatrix(camera.combined);
                 sb.begin();
@@ -153,6 +153,23 @@ public class UI
         }
         ImGui.labelText(anim.animationName, "Animation Name");
 
+        if (ImGui.button("Play animation"))
+        {
+
+        }
+
+        ImGui.sameLine();
+        if (ImGui.button("Delete animation"))
+        {
+            service.getCharacter().animations.removeValue(anim, true);
+
+            if (selectedAnimation.frames.contains(selectedAnimationFrame, true))
+            {
+                selectedAnimationFrame = null;
+            }
+            selectedAnimation = null;
+        }
+
         ImGui.text("Frames");
         int frameNumber = 0;
         for(DTO.AnimationFrame frame : anim.frames)
@@ -170,6 +187,10 @@ public class UI
                 if(ImGui.button("Delete frame"))
                 {
                     toRemove.add(frame);
+                    if (frame == selectedAnimationFrame)
+                    {
+                        selectedAnimationFrame = null;
+                    }
                 }
 
                 drawBoxEditor("Hitboxes", frame.hitboxes);
