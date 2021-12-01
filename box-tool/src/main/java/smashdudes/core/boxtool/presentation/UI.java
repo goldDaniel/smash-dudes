@@ -142,6 +142,7 @@ public class UI
     private DTO.AnimationFrame selectedAnimationFrame = null;
     private void drawAnimationFrameData(DTO.Animation anim)
     {
+        Array<DTO.AnimationFrame> toRemove = new Array<>();
         ImGui.separator();
         ImGui.text("Animation Frame Data");
 
@@ -164,12 +165,22 @@ public class UI
                 {
                     selectedAnimationFrame = frame;
                 }
+
+                ImGui.sameLine();
+                if(ImGui.button("Delete frame"))
+                {
+                    toRemove.add(frame);
+                }
+
                 drawBoxEditor("Hitboxes", frame.hitboxes);
                 drawBoxEditor("Hurtboxes", frame.hurtboxes);
 
                 ImGui.popID();
             }
         }
+
+        anim.frames.removeAll(toRemove, true);
+        toRemove.clear();
     }
 
     private Vector2 texturePos = new Vector2(3, 0);
