@@ -17,7 +17,6 @@ import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
-import smashdudes.content.DTO;
 import smashdudes.core.RenderResources;
 import smashdudes.core.boxtool.logic.ContentService;
 import smashdudes.core.boxtool.presentation.viewmodel.VM;
@@ -28,6 +27,11 @@ public class UI
 
     //State--------------------------------------------------
     VM.Character character = null;
+
+    boolean playing = false;
+    Animation<VM.AnimationFrame> currentAnimation = null;
+    private VM.Animation selectedAnimation = null;
+    private VM.AnimationFrame selectedAnimationFrame = null;
     //State--------------------------------------------------
 
     //Rendering---------------------------------------------
@@ -39,6 +43,10 @@ public class UI
 
     private OrthographicCamera camera;
     private Viewport viewport;
+
+    private Vector2 texturePos = new Vector2(3, 0);
+    private float textureScale = 2;
+    private float currentTime = 0;
     //Rendering---------------------------------------------
 
     public UI(SpriteBatch sb, ShapeRenderer sh)
@@ -128,7 +136,6 @@ public class UI
         ImGui.endMainMenuBar();
     }
 
-    private VM.Animation selectedAnimation = null;
     private void drawCharacterData()
     {
         ImGui.begin("Character Data", ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoCollapse);
@@ -150,7 +157,7 @@ public class UI
 
         if (ImGui.button("Add animation"))
         {
-            drawNewAnimation();
+
         }
 
         for(VM.Animation entry : character.animations)
@@ -169,13 +176,6 @@ public class UI
         ImGui.end();
     }
 
-    public void drawNewAnimation()
-    {
-
-    }
-
-    boolean playing = false;
-    private VM.AnimationFrame selectedAnimationFrame = null;
     private void drawAnimationFrameData(VM.Animation anim)
     {
         Array<VM.AnimationFrame> toRemove = new Array<>();
@@ -240,8 +240,7 @@ public class UI
         toRemove.clear();
     }
 
-    private Vector2 texturePos = new Vector2(3, 0);
-    private float textureScale = 2;
+
     private void drawTexture(SpriteBatch sb)
     {
         sb.draw(RenderResources.getTexture(selectedAnimationFrame.texturePath), texturePos.x - textureScale * character.drawDim.x / 2 ,
@@ -290,8 +289,6 @@ public class UI
         toRemove.clear();
     }
 
-    Animation<VM.AnimationFrame> currentAnimation;
-    float currentTime = 0;
     private void playAnimation(float dt)
     {
         float frameDuration = 0;
