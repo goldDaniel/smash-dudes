@@ -19,9 +19,12 @@ import imgui.flag.ImGuiButtonFlags;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
+import org.lwjgl.system.CallbackI;
 import smashdudes.core.RenderResources;
 import smashdudes.core.boxtool.logic.ContentService;
+import smashdudes.core.boxtool.presentation.commands.AddBoxCommand;
 import smashdudes.core.boxtool.presentation.commands.RectangleEditCommand;
+import smashdudes.core.boxtool.presentation.commands.RemoveBoxCommand;
 import smashdudes.core.boxtool.presentation.viewmodel.VM;
 
 import java.util.Objects;
@@ -147,6 +150,7 @@ public class UI
                 {
                     String filepath = Utils.chooseFileToLoad();
                     character = VM.mapping(service.readCharacter(filepath));
+                    commandList.clear();
                 }
 
                 ImGui.endMenu();
@@ -301,7 +305,12 @@ public class UI
         ImGui.sameLine();
         if(ImGui.button("Add##" + name))
         {
-            boxes.add(new FloatArray(4));
+            FloatArray arr = new FloatArray(4);
+            arr.add(0);
+            arr.add(0);
+            arr.add(0);
+            arr.add(0);
+            commandList.execute(new AddBoxCommand(boxes, arr));
         }
         for(FloatArray rect : boxes)
         {
@@ -321,7 +330,11 @@ public class UI
 
             ImGui.popID();
         }
-        boxes.removeAll(toRemove, true);
+
+        for(FloatArray f : toRemove)
+        {
+            commandList.execute(new RemoveBoxCommand(boxes, f));
+        }
         toRemove.clear();
     }
 

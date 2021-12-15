@@ -6,14 +6,17 @@ import smashdudes.core.boxtool.presentation.commands.Command;
 public class CommandList
 {
     private Array<Command> commands = new Array<>();
-    private int index = -1;
 
 
+    public void clear()
+    {
+        commands.clear();
+    }
+    
     public void execute(Command c)
     {
         c.execute();
         commands.add(c);
-        index++;
     }
 
     public void redo()
@@ -23,20 +26,9 @@ public class CommandList
 
     public void undo()
     {
-        if(index >= 0)
+        if(commands.size > 0)
         {
-            commands.get(index).undo();
-            index--;
+            commands.pop().undo();
         }
-    }
-
-    public boolean canUndo()
-    {
-        return index >= 0;
-    }
-
-    public boolean canRedo()
-    {
-        return index < commands.size - 1 && commands.size > 0;
     }
 }
