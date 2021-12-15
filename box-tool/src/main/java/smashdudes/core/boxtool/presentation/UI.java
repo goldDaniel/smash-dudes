@@ -1,16 +1,15 @@
 package smashdudes.core.boxtool.presentation;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -18,17 +17,20 @@ import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
-import imgui.type.ImString;
 import smashdudes.content.DTO;
 import smashdudes.core.RenderResources;
 import smashdudes.core.boxtool.logic.ContentService;
-
-import java.util.Scanner;
+import smashdudes.core.boxtool.presentation.viewmodel.VM;
 
 public class UI
 {
     private ContentService service = new ContentService();
 
+    //State--------------------------------------------------
+    VM.Character character = null;
+    //State--------------------------------------------------
+
+    //Rendering---------------------------------------------
     private ImGuiImplGlfw imGuiGlfw = new ImGuiImplGlfw();
     private ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
 
@@ -37,6 +39,7 @@ public class UI
 
     private OrthographicCamera camera;
     private Viewport viewport;
+    //Rendering---------------------------------------------
 
     public UI(SpriteBatch sb, ShapeRenderer sh)
     {
@@ -65,7 +68,7 @@ public class UI
         drawMainMenuBar();
 
 
-        if(service.hasLoadedCharacter())
+        if(character != null)
         {
             drawCharacterData();
 
@@ -115,7 +118,8 @@ public class UI
             {
                 if(ImGui.menuItem("Load..."))
                 {
-                    service.loadFile();
+                    String filepath = Utils.chooseFileToLoad();
+                    character = VM.mapping(service.readCharacter(filepath));
                 }
 
                 ImGui.endMenu();
@@ -124,19 +128,21 @@ public class UI
         ImGui.endMainMenuBar();
     }
 
-    private DTO.Animation selectedAnimation = null;
+    private VM.Animation selectedAnimation = null;
     private void drawCharacterData()
     {
         ImGui.begin("Character Data", ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoCollapse);
-        ImGui.text(service.getFilename());
+
         if(ImGui.button("Save"))
         {
-            service.saveCharacter();
+            String path = Utils.chooseFileToSave();
+            if(path != null)
+            {
+                service.updateCharacter(VM.mapping(character), path);
+            }
         }
 
         ImGui.separator();
-
-        DTO.Character data = service.getCharacter();
 
         ImGui.text("Animations");
 
@@ -147,7 +153,7 @@ public class UI
             drawNewAnimation();
         }
 
-        for(DTO.Animation entry : data.animations)
+        for(VM.Animation entry : character.animations)
         {
             if(ImGui.selectable(entry.animationName, selectedAnimation == entry))
             {
@@ -169,10 +175,10 @@ public class UI
     }
 
     boolean playing = false;
-    private DTO.AnimationFrame selectedAnimationFrame = null;
-    private void drawAnimationFrameData(DTO.Animation anim)
+    private VM.AnimationFrame selectedAnimationFrame = null;
+    private void drawAnimationFrameData(VM.Animation anim)
     {
-        Array<DTO.AnimationFrame> toRemove = new Array<>();
+        Array<VM.AnimationFrame> toRemove = new Array<>();
         ImGui.separator();
         ImGui.text("Animation Frame Data");
 
@@ -191,7 +197,7 @@ public class UI
         ImGui.sameLine();
         if (ImGui.button("Delete animation"))
         {
-            service.getCharacter().animations.removeValue(anim, true);
+            character.animations.removeValue(anim, true);
 
             if (selectedAnimation.frames.contains(selectedAnimationFrame, true))
             {
@@ -202,11 +208,11 @@ public class UI
 
         ImGui.text("Frames");
         int frameNumber = 0;
-        for(DTO.AnimationFrame frame : anim.frames)
+        for(VM.AnimationFrame frame : anim.frames)
         {
             if(ImGui.collapsingHeader("frame " + frameNumber++))
             {
-                ImGui.pushID(frame.hashCode());
+                ImGui.pushID(frame + "");
 
                 if(ImGui.button("Show frame"))
                 {
@@ -238,7 +244,6 @@ public class UI
     private float textureScale = 2;
     private void drawTexture(SpriteBatch sb)
     {
-        DTO.Character character = service.getCharacter();
         sb.draw(RenderResources.getTexture(selectedAnimationFrame.texturePath), texturePos.x - textureScale * character.drawDim.x / 2 ,
                 texturePos.y - textureScale * character.drawDim.y / 2, textureScale * character.drawDim.x, textureScale * character.drawDim.y);
     }
@@ -246,43 +251,35 @@ public class UI
     private void drawAttackData(ShapeRenderer sh)
     {
         sh.setColor(Color.RED);
-        for(Rectangle hurtbox : selectedAnimationFrame.hurtboxes)
+        for(FloatArray hurtbox : selectedAnimationFrame.hurtboxes)
         {
-            sh.rect(textureScale * (hurtbox.x - hurtbox.width / 2) + texturePos.x, textureScale * (hurtbox.y - hurtbox.height / 2) + texturePos.y,
-                    textureScale * hurtbox.width, textureScale * hurtbox.height);
+            sh.rect(textureScale * (hurtbox.get(0) - hurtbox.get(2) / 2) + texturePos.x, textureScale * (hurtbox.get(1) - hurtbox.get(3) / 2) + texturePos.y,
+                    textureScale * hurtbox.get(2), textureScale * hurtbox.get(3));
         }
         sh.setColor(Color.BLUE);
-        for(Rectangle hitbox : selectedAnimationFrame.hitboxes)
+        for(FloatArray hitbox : selectedAnimationFrame.hitboxes)
         {
-            sh.rect(textureScale * (hitbox.x - hitbox.width / 2) + texturePos.x, textureScale * (hitbox.y - hitbox.height / 2) + texturePos.y,
-                    textureScale * hitbox.width, textureScale * hitbox.height);
+            sh.rect(textureScale * (hitbox.get(0) - hitbox.get(2) / 2) + texturePos.x, textureScale * (hitbox.get(1) - hitbox.get(3) / 2) + texturePos.y,
+                    textureScale * hitbox.get(2), textureScale * hitbox.get(3));
         }
     }
 
-    private void drawBoxEditor(String name, Array<Rectangle> boxes)
+    private void drawBoxEditor(String name, Array<FloatArray> boxes)
     {
-        Array<Rectangle> toRemove = new Array<>();
-        int boxCounter = 0;
+        Array<FloatArray> toRemove = new Array<>();
         ImGui.text(name);
         ImGui.sameLine();
         if(ImGui.button("Add##" + name))
         {
-            boxes.add(new Rectangle());
+            boxes.add(new FloatArray(4));
         }
-        for(Rectangle rect : boxes)
+        for(FloatArray rect : boxes)
         {
-            ImGui.pushID(rect.hashCode());
-
-            String hitboxKey = "##" +  name + rect + boxCounter++;
-            float[] temp = {rect.x, rect.y, rect.width, rect.height};
-            ImGui.inputFloat4(hitboxKey, temp);
-            rect.x = temp[0];
-            rect.y = temp[1];
-            rect.width = temp[2];
-            rect.height = temp[3];
+            ImGui.pushID(rect.items + "");
+            ImGui.inputFloat4("", rect.items);
 
             ImGui.sameLine();
-            if(ImGui.button("Remove##" + name + hitboxKey))
+            if(ImGui.button("Remove##" + name + rect))
             {
                 toRemove.add(rect);
             }
@@ -293,7 +290,7 @@ public class UI
         toRemove.clear();
     }
 
-    Animation<DTO.AnimationFrame> currentAnimation;
+    Animation<VM.AnimationFrame> currentAnimation;
     float currentTime = 0;
     private void playAnimation(float dt)
     {
