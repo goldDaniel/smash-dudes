@@ -14,18 +14,24 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import imgui.ImGui;
+import imgui.flag.ImGuiButtonFlags;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import smashdudes.core.RenderResources;
 import smashdudes.core.boxtool.logic.ContentService;
+import smashdudes.core.boxtool.presentation.commands.RectangleEditCommand;
 import smashdudes.core.boxtool.presentation.viewmodel.VM;
+
+import java.util.Objects;
 
 public class UI
 {
     private ContentService service = new ContentService();
 
     //State--------------------------------------------------
+    private CommandList commandList = new CommandList();
+
     VM.Character character = null;
 
     boolean playing = false;
@@ -130,6 +136,18 @@ public class UI
                     character = VM.mapping(service.readCharacter(filepath));
                 }
 
+                ImGui.endMenu();
+            }
+            if(ImGui.beginMenu("Edit"))
+            {
+                if(ImGui.menuItem("Redo"))
+                {
+
+                }
+                if(ImGui.menuItem("Undo"))
+                {
+                    commandList.undo();
+                }
                 ImGui.endMenu();
             }
         }
@@ -275,7 +293,14 @@ public class UI
         for(FloatArray rect : boxes)
         {
             ImGui.pushID(rect.items + "");
-            ImGui.inputFloat4("", rect.items);
+
+            float[] temp = {rect.items[0], rect.items[1],rect.items[2], rect.items[3]};
+            if(ImGui.inputFloat4("", temp))
+            {
+                commandList.execute(new RectangleEditCommand(rect, temp));
+            }
+
+
 
             ImGui.sameLine();
             if(ImGui.button("Remove##" + name + rect))
