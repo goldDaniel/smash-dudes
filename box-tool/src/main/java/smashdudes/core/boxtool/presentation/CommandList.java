@@ -12,7 +12,7 @@ public class CommandList
     {
         commands.clear();
     }
-    
+
     public void execute(Command c)
     {
         c.execute();
