@@ -16,6 +16,11 @@ public class CommandList
         index++;
     }
 
+    public void redo()
+    {
+
+    }
+
     public void undo()
     {
         if(index >= 0)

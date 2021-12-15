@@ -1,6 +1,7 @@
 package smashdudes.core.boxtool.presentation;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -74,6 +75,18 @@ public class UI
 
     public void draw()
     {
+        if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) &&
+           Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) &&
+           Gdx.input.isKeyJustPressed(Input.Keys.Z))
+        {
+            commandList.redo();
+        }
+        else if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) &&
+                Gdx.input.isKeyJustPressed(Input.Keys.Z))
+        {
+            commandList.undo();
+        }
+
         float dt = Gdx.graphics.getDeltaTime();
         imGuiGlfw.newFrame();
         ScreenUtils.clear(0,0,0,1);
@@ -299,8 +312,6 @@ public class UI
             {
                 commandList.execute(new RectangleEditCommand(rect, temp));
             }
-
-
 
             ImGui.sameLine();
             if(ImGui.button("Remove##" + name + rect))
