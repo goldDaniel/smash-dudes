@@ -48,7 +48,7 @@ public class UI
 
     private OrthographicCamera camera;
 
-    private Vector2 texturePos = new Vector2(1.5f, 0);
+    private Vector2 texturePos = new Vector2(3, 0);
     private float currentTime = 0;
     //Rendering---------------------------------------------
 
@@ -63,6 +63,7 @@ public class UI
 
         camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
         camera.zoom = 1/2.f;
+        texturePos.x = texturePos.x * camera.zoom;
 
         long windowHandle = ((Lwjgl3Graphics) Gdx.graphics).getWindow().getWindowHandle();
         imGuiGlfw.init(windowHandle, true);
