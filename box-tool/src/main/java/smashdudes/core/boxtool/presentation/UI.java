@@ -12,8 +12,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
@@ -49,10 +47,8 @@ public class UI
     private final ShapeRenderer sh;
 
     private OrthographicCamera camera;
-    private Viewport viewport;
 
     private Vector2 texturePos = new Vector2(3, 0);
-    private float textureScale = 2;
     private float currentTime = 0;
     //Rendering---------------------------------------------
 
@@ -66,7 +62,7 @@ public class UI
         int WORLD_HEIGHT = 9;
 
         camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
-        viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
+        camera.zoom = 1.f;
 
         long windowHandle = ((Lwjgl3Graphics) Gdx.graphics).getWindow().getWindowHandle();
         imGuiGlfw.init(windowHandle, true);
@@ -88,6 +84,8 @@ public class UI
         }
 
         float dt = Gdx.graphics.getDeltaTime();
+        camera.update();
+
         imGuiGlfw.newFrame();
         ScreenUtils.clear(0,0,0,1);
         ImGui.newFrame();
@@ -275,8 +273,11 @@ public class UI
 
     private void drawTexture(SpriteBatch sb)
     {
-        sb.draw(RenderResources.getTexture(selectedAnimationFrame.texturePath), texturePos.x - textureScale * character.drawDim.x / 2 ,
-                texturePos.y - textureScale * character.drawDim.y / 2, textureScale * character.drawDim.x, textureScale * character.drawDim.y);
+        float x = texturePos.x - character.drawDim.x / 2 ;
+        float y = texturePos.y  - character.drawDim.y / 2;
+        float w = character.drawDim.x;
+        float h = character.drawDim.y;
+        sb.draw(RenderResources.getTexture(selectedAnimationFrame.texturePath), x, y, w, h);
     }
 
     private void drawAttackData(ShapeRenderer sh)
@@ -284,14 +285,22 @@ public class UI
         sh.setColor(Color.RED);
         for(FloatArray hurtbox : selectedAnimationFrame.hurtboxes)
         {
-            sh.rect(textureScale * (hurtbox.get(0) - hurtbox.get(2) / 2) + texturePos.x, textureScale * (hurtbox.get(1) - hurtbox.get(3) / 2) + texturePos.y,
-                    textureScale * hurtbox.get(2), textureScale * hurtbox.get(3));
+            float w = hurtbox.get(2);
+            float h = hurtbox.get(3);
+            float x = (hurtbox.get(0) - w / 2) + texturePos.x;
+            float y = (hurtbox.get(1) - h / 2) + texturePos.y;
+
+            sh.rect(x, y, w, h);
         }
         sh.setColor(Color.BLUE);
         for(FloatArray hitbox : selectedAnimationFrame.hitboxes)
         {
-            sh.rect(textureScale * (hitbox.get(0) - hitbox.get(2) / 2) + texturePos.x, textureScale * (hitbox.get(1) - hitbox.get(3) / 2) + texturePos.y,
-                    textureScale * hitbox.get(2), textureScale * hitbox.get(3));
+            float w = hitbox.get(2);
+            float h = hitbox.get(3);
+            float x = (hitbox.get(0) - w / 2) + texturePos.x;
+            float y = (hitbox.get(1) - h / 2) + texturePos.y;
+
+            sh.rect(x, y, w, h);
         }
     }
 
