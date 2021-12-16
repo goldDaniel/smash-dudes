@@ -48,7 +48,7 @@ public class UI
 
     private OrthographicCamera camera;
 
-    private Vector2 texturePos = new Vector2(3, 0);
+    private Vector2 texturePos = new Vector2(1.5f, 0);
     private float currentTime = 0;
     //Rendering---------------------------------------------
 
@@ -62,7 +62,7 @@ public class UI
         int WORLD_HEIGHT = 9;
 
         camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
-        camera.zoom = 1.f;
+        camera.zoom = 1/2.f;
 
         long windowHandle = ((Lwjgl3Graphics) Gdx.graphics).getWindow().getWindowHandle();
         imGuiGlfw.init(windowHandle, true);
@@ -104,7 +104,6 @@ public class UI
             else
             {
                 currentAnimation = null;
-                currentTime = 0;
             }
 
             if (selectedAnimationFrame != null)
@@ -273,10 +272,10 @@ public class UI
 
     private void drawTexture(SpriteBatch sb)
     {
-        float x = texturePos.x - character.drawDim.x / 2 ;
-        float y = texturePos.y  - character.drawDim.y / 2;
         float w = character.drawDim.x;
         float h = character.drawDim.y;
+        float x = texturePos.x - w / 2 ;
+        float y = texturePos.y  - h / 2;
         sb.draw(RenderResources.getTexture(selectedAnimationFrame.texturePath), x, y, w, h);
     }
 
@@ -312,10 +311,11 @@ public class UI
         if(ImGui.button("Add##" + name))
         {
             FloatArray arr = new FloatArray(4);
-            arr.add(0);
-            arr.add(0);
-            arr.add(0);
-            arr.add(0);
+            for (int i = 0; i < arr.size; i++)
+            {
+                arr.add(0);
+            }
+
             commandList.execute(new AddBoxCommand(boxes, arr));
         }
         for(FloatArray rect : boxes)
