@@ -12,6 +12,7 @@ public class CommandList
     public void clear()
     {
         commands.clear();
+        currentIndex = -1;
     }
 
     public void execute(Command c)
