@@ -19,13 +19,13 @@ public class RemoveBoxCommand extends Command
     }
 
     @Override
-    public void execute()
+    protected void execute()
     {
         boxes.removeValue(box, true);
     }
 
     @Override
-    public void undo()
+    protected void undo()
     {
         boxes.insert(index, box);
     }

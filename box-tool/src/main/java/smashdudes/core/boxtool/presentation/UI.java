@@ -15,19 +15,16 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import imgui.ImGui;
-import imgui.flag.ImGuiButtonFlags;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
-import org.lwjgl.system.CallbackI;
 import smashdudes.core.RenderResources;
 import smashdudes.core.boxtool.logic.ContentService;
 import smashdudes.core.boxtool.presentation.commands.AddBoxCommand;
+import smashdudes.core.boxtool.presentation.commands.CommandList;
 import smashdudes.core.boxtool.presentation.commands.RectangleEditCommand;
 import smashdudes.core.boxtool.presentation.commands.RemoveBoxCommand;
 import smashdudes.core.boxtool.presentation.viewmodel.VM;
-
-import java.util.Objects;
 
 public class UI
 {

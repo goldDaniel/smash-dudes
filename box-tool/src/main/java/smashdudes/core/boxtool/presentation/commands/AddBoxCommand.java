@@ -17,13 +17,13 @@ public class AddBoxCommand extends Command
     }
 
     @Override
-    public void execute()
+    protected void execute()
     {
         boxes.add(box);
     }
 
     @Override
-    public void undo()
+    protected void undo()
     {
         boxes.removeValue(box, true);
     }

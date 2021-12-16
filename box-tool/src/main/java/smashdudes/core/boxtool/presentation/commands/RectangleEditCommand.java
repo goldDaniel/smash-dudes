@@ -25,7 +25,7 @@ public class RectangleEditCommand extends Command
     }
 
     @Override
-    public void execute()
+    protected void execute()
     {
         rect.items[0] = data[0];
         rect.items[1] = data[1];
@@ -34,7 +34,7 @@ public class RectangleEditCommand extends Command
     }
 
     @Override
-    public void undo()
+    protected void undo()
     {
         rect.items[0] = prevX;
         rect.items[1] = prevY;
