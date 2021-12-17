@@ -274,7 +274,7 @@ public class UI
 
                     Command c = new AddFrameCommand(selectedAnimation, addFrameIdx.get(), newFrame);
                     commandList.execute(c);
-                    
+
                     ImGui.closeCurrentPopup();
                 }
             }
@@ -354,7 +354,10 @@ public class UI
             }
         }
 
-        anim.frames.removeAll(toRemove, true);
+        if(toRemove.notEmpty())
+        {
+            commandList.execute(new RemoveFrameCommand(selectedAnimation, toRemove));
+        }
         toRemove.clear();
     }
 
