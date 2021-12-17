@@ -18,7 +18,6 @@ import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import imgui.type.ImInt;
-import org.lwjgl.system.CallbackI;
 import smashdudes.core.RenderResources;
 import smashdudes.core.boxtool.logic.ContentService;
 import smashdudes.core.boxtool.presentation.commands.*;
@@ -165,7 +164,7 @@ public class UI
             {
                 if(ImGui.menuItem("Redo"))
                 {
-
+                    commandList.redo();
                 }
                 if(ImGui.menuItem("Undo"))
                 {
@@ -273,7 +272,9 @@ public class UI
                     VM.AnimationFrame newFrame = new VM.AnimationFrame();
                     newFrame.texturePath = addFrameTexture;
 
-                    selectedAnimation.frames.insert(addFrameIdx.get(), newFrame);
+                    Command c = new AddFrameCommand(selectedAnimation, addFrameIdx.get(), newFrame);
+                    commandList.execute(c);
+                    
                     ImGui.closeCurrentPopup();
                 }
             }
