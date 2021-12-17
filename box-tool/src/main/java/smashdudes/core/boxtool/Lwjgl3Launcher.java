@@ -13,7 +13,6 @@ public class Lwjgl3Launcher
         Lwjgl3ApplicationConfiguration configuration = new Lwjgl3ApplicationConfiguration();
         configuration.setTitle("smash-dudes");
         configuration.setWindowedMode(1280, 720);
-        configuration.setResizable(false);
 
         new Lwjgl3Application(new BoxTool(), configuration);
     }

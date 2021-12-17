@@ -32,11 +32,10 @@ public class CommandList
 
     public void redo()
     {
-        if(currentIndex >= 0 &&
+        if(currentIndex >= -1 &&
            currentIndex < commands.size - 1)
         {
-            commands.get(currentIndex).execute();
-            currentIndex++;
+            commands.get(++currentIndex).execute();
         }
     }
 

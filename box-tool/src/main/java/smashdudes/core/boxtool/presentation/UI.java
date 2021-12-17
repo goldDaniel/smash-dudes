@@ -12,16 +12,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import smashdudes.core.RenderResources;
 import smashdudes.core.boxtool.logic.ContentService;
-import smashdudes.core.boxtool.presentation.commands.AddBoxCommand;
-import smashdudes.core.boxtool.presentation.commands.CommandList;
-import smashdudes.core.boxtool.presentation.commands.RectangleEditCommand;
-import smashdudes.core.boxtool.presentation.commands.RemoveBoxCommand;
+import smashdudes.core.boxtool.presentation.commands.*;
 import smashdudes.core.boxtool.presentation.viewmodel.VM;
 
 public class UI
@@ -47,6 +45,7 @@ public class UI
     private final ShapeRenderer sh;
 
     private OrthographicCamera camera;
+    private ExtendViewport viewport;
 
     private Vector2 texturePos = new Vector2(3, 0);
     private float currentTime = 0;
@@ -64,10 +63,17 @@ public class UI
         camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
         camera.zoom = 1/2.f;
         texturePos.x = texturePos.x * camera.zoom;
+        viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
 
         long windowHandle = ((Lwjgl3Graphics) Gdx.graphics).getWindow().getWindowHandle();
         imGuiGlfw.init(windowHandle, true);
         imGuiGl3.init();
+    }
+
+    public void resize(int w, int h)
+    {
+        viewport.update(w,h);
+        viewport.apply();
     }
 
     public void draw()
@@ -168,7 +174,7 @@ public class UI
 
     private void drawCharacterData()
     {
-        ImGui.begin("Character Data", ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoCollapse);
+        ImGui.begin("Character Data", ImGuiWindowFlags.NoCollapse);
 
         if(ImGui.button("Save"))
         {
@@ -259,6 +265,28 @@ public class UI
                     }
                 }
 
+                ImGui.sameLine();
+                if(ImGui.button("/\\"))
+                {
+                    int index = anim.frames.indexOf(frame, true);
+                    if(index > 0)
+                    {
+                        int swapIndex = index - 1;
+                        commandList.execute(new ArraySwapCommand(anim.frames, index, swapIndex));
+                    }
+                }
+                ImGui.sameLine();
+                if(ImGui.button("\\/"))
+                {
+                    int index = anim.frames.indexOf(frame, true);
+                    if(index < anim.frames.size - 1)
+                    {
+                        int swapIndex = index + 1;
+                        commandList.execute(new ArraySwapCommand(anim.frames, index, swapIndex));
+                    }
+                }
+
+
                 drawBoxEditor("Hitboxes", frame.hitboxes);
                 drawBoxEditor("Hurtboxes", frame.hurtboxes);
 
@@ -312,7 +340,7 @@ public class UI
         if(ImGui.button("Add##" + name))
         {
             FloatArray arr = new FloatArray(4);
-            for (int i = 0; i < arr.size; i++)
+            for (int i = 0; i < arr.items.length; i++)
             {
                 arr.add(0);
             }
@@ -347,14 +375,10 @@ public class UI
 
     private void playAnimation(float dt)
     {
-        float frameDuration = 0;
+        float frameDuration = 1/16f;
         if (selectedAnimation.animationName.equals("idle"))
         {
             frameDuration = 1/8f;
-        }
-        else
-        {
-            frameDuration = 1/16f;
         }
 
         if (currentAnimation == null)
