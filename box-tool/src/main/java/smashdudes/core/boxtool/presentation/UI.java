@@ -18,6 +18,7 @@ import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import imgui.type.ImInt;
+import imgui.type.ImString;
 import smashdudes.core.RenderResources;
 import smashdudes.core.boxtool.logic.ContentService;
 import smashdudes.core.boxtool.presentation.commands.*;
@@ -34,6 +35,8 @@ public class UI
 
     String addFrameTexture = "";
     ImInt addFrameIdx = new ImInt();
+
+    ImString addAnimationName = new ImString();
 
     boolean playing = false;
     Animation<VM.AnimationFrame> currentAnimation = null;
@@ -197,7 +200,32 @@ public class UI
 
         if (ImGui.button("Add animation"))
         {
+            addAnimationName.set("");
+            ImGui.openPopup("Add Animation?");
+        }
+        if(ImGui.beginPopupModal("Add Animation?"))
+        {
+            ImGui.inputText("Animation Name", addAnimationName);
 
+            if(ImGui.button("Confirm"))
+            {
+                if(!addAnimationName.get().equals(""))
+                {
+                    VM.Animation anim = new VM.Animation();
+                    anim.animationName = addAnimationName.get();
+
+                    commandList.execute(new AddAnimationCommand(character.animations, anim));
+                    ImGui.closeCurrentPopup();
+                }
+            }
+
+            ImGui.sameLine();
+            if(ImGui.button("Cancel"))
+            {
+                ImGui.closeCurrentPopup();
+            }
+
+            ImGui.endPopup();
         }
 
         for(VM.Animation entry : character.animations)

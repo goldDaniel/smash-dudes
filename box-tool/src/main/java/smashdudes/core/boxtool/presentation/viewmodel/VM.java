@@ -120,7 +120,6 @@ public class VM
                 }
             }
         }
-
         return result;
     }
 
