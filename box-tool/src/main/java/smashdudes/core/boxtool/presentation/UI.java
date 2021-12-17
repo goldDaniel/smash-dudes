@@ -17,6 +17,8 @@ import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
+import imgui.type.ImInt;
+import org.lwjgl.system.CallbackI;
 import smashdudes.core.RenderResources;
 import smashdudes.core.boxtool.logic.ContentService;
 import smashdudes.core.boxtool.presentation.commands.*;
@@ -30,6 +32,9 @@ public class UI
     private CommandList commandList = new CommandList();
 
     VM.Character character = null;
+
+    String addFrameTexture = "";
+    ImInt addFrameIdx = new ImInt();
 
     boolean playing = false;
     Animation<VM.AnimationFrame> currentAnimation = null;
@@ -149,7 +154,7 @@ public class UI
             {
                 if(ImGui.menuItem("Load..."))
                 {
-                    String filepath = Utils.chooseFileToLoad();
+                    String filepath = Utils.chooseFileToLoad("json");
                     character = VM.mapping(service.readCharacter(filepath));
                     commandList.clear();
                 }
@@ -219,7 +224,7 @@ public class UI
         ImGui.text("Animation Frame Data");
 
         ImGui.labelText(anim.usesSpriteSheet + "", "Uses spritesheet");
-        if(anim.usesSpriteSheet)
+        if (anim.usesSpriteSheet)
         {
             ImGui.labelText(anim.textureFilePath, "Texture File Path");
         }
@@ -243,6 +248,45 @@ public class UI
         }
 
         ImGui.text("Frames");
+        ImGui.sameLine();
+        if (ImGui.button("Add Frame.."))
+        {
+            addFrameIdx.set(0);
+            addFrameTexture = "";
+            ImGui.openPopup("Add Frame?");
+        }
+        if(ImGui.beginPopupModal("Add Frame?"))
+        {
+            ImGui.inputInt("Frame Index", addFrameIdx);
+            ImGui.text(addFrameTexture);
+            ImGui.sameLine();
+            if(ImGui.button("select texture..."))
+            {
+                String texture = Utils.chooseFileToLoad("png", "jpg", "jpeg");
+                addFrameTexture = texture;
+            }
+
+            if(ImGui.button("Confirm"))
+            {
+                if(!addFrameTexture.equals(""))
+                {
+                    VM.AnimationFrame newFrame = new VM.AnimationFrame();
+                    newFrame.texturePath = addFrameTexture;
+
+                    selectedAnimation.frames.insert(addFrameIdx.get(), newFrame);
+                    ImGui.closeCurrentPopup();
+                }
+            }
+            ImGui.sameLine();
+            if(ImGui.button("Cancel"))
+            {
+                ImGui.closeCurrentPopup();
+            }
+
+            ImGui.endPopup();
+        }
+
+
         int frameNumber = 0;
         for(VM.AnimationFrame frame : anim.frames)
         {
@@ -256,13 +300,28 @@ public class UI
                 }
 
                 ImGui.sameLine();
-                if(ImGui.button("Delete frame"))
+                if (ImGui.button("Delete Frame.."))
                 {
-                    toRemove.add(frame);
-                    if (frame == selectedAnimationFrame)
+                    ImGui.openPopup("Delete Frame?");
+                }
+                if(ImGui.beginPopupModal("Delete Frame?"))
+                {
+                    if(ImGui.button("Delete"))
                     {
-                        selectedAnimationFrame = null;
+                        toRemove.add(frame);
+                        if (frame == selectedAnimationFrame)
+                        {
+                            selectedAnimationFrame = null;
+                        }
+                        ImGui.closeCurrentPopup();
                     }
+                    ImGui.sameLine();
+                    if(ImGui.button("Cancel"))
+                    {
+                        ImGui.closeCurrentPopup();
+                    }
+
+                    ImGui.endPopup();
                 }
 
                 ImGui.sameLine();
