@@ -121,6 +121,7 @@ public class UI
 
     private void drawMainMenuBar()
     {
+        boolean b = false;
         ImGui.beginMainMenuBar();
         {
             if(ImGui.beginMenu("File"))
@@ -128,7 +129,7 @@ public class UI
                 if(ImGui.menuItem("New.."))
                 {
                     addCharacterName.set("");
-                    ImGui.openPopup("Add New Character?");
+                    b = true;
                 }
 
                 if(ImGui.menuItem("Load..."))
@@ -156,7 +157,11 @@ public class UI
         }
         ImGui.endMainMenuBar();
 
-        if(ImGui.beginPopupModal("Add New Character?"))
+        if(b)
+        {
+            ImGui.openPopup("Add New Character");
+        }
+        if(ImGui.beginPopupModal("Add New Character"))
         {
             ImGui.inputText("Character Name", addCharacterName);
 

@@ -53,7 +53,18 @@ public class ContentRepo
     {
         DTO.Character character = new DTO.Character();
         character.name = name;
-        saveCharacter(filepath, character);
+        File file = new File(name + ".json");
+        try
+        {
+            if (file.createNewFile())
+            {
+                saveCharacter(filepath + name + ".json", character);
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public static void deleteCharacter(DTO.Character character)
