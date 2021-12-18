@@ -62,7 +62,7 @@ public class CharacterEditorWidget
 
     private static void drawCharacterData()
     {
-        ImGui.begin("Character Data", ImGuiWindowFlags.NoCollapse);
+        ImGui.begin("Character Data: " + character.name, ImGuiWindowFlags.NoCollapse);
 
         if(ImGui.button("Save"))
         {
