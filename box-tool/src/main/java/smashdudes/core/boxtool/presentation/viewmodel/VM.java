@@ -19,6 +19,7 @@ public class VM
         result.jumpStrength = character.jumpStrength;
         result.gravity = character.gravity;
         result.weight = character.weight;
+        result.name = character.name;
 
         for(VM.Animation a : character.animations)
         {
@@ -77,6 +78,7 @@ public class VM
         result.jumpStrength = character.jumpStrength;
         result.gravity = character.gravity;
         result.weight = character.weight;
+        result.name = character.name;
 
         for(DTO.Animation a : character.animations)
         {
@@ -134,6 +136,8 @@ public class VM
         public float jumpStrength;
         public float gravity;
         public float weight;
+
+        public String name;
     }
 
     public static class Animation

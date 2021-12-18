@@ -11,7 +11,10 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import imgui.ImGui;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
+import imgui.type.ImString;
 import smashdudes.core.boxtool.logic.ContentService;
+import smashdudes.core.boxtool.presentation.commands.AddAnimationCommand;
+import smashdudes.core.boxtool.presentation.commands.Command;
 import smashdudes.core.boxtool.presentation.commands.CommandList;
 import smashdudes.core.boxtool.presentation.viewmodel.VM;
 import smashdudes.core.boxtool.presentation.widgets.CharacterEditorWidget;
@@ -19,10 +22,12 @@ import smashdudes.core.boxtool.presentation.widgets.CharacterEditorWidget;
 public class UI
 {
     private ContentService service = new ContentService();
+    private String assetsPath;
 
     //State--------------------------------------------------
     private CommandList commandList = new CommandList();
     VM.Character character = null;
+    ImString addCharacterName = new ImString();
     //State--------------------------------------------------
 
     //Rendering---------------------------------------------
@@ -44,6 +49,8 @@ public class UI
 
         int WORLD_WIDTH = 16;
         int WORLD_HEIGHT = 9;
+
+        assetsPath = Gdx.files.getLocalStoragePath();
 
         camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
         viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
@@ -118,6 +125,12 @@ public class UI
         {
             if(ImGui.beginMenu("File"))
             {
+                if(ImGui.menuItem("New.."))
+                {
+                    addCharacterName.set("");
+                    ImGui.openPopup("Add New Character?");
+                }
+
                 if(ImGui.menuItem("Load..."))
                 {
                     String filepath = Utils.chooseFileToLoad("json");
@@ -127,6 +140,7 @@ public class UI
 
                 ImGui.endMenu();
             }
+
             if(ImGui.beginMenu("Edit"))
             {
                 if(ImGui.menuItem("Redo"))
@@ -141,5 +155,27 @@ public class UI
             }
         }
         ImGui.endMainMenuBar();
+
+        if(ImGui.beginPopupModal("Add New Character?"))
+        {
+            ImGui.inputText("Character Name", addCharacterName);
+
+            if(ImGui.button("Confirm"))
+            {
+                if(!addCharacterName.get().equals(""))
+                {
+                    service.createCharacter(assetsPath, addCharacterName.get());
+                    ImGui.closeCurrentPopup();
+                }
+            }
+
+            ImGui.sameLine();
+            if(ImGui.button("Cancel"))
+            {
+                ImGui.closeCurrentPopup();
+            }
+
+            ImGui.endPopup();
+        }
     }
 }

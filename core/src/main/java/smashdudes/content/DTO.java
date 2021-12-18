@@ -39,6 +39,8 @@ public class DTO
         public float jumpStrength;
         public float gravity;
         public float weight;
+
+        public String name;
     }
 
     public static class Animation

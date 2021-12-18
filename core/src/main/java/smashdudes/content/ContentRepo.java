@@ -1,5 +1,6 @@
 package smashdudes.content;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Json;
 
 import java.io.*;
@@ -7,7 +8,7 @@ import java.util.Scanner;
 
 public class ContentRepo
 {
-    public DTO.Character loadCharacter(String filepath)
+    public static DTO.Character loadCharacter(String filepath)
     {
         Scanner scanner = null;
         try
@@ -31,7 +32,7 @@ public class ContentRepo
         return null;
     }
 
-    public void saveCharacter(String filepath, DTO.Character character)
+    public static void saveCharacter(String filepath, DTO.Character character)
     {
         try
         {
@@ -46,5 +47,17 @@ public class ContentRepo
         {
             e.printStackTrace();
         }
+    }
+
+    public static void createCharacter(String filepath, String name)
+    {
+        DTO.Character character = new DTO.Character();
+        character.name = name;
+        saveCharacter(filepath, character);
+    }
+
+    public static void deleteCharacter(DTO.Character character)
+    {
+
     }
 }
