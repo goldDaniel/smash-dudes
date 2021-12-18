@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
+import imgui.type.ImFloat;
 import imgui.type.ImInt;
 import imgui.type.ImString;
 import smashdudes.core.RenderResources;
@@ -71,6 +72,19 @@ public class CharacterEditorWidget
             {
                 service.updateCharacter(VM.mapping(character), path);
             }
+        }
+
+        ImGui.separator();
+
+        ImGui.text("Properties");
+
+        ImGui.text("Jump Strength: ");
+        ImGui.sameLine();
+        ImFloat jump = new ImFloat();
+        jump.set(character.jumpStrength);
+        if(ImGui.inputFloat("", jump))
+        {
+            commandList.execute(new jumpEditCommand(character, jump.get()));
         }
 
         ImGui.separator();
@@ -170,8 +184,7 @@ public class CharacterEditorWidget
             ImGui.sameLine();
             if(ImGui.button("select texture..."))
             {
-                String texture = Utils.chooseFileToLoad("png", "jpg", "jpeg");
-                addFrameTexture = texture;
+                addFrameTexture = Utils.chooseFileToLoad("png", "jpg", "jpeg");
             }
 
             if(ImGui.button("Confirm"))
