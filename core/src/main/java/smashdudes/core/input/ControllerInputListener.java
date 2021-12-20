@@ -52,6 +52,7 @@ public class ControllerInputListener extends ControllerAdapter implements GameIn
             else if(axisIndex == SDL.SDL_CONTROLLER_AXIS_LEFTY)
             {
                 state.down = false;
+                state.up = false;
             }
 
             return false;
