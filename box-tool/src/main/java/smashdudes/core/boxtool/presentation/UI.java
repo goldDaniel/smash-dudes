@@ -121,7 +121,7 @@ public class UI
 
     private void drawMainMenuBar()
     {
-        boolean b = false;
+        boolean newCharFlag = false;
         ImGui.beginMainMenuBar();
         {
             if(ImGui.beginMenu("File"))
@@ -129,7 +129,7 @@ public class UI
                 if(ImGui.menuItem("New.."))
                 {
                     addCharacterName.set("");
-                    b = true;
+                    newCharFlag = true;
                 }
 
                 if(ImGui.menuItem("Load..."))
@@ -157,7 +157,7 @@ public class UI
         }
         ImGui.endMainMenuBar();
 
-        if(b)
+        if(newCharFlag)
         {
             ImGui.openPopup("Add New Character");
         }

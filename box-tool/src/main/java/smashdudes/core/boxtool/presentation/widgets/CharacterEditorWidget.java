@@ -87,6 +87,24 @@ public class CharacterEditorWidget
             commandList.execute(new jumpEditCommand(character, jump.get()));
         }
 
+        ImGui.text("Gravity: ");
+        ImGui.sameLine();
+        ImFloat gravity = new ImFloat();
+        gravity.set(character.gravity);
+        if(ImGui.inputFloat("", gravity))
+        {
+            commandList.execute(new gravityEditCommand(character, gravity.get()));
+        }
+
+        ImGui.text("Weight: ");
+        ImGui.sameLine();
+        ImFloat weight = new ImFloat();
+        weight.set(character.weight);
+        if(ImGui.inputFloat("", weight))
+        {
+            commandList.execute(new weightEditCommand(character, weight.get()));
+        }
+
         ImGui.separator();
 
         ImGui.text("Animations");
