@@ -18,15 +18,13 @@ public class ContentRepo
 
             Json json = new Json();
 
+            scanner.close();
             return json.fromJson(DTO.Character.class, jsonStr);
+
         }
         catch (FileNotFoundException e)
         {
             e.printStackTrace();
-        }
-        finally
-        {
-            scanner.close();
         }
 
         return null;
