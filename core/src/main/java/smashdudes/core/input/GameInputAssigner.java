@@ -3,9 +3,11 @@ package smashdudes.core.input;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerAdapter;
 import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.Array;
 import org.libsdl.SDL;
 import smashdudes.core.PlayerHandle;
@@ -79,7 +81,7 @@ public class GameInputAssigner
      */
     public void startListening()
     {
-        Gdx.input.setInputProcessor(inputListener);
+        Gdx.input.setInputProcessor(new InputMultiplexer(inputListener, inputHandler.getInputProcessor()));
         Controllers.addListener(controllerListener);
     }
 
