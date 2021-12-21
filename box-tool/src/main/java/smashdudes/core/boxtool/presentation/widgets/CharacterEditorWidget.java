@@ -179,9 +179,9 @@ public class CharacterEditorWidget
         ImGui.sameLine();
         if (ImGui.button("Delete animation"))
         {
-            character.animations.removeValue(anim, true);
+            commandList.execute(new DeleteAnimationCommand(character.animations, anim));
 
-            if (selectedAnimation.frames.contains(selectedAnimationFrame, true))
+            if (anim.frames.contains(selectedAnimationFrame, true))
             {
                 selectedAnimationFrame = null;
             }
@@ -196,11 +196,11 @@ public class CharacterEditorWidget
             addFrameTexture = "";
             ImGui.openPopup("Add Frame?");
         }
-        if(ImGui.beginPopupModal("Add Frame?"))
+        ImGui.setNextWindowSize(400, 120);
+        if(ImGui.beginPopupModal("Add Frame?", ImGuiWindowFlags.NoResize))
         {
             ImGui.inputInt("Frame Index", addFrameIdx);
-            ImGui.text(addFrameTexture);
-            ImGui.sameLine();
+
             if(ImGui.button("select texture..."))
             {
                 String readTexture = Utils.chooseFileToLoad("png", "jpg", "jpeg");
@@ -209,6 +209,7 @@ public class CharacterEditorWidget
                     addFrameTexture = readTexture;
                 }
             }
+            ImGui.text(addFrameTexture);
 
             if(ImGui.button("Confirm"))
             {
@@ -250,7 +251,8 @@ public class CharacterEditorWidget
                 {
                     ImGui.openPopup("Delete Frame?");
                 }
-                if(ImGui.beginPopupModal("Delete Frame?"))
+                ImGui.setNextWindowSize(128, 56);
+                if(ImGui.beginPopupModal("Delete Frame?", ImGuiWindowFlags.NoResize))
                 {
                     if(ImGui.button("Delete"))
                     {
