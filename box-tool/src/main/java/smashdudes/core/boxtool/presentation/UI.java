@@ -136,8 +136,11 @@ public class UI
                 if(ImGui.menuItem("Load..."))
                 {
                     String filepath = Utils.chooseFileToLoad("json");
-                    character = VM.mapping(service.readCharacter(filepath));
-                    commandList.clear();
+                    if(filepath != null)
+                    {
+                        character = VM.mapping(service.readCharacter(filepath));
+                        commandList.clear();
+                    }
                 }
 
                 ImGui.endMenu();
