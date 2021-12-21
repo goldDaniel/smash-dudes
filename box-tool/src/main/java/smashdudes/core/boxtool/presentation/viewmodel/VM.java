@@ -23,8 +23,7 @@ public class VM
 
         for(VM.Animation a : character.animations)
         {
-            DTO.Animation anim = new DTO.Animation();
-            result.animations.add(anim);
+            result.animations.add(mapping(a));
         }
 
         return result;
