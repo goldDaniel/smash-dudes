@@ -116,7 +116,8 @@ public class CharacterEditorWidget
             addAnimationName.set("");
             ImGui.openPopup("Add Animation?");
         }
-        if(ImGui.beginPopupModal("Add Animation?"))
+        ImGui.setNextWindowSize(360, 78);
+        if(ImGui.beginPopupModal("Add Animation?", ImGuiWindowFlags.NoResize))
         {
             ImGui.inputText("Animation Name", addAnimationName);
 
@@ -202,7 +203,11 @@ public class CharacterEditorWidget
             ImGui.sameLine();
             if(ImGui.button("select texture..."))
             {
-                addFrameTexture = Utils.chooseFileToLoad("png", "jpg", "jpeg");
+                String readTexture = Utils.chooseFileToLoad("png", "jpg", "jpeg");
+                if(readTexture != null)
+                {
+                    addFrameTexture = readTexture;
+                }
             }
 
             if(ImGui.button("Confirm"))
