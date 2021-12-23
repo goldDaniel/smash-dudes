@@ -1,15 +1,19 @@
 package smashdudes.core.input;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.math.Vector2;
+import smashdudes.core.PlayerHandle;
 
 /**
  * Listens for keyboard input and allows retrieval of state through the GameInputRetriever interface
  */
-public class KeyboardInputListener extends InputAdapter implements GameInputRetriever
+public class KeyboardInputListener extends InputAdapter implements GameInputRetriever, MenuInputRetriever
 {
 
     private final InputConfig config;
     private final InputState state = new InputState();
+    private boolean confirmPressed = false;
 
     public KeyboardInputListener(InputConfig config)
     {
@@ -36,6 +40,11 @@ public class KeyboardInputListener extends InputAdapter implements GameInputRetr
             state.down = true;
         }
 
+        if(keycode == Input.Keys.SPACE)
+        {
+            confirmPressed = true;
+        }
+
         return false;
     }
 
@@ -59,14 +68,16 @@ public class KeyboardInputListener extends InputAdapter implements GameInputRetr
             state.down = false;
         }
 
+        if(keycode == Input.Keys.SPACE)
+        {
+            confirmPressed = false;
+        }
+
         return false;
     }
 
     @Override
-    public boolean getLeft()
-    {
-        return state.left;
-    }
+    public boolean getLeft() { return state.left; }
 
     @Override
     public boolean getRight()
@@ -84,5 +95,24 @@ public class KeyboardInputListener extends InputAdapter implements GameInputRetr
     public boolean getDown()
     {
         return state.down;
+    }
+
+    @Override
+    public Vector2 getDirection()
+    {
+        Vector2 result = new Vector2();
+        if(state.left) result.x -= 1;
+        if(state.right) result.x += 1;
+
+        if(state.down) result.y -= 1;
+        if(state.up) result.y += 1;
+
+        return result.nor();
+    }
+
+    @Override
+    public boolean confirmPressed()
+    {
+        return confirmPressed;
     }
 }

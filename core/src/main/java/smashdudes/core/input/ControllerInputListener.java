@@ -2,14 +2,16 @@ package smashdudes.core.input;
 
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerAdapter;
+import com.badlogic.gdx.math.Vector2;
 import org.libsdl.SDL;
 
 /**
  * Listens for controller input and allows retrieval of state through the GameInputRetriever interface
  */
-public class ControllerInputListener extends ControllerAdapter implements GameInputRetriever
+public class ControllerInputListener extends ControllerAdapter implements GameInputRetriever, MenuInputRetriever
 {
     private InputState state = new InputState();
+    private boolean confirmPressed = false;
 
     public ControllerInputListener(Controller controller)
     {
@@ -22,6 +24,7 @@ public class ControllerInputListener extends ControllerAdapter implements GameIn
         if(buttonIndex == SDL.SDL_CONTROLLER_BUTTON_A)
         {
             state.up = true;
+            confirmPressed = true;
         }
 
         return false;
@@ -33,6 +36,7 @@ public class ControllerInputListener extends ControllerAdapter implements GameIn
         if(buttonIndex == SDL.SDL_CONTROLLER_BUTTON_A)
         {
             state.up = false;
+            confirmPressed = false;
         }
 
         return false;
@@ -95,5 +99,24 @@ public class ControllerInputListener extends ControllerAdapter implements GameIn
     public boolean getDown()
     {
         return state.down;
+    }
+
+    @Override
+    public Vector2 getDirection()
+    {
+        Vector2 result = new Vector2();
+        if(state.left) result.x -= 1;
+        if(state.right) result.x += 1;
+
+        if(state.down) result.y -= 1;
+        if(state.up) result.y += 1;
+
+        return result.nor();
+    }
+
+    @Override
+    public boolean confirmPressed()
+    {
+        return confirmPressed;
     }
 }
