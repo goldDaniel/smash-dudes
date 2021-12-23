@@ -14,6 +14,7 @@ public class ControllerInputListener extends ControllerAdapter implements IGameI
 
     private Vector2 menuDir = new Vector2();
     private boolean confirmPressed = false;
+    private boolean cancelPressed = false;
 
 
     public ControllerInputListener(Controller controller)
@@ -29,6 +30,10 @@ public class ControllerInputListener extends ControllerAdapter implements IGameI
             state.up = true;
             confirmPressed = true;
         }
+        if(buttonIndex == SDL.SDL_CONTROLLER_BUTTON_B)
+        {
+            cancelPressed = true;
+        }
 
         return false;
     }
@@ -40,6 +45,10 @@ public class ControllerInputListener extends ControllerAdapter implements IGameI
         {
             state.up = false;
             confirmPressed = false;
+        }
+        if(buttonIndex == SDL.SDL_CONTROLLER_BUTTON_B)
+        {
+            cancelPressed = false;
         }
 
         return false;
@@ -117,5 +126,11 @@ public class ControllerInputListener extends ControllerAdapter implements IGameI
     public boolean confirmPressed()
     {
         return confirmPressed;
+    }
+
+    @Override
+    public boolean cancelPressed()
+    {
+        return cancelPressed;
     }
 }

@@ -83,6 +83,18 @@ public class CharacterSelector
         }
     }
 
+    public void attemptCancel(PlayerHandle handle)
+    {
+        for(PlayerPortrait p : players)
+        {
+            if(p.handle == handle)
+            {
+                p.lockedIn = false;
+                p.identifier = null;
+            }
+        }
+    }
+
     public boolean areAllPlayersLockedIn()
     {
         for(PlayerPortrait p : players)

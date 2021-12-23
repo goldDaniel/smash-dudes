@@ -13,6 +13,7 @@ public class KeyboardInputListener extends InputAdapter implements IGameInputRet
     private final InputConfig config;
     private final InputState state = new InputState();
     private boolean confirmPressed = false;
+    private boolean cancelPressed = false;
 
     public KeyboardInputListener(InputConfig config)
     {
@@ -43,6 +44,10 @@ public class KeyboardInputListener extends InputAdapter implements IGameInputRet
         {
             confirmPressed = true;
         }
+        if(keycode == Input.Keys.ESCAPE)
+        {
+            cancelPressed = true;
+        }
 
         return false;
     }
@@ -70,6 +75,10 @@ public class KeyboardInputListener extends InputAdapter implements IGameInputRet
         if(keycode == Input.Keys.SPACE)
         {
             confirmPressed = false;
+        }
+        if(keycode == Input.Keys.ESCAPE)
+        {
+            cancelPressed = false;
         }
 
         return false;
@@ -113,5 +122,11 @@ public class KeyboardInputListener extends InputAdapter implements IGameInputRet
     public boolean confirmPressed()
     {
         return confirmPressed;
+    }
+
+    @Override
+    public boolean cancelPressed()
+    {
+        return cancelPressed;
     }
 }

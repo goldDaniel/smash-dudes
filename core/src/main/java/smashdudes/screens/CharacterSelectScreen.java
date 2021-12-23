@@ -69,6 +69,10 @@ public class CharacterSelectScreen extends GameScreen
             {
                 selector.attemptSelect(p);
             }
+            if(r.cancelPressed())
+            {
+                selector.attemptCancel(p);
+            }
         }
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER) && selector.areAllPlayersLockedIn())
@@ -102,7 +106,11 @@ public class CharacterSelectScreen extends GameScreen
         font.draw(s, "Press -A- on controller to join", worldWidth / 2 - 160, worldHeight - 120);
 
 
-        font.draw(s, "Press enter to play", worldWidth / 2 - 120, worldHeight / 4);
+        if(selector.areAllPlayersLockedIn())
+        {
+            font.draw(s, "Press enter to play", worldWidth / 2 - 120, worldHeight / 4);
+        }
+
         s.end();
     }
 }
