@@ -72,7 +72,7 @@ public class CharacterSelectScreen extends GameScreen
             }
         }
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER))
+        if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER) && selector.areAllPlayersLockedIn())
         {
             game.setScreen(new GameplayScreen(game, inputAssigner.getPlayerHandles(), inputAssigner.getGameInputHandler()));
         }

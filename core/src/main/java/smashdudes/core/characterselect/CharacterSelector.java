@@ -52,7 +52,7 @@ public class CharacterSelector
             p.rect = new Rectangle(xOffset + i * portraitWidth, worldHeight / 2, portraitWidth, portraitHeight);
             p.identifier = "" + (char) ('a' + i * 2);
             portraits.add(p);
-
+            portraits.add(p);
 
             p = new CharacterPortrait();
             p.rect = new Rectangle(xOffset + i * portraitWidth, worldHeight / 2 - portraitHeight, portraitWidth, portraitHeight);
@@ -76,10 +76,23 @@ public class CharacterSelector
                     if(character.rect.contains(c.circle.x, c.circle.y))
                     {
                         p.identifier = character.identifier;
+                        p.lockedIn = true;
                     }
                 }
             }
         }
+    }
+
+    public boolean areAllPlayersLockedIn()
+    {
+        for(PlayerPortrait p : players)
+        {
+            if(!p.lockedIn)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     public Cursor getCursor(PlayerHandle p)
