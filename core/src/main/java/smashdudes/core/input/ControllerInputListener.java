@@ -8,7 +8,7 @@ import org.libsdl.SDL;
 /**
  * Listens for controller input and allows retrieval of state through the GameInputRetriever interface
  */
-public class ControllerInputListener extends ControllerAdapter implements GameInputRetriever, MenuInputRetriever
+public class ControllerInputListener extends ControllerAdapter implements IGameInputRetriever, IMenuInputRetriever
 {
     private InputState state = new InputState();
 

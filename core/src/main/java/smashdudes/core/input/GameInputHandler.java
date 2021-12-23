@@ -15,7 +15,7 @@ public class GameInputHandler
     private Array<PlayerHandle> handles = new Array<>();
 
     //a mapping of player handles and their input devices
-    private ArrayMap<PlayerHandle, GameInputRetriever> retrievers = new ArrayMap<>();
+    private ArrayMap<PlayerHandle, IGameInputRetriever> retrievers = new ArrayMap<>();
 
     private InputMultiplexer multiplexer = new InputMultiplexer();
 
@@ -26,7 +26,7 @@ public class GameInputHandler
         return multiplexer;
     }
 
-    public GameInputRetriever getGameInput(PlayerHandle handle)
+    public IGameInputRetriever getGameInput(PlayerHandle handle)
     {
         if(!retrievers.containsKey(handle)) throw new IllegalStateException("Player does not have input handler!");
 

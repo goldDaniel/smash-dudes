@@ -13,8 +13,7 @@ import smashdudes.core.PlayerHandle;
 import smashdudes.core.RenderResources;
 import smashdudes.core.characterselect.CharacterSelector;
 import smashdudes.core.input.GameInputAssigner;
-import smashdudes.core.input.GameInputRetriever;
-import smashdudes.core.input.MenuInputRetriever;
+import smashdudes.core.input.IMenuInputRetriever;
 
 public class CharacterSelectScreen extends GameScreen
 {
@@ -63,7 +62,7 @@ public class CharacterSelectScreen extends GameScreen
                 selector.insert(p);
             }
 
-            MenuInputRetriever r = inputAssigner.getMenuInput(p);
+            IMenuInputRetriever r = inputAssigner.getMenuInput(p);
             selector.getCursor(p).updatePosition(r, dt);
 
             if(r.confirmPressed())

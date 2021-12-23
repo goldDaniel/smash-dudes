@@ -3,12 +3,11 @@ package smashdudes.core.input;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Vector2;
-import smashdudes.core.PlayerHandle;
 
 /**
  * Listens for keyboard input and allows retrieval of state through the GameInputRetriever interface
  */
-public class KeyboardInputListener extends InputAdapter implements GameInputRetriever, MenuInputRetriever
+public class KeyboardInputListener extends InputAdapter implements IGameInputRetriever, IMenuInputRetriever
 {
 
     private final InputConfig config;

@@ -93,9 +93,9 @@ public class GameInputAssigner
         Controllers.removeListener(controllerListener);
     }
 
-    public MenuInputRetriever getMenuInput(PlayerHandle p)
+    public IMenuInputRetriever getMenuInput(PlayerHandle p)
     {
-        return (MenuInputRetriever)gameInputHandler.getGameInput(p);
+        return (IMenuInputRetriever)gameInputHandler.getGameInput(p);
     }
 
     public GameInputHandler getGameInputHandler()
