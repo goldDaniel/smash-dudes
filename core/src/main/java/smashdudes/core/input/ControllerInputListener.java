@@ -11,7 +11,10 @@ import org.libsdl.SDL;
 public class ControllerInputListener extends ControllerAdapter implements GameInputRetriever, MenuInputRetriever
 {
     private InputState state = new InputState();
+
+    private Vector2 menuDir = new Vector2();
     private boolean confirmPressed = false;
+
 
     public ControllerInputListener(Controller controller)
     {
@@ -50,11 +53,13 @@ public class ControllerInputListener extends ControllerAdapter implements GameIn
         {
             if(axisIndex == SDL.SDL_CONTROLLER_AXIS_LEFTX)
             {
+                menuDir.x = 0;
                 state.left = false;
                 state.right = false;
             }
             else if(axisIndex == SDL.SDL_CONTROLLER_AXIS_LEFTY)
             {
+                menuDir.y = 0;
                 state.down = false;
                 state.up = false;
             }
@@ -64,13 +69,14 @@ public class ControllerInputListener extends ControllerAdapter implements GameIn
 
         if(axisIndex == SDL.SDL_CONTROLLER_AXIS_LEFTX)
         {
+            menuDir.x = value;
             state.left = value < 0;
             state.right = value > 0;
         }
         if(axisIndex == SDL.SDL_CONTROLLER_AXIS_LEFTY)
         {
+            menuDir.y = -value;
             state.down = value > 0;
-            state.up = value < 0;
         }
 
 
@@ -104,14 +110,7 @@ public class ControllerInputListener extends ControllerAdapter implements GameIn
     @Override
     public Vector2 getDirection()
     {
-        Vector2 result = new Vector2();
-        if(state.left) result.x -= 1;
-        if(state.right) result.x += 1;
-
-        if(state.down) result.y -= 1;
-        if(state.up) result.y += 1;
-
-        return result.nor();
+        return menuDir.nor();
     }
 
     @Override
