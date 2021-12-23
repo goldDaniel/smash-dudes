@@ -2,7 +2,7 @@ package smashdudes.core.characterselect;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Circle;
-import smashdudes.core.input.IMenuInputRetriever;
+import com.badlogic.gdx.math.Vector2;
 
 public class Cursor
 {
@@ -15,10 +15,10 @@ public class Cursor
         this.circle = circle;
     }
 
-    public void updatePosition(IMenuInputRetriever r, float dt)
+    public void updatePosition(Vector2 direction, float dt)
     {
         float speed = 256;
-        circle.x += r.getDirection().x * speed * dt;
-        circle.y += r.getDirection().y * speed * dt;
+        circle.x += direction.x * speed * dt;
+        circle.y += direction.y * speed * dt;
     }
 }
