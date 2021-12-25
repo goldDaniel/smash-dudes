@@ -97,6 +97,8 @@ public class CharacterSelector
 
     public boolean areAllPlayersLockedIn()
     {
+        if(players.isEmpty()) return false;
+
         for(PlayerPortrait p : players)
         {
             if(!p.lockedIn)
