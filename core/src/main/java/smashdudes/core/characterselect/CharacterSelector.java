@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -59,6 +60,11 @@ public class CharacterSelector
             p.identifier = "" + (char) ('a' + (i) * 2 + 1);
             portraits.add(p);
         }
+    }
+
+    public void updateCursorPosition(PlayerHandle p, Vector2 direction, float dt)
+    {
+        cursors.get(p).updatePosition(direction, dt);
     }
 
     public void attemptSelect(PlayerHandle handle)
@@ -151,7 +157,7 @@ public class CharacterSelector
         {
             PlayerPortrait lastPortrait = players.get(players.size - 1);
             Rectangle rect = new Rectangle();
-            rect.x = lastPortrait.rect.x + lastPortrait.rect.width + 4;
+            rect.x = lastPortrait.rect.x + lastPortrait.rect.width + 32;
             rect.y = 2;
             rect.width = portraitWidth;
             rect.height = portraitHeight;

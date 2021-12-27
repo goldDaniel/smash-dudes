@@ -63,7 +63,7 @@ public class CharacterSelectScreen extends GameScreen
             }
 
             IMenuInputRetriever r = inputAssigner.getMenuInput(p);
-            selector.getCursor(p).updatePosition(r.getDirection(), dt);
+            selector.updateCursorPosition(p, r.getDirection(), dt);
 
             if(r.confirmPressed())
             {
