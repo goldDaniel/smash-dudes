@@ -29,9 +29,20 @@ public class GameplayScreen extends GameScreen
         this.inputHandler = desc.gameInput;
         ecsEngine = new Engine();
 
-        DTO.Character characterData = new ContentRepo().loadCharacter("Character.json");
+
         for(CharacterSelectDescription.PlayerDescription p : desc.descriptions)
         {
+
+            DTO.Character characterData = null;
+            if(p.identifier.equals("a"))
+            {
+                characterData = ContentRepo.loadCharacter("Character.json");
+            }
+            if(p.identifier.equals("b"))
+            {
+                characterData = ContentRepo.loadCharacter("Knight2.json");
+            }
+
             Entity player = buildPlayer(p.handle, p.identifier, characterData);
 
             IGameInputRetriever retriever = inputHandler.getGameInput(p.handle);
@@ -106,20 +117,20 @@ public class GameplayScreen extends GameScreen
 
 
         DrawComponent sd = new DrawComponent();
-        sd.width = characterData.drawDim.x;
-        sd.height = characterData.drawDim.y;
+        sd.width =  2;//characterData.drawDim.x;
+        sd.height = 2;//characterData.drawDim.y;
         player.addComponent(sd);
 
         DebugDrawComponent dd = new DebugDrawComponent();
-        dd.width = characterData.debugDim.x;
-        dd.height = characterData.debugDim.y;
+        dd.width = 2;//characterData.debugDim.x;
+        dd.height = 2;//characterData.debugDim.y;
         player.addComponent(dd);
 
 
 
         TerrainColliderComponent collider = new TerrainColliderComponent();
-        collider.colliderWidth = characterData.terrainCollider.x;
-        collider.colliderHeight = characterData.terrainCollider.y;
+        collider.colliderWidth = 2;//characterData.terrainCollider.x;
+        collider.colliderHeight = 2;//characterData.terrainCollider.y;
         player.addComponent(collider);
 
         return player;
