@@ -102,6 +102,7 @@ public class UI
 
             sh.setProjectionMatrix(camera.combined);
             sh.begin(ShapeRenderer.ShapeType.Line);
+            CharacterEditorWidget.drawTerrainCollider(sh);
             CharacterEditorWidget.drawAttackData(sh);
             sh.end();
         }

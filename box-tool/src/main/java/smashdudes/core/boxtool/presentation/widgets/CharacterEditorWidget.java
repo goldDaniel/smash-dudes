@@ -131,7 +131,7 @@ public class CharacterEditorWidget
 
         ImGui.text("Terrain Collider");
         ImGui.sameLine();
-        float[] dim = new float[2];
+        float[] dim = {character.terrainCollider.x, character.terrainCollider.y};
         if(ImGui.inputFloat2("##colliderDimID", dim))
         {
             commandList.execute(new ColliderDimEditCommand(character, dim));
@@ -393,6 +393,19 @@ public class CharacterEditorWidget
         toRemove.clear();
     }
 
+    public static void drawTerrainCollider(ShapeRenderer sh)
+    {
+        if (character != null)
+        {
+            float w = character.terrainCollider.x;
+            float h = character.terrainCollider.y;
+            float x = texturePos.x - w / 2;
+            float y = texturePos.y - h / 2;
+            sh.setColor(Color.GOLD);
+            sh.rect(x, y, w, h);
+        }
+    }
+
     public static void drawTexture(SpriteBatch sb)
     {
         if(selectedAnimationFrame != null)
@@ -437,7 +450,7 @@ public class CharacterEditorWidget
         }
     }
 
-    private static  void playAnimation(float dt)
+    private static void playAnimation(float dt)
     {
         float frameDuration = 1/16f;
         if (selectedAnimation.animationName.equals("idle"))
