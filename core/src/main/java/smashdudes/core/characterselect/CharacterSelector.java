@@ -115,13 +115,6 @@ public class CharacterSelector
         return true;
     }
 
-    public Cursor getCursor(PlayerHandle p)
-    {
-        if (!hasPlayerHandle(p)) throw new IllegalStateException("Player not registered");
-
-        return cursors.get(p);
-    }
-
     public boolean hasPlayerHandle(PlayerHandle p)
     {
         return cursors.containsKey(p);
