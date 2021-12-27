@@ -56,9 +56,15 @@ public class Entity
         return null;
     }
 
-    public boolean hasComponent(Class<? extends Component> clazz)
+    public boolean hasComponent(Class<? extends Component>... clazz)
     {
-        return getComponent(clazz) != null;
+        for(Class<? extends Component> c : clazz)
+        {
+            if(getComponent(c) == null)
+            {
+                return false;
+            }
+        }
+        return true;
     }
-
 }
