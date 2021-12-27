@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import imgui.ImGui;
+import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import imgui.type.ImString;
@@ -135,8 +136,11 @@ public class UI
                 if(ImGui.menuItem("Load..."))
                 {
                     String filepath = Utils.chooseFileToLoad("json");
-                    character = VM.mapping(service.readCharacter(filepath));
-                    commandList.clear();
+                    if(filepath != null)
+                    {
+                        character = VM.mapping(service.readCharacter(filepath));
+                        commandList.clear();
+                    }
                 }
 
                 ImGui.endMenu();
@@ -161,7 +165,9 @@ public class UI
         {
             ImGui.openPopup("Add New Character");
         }
-        if(ImGui.beginPopupModal("Add New Character"))
+
+        ImGui.setNextWindowSize(360, 78);
+        if(ImGui.beginPopupModal("Add New Character", ImGuiWindowFlags.NoResize))
         {
             ImGui.inputText("Character Name", addCharacterName);
 

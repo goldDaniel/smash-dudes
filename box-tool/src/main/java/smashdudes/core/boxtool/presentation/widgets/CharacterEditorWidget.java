@@ -82,7 +82,7 @@ public class CharacterEditorWidget
         ImGui.sameLine();
         ImFloat jump = new ImFloat();
         jump.set(character.jumpStrength);
-        if(ImGui.inputFloat("", jump))
+        if(ImGui.inputFloat("##jumpStrengthID", jump))
         {
             commandList.execute(new jumpEditCommand(character, jump.get()));
         }
@@ -91,7 +91,7 @@ public class CharacterEditorWidget
         ImGui.sameLine();
         ImFloat gravity = new ImFloat();
         gravity.set(character.gravity);
-        if(ImGui.inputFloat("", gravity))
+        if(ImGui.inputFloat("##gravityID", gravity))
         {
             commandList.execute(new gravityEditCommand(character, gravity.get()));
         }
@@ -100,7 +100,7 @@ public class CharacterEditorWidget
         ImGui.sameLine();
         ImFloat weight = new ImFloat();
         weight.set(character.weight);
-        if(ImGui.inputFloat("", weight))
+        if(ImGui.inputFloat("##weightID", weight))
         {
             commandList.execute(new weightEditCommand(character, weight.get()));
         }
@@ -116,7 +116,8 @@ public class CharacterEditorWidget
             addAnimationName.set("");
             ImGui.openPopup("Add Animation?");
         }
-        if(ImGui.beginPopupModal("Add Animation?"))
+        ImGui.setNextWindowSize(360, 78);
+        if(ImGui.beginPopupModal("Add Animation?", ImGuiWindowFlags.NoResize))
         {
             ImGui.inputText("Animation Name", addAnimationName);
 
@@ -178,9 +179,9 @@ public class CharacterEditorWidget
         ImGui.sameLine();
         if (ImGui.button("Delete animation"))
         {
-            character.animations.removeValue(anim, true);
+            commandList.execute(new DeleteAnimationCommand(character.animations, anim));
 
-            if (selectedAnimation.frames.contains(selectedAnimationFrame, true))
+            if (anim.frames.contains(selectedAnimationFrame, true))
             {
                 selectedAnimationFrame = null;
             }
@@ -195,15 +196,20 @@ public class CharacterEditorWidget
             addFrameTexture = "";
             ImGui.openPopup("Add Frame?");
         }
-        if(ImGui.beginPopupModal("Add Frame?"))
+        ImGui.setNextWindowSize(400, 120);
+        if(ImGui.beginPopupModal("Add Frame?", ImGuiWindowFlags.NoResize))
         {
             ImGui.inputInt("Frame Index", addFrameIdx);
-            ImGui.text(addFrameTexture);
-            ImGui.sameLine();
+
             if(ImGui.button("select texture..."))
             {
-                addFrameTexture = Utils.chooseFileToLoad("png", "jpg", "jpeg");
+                String readTexture = Utils.chooseFileToLoad("png", "jpg", "jpeg");
+                if(readTexture != null)
+                {
+                    addFrameTexture = readTexture;
+                }
             }
+            ImGui.text(addFrameTexture);
 
             if(ImGui.button("Confirm"))
             {
@@ -245,7 +251,8 @@ public class CharacterEditorWidget
                 {
                     ImGui.openPopup("Delete Frame?");
                 }
-                if(ImGui.beginPopupModal("Delete Frame?"))
+                ImGui.setNextWindowSize(128, 56);
+                if(ImGui.beginPopupModal("Delete Frame?", ImGuiWindowFlags.NoResize))
                 {
                     if(ImGui.button("Delete"))
                     {

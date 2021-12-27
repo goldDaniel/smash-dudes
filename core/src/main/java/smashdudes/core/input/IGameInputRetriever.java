@@ -4,7 +4,7 @@ package smashdudes.core.input;
 /**
  * Getters for the current input state of an input device
  */
-public interface GameInputRetriever
+public interface IGameInputRetriever
 {
     boolean getLeft();
     boolean getRight();

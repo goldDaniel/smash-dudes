@@ -4,7 +4,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import smashdudes.content.ContentRepo;
@@ -12,7 +11,7 @@ import smashdudes.content.DTO;
 import smashdudes.content.LoadContent;
 import smashdudes.core.RenderResources;
 import smashdudes.core.input.GameInputHandler;
-import smashdudes.core.input.GameInputRetriever;
+import smashdudes.core.input.IGameInputRetriever;
 import smashdudes.core.PlayerHandle;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
@@ -34,7 +33,7 @@ public class GameplayScreen extends GameScreen
         {
             Entity player = buildPlayer(p, characterData);
 
-            GameInputRetriever retriever = inputHandler.getGameInput(p);
+            IGameInputRetriever retriever = inputHandler.getGameInput(p);
 
             PlayerControllerComponent pc = new PlayerControllerComponent(retriever);
             player.addComponent(pc);
