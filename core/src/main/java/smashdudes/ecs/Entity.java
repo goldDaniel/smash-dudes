@@ -13,8 +13,6 @@ public class Entity
 
     public<T extends Component> void removeComponent(Class<T> clazz)
     {
-        //this is just for validation/testing to make sure we dont remove components the entity doesnt have
-        //will be removed eventually because its slow
         for(Component other : components)
         {
             if(other.getClass() == clazz)
@@ -30,8 +28,6 @@ public class Entity
 
     public void addComponent(Component c)
     {
-        //this is just for validation/testing to make sure we dont add more than one component
-        //will be removed eventually because its slow
         for(Component other : components)
         {
             if(other.getClass() == c.getClass())
