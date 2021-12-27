@@ -1,9 +1,11 @@
-spackage smashdudes.core.input;
+package smashdudes.core.input;
+
 
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerAdapter;
 import com.badlogic.gdx.math.Vector2;
 import org.libsdl.SDL;
+import smashdudes.core.input.InputState;
 
 /**
  * Listens for controller input and allows retrieval of state through the GameInputRetriever interface
