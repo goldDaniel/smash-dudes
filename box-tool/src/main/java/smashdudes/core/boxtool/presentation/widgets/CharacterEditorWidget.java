@@ -84,7 +84,7 @@ public class CharacterEditorWidget
         jump.set(character.jumpStrength);
         if(ImGui.inputFloat("##jumpStrengthID", jump))
         {
-            commandList.execute(new jumpEditCommand(character, jump.get()));
+            commandList.execute(new JumpEditCommand(character, jump.get()));
         }
 
         ImGui.text("Gravity: ");
@@ -93,7 +93,7 @@ public class CharacterEditorWidget
         gravity.set(character.gravity);
         if(ImGui.inputFloat("##gravityID", gravity))
         {
-            commandList.execute(new gravityEditCommand(character, gravity.get()));
+            commandList.execute(new GravityEditCommand(character, gravity.get()));
         }
 
         ImGui.text("Weight: ");
@@ -102,7 +102,7 @@ public class CharacterEditorWidget
         weight.set(character.weight);
         if(ImGui.inputFloat("##weightID", weight))
         {
-            commandList.execute(new weightEditCommand(character, weight.get()));
+            commandList.execute(new WeightEditCommand(character, weight.get()));
         }
 
         ImGui.separator();

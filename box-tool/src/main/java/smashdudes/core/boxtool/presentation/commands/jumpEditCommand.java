@@ -2,13 +2,13 @@ package smashdudes.core.boxtool.presentation.commands;
 
 import smashdudes.core.boxtool.presentation.viewmodel.VM;
 
-public class jumpEditCommand extends Command
+public class JumpEditCommand extends Command
 {
     private final VM.Character character;
     private final float oldValue;
     private final float newValue;
 
-    public jumpEditCommand(VM.Character character, float newValue)
+    public JumpEditCommand(VM.Character character, float newValue)
     {
         this.character = character;
         oldValue = character.jumpStrength;
