@@ -2,6 +2,7 @@ package smashdudes.core.boxtool.presentation.widgets;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -378,11 +379,15 @@ public class CharacterEditorWidget
     {
         if(selectedAnimationFrame != null)
         {
-            float w = character.drawDim.x;
-            float h = character.drawDim.y;
+            Texture t =  RenderResources.getTexture(selectedAnimationFrame.texturePath);
+
+            float ratio = (float)t.getHeight() / (float)t.getWidth();
+
+            float w = 2;
+            float h = w * ratio;
             float x = texturePos.x - w / 2 ;
             float y = texturePos.y  - h / 2;
-            sb.draw(RenderResources.getTexture(selectedAnimationFrame.texturePath), x, y, w, h);
+            sb.draw(t, x, y, w, h);
         }
 
     }

@@ -13,8 +13,6 @@ public class VM
         DTO.Character result = new DTO.Character();
 
         result.terrainCollider = character.terrainCollider;
-        result.debugDim = character.debugDim;
-        result.drawDim = character.drawDim;
 
         result.jumpStrength = character.jumpStrength;
         result.gravity = character.gravity;
@@ -34,8 +32,6 @@ public class VM
         VM.Character result = new VM.Character();
 
         result.terrainCollider = character.terrainCollider;
-        result.debugDim = character.debugDim;
-        result.drawDim = character.drawDim;
 
         result.jumpStrength = character.jumpStrength;
         result.gravity = character.gravity;
@@ -156,7 +152,6 @@ public class VM
 
         public Vector2 terrainCollider = new Vector2();
         public Vector2 debugDim = new Vector2();
-        public Vector2 drawDim = new Vector2();
 
         public float jumpStrength;
         public float gravity;
