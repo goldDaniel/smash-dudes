@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
+import imgui.type.ImFloat;
 import smashdudes.content.DTO;
 
 public class VM
@@ -13,6 +14,7 @@ public class VM
         DTO.Character result = new DTO.Character();
 
         result.terrainCollider = character.terrainCollider;
+        result.scale = character.scale;
 
         result.jumpStrength = character.jumpStrength;
         result.gravity = character.gravity;
@@ -32,6 +34,7 @@ public class VM
         VM.Character result = new VM.Character();
 
         result.terrainCollider = character.terrainCollider;
+        result.scale = character.scale;
 
         result.jumpStrength = character.jumpStrength;
         result.gravity = character.gravity;
@@ -152,6 +155,7 @@ public class VM
 
         public Vector2 terrainCollider = new Vector2();
         public Vector2 debugDim = new Vector2();
+        public float scale;
 
         public float jumpStrength;
         public float gravity;

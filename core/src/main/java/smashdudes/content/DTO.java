@@ -35,6 +35,7 @@ public class DTO
         public Vector2 terrainCollider = new Vector2();
         public Vector2 debugDim = new Vector2();
         public Vector2 drawDim = new Vector2();
+        public float scale;
 
         public float jumpStrength;
         public float gravity;

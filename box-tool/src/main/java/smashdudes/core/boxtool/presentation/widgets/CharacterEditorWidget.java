@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import imgui.ImGui;
+import imgui.ImVec2;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImFloat;
 import imgui.type.ImInt;
@@ -126,6 +127,23 @@ public class CharacterEditorWidget
         if(ImGui.inputFloat("##weightID", weight))
         {
             commandList.execute(new WeightEditCommand(character, weight.get()));
+        }
+
+        ImGui.text("Terrain Collider");
+        ImGui.sameLine();
+        float[] dim = new float[2];
+        if(ImGui.inputFloat2("##colliderDimID", dim))
+        {
+            commandList.execute(new ColliderDimEditCommand(character, dim));
+        }
+
+        ImGui.text("Scale:");
+        ImGui.sameLine();
+        ImFloat scale = new ImFloat();
+        scale.set(character.scale);
+        if(ImGui.inputFloat("##scaleID", scale))
+        {
+            commandList.execute(new ScaleEditCommand(character, scale.get()));
         }
 
         ImGui.separator();
