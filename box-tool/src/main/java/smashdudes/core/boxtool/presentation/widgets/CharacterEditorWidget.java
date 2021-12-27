@@ -1,5 +1,6 @@
 package smashdudes.core.boxtool.presentation.widgets;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -41,6 +42,27 @@ public class CharacterEditorWidget
     public CharacterEditorWidget()
     {
         throw new IllegalStateException("DO NOT INSTANTIATE");
+    }
+
+    public static void reset()
+    {
+        addFrameTexture = "";
+        addFrameIdx = new ImInt();
+
+        addAnimationName = new ImString();
+
+        commandList = null;
+        service = null;
+        character = null;
+
+        currentAnimation = null;
+        selectedAnimation = null;
+        selectedAnimationFrame = null;
+
+        playing = false;
+
+        texturePos = new Vector2(1.5f, 0);
+        currentTime = 0;
     }
 
     public static void render(CommandList commandList, ContentService service, VM.Character character, float dt)
@@ -207,6 +229,9 @@ public class CharacterEditorWidget
                 if(readTexture != null)
                 {
                     addFrameTexture = readTexture;
+
+                    String workingDir = Gdx.files.getLocalStoragePath();
+                    addFrameTexture = addFrameTexture.replace(workingDir, "");
                 }
             }
             ImGui.text(addFrameTexture);

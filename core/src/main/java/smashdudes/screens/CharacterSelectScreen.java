@@ -16,6 +16,7 @@ import smashdudes.core.RenderResources;
 import smashdudes.core.characterselect.CharacterSelector;
 import smashdudes.core.input.GameInputAssigner;
 import smashdudes.core.input.IMenuInputRetriever;
+import smashdudes.util.CharacterSelectDescription;
 
 public class CharacterSelectScreen extends GameScreen
 {
@@ -79,7 +80,10 @@ public class CharacterSelectScreen extends GameScreen
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER) && selector.areAllPlayersLockedIn())
         {
-            game.setScreen(new GameplayScreen(game, inputAssigner.getPlayerHandles(), inputAssigner.getGameInputHandler()));
+            CharacterSelectDescription desc = new CharacterSelectDescription(inputAssigner.getGameInputHandler(),
+                                                                            selector.getPlayerDescriptions());
+
+            game.setScreen(new GameplayScreen(game, desc));
         }
     }
 

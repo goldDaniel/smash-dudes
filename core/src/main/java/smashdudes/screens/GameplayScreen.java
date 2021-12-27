@@ -16,24 +16,25 @@ import smashdudes.core.PlayerHandle;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
+import smashdudes.util.CharacterSelectDescription;
 
 public class GameplayScreen extends GameScreen
 {
     private GameInputHandler inputHandler;
     private Engine ecsEngine;
 
-    public GameplayScreen(Game game, Iterable<PlayerHandle> players, GameInputHandler inputHandler)
+    public GameplayScreen(Game game, CharacterSelectDescription desc)
     {
         super(game);
-        this.inputHandler = inputHandler;
+        this.inputHandler = desc.gameInput;
         ecsEngine = new Engine();
 
         DTO.Character characterData = new ContentRepo().loadCharacter("Character.json");
-        for(PlayerHandle p : players)
+        for(CharacterSelectDescription.PlayerDescription p : desc.descriptions)
         {
-            Entity player = buildPlayer(p, characterData);
+            Entity player = buildPlayer(p.handle, p.identifier, characterData);
 
-            IGameInputRetriever retriever = inputHandler.getGameInput(p);
+            IGameInputRetriever retriever = inputHandler.getGameInput(p.handle);
 
             PlayerControllerComponent pc = new PlayerControllerComponent(retriever);
             player.addComponent(pc);
@@ -78,11 +79,11 @@ public class GameplayScreen extends GameScreen
         ecsEngine.resize(width, height);
     }
 
-    private Entity buildPlayer(PlayerHandle handle, DTO.Character characterData)
+    private Entity buildPlayer(PlayerHandle handle, String identifier, DTO.Character characterData)
     {
         Entity player = ecsEngine.createEntity();
 
-        player.addComponent(new PlayerComponent(handle));
+        player.addComponent(new PlayerComponent(handle, identifier));
         player.addComponent(new PositionComponent());
         player.addComponent(new VelocityComponent());
         player.addComponent(new JumpComponent(characterData.jumpStrength));

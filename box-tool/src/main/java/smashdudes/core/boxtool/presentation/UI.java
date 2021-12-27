@@ -138,6 +138,7 @@ public class UI
                     String filepath = Utils.chooseFileToLoad("json");
                     if(filepath != null)
                     {
+                        CharacterEditorWidget.reset();
                         character = VM.mapping(service.readCharacter(filepath));
                         commandList.clear();
                     }

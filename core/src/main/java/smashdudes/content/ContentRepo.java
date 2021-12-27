@@ -58,10 +58,6 @@ public class ContentRepo
             {
                 saveCharacter(filepath + name + ".json", character);
             }
-            else
-            {
-                //throw error window. Use while loop and scanner?
-            }
         }
         catch (IOException e)
         {

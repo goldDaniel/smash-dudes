@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.ObjectMap;
 import smashdudes.core.PlayerHandle;
+import smashdudes.util.CharacterSelectDescription;
 
 public class CharacterSelector
 {
@@ -184,6 +185,24 @@ public class CharacterSelector
             sh.rect(rect.x, rect.y, rect.width, rect.height);
         }
     }
+
+    public Array<CharacterSelectDescription.PlayerDescription> getPlayerDescriptions()
+    {
+        if(!areAllPlayersLockedIn()) throw new IllegalStateException("all players must be locked in first");
+
+        Array<CharacterSelectDescription.PlayerDescription> result = new Array<>();
+
+        for(PlayerPortrait p : players)
+        {
+            CharacterSelectDescription.PlayerDescription desc =
+                    new CharacterSelectDescription.PlayerDescription(p.identifier, p.handle);
+
+            result.add(desc);
+        }
+
+        return result;
+    }
+
 
     public void render(SpriteBatch s, BitmapFont f)
     {

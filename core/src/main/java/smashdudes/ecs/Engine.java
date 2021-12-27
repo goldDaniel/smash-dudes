@@ -24,6 +24,7 @@ public class Engine
         rs = new RenderSystem(this, RenderResources.getSpriteBatch());
         drs = new RenderDebugSystem(this, RenderResources.getShapeRenderer());
 
+
         systems.add(new PlayerIdleSystem(this));
         systems.add(new PlayerRunningSystem(this));
         systems.add(new CharacterJumpInputSystem(this));
