@@ -414,7 +414,7 @@ public class CharacterEditorWidget
 
             float ratio = (float)t.getHeight() / (float)t.getWidth();
 
-            float w = 2;
+            float w = character.scale;
             float h = w * ratio;
             float x = texturePos.x - w / 2 ;
             float y = texturePos.y  - h / 2;

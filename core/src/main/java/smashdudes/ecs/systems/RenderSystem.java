@@ -53,13 +53,16 @@ public class RenderSystem extends GameSystem
         PositionComponent p = entity.getComponent(PositionComponent.class);
         DrawComponent d = entity.getComponent(DrawComponent.class);
 
+        float width = d.scale;
+        float height = (float)d.texture.getHeight() / (float)d.texture.getWidth() * d.scale;
+
         if(d.facingLeft)
         {
-            sb.draw(d.texture, p.position.x + d.width / 2, p.position.y - d.height / 2, -d.width, d.height);
+            sb.draw(d.texture, p.position.x + width / 2, p.position.y - height / 2, -width, height);
         }
         else
         {
-            sb.draw(d.texture, p.position.x - d.width / 2, p.position.y - d.height / 2, d.width, d.height);
+            sb.draw(d.texture, p.position.x - width / 2, p.position.y - height / 2, width, height);
         }
 
     }
