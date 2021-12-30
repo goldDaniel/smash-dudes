@@ -235,6 +235,14 @@ public class CharacterEditorWidget
             selectedAnimation = null;
         }
 
+        ImGui.text("Animation Duration");
+        ImFloat duration = new ImFloat();
+        duration.set(anim.animationDuration);
+        if(ImGui.inputFloat("##durationID", duration))
+        {
+            commandList.execute(new AnimationDurationCommand(anim, duration.get()));
+        }
+
         ImGui.text("Frames");
         ImGui.sameLine();
         if (ImGui.button("Add Frame.."))

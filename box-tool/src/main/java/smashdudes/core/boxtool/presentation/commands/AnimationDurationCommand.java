@@ -5,25 +5,25 @@ import smashdudes.core.boxtool.presentation.viewmodel.VM;
 public class AnimationDurationCommand extends Command
 {
     private final VM.Animation animation;
-    private final float prevDuration;
-    private final float duration;
+    private final float oldValue;
+    private final float newValue;
 
-    public AnimationDurationCommand(VM.Animation anim, float duration)
+    public AnimationDurationCommand(VM.Animation animation, float newValue)
     {
-        this.animation = anim;
-        prevDuration = animation.animationDuration;
-        this.duration = duration;
+        this.animation = animation;
+        oldValue = animation.animationDuration;
+        this.newValue = newValue;
     }
 
     @Override
     protected void execute()
     {
-        animation.animationDuration = duration;
+        animation.animationDuration = newValue;
     }
 
     @Override
     protected void undo()
     {
-        animation.animationDuration = prevDuration;
+        animation.animationDuration = oldValue;
     }
 }

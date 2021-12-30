@@ -49,7 +49,7 @@ public class DTO
         public String textureFilePath;
         public String animationName;
 
-        public float animationDuration = 0.25f;
+        public float animationDuration;
 
         public boolean usesSpriteSheet;
 

@@ -69,6 +69,8 @@ public class VM
         anim.animationDuration = a.animationDuration;
         anim.usesSpriteSheet = a.usesSpriteSheet;
 
+        anim.animationDuration = a.animationDuration;
+
         for(VM.AnimationFrame f : a.frames)
         {
             anim.frames.add(mapping(f));
@@ -85,6 +87,8 @@ public class VM
         anim.animationName = a.animationName;
         anim.animationDuration = a.animationDuration;
         anim.usesSpriteSheet = a.usesSpriteSheet;
+
+        anim.animationDuration = a.animationDuration;
 
         for(DTO.AnimationFrame f : a.frames)
         {
