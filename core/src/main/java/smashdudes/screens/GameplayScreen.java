@@ -42,6 +42,10 @@ public class GameplayScreen extends GameScreen
             {
                 characterData = ContentRepo.loadCharacter("Knight2.json");
             }
+            if(p.identifier.equals("c"))
+            {
+                characterData = ContentRepo.loadCharacter("daniel.json");
+            }
 
             Entity player = buildPlayer(p.handle, p.identifier, characterData);
 
