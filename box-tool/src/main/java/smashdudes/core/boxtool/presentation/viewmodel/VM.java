@@ -68,6 +68,8 @@ public class VM
         anim.animationName = a.animationName;
         anim.usesSpriteSheet = a.usesSpriteSheet;
 
+        anim.animationDuration = a.animationDuration;
+
         for(VM.AnimationFrame f : a.frames)
         {
             anim.frames.add(mapping(f));
@@ -83,6 +85,8 @@ public class VM
         anim.textureFilePath = a.textureFilePath;
         anim.animationName = a.animationName;
         anim.usesSpriteSheet = a.usesSpriteSheet;
+
+        anim.animationDuration = a.animationDuration;
 
         for(DTO.AnimationFrame f : a.frames)
         {
@@ -180,6 +184,8 @@ public class VM
     {
         public String textureFilePath;
         public String animationName;
+
+        public float animationDuration;
 
         public boolean usesSpriteSheet;
 

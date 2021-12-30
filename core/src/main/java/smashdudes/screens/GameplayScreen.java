@@ -159,8 +159,13 @@ public class GameplayScreen extends GameScreen
         }
 
         float duration = 0;
-        if(animationName == "idle") duration = 1/8f;
-        else                        duration = 1/16f;
+        for (DTO.Animation animation : characterData.animations)
+        {
+            if (animation.animationName.equals(animationName))
+            {
+                duration = animation.animationDuration;
+            }
+        }
 
         return new AnimationComponent(frames, duration);
     }

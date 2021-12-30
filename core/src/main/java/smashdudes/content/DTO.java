@@ -49,6 +49,8 @@ public class DTO
         public String textureFilePath;
         public String animationName;
 
+        public float animationDuration;
+
         public boolean usesSpriteSheet;
 
         public Array<AnimationFrame> frames = new Array<>();

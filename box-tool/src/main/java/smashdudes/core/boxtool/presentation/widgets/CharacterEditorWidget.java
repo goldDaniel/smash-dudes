@@ -229,6 +229,14 @@ public class CharacterEditorWidget
             selectedAnimation = null;
         }
 
+        ImGui.text("Animation Duration");
+        ImFloat duration = new ImFloat();
+        duration.set(anim.animationDuration);
+        if(ImGui.inputFloat("##durationID", duration))
+        {
+            commandList.execute(new AnimationDurationCommand(anim, duration.get()));
+        }
+
         ImGui.text("Frames");
         ImGui.sameLine();
         if (ImGui.button("Add Frame.."))
@@ -452,11 +460,7 @@ public class CharacterEditorWidget
 
     private static void playAnimation(float dt)
     {
-        float frameDuration = 1/16f;
-        if (selectedAnimation.animationName.equals("idle"))
-        {
-            frameDuration = 1/8f;
-        }
+        float frameDuration = selectedAnimation.animationDuration / selectedAnimation.frames.size;
 
         if (currentAnimation == null)
         {
