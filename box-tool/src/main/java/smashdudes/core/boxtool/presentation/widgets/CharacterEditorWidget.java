@@ -205,11 +205,13 @@ public class CharacterEditorWidget
         ImGui.separator();
         ImGui.text("Animation Frame Data");
 
-        ImFloat animDUration = new ImFloat();
-        animDUration.set(anim.animationDuration);
-        if(ImGui.inputFloat("Animation Duration", animDUration))
+        ImGui.text("Animation Duration: ");
+        ImGui.sameLine();
+        ImFloat duration = new ImFloat();
+        duration.set(anim.animationDuration);
+        if(ImGui.inputFloat("##animDurationID", duration))
         {
-            commandList.execute(new AnimationDurationCommand(anim, animDUration.get()));
+            commandList.execute(new AnimationDurationCommand(anim, duration.get()));
         }
 
         if (anim.usesSpriteSheet)
@@ -233,14 +235,6 @@ public class CharacterEditorWidget
                 selectedAnimationFrame = null;
             }
             selectedAnimation = null;
-        }
-
-        ImGui.text("Animation Duration");
-        ImFloat duration = new ImFloat();
-        duration.set(anim.animationDuration);
-        if(ImGui.inputFloat("##durationID", duration))
-        {
-            commandList.execute(new AnimationDurationCommand(anim, duration.get()));
         }
 
         ImGui.text("Frames");
