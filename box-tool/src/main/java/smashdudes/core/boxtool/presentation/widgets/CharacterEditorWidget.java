@@ -131,8 +131,8 @@ public class CharacterEditorWidget
 
         ImGui.text("Terrain Collider");
         ImGui.sameLine();
-        float[] dim = {character.terrainCollider.x, character.terrainCollider.y};
-        if(ImGui.inputFloat2("##colliderDimID", dim))
+        float[] dim = {character.terrainCollider.get(0), character.terrainCollider.get(1), character.terrainCollider.get(2), character.terrainCollider.get(3)};
+        if(ImGui.inputFloat4("##colliderDimID", dim))
         {
             commandList.execute(new ColliderDimEditCommand(character, dim));
         }
@@ -397,10 +397,10 @@ public class CharacterEditorWidget
     {
         if (character != null)
         {
-            float w = character.terrainCollider.x;
-            float h = character.terrainCollider.y;
-            float x = texturePos.x - w / 2;
-            float y = texturePos.y - h / 2;
+            float w = character.terrainCollider.get(2);
+            float h = character.terrainCollider.get(3);
+            float x = texturePos.x - w / 2 + character.terrainCollider.get(0);
+            float y = texturePos.y - h / 2 + character.terrainCollider.get(1);
             sh.setColor(Color.GOLD);
             sh.rect(x, y, w, h);
         }

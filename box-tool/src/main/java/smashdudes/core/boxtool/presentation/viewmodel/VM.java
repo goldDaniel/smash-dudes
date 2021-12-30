@@ -13,7 +13,13 @@ public class VM
     {
         DTO.Character result = new DTO.Character();
 
-        result.terrainCollider = character.terrainCollider;
+        Rectangle rect = new Rectangle();
+        rect.x = character.terrainCollider.get(0);
+        rect.y = character.terrainCollider.get(1);
+        rect.width = character.terrainCollider.get(2);
+        rect.height = character.terrainCollider.get(3);
+        result.terrainCollider = rect;
+
         result.scale = character.scale;
 
         result.jumpStrength = character.jumpStrength;
@@ -33,7 +39,13 @@ public class VM
     {
         VM.Character result = new VM.Character();
 
-        result.terrainCollider = character.terrainCollider;
+        FloatArray arr = new FloatArray();
+        arr.add(character.terrainCollider.x);
+        arr.add(character.terrainCollider.y);
+        arr.add(character.terrainCollider.width);
+        arr.add(character.terrainCollider.height);
+        result.terrainCollider = arr;
+
         result.scale = character.scale;
 
         result.jumpStrength = character.jumpStrength;
@@ -153,7 +165,7 @@ public class VM
     {
         public Array<VM.Animation> animations = new Array<>();
 
-        public Vector2 terrainCollider = new Vector2();
+        public FloatArray terrainCollider = new FloatArray();
         public Vector2 debugDim = new Vector2();
         public float scale;
 
