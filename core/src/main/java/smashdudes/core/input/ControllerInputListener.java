@@ -72,7 +72,6 @@ public class ControllerInputListener extends ControllerAdapter implements IGameI
             {
                 menuDir.y = 0;
                 state.down = false;
-                state.up = false;
             }
 
             return false;
