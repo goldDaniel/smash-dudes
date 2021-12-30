@@ -205,7 +205,13 @@ public class CharacterEditorWidget
         ImGui.separator();
         ImGui.text("Animation Frame Data");
 
-        ImGui.labelText(anim.usesSpriteSheet + "", "Uses spritesheet");
+        ImFloat animDUration = new ImFloat();
+        animDUration.set(anim.animationDuration);
+        if(ImGui.inputFloat("Animation Duration", animDUration))
+        {
+            commandList.execute(new AnimationDurationCommand(anim, animDUration.get()));
+        }
+
         if (anim.usesSpriteSheet)
         {
             ImGui.labelText(anim.textureFilePath, "Texture File Path");
@@ -452,11 +458,8 @@ public class CharacterEditorWidget
 
     private static void playAnimation(float dt)
     {
-        float frameDuration = 1/16f;
-        if (selectedAnimation.animationName.equals("idle"))
-        {
-            frameDuration = 1/8f;
-        }
+        if(selectedAnimation.frames.isEmpty()) return;
+        float frameDuration = selectedAnimation.animationDuration / selectedAnimation.frames.size;
 
         if (currentAnimation == null)
         {

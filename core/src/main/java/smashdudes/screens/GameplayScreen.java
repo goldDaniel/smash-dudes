@@ -80,7 +80,12 @@ public class GameplayScreen extends GameScreen
     {
         ScreenUtils.clear(Color.GRAY);
 
-        ecsEngine.update(dt);
+        float step = 1/144.0f;
+        while(dt >= step)
+        {
+            ecsEngine.update(step);
+            dt -= step;
+        }
     }
 
     @Override
@@ -158,9 +163,9 @@ public class GameplayScreen extends GameScreen
             frames.add(frame);
         }
 
-        float duration = 0;
-        if(animationName == "idle") duration = 1/8f;
-        else                        duration = 1/16f;
+        //this may crash our program due to divide-by-zero if an animation has no frames
+        //that is okay though, if an animation has no frames something must have gone wrong and this will let us know
+        float duration = anim.animationDuration / anim.frames.size;
 
         return new AnimationComponent(frames, duration);
     }

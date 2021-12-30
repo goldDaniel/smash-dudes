@@ -66,6 +66,7 @@ public class VM
 
         anim.textureFilePath = a.textureFilePath;
         anim.animationName = a.animationName;
+        anim.animationDuration = a.animationDuration;
         anim.usesSpriteSheet = a.usesSpriteSheet;
 
         for(VM.AnimationFrame f : a.frames)
@@ -82,6 +83,7 @@ public class VM
 
         anim.textureFilePath = a.textureFilePath;
         anim.animationName = a.animationName;
+        anim.animationDuration = a.animationDuration;
         anim.usesSpriteSheet = a.usesSpriteSheet;
 
         for(DTO.AnimationFrame f : a.frames)
@@ -180,6 +182,8 @@ public class VM
     {
         public String textureFilePath;
         public String animationName;
+
+        public float animationDuration;
 
         public boolean usesSpriteSheet;
 
