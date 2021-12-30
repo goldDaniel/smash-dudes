@@ -165,7 +165,7 @@ public class GameplayScreen extends GameScreen
 
         //this may crash our program due to divide-by-zero if an animation has no frames
         //that is okay though, if an animation has no frames something must have gone wrong and this will let us know
-        float duration = anim.animationDuration / anim.frames.size;
+        float duration = anim.animationDuration;
 
         return new AnimationComponent(frames, duration);
     }
