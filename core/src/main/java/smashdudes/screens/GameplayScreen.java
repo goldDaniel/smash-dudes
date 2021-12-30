@@ -121,15 +121,13 @@ public class GameplayScreen extends GameScreen
         player.addComponent(sd);
 
         DebugDrawComponent dd = new DebugDrawComponent();
-        dd.width = characterData.terrainCollider.x;
-        dd.height = characterData.terrainCollider.y;
+        dd.box = characterData.terrainCollider;
         player.addComponent(dd);
 
 
 
         TerrainColliderComponent collider = new TerrainColliderComponent();
-        collider.colliderWidth = characterData.terrainCollider.x;
-        collider.colliderHeight = characterData.terrainCollider.y;
+        collider.collider = characterData.terrainCollider;
         player.addComponent(collider);
 
         return player;
@@ -176,8 +174,10 @@ public class GameplayScreen extends GameScreen
         terrain.addComponent(t);
 
         DebugDrawComponent dd = new DebugDrawComponent();
-        dd.width = terrainData.width;
-        dd.height = terrainData.height;
+        dd.box.x = 0;
+        dd.box.y = 0;
+        dd.box.width = terrainData.width;
+        dd.box.height = terrainData.height;
         dd.color = Color.GREEN;
         terrain.addComponent(dd);
 

@@ -8,8 +8,7 @@ import smashdudes.ecs.Component;
 public class DebugDrawComponent extends Component
 {
     public Color color = Color.GOLD;
-    public float width;
-    public float height;
+    public Rectangle box = new Rectangle();
 
     public Array<Rectangle> hitboxes = new Array<>();
     public Array<Rectangle> hurtboxes = new Array<>();
