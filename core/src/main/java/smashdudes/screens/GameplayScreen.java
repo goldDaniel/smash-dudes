@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import smashdudes.content.ContentRepo;
@@ -99,7 +100,7 @@ public class GameplayScreen extends GameScreen
         Entity player = ecsEngine.createEntity();
 
         player.addComponent(new PlayerComponent(handle, identifier));
-        player.addComponent(new PositionComponent());
+        player.addComponent(new PositionComponent(new Vector2(0, 10)));
         player.addComponent(new VelocityComponent());
         player.addComponent(new JumpComponent(characterData.jumpStrength));
         player.addComponent(new GravityComponent(characterData.gravity));
