@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
+import imgui.type.ImFloat;
 import smashdudes.content.DTO;
 
 public class VM
@@ -12,9 +13,14 @@ public class VM
     {
         DTO.Character result = new DTO.Character();
 
-        result.terrainCollider = character.terrainCollider;
-        result.debugDim = character.debugDim;
-        result.drawDim = character.drawDim;
+        Rectangle rect = new Rectangle();
+        rect.x = character.terrainCollider.get(0);
+        rect.y = character.terrainCollider.get(1);
+        rect.width = character.terrainCollider.get(2);
+        rect.height = character.terrainCollider.get(3);
+        result.terrainCollider = rect;
+
+        result.scale = character.scale;
 
         result.jumpStrength = character.jumpStrength;
         result.gravity = character.gravity;
@@ -33,9 +39,14 @@ public class VM
     {
         VM.Character result = new VM.Character();
 
-        result.terrainCollider = character.terrainCollider;
-        result.debugDim = character.debugDim;
-        result.drawDim = character.drawDim;
+        FloatArray arr = new FloatArray();
+        arr.add(character.terrainCollider.x);
+        arr.add(character.terrainCollider.y);
+        arr.add(character.terrainCollider.width);
+        arr.add(character.terrainCollider.height);
+        result.terrainCollider = arr;
+
+        result.scale = character.scale;
 
         result.jumpStrength = character.jumpStrength;
         result.gravity = character.gravity;
@@ -55,7 +66,10 @@ public class VM
 
         anim.textureFilePath = a.textureFilePath;
         anim.animationName = a.animationName;
+        anim.animationDuration = a.animationDuration;
         anim.usesSpriteSheet = a.usesSpriteSheet;
+
+        anim.animationDuration = a.animationDuration;
 
         for(VM.AnimationFrame f : a.frames)
         {
@@ -71,7 +85,10 @@ public class VM
 
         anim.textureFilePath = a.textureFilePath;
         anim.animationName = a.animationName;
+        anim.animationDuration = a.animationDuration;
         anim.usesSpriteSheet = a.usesSpriteSheet;
+
+        anim.animationDuration = a.animationDuration;
 
         for(DTO.AnimationFrame f : a.frames)
         {
@@ -154,9 +171,9 @@ public class VM
     {
         public Array<VM.Animation> animations = new Array<>();
 
-        public Vector2 terrainCollider = new Vector2();
+        public FloatArray terrainCollider = new FloatArray();
         public Vector2 debugDim = new Vector2();
-        public Vector2 drawDim = new Vector2();
+        public float scale;
 
         public float jumpStrength;
         public float gravity;
@@ -169,6 +186,8 @@ public class VM
     {
         public String textureFilePath;
         public String animationName;
+
+        public float animationDuration;
 
         public boolean usesSpriteSheet;
 

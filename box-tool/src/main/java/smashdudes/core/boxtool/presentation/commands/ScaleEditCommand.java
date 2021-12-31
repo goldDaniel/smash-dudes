@@ -2,28 +2,29 @@ package smashdudes.core.boxtool.presentation.commands;
 
 import smashdudes.core.boxtool.presentation.viewmodel.VM;
 
-public class weightEditCommand extends Command
+public class ScaleEditCommand extends Command
 {
     private final VM.Character character;
-    private final float oldVlaue;
+    private final float oldValue;
     private final float newValue;
 
-    public weightEditCommand(VM.Character character, float newValue)
+    public ScaleEditCommand(VM.Character character, float newValue)
     {
         this.character = character;
-        oldVlaue = character.weight;
+        oldValue = character.scale;
         this.newValue = newValue;
     }
 
     @Override
     protected void execute()
     {
-        character.weight = newValue;
+        character.scale = newValue;
     }
 
     @Override
     protected void undo()
     {
-        character.weight = oldVlaue;
+        character.scale = oldValue;
     }
+
 }

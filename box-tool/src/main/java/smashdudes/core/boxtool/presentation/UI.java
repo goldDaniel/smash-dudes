@@ -102,6 +102,7 @@ public class UI
 
             sh.setProjectionMatrix(camera.combined);
             sh.begin(ShapeRenderer.ShapeType.Line);
+            CharacterEditorWidget.drawTerrainCollider(sh);
             CharacterEditorWidget.drawAttackData(sh);
             sh.end();
         }
@@ -138,6 +139,7 @@ public class UI
                     String filepath = Utils.chooseFileToLoad("json");
                     if(filepath != null)
                     {
+                        CharacterEditorWidget.reset();
                         character = VM.mapping(service.readCharacter(filepath));
                         commandList.clear();
                     }

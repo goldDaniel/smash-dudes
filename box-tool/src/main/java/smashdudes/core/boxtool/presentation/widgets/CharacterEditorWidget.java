@@ -1,6 +1,8 @@
 package smashdudes.core.boxtool.presentation.widgets;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -8,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import imgui.ImGui;
+import imgui.ImVec2;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImFloat;
 import imgui.type.ImInt;
@@ -41,6 +44,27 @@ public class CharacterEditorWidget
     public CharacterEditorWidget()
     {
         throw new IllegalStateException("DO NOT INSTANTIATE");
+    }
+
+    public static void reset()
+    {
+        addFrameTexture = "";
+        addFrameIdx = new ImInt();
+
+        addAnimationName = new ImString();
+
+        commandList = null;
+        service = null;
+        character = null;
+
+        currentAnimation = null;
+        selectedAnimation = null;
+        selectedAnimationFrame = null;
+
+        playing = false;
+
+        texturePos = new Vector2(1.5f, 0);
+        currentTime = 0;
     }
 
     public static void render(CommandList commandList, ContentService service, VM.Character character, float dt)
@@ -84,7 +108,7 @@ public class CharacterEditorWidget
         jump.set(character.jumpStrength);
         if(ImGui.inputFloat("##jumpStrengthID", jump))
         {
-            commandList.execute(new jumpEditCommand(character, jump.get()));
+            commandList.execute(new JumpEditCommand(character, jump.get()));
         }
 
         ImGui.text("Gravity: ");
@@ -93,7 +117,7 @@ public class CharacterEditorWidget
         gravity.set(character.gravity);
         if(ImGui.inputFloat("##gravityID", gravity))
         {
-            commandList.execute(new gravityEditCommand(character, gravity.get()));
+            commandList.execute(new GravityEditCommand(character, gravity.get()));
         }
 
         ImGui.text("Weight: ");
@@ -102,7 +126,24 @@ public class CharacterEditorWidget
         weight.set(character.weight);
         if(ImGui.inputFloat("##weightID", weight))
         {
-            commandList.execute(new weightEditCommand(character, weight.get()));
+            commandList.execute(new WeightEditCommand(character, weight.get()));
+        }
+
+        ImGui.text("Terrain Collider");
+        ImGui.sameLine();
+        float[] dim = {character.terrainCollider.get(0), character.terrainCollider.get(1), character.terrainCollider.get(2), character.terrainCollider.get(3)};
+        if(ImGui.inputFloat4("##colliderDimID", dim))
+        {
+            commandList.execute(new ColliderDimEditCommand(character, dim));
+        }
+
+        ImGui.text("Scale:");
+        ImGui.sameLine();
+        ImFloat scale = new ImFloat();
+        scale.set(character.scale);
+        if(ImGui.inputFloat("##scaleID", scale))
+        {
+            commandList.execute(new ScaleEditCommand(character, scale.get()));
         }
 
         ImGui.separator();
@@ -164,7 +205,15 @@ public class CharacterEditorWidget
         ImGui.separator();
         ImGui.text("Animation Frame Data");
 
-        ImGui.labelText(anim.usesSpriteSheet + "", "Uses spritesheet");
+        ImGui.text("Animation Duration: ");
+        ImGui.sameLine();
+        ImFloat duration = new ImFloat();
+        duration.set(anim.animationDuration);
+        if(ImGui.inputFloat("##animDurationID", duration))
+        {
+            commandList.execute(new AnimationDurationCommand(anim, duration.get()));
+        }
+
         if (anim.usesSpriteSheet)
         {
             ImGui.labelText(anim.textureFilePath, "Texture File Path");
@@ -207,6 +256,9 @@ public class CharacterEditorWidget
                 if(readTexture != null)
                 {
                     addFrameTexture = readTexture;
+
+                    String workingDir = Gdx.files.getLocalStoragePath();
+                    addFrameTexture = addFrameTexture.replace(workingDir, "");
                 }
             }
             ImGui.text(addFrameTexture);
@@ -349,15 +401,32 @@ public class CharacterEditorWidget
         toRemove.clear();
     }
 
+    public static void drawTerrainCollider(ShapeRenderer sh)
+    {
+        if (character != null)
+        {
+            float w = character.terrainCollider.get(2);
+            float h = character.terrainCollider.get(3);
+            float x = texturePos.x - w / 2 + character.terrainCollider.get(0);
+            float y = texturePos.y - h / 2 + character.terrainCollider.get(1);
+            sh.setColor(Color.GOLD);
+            sh.rect(x, y, w, h);
+        }
+    }
+
     public static void drawTexture(SpriteBatch sb)
     {
         if(selectedAnimationFrame != null)
         {
-            float w = character.drawDim.x;
-            float h = character.drawDim.y;
+            Texture t =  RenderResources.getTexture(selectedAnimationFrame.texturePath);
+
+            float ratio = (float)t.getHeight() / (float)t.getWidth();
+
+            float w = character.scale;
+            float h = w * ratio;
             float x = texturePos.x - w / 2 ;
             float y = texturePos.y  - h / 2;
-            sb.draw(RenderResources.getTexture(selectedAnimationFrame.texturePath), x, y, w, h);
+            sb.draw(t, x, y, w, h);
         }
 
     }
@@ -389,13 +458,10 @@ public class CharacterEditorWidget
         }
     }
 
-    private static  void playAnimation(float dt)
+    private static void playAnimation(float dt)
     {
-        float frameDuration = 1/16f;
-        if (selectedAnimation.animationName.equals("idle"))
-        {
-            frameDuration = 1/8f;
-        }
+        if(selectedAnimation.frames.isEmpty()) return;
+        float frameDuration = selectedAnimation.animationDuration / selectedAnimation.frames.size;
 
         if (currentAnimation == null)
         {

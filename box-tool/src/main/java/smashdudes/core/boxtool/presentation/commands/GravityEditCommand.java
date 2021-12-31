@@ -2,28 +2,28 @@ package smashdudes.core.boxtool.presentation.commands;
 
 import smashdudes.core.boxtool.presentation.viewmodel.VM;
 
-public class jumpEditCommand extends Command
+public class GravityEditCommand extends Command
 {
     private final VM.Character character;
     private final float oldValue;
     private final float newValue;
 
-    public jumpEditCommand(VM.Character character, float newValue)
+    public GravityEditCommand(VM.Character character, float newValue)
     {
         this.character = character;
-        oldValue = character.jumpStrength;
+        oldValue = character.gravity;
         this.newValue = newValue;
     }
 
     @Override
     protected void execute()
     {
-        character.jumpStrength = newValue;
+        character.gravity = newValue;
     }
 
     @Override
     protected void undo()
     {
-        character.jumpStrength = oldValue;
+        character.gravity = oldValue;
     }
 }

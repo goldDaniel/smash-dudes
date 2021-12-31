@@ -3,9 +3,11 @@ package smashdudes.core.input;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerAdapter;
 import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.Array;
 import org.libsdl.SDL;
 import smashdudes.core.PlayerHandle;
@@ -19,7 +21,7 @@ import smashdudes.core.PlayerHandle;
 public class GameInputAssigner
 {
     //handles our mappings between player handles and the input handlers
-    private GameInputHandler inputHandler = new GameInputHandler();
+    private GameInputHandler gameInputHandler = new GameInputHandler();
 
     //keeps track of controllers we have already assigned to player
     private Array<Controller> boundControllers = new Array<>();
@@ -39,7 +41,7 @@ public class GameInputAssigner
                 if(buttonCode == SDL.SDL_CONTROLLER_BUTTON_A)
                 {
                     boundControllers.add(controller);
-                    inputHandler.register(new PlayerHandle(), new ControllerInputListener(controller));
+                    gameInputHandler.register(new PlayerHandle(), new ControllerInputListener(controller));
 
                     return true;
                 }
@@ -61,7 +63,7 @@ public class GameInputAssigner
                 if(keycode == Input.Keys.SPACE)
                 {
                     InputConfig c = new InputConfig(Input.Keys.A, Input.Keys.D, Input.Keys.W, Input.Keys.S);
-                    inputHandler.register(new PlayerHandle(), new KeyboardInputListener(c));
+                    gameInputHandler.register(new PlayerHandle(), new KeyboardInputListener(c));
 
                     keyboardBound = true;
 
@@ -79,7 +81,7 @@ public class GameInputAssigner
      */
     public void startListening()
     {
-        Gdx.input.setInputProcessor(inputListener);
+        Gdx.input.setInputProcessor(new InputMultiplexer(inputListener, gameInputHandler.getInputProcessor()));
         Controllers.addListener(controllerListener);
     }
 
@@ -92,14 +94,19 @@ public class GameInputAssigner
         Controllers.removeListener(controllerListener);
     }
 
+    public IMenuInputRetriever getMenuInput(PlayerHandle p)
+    {
+        return (IMenuInputRetriever)gameInputHandler.getGameInput(p);
+    }
 
     public GameInputHandler getGameInputHandler()
     {
-        return inputHandler;
+        return gameInputHandler;
     }
+
 
     public Iterable<PlayerHandle> getPlayerHandles()
     {
-        return inputHandler.getHandles();
+        return gameInputHandler.getHandles();
     }
 }

@@ -59,7 +59,7 @@ public class RenderDebugSystem extends GameSystem
         DebugDrawComponent d = entity.getComponent(DebugDrawComponent.class);
 
         sh.setColor(d.color);
-        sh.rect(p.position.x - d.width / 2, p.position.y - d.height / 2, d.width, d.height);
+        sh.rect(p.position.x - d.box.width / 2 + d.box.x, p.position.y - d.box.height / 2 + d.box.y, d.box.width, d.box.height);
 
         int dir = d.facingLeft ? -1 : 1;
 

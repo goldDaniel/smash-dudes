@@ -58,10 +58,10 @@ public class TerrainCollisionSystem extends GameSystem
         TerrainColliderComponent c = entity.getComponent(TerrainColliderComponent.class);
 
         Rectangle r0 = new Rectangle();
-        r0.x = p.position.x - c.colliderWidth / 2;
-        r0.y = p.position.y - c.colliderHeight / 2;
-        r0.width = c.colliderWidth;
-        r0.height = c.colliderHeight;
+        r0.x = p.position.x - c.collider.width/ 2 + c.collider.x;
+        r0.y = p.position.y - c.collider.height / 2 + c.collider.y;
+        r0.width = c.collider.width;
+        r0.height = c.collider.height;
 
         boolean touchedGround = false;
 
@@ -80,7 +80,7 @@ public class TerrainCollisionSystem extends GameSystem
 
                 if(side == Collisions.CollisionSide.Top)
                 {
-                    p.position.y = t.pos.position.y + c.colliderHeight / 2 + t.terrain.height / 2;
+                    p.position.y = t.pos.position.y + c.collider.height / 2 - c.collider.y + t.terrain.height / 2;
 
                     if (!onGroundLastFrame.get(entity))
                     {
@@ -91,15 +91,15 @@ public class TerrainCollisionSystem extends GameSystem
                 }
                 else if(side == Collisions.CollisionSide.Bottom)
                 {
-                    p.position.y = t.pos.position.y - c.colliderHeight / 2 - t.terrain.height / 2;
+                    p.position.y = t.pos.position.y - c.collider.height / 2 - c.collider.y - t.terrain.height / 2;
                 }
                 else if(side == Collisions.CollisionSide.Left)
                 {
-                    p.position.x = t.pos.position.x - c.colliderWidth / 2 - t.terrain.width / 2;
+                    p.position.x = t.pos.position.x - c.collider.width / 2 - c.collider.x - t.terrain.width / 2;
                 }
                 else if(side == Collisions.CollisionSide.Right)
                 {
-                    p.position.x = t.pos.position.x + c.colliderWidth / 2 + t.terrain.width / 2;
+                    p.position.x = t.pos.position.x + c.collider.width / 2 - c.collider.x + t.terrain.width / 2;
                 }
             }
         }

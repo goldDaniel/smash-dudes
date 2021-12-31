@@ -4,7 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import smashdudes.content.ContentRepo;
@@ -12,29 +12,45 @@ import smashdudes.content.DTO;
 import smashdudes.content.LoadContent;
 import smashdudes.core.RenderResources;
 import smashdudes.core.input.GameInputHandler;
-import smashdudes.core.input.GameInputRetriever;
+import smashdudes.core.input.IGameInputRetriever;
 import smashdudes.core.PlayerHandle;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
+import smashdudes.util.CharacterSelectDescription;
 
 public class GameplayScreen extends GameScreen
 {
     private GameInputHandler inputHandler;
     private Engine ecsEngine;
 
-    public GameplayScreen(Game game, Iterable<PlayerHandle> players, GameInputHandler inputHandler)
+    public GameplayScreen(Game game, CharacterSelectDescription desc)
     {
         super(game);
-        this.inputHandler = inputHandler;
+        this.inputHandler = desc.gameInput;
         ecsEngine = new Engine();
 
-        DTO.Character characterData = new ContentRepo().loadCharacter("Character.json");
-        for(PlayerHandle p : players)
-        {
-            Entity player = buildPlayer(p, characterData);
 
-            GameInputRetriever retriever = inputHandler.getGameInput(p);
+        for(CharacterSelectDescription.PlayerDescription p : desc.descriptions)
+        {
+
+            DTO.Character characterData = null;
+            if(p.identifier.equals("a"))
+            {
+                characterData = ContentRepo.loadCharacter("Character.json");
+            }
+            if(p.identifier.equals("b"))
+            {
+                characterData = ContentRepo.loadCharacter("Knight2.json");
+            }
+            if(p.identifier.equals("c"))
+            {
+                characterData = ContentRepo.loadCharacter("daniel.json");
+            }
+
+            Entity player = buildPlayer(p.handle, p.identifier, characterData);
+
+            IGameInputRetriever retriever = inputHandler.getGameInput(p.handle);
 
             PlayerControllerComponent pc = new PlayerControllerComponent(retriever);
             player.addComponent(pc);
@@ -64,7 +80,12 @@ public class GameplayScreen extends GameScreen
     {
         ScreenUtils.clear(Color.GRAY);
 
-        ecsEngine.update(dt);
+        float step = 1/144.0f;
+        while(dt >= step)
+        {
+            ecsEngine.update(step);
+            dt -= step;
+        }
     }
 
     @Override
@@ -79,12 +100,12 @@ public class GameplayScreen extends GameScreen
         ecsEngine.resize(width, height);
     }
 
-    private Entity buildPlayer(PlayerHandle handle, DTO.Character characterData)
+    private Entity buildPlayer(PlayerHandle handle, String identifier, DTO.Character characterData)
     {
         Entity player = ecsEngine.createEntity();
 
-        player.addComponent(new PlayerComponent(handle));
-        player.addComponent(new PositionComponent());
+        player.addComponent(new PlayerComponent(handle, identifier));
+        player.addComponent(new PositionComponent(new Vector2(0, 10)));
         player.addComponent(new VelocityComponent());
         player.addComponent(new JumpComponent(characterData.jumpStrength));
         player.addComponent(new GravityComponent(characterData.gravity));
@@ -106,20 +127,17 @@ public class GameplayScreen extends GameScreen
 
 
         DrawComponent sd = new DrawComponent();
-        sd.width = characterData.drawDim.x;
-        sd.height = characterData.drawDim.y;
+        sd.scale =  characterData.scale;
         player.addComponent(sd);
 
         DebugDrawComponent dd = new DebugDrawComponent();
-        dd.width = characterData.debugDim.x;
-        dd.height = characterData.debugDim.y;
+        dd.box = characterData.terrainCollider;
         player.addComponent(dd);
 
 
 
         TerrainColliderComponent collider = new TerrainColliderComponent();
-        collider.colliderWidth = characterData.terrainCollider.x;
-        collider.colliderHeight = characterData.terrainCollider.y;
+        collider.collider = characterData.terrainCollider;
         player.addComponent(collider);
 
         return player;
@@ -145,9 +163,7 @@ public class GameplayScreen extends GameScreen
             frames.add(frame);
         }
 
-        float duration = 0;
-        if(animationName == "idle") duration = 1/8f;
-        else                        duration = 1/16f;
+        float duration = anim.animationDuration;
 
         return new AnimationComponent(frames, duration);
     }
@@ -166,16 +182,13 @@ public class GameplayScreen extends GameScreen
         terrain.addComponent(t);
 
         DebugDrawComponent dd = new DebugDrawComponent();
-        dd.width = terrainData.width;
-        dd.height = terrainData.height;
+        dd.box.x = 0;
+        dd.box.y = 0;
+        dd.box.width = terrainData.width;
+        dd.box.height = terrainData.height;
         dd.color = Color.GREEN;
         terrain.addComponent(dd);
 
-        DrawComponent d = new DrawComponent();
-        d.texture = RenderResources.getTexture(terrainData.textureFilePath);
-        d.width = terrainData.width;
-        d.height = terrainData.height;
-        terrain.addComponent(d);
 
         return terrain;
     }

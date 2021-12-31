@@ -27,9 +27,11 @@ public class AnimationComponent extends Component
 
     public float currentTime;
     public final Animation<AnimationFrame> currentAnimation;
+    public float animationDuration;
 
-    public AnimationComponent(Array<AnimationFrame> frames, float frameDuration)
+    public AnimationComponent(Array<AnimationFrame> frames, float animationDuration)
     {
+        float frameDuration = animationDuration / frames.size;
         currentAnimation = new Animation<>( frameDuration, frames, Animation.PlayMode.LOOP);
     }
 }

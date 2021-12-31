@@ -1,15 +1,23 @@
 package smashdudes.core.input;
 
+
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerAdapter;
+import com.badlogic.gdx.math.Vector2;
 import org.libsdl.SDL;
+import smashdudes.core.input.InputState;
 
 /**
  * Listens for controller input and allows retrieval of state through the GameInputRetriever interface
  */
-public class ControllerInputListener extends ControllerAdapter implements GameInputRetriever
+public class ControllerInputListener extends ControllerAdapter implements IGameInputRetriever, IMenuInputRetriever
 {
     private InputState state = new InputState();
+
+    private Vector2 menuDir = new Vector2();
+    private boolean confirmPressed = false;
+    private boolean cancelPressed = false;
+
 
     public ControllerInputListener(Controller controller)
     {
@@ -22,6 +30,11 @@ public class ControllerInputListener extends ControllerAdapter implements GameIn
         if(buttonIndex == SDL.SDL_CONTROLLER_BUTTON_A)
         {
             state.up = true;
+            confirmPressed = true;
+        }
+        if(buttonIndex == SDL.SDL_CONTROLLER_BUTTON_B)
+        {
+            cancelPressed = true;
         }
 
         return false;
@@ -33,6 +46,11 @@ public class ControllerInputListener extends ControllerAdapter implements GameIn
         if(buttonIndex == SDL.SDL_CONTROLLER_BUTTON_A)
         {
             state.up = false;
+            confirmPressed = false;
+        }
+        if(buttonIndex == SDL.SDL_CONTROLLER_BUTTON_B)
+        {
+            cancelPressed = false;
         }
 
         return false;
@@ -46,11 +64,13 @@ public class ControllerInputListener extends ControllerAdapter implements GameIn
         {
             if(axisIndex == SDL.SDL_CONTROLLER_AXIS_LEFTX)
             {
+                menuDir.x = 0;
                 state.left = false;
                 state.right = false;
             }
             else if(axisIndex == SDL.SDL_CONTROLLER_AXIS_LEFTY)
             {
+                menuDir.y = 0;
                 state.down = false;
             }
 
@@ -59,12 +79,14 @@ public class ControllerInputListener extends ControllerAdapter implements GameIn
 
         if(axisIndex == SDL.SDL_CONTROLLER_AXIS_LEFTX)
         {
+            menuDir.x = value;
             state.left = value < 0;
             state.right = value > 0;
         }
         if(axisIndex == SDL.SDL_CONTROLLER_AXIS_LEFTY)
         {
-            state.down = value < 0;
+            menuDir.y = -value;
+            state.down = value > 0;
         }
 
 
@@ -93,5 +115,23 @@ public class ControllerInputListener extends ControllerAdapter implements GameIn
     public boolean getDown()
     {
         return state.down;
+    }
+
+    @Override
+    public Vector2 getDirection()
+    {
+        return menuDir.nor();
+    }
+
+    @Override
+    public boolean confirmPressed()
+    {
+        return confirmPressed;
+    }
+
+    @Override
+    public boolean cancelPressed()
+    {
+        return cancelPressed;
     }
 }
