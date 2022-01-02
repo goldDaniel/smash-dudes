@@ -36,27 +36,23 @@ public class HitDetectionSystem extends GameSystem
         {
             if(entity == other) continue;
 
-            if (hasEntityAttackedOther(entity, other))
+            Vector2 dir = hasEntityAttackedOther(entity, other);
+            if (dir != null)
             {
-                submitAttackEntity(entity, other);
+                submitAttackEntity(entity, other, dir);
             }
         }
     }
 
-    private void submitAttackEntity(Entity attacker, Entity attacked)
+    private void submitAttackEntity(Entity attacker, Entity attacked, Vector2 dir)
     {
         Entity entity = engine.createEntity();
 
-        PositionComponent attackerPos = attacker.getComponent(PositionComponent.class);
-        PositionComponent attackedPos = attacked.getComponent(PositionComponent.class);
-
-        Vector2 dir = attackedPos.position.cpy().sub(attackerPos.position).nor();
-
-        HitResolutionComponent resolution = new HitResolutionComponent(attacker, attacked, dir);
+        HitResolutionComponent resolution = new HitResolutionComponent(attacker, attacked, dir.nor());
         entity.addComponent(resolution);
     }
 
-    private boolean hasEntityAttackedOther(Entity attacker, Entity attacked)
+    private Vector2 hasEntityAttackedOther(Entity attacker, Entity attacked)
     {
         PositionComponent thisPos = attacker.getComponent(PositionComponent.class);
         PlayerComponent thisPlayer = attacker.getComponent(PlayerComponent.class);
@@ -75,12 +71,13 @@ public class HitDetectionSystem extends GameSystem
             Array<Rectangle> hurtboxes = otherCurrentFrame.getHurtboxesRelativeTo(otherPos.position, otherPlayer.facingLeft);
             for(Rectangle hurt : hurtboxes)
             {
-                if(hit.contains(hurt) || hit.overlaps(hurt))
+                if(hit.overlaps(hurt))
                 {
-                    return true;
+                    Vector2  dir = new Vector2(hit.x, hit.y);
+                    return dir.sub(hit.x, hit.y);
                 }
             }
         }
-        return false;
+        return null;
     }
 }

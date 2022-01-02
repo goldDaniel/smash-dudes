@@ -39,14 +39,21 @@ public class AnimationComponent extends Component
         {
             Array<Rectangle> result = new Array<>();
 
-            int dir = mirror ? -1 : 1;
-
             for(Rectangle relative : boxes)
             {
                 Rectangle absolute = new Rectangle();
-                absolute.width = dir * relative.width;
+                absolute.width = relative.width;
                 absolute.height = relative.height;
-                absolute.x = dir * (relative.x - relative.width / 2) + pos.x;
+
+                if(mirror)
+                {
+                    absolute.x = pos.x - relative.x - relative.width / 2;
+                }
+                else
+                {
+                    absolute.x = + pos.x + relative.x - relative.width / 2;
+                }
+
                 absolute.y = (relative.y - relative.height / 2) + pos.y;
 
                 result.add(absolute);
