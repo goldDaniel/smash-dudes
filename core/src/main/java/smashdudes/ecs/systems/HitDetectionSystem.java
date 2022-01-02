@@ -108,22 +108,3 @@ public class HitDetectionSystem extends GameSystem
         return new Rectangle(left, top, right - left, bottom - top);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
