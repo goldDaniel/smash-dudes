@@ -49,16 +49,16 @@ public class HitDetectionSystem extends GameSystem
                     entity.getComponent(DebugDrawComponent.class).pushShape(ShapeRenderer.ShapeType.Filled, result.collisionArea, Color.WHITE);
                 }
 
-                submitAttackResolutionEntity(entity, other, result.direction);
+                submitAttackResolutionEntity(entity, other, result.direction, result.collisionArea);
             }
         }
     }
 
-    private void submitAttackResolutionEntity(Entity attacker, Entity attacked, Vector2 dir)
+    private void submitAttackResolutionEntity(Entity attacker, Entity attacked, Vector2 dir, Rectangle collisionArea)
     {
         Entity entity = engine.createEntity();
 
-        HitResolutionComponent resolution = new HitResolutionComponent(attacker, attacked, dir.nor(), 0.5f);
+        HitResolutionComponent resolution = new HitResolutionComponent(attacker, attacked, dir.nor(), collisionArea, 0.5f);
         entity.addComponent(resolution);
     }
 
