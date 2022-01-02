@@ -21,7 +21,7 @@ public class HitResolutionSystem extends GameSystem
 
         if(!res.attacked.hasComponent(PlayerStunnedComponent.class))
         {
-            res.attacked.addComponent(new PlayerStunnedComponent(0.5f));
+            res.attacked.addComponent(new PlayerStunnedComponent(res.stunTime));
 
             if(res.attacked.hasComponent(VelocityComponent.class))
             {
