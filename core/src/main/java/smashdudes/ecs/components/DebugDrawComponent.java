@@ -46,7 +46,6 @@ public class DebugDrawComponent extends Component
         rectangles.get(type).add(new DebugRect(color, rect));
     }
 
-
     public void reset()
     {
         for(ShapeRenderer.ShapeType type : ShapeRenderer.ShapeType.values())
