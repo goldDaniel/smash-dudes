@@ -31,10 +31,5 @@ public class RenderDirectionSystem extends GameSystem
         }
 
         d.facingLeft = p.facingLeft;
-
-        if(entity.hasComponent(DebugDrawComponent.class))
-        {
-            entity.getComponent(DebugDrawComponent.class).facingLeft = d.facingLeft;
-        }
     }
 }

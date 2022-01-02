@@ -120,16 +120,11 @@ public class GameplayScreen extends GameScreen
 
         player.addComponent(animContainer.idle);
 
-        AnimationDebugComponent ad = new AnimationDebugComponent();
-        player.addComponent(ad);
-
-
         DrawComponent sd = new DrawComponent();
         sd.scale =  characterData.scale;
         player.addComponent(sd);
 
         DebugDrawComponent dd = new DebugDrawComponent();
-        dd.box = characterData.terrainCollider;
         player.addComponent(dd);
 
 
@@ -180,11 +175,6 @@ public class GameplayScreen extends GameScreen
         terrain.addComponent(t);
 
         DebugDrawComponent dd = new DebugDrawComponent();
-        dd.box.x = 0;
-        dd.box.y = 0;
-        dd.box.width = terrainData.width;
-        dd.box.height = terrainData.height;
-        dd.color = Color.GREEN;
         terrain.addComponent(dd);
 
 

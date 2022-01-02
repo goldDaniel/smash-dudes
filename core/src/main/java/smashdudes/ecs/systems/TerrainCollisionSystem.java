@@ -1,5 +1,7 @@
 package smashdudes.ecs.systems;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
@@ -56,6 +58,19 @@ public class TerrainCollisionSystem extends GameSystem
 
         PositionComponent p = entity.getComponent(PositionComponent.class);
         TerrainColliderComponent c = entity.getComponent(TerrainColliderComponent.class);
+
+        if(entity.hasComponent(DebugDrawComponent.class))
+        {
+            DebugDrawComponent debug = entity.getComponent(DebugDrawComponent.class);
+
+            Rectangle r = new Rectangle();
+            r.x = p.position.x + c.collider.x - c.collider.width / 2;
+            r.y = p.position.y + c.collider.y - c.collider.height / 2;
+            r.width = c.collider.width;
+            r.height = c.collider.height;
+
+            debug.pushShape(ShapeRenderer.ShapeType.Line, r, Color.GOLD);
+        }
 
         Rectangle r0 = new Rectangle();
         r0.x = p.position.x - c.collider.width/ 2 + c.collider.x;
