@@ -32,6 +32,7 @@ public class Engine
         systems.add(new PlayerIdleSystem(this));
         systems.add(new PlayerRunningSystem(this));
         systems.add(new PlayerInAirSystem(this));
+        systems.add(new GroundAttackSystem(this));
         systems.add(new CharacterJumpInputSystem(this));
         systems.add(new RenderDirectionSystem(this));
         systems.add(new PlayerControllerSystem(this));

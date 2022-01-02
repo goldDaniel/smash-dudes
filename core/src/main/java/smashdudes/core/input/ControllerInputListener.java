@@ -37,6 +37,11 @@ public class ControllerInputListener extends ControllerAdapter implements IGameI
             cancelPressed = true;
         }
 
+        if(buttonIndex == SDL.SDL_CONTROLLER_BUTTON_X)
+        {
+            state.punch = true;
+        }
+
         return false;
     }
 
@@ -51,6 +56,11 @@ public class ControllerInputListener extends ControllerAdapter implements IGameI
         if(buttonIndex == SDL.SDL_CONTROLLER_BUTTON_B)
         {
             cancelPressed = false;
+        }
+
+        if(buttonIndex == SDL.SDL_CONTROLLER_BUTTON_X)
+        {
+            state.punch = false;
         }
 
         return false;
@@ -115,6 +125,12 @@ public class ControllerInputListener extends ControllerAdapter implements IGameI
     public boolean getDown()
     {
         return state.down;
+    }
+
+    @Override
+    public boolean punch()
+    {
+        return state.punch;
     }
 
     @Override

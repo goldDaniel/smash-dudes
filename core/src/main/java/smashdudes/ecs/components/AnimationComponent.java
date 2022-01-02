@@ -56,13 +56,33 @@ public class AnimationComponent extends Component
         }
     }
 
-    public float currentTime;
-    public final Animation<AnimationFrame> currentAnimation;
-    public float animationDuration;
+    private float currentTime;
+    private final Animation<AnimationFrame> currentAnimation;
 
-    public AnimationComponent(Array<AnimationFrame> frames, float animationDuration)
+
+    public AnimationComponent(Array<AnimationFrame> frames, float animationDuration, Animation.PlayMode mode)
     {
         float frameDuration = animationDuration / frames.size;
-        currentAnimation = new Animation<>( frameDuration, frames, Animation.PlayMode.LOOP);
+        currentAnimation = new Animation<>( frameDuration, frames, mode);
+    }
+
+    public AnimationFrame getCurrentFrame()
+    {
+        return currentAnimation.getKeyFrame(currentTime);
+    }
+
+    public void reset()
+    {
+        currentTime = 0;
+    }
+
+    public void update(float dt)
+    {
+        currentTime += dt;
+    }
+
+    public boolean isFinished()
+    {
+        return currentAnimation.isAnimationFinished(currentTime);
     }
 }

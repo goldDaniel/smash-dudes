@@ -56,16 +56,10 @@ public class CharacterJumpInputSystem extends GameSystem
             if(e.collisionSide == Collisions.CollisionSide.Top)
             {
                 j.enable();
-
                 entity.removeComponent(PlayerInAirComponent.class);
-                entity.removeComponent(PlayerRunningComponent.class);
-                entity.removeComponent(PlayerIdleComponent.class);
-
-                if(v.currentState.left || v.currentState.right)
-                {
-                    entity.addComponent(new PlayerRunningComponent());
-                }
-                else
+                if(!entity.hasComponent(PlayerIdleComponent.class) &&
+                   !entity.hasComponent(PlayerRunningComponent.class) &&
+                   !entity.hasComponent(PlayerOnGroundAttackStateComponent.class))
                 {
                     entity.addComponent(new PlayerIdleComponent());
                 }

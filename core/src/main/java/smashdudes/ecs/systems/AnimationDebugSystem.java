@@ -29,7 +29,7 @@ public class AnimationDebugSystem extends GameSystem
         AnimationComponent anim = entity.getComponent(AnimationComponent.class);
         DebugDrawComponent ddraw = entity.getComponent(DebugDrawComponent.class);
 
-        AnimationComponent.AnimationFrame frame = anim.currentAnimation.getKeyFrame(anim.currentTime);
+        AnimationComponent.AnimationFrame frame = anim.getCurrentFrame();
 
         boolean mirror = false;
         if(entity.hasComponent(PlayerComponent.class))

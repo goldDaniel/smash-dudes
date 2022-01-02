@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -115,10 +116,11 @@ public class GameplayScreen extends GameScreen
 
 
         PlayerAnimationContainerComponent animContainer = new PlayerAnimationContainerComponent();
-        animContainer.idle = loadPlayerAnimation(characterData, "idle");
-        animContainer.running = loadPlayerAnimation(characterData, "run");
-        animContainer.jumping = loadPlayerAnimation(characterData,"jump");
-        animContainer.falling = loadPlayerAnimation(characterData,"fall");
+        animContainer.idle = loadPlayerAnimation(characterData, "idle", Animation.PlayMode.LOOP);
+        animContainer.running = loadPlayerAnimation(characterData, "run", Animation.PlayMode.LOOP);
+        animContainer.jumping = loadPlayerAnimation(characterData,"jump", Animation.PlayMode.LOOP);
+        animContainer.falling = loadPlayerAnimation(characterData,"fall", Animation.PlayMode.LOOP);
+        animContainer.attack_1 = loadPlayerAnimation(characterData,"attack_1", Animation.PlayMode.NORMAL);
         player.addComponent(animContainer);
 
         player.addComponent(animContainer.idle);
@@ -136,7 +138,7 @@ public class GameplayScreen extends GameScreen
         return player;
     }
 
-    public AnimationComponent loadPlayerAnimation(DTO.Character characterData, String animationName)
+    public AnimationComponent loadPlayerAnimation(DTO.Character characterData, String animationName, Animation.PlayMode mode)
     {
         DTO.Animation anim = null;
         for(DTO.Animation a : characterData.animations)
@@ -158,7 +160,7 @@ public class GameplayScreen extends GameScreen
 
         float duration = anim.animationDuration;
 
-        return new AnimationComponent(frames, duration);
+        return new AnimationComponent(frames, duration, mode);
     }
 
     public Entity buildTerrain(DTO.Terrain terrainData)

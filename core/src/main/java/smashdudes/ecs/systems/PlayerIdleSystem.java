@@ -4,8 +4,6 @@ import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
 
-import java.lang.reflect.GenericArrayType;
-
 public class PlayerIdleSystem extends GameSystem
 {
     public PlayerIdleSystem(Engine engine)
@@ -31,7 +29,13 @@ public class PlayerIdleSystem extends GameSystem
         }
 
         v.velocity.x *= 40 * dt;
-        if(i.currentState.left || i.currentState.right)
+
+        if(i.currentState.punch)
+        {
+            entity.removeComponent(PlayerIdleComponent.class);
+            entity.addComponent(new PlayerOnGroundAttackStateComponent());
+        }
+        else if(i.currentState.left || i.currentState.right)
         {
             entity.removeComponent(PlayerIdleComponent.class);
             entity.addComponent(new PlayerRunningComponent());
