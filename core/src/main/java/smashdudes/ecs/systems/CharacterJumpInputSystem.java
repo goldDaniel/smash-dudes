@@ -49,8 +49,6 @@ public class CharacterJumpInputSystem extends GameSystem
         if(event instanceof TerrainCollisionEvent)
         {
             TerrainCollisionEvent e = (TerrainCollisionEvent)event;
-
-            CharacterInputComponent v = entity.getComponent(CharacterInputComponent.class);
             JumpComponent j = entity.getComponent(JumpComponent.class);
 
             if(e.collisionSide == Collisions.CollisionSide.Top)
