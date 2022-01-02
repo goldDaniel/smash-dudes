@@ -6,10 +6,12 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 import smashdudes.core.Collisions;
-import smashdudes.ecs.Component;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
-import smashdudes.ecs.components.*;
+import smashdudes.ecs.components.DebugDrawComponent;
+import smashdudes.ecs.components.PositionComponent;
+import smashdudes.ecs.components.StaticTerrainComponent;
+import smashdudes.ecs.components.TerrainColliderComponent;
 import smashdudes.ecs.events.LandingEvent;
 import smashdudes.ecs.events.TerrainCollisionEvent;
 
