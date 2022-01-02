@@ -107,7 +107,7 @@ public class GameplayScreen extends GameScreen
         player.addComponent(new VelocityComponent());
         player.addComponent(new JumpComponent(characterData.jumpStrength));
         player.addComponent(new GravityComponent(characterData.gravity));
-        player.addComponent(new PlayerIdleComponent());
+        player.addComponent(new PlayerInAirComponent());
 
         CharacterInputComponent i = new CharacterInputComponent();
         player.addComponent(i);

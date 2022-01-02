@@ -22,8 +22,6 @@ public class Entity
                 return;
             }
         }
-
-        throw new IllegalStateException("Attempting to remove component entity doesnt have!");
     }
 
     public void addComponent(Component c)
