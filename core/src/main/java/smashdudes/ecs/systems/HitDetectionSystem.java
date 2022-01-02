@@ -6,10 +6,8 @@ import com.badlogic.gdx.utils.Array;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.AnimationComponent;
-import smashdudes.ecs.components.HitResolutionComponent;
 import smashdudes.ecs.components.PlayerComponent;
 import smashdudes.ecs.components.PositionComponent;
-import smashdudes.ecs.events.HitEvent;
 
 public class HitDetectionSystem extends GameSystem
 {
@@ -49,10 +47,7 @@ public class HitDetectionSystem extends GameSystem
 
     private void submitAttackEntity(Entity attacker, Entity attacked)
     {
-        Entity attackEntry = engine.createEntity();
-
-        HitResolutionComponent resolution = new HitResolutionComponent(attacker, attacked);
-        attackEntry.addComponent(resolution);
+        
     }
 
 
