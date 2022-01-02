@@ -45,6 +45,19 @@ public class TerrainCollisionSystem extends GameSystem
             t.terrain = e.getComponent(StaticTerrainComponent.class);
 
             terrain.add(t);
+
+            if(e.hasComponent(DebugDrawComponent.class))
+            {
+                DebugDrawComponent debug = e.getComponent(DebugDrawComponent.class);
+
+                Rectangle r = new Rectangle();
+                r.x = t.pos.position.x - t.terrain.width / 2;
+                r.y = t.pos.position.y - t.terrain.height / 2;
+                r.width = t.terrain.width;
+                r.height = t.terrain.height;
+
+                debug.pushShape(ShapeRenderer.ShapeType.Line, r, Color.GREEN);
+            }
         }
     }
 
