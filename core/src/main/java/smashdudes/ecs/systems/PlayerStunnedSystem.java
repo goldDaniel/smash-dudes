@@ -26,7 +26,6 @@ public class PlayerStunnedSystem extends GameSystem
         stun.update(dt);
         if(!stun.isStunned())
         {
-            System.out.println("in air");
             entity.removeComponent(PlayerStunnedComponent.class);
             entity.addComponent(new PlayerInAirComponent());
         }

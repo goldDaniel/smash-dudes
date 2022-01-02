@@ -27,7 +27,10 @@ public class HitResolutionSystem extends GameSystem
             {
                 VelocityComponent v = res.attacked.getComponent(VelocityComponent.class);
 
-                v.velocity.y = 32;
+                float speed = 12;
+                res.launchDirection.y += 0.3f;
+
+                v.velocity = res.launchDirection.nor().scl(speed);
             }
         }
 

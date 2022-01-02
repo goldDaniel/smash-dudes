@@ -33,7 +33,8 @@ public class PlayerLandingSystem extends GameSystem
                 entity.removeComponent(PlayerInAirComponent.class);
                 if(!entity.hasComponent(PlayerIdleComponent.class) &&
                    !entity.hasComponent(PlayerRunningComponent.class) &&
-                   !entity.hasComponent(PlayerOnGroundAttackStateComponent.class))
+                   !entity.hasComponent(PlayerOnGroundAttackStateComponent.class) &&
+                   !entity.hasComponent(PlayerStunnedComponent.class))
                 {
                     entity.addComponent(new PlayerIdleComponent());
                 }
