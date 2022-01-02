@@ -1,17 +1,22 @@
 package smashdudes.ecs.systems;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
-import smashdudes.ecs.components.AnimationComponent;
-import smashdudes.ecs.components.HitResolutionComponent;
-import smashdudes.ecs.components.PlayerComponent;
-import smashdudes.ecs.components.PositionComponent;
+import smashdudes.ecs.components.*;
 
 public class HitDetectionSystem extends GameSystem
 {
+    private class AttackResult
+    {
+        public Vector2 direction = new Vector2();
+        public Vector2 collisionPoint = new Vector2();
+    }
+
     private Array<Entity> entities = new Array<>();
 
     public HitDetectionSystem(Engine engine)
@@ -36,10 +41,10 @@ public class HitDetectionSystem extends GameSystem
         {
             if(entity == other) continue;
 
-            Vector2 dir = hasEntityAttackedOther(entity, other);
-            if (dir != null)
+            AttackResult result = hasEntityAttackedOther(entity, other);
+            if (result != null)
             {
-                submitAttackEntity(entity, other, dir);
+                submitAttackEntity(entity, other, result.direction);
             }
         }
     }
@@ -52,7 +57,7 @@ public class HitDetectionSystem extends GameSystem
         entity.addComponent(resolution);
     }
 
-    private Vector2 hasEntityAttackedOther(Entity attacker, Entity attacked)
+    private AttackResult hasEntityAttackedOther(Entity attacker, Entity attacked)
     {
         PositionComponent thisPos = attacker.getComponent(PositionComponent.class);
         PlayerComponent thisPlayer = attacker.getComponent(PlayerComponent.class);
@@ -73,11 +78,52 @@ public class HitDetectionSystem extends GameSystem
             {
                 if(hit.overlaps(hurt))
                 {
-                    Vector2  dir = new Vector2(hit.x, hit.y);
-                    return dir.sub(hit.x, hit.y);
+                    AttackResult result = new AttackResult();
+
+                    result.direction.set(hit.x, hit.y);
+                    result.direction.sub(hit.x, hit.y);
+
+                    Rectangle overlappingArea = calculateOverlapRectangle(hurt, hit);
+                    result.collisionPoint = overlappingArea.getCenter(result.collisionPoint);
+
+                    if(attacker.hasComponent(DebugDrawComponent.class))
+                    {
+                        attacker.getComponent(DebugDrawComponent.class).pushShape(ShapeRenderer.ShapeType.Filled, overlappingArea, Color.WHITE);
+                    }
                 }
             }
         }
         return null;
     }
+
+    private Rectangle calculateOverlapRectangle(Rectangle a, Rectangle b)
+    {
+        float left = Math.max(a.x, b.x);
+        float right = Math.min(a.x + a.width, b.x + b.width);
+
+        float top = Math.max(a.y, b.y);
+        float bottom = Math.min(a.y + a.height, b.y + b.height);
+
+
+        return new Rectangle(left, top, right - left, bottom - top);
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
