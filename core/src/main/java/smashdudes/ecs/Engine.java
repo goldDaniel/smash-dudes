@@ -33,7 +33,7 @@ public class Engine
         systems.add(new PlayerRunningSystem(this));
         systems.add(new PlayerInAirSystem(this));
         systems.add(new GroundAttackSystem(this));
-        systems.add(new CharacterJumpInputSystem(this));
+        systems.add(new PlayerLandingSystem(this));
         systems.add(new RenderDirectionSystem(this));
         systems.add(new PlayerControllerSystem(this));
         systems.add(new AIControllerSystem(this));
@@ -41,6 +41,8 @@ public class Engine
         systems.add(new MovementSystem(this));
         systems.add(new TerrainCollisionSystem(this));
         systems.add(new HitDetectionSystem(this));
+        systems.add(new HitResolutionSystem(this));
+        systems.add(new PlayerStunnedSystem(this));
         systems.add(new AudioSystem(this));
 
         systems.add(new AnimationSystem(this));
@@ -97,27 +99,7 @@ public class Engine
 
     public Array<Entity> getEntities(boolean includeDisabled, Class<? extends Component>... components)
     {
-        Array<Entity> result = new Array<>();
-
-        for(Entity entity : activeEntities)
-        {
-            boolean valid = true;
-            for(Class<? extends Component> component : components)
-            {
-                Component comp = entity.getComponent(component);
-                if(comp == null || (!includeDisabled && !comp.isEnabled()))
-                {
-                    valid = false;
-                }
-            }
-
-            if(valid)
-            {
-                result.add(entity);
-            }
-        }
-
-        return result;
+        return getEntities(includeDisabled, new Array<>(components));
     }
 
     public Array<Entity> getEntities(boolean includeDisabled, Array<Class<? extends Component>> components)
