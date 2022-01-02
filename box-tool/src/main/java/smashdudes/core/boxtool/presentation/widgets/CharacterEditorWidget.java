@@ -228,13 +228,29 @@ public class CharacterEditorWidget
         ImGui.sameLine();
         if (ImGui.button("Delete animation"))
         {
-            commandList.execute(new DeleteAnimationCommand(character.animations, anim));
-
-            if (anim.frames.contains(selectedAnimationFrame, true))
+            ImGui.openPopup("Delete Animation?");
+        }
+        ImGui.setNextWindowSize(128, 56);
+        if(ImGui.beginPopupModal("Delete Animation?", ImGuiWindowFlags.NoResize))
+        {
+            if(ImGui.button("Delete"))
             {
-                selectedAnimationFrame = null;
+                commandList.execute(new DeleteAnimationCommand(character.animations, anim));
+                if (anim.frames.contains(selectedAnimationFrame, true))
+                {
+                    selectedAnimationFrame = null;
+                }
+               selectedAnimation = null;
+
+                ImGui.closeCurrentPopup();
             }
-            selectedAnimation = null;
+            ImGui.sameLine();
+            if(ImGui.button("Cancel"))
+            {
+                ImGui.closeCurrentPopup();
+            }
+
+            ImGui.endPopup();
         }
 
         ImGui.text("Frames");
