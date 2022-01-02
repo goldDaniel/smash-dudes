@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.Array;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.AnimationComponent;
+import smashdudes.ecs.components.HitResolutionComponent;
 import smashdudes.ecs.components.PlayerComponent;
 import smashdudes.ecs.components.PositionComponent;
 
@@ -37,9 +38,6 @@ public class HitDetectionSystem extends GameSystem
 
             if (hasEntityAttackedOther(entity, other))
             {
-                Vector2 attackLine = new Vector2(0, 1);
-                attackLine.nor();
-
                 submitAttackEntity(entity, other);
             }
         }
@@ -47,9 +45,11 @@ public class HitDetectionSystem extends GameSystem
 
     private void submitAttackEntity(Entity attacker, Entity attacked)
     {
-        
-    }
+        Entity entity = engine.createEntity();
 
+        HitResolutionComponent resolution = new HitResolutionComponent(attacker, attacked);
+        entity.addComponent(resolution);
+    }
 
     private boolean hasEntityAttackedOther(Entity attacker, Entity attacked)
     {
@@ -70,7 +70,7 @@ public class HitDetectionSystem extends GameSystem
             Array<Rectangle> hurtboxes = otherCurrentFrame.getHurtboxesRelativeTo(otherPos.position, otherPlayer.facingLeft);
             for(Rectangle hurt : hurtboxes)
             {
-                if(hit.overlaps(hurt))
+                if(hit.contains(hurt) || hit.overlaps(hurt))
                 {
                     return true;
                 }

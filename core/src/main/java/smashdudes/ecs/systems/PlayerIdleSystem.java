@@ -3,6 +3,7 @@ package smashdudes.ecs.systems;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
+import smashdudes.ecs.events.JumpEvent;
 
 public class PlayerIdleSystem extends GameSystem
 {
@@ -20,6 +21,7 @@ public class PlayerIdleSystem extends GameSystem
     {
         CharacterInputComponent i = entity.getComponent(CharacterInputComponent.class);
         VelocityComponent v = entity.getComponent(VelocityComponent.class);
+        JumpComponent j = entity.getComponent(JumpComponent.class);
 
         PlayerAnimationContainerComponent container = entity.getComponent(PlayerAnimationContainerComponent.class);
         if(entity.getComponent(AnimationComponent.class) != container.idle)
@@ -34,6 +36,17 @@ public class PlayerIdleSystem extends GameSystem
         {
             entity.removeComponent(PlayerIdleComponent.class);
             entity.addComponent(new PlayerOnGroundAttackStateComponent());
+        }
+        else if(i.currentState.up && v.velocity.y == 0)
+        {
+            v.velocity.y = j.jumpStrength;
+            j.disable();
+            engine.addEvent(new JumpEvent(entity));
+
+            entity.addComponent(new PlayerInAirComponent());
+
+            entity.removeComponent(PlayerRunningComponent.class);
+            entity.removeComponent(PlayerIdleComponent.class);
         }
         else if(i.currentState.left || i.currentState.right)
         {

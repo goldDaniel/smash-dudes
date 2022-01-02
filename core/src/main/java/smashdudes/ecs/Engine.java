@@ -33,7 +33,7 @@ public class Engine
         systems.add(new PlayerRunningSystem(this));
         systems.add(new PlayerInAirSystem(this));
         systems.add(new GroundAttackSystem(this));
-        systems.add(new CharacterJumpInputSystem(this));
+        systems.add(new PlayerLandingSystem(this));
         systems.add(new RenderDirectionSystem(this));
         systems.add(new PlayerControllerSystem(this));
         systems.add(new AIControllerSystem(this));
@@ -41,6 +41,8 @@ public class Engine
         systems.add(new MovementSystem(this));
         systems.add(new TerrainCollisionSystem(this));
         systems.add(new HitDetectionSystem(this));
+        systems.add(new HitResolutionSystem(this));
+        systems.add(new PlayerStunnedSystem(this));
         systems.add(new AudioSystem(this));
 
         systems.add(new AnimationSystem(this));
