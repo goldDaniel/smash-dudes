@@ -99,27 +99,7 @@ public class Engine
 
     public Array<Entity> getEntities(boolean includeDisabled, Class<? extends Component>... components)
     {
-        Array<Entity> result = new Array<>();
-
-        for(Entity entity : activeEntities)
-        {
-            boolean valid = true;
-            for(Class<? extends Component> component : components)
-            {
-                Component comp = entity.getComponent(component);
-                if(comp == null || (!includeDisabled && !comp.isEnabled()))
-                {
-                    valid = false;
-                }
-            }
-
-            if(valid)
-            {
-                result.add(entity);
-            }
-        }
-
-        return result;
+        return getEntities(includeDisabled, new Array<>(components));
     }
 
     public Array<Entity> getEntities(boolean includeDisabled, Array<Class<? extends Component>> components)
