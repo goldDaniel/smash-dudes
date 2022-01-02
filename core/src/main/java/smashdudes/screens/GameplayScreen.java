@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
+import org.w3c.dom.Text;
 import smashdudes.content.ContentRepo;
 import smashdudes.content.DTO;
 import smashdudes.content.LoadContent;
@@ -45,7 +46,7 @@ public class GameplayScreen extends GameScreen
             }
             if(p.identifier.equals("c"))
             {
-                characterData = ContentRepo.loadCharacter("daniel.json");
+                characterData = ContentRepo.loadCharacter("Daniel.json");
             }
 
             Entity player = buildPlayer(p.handle, p.identifier, characterData);
@@ -126,10 +127,7 @@ public class GameplayScreen extends GameScreen
         sd.scale =  characterData.scale;
         player.addComponent(sd);
 
-        DebugDrawComponent dd = new DebugDrawComponent();
-        player.addComponent(dd);
-
-
+        player.addComponent(new DebugDrawComponent());
 
         TerrainColliderComponent collider = new TerrainColliderComponent();
         collider.collider = characterData.terrainCollider;
@@ -154,7 +152,7 @@ public class GameplayScreen extends GameScreen
         for (DTO.AnimationFrame dtoFrame : anim.frames)
         {
             AnimationComponent.AnimationFrame frame =
-                    new AnimationComponent.AnimationFrame(new Texture(dtoFrame.texturePath), dtoFrame.hitboxes, dtoFrame.hurtboxes);
+                    new AnimationComponent.AnimationFrame(new Texture(Gdx.files.internal(dtoFrame.texturePath), true), dtoFrame.hitboxes, dtoFrame.hurtboxes);
             frames.add(frame);
         }
 
