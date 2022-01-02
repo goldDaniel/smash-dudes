@@ -1,6 +1,5 @@
 package smashdudes.ecs.systems;
 
-import com.badlogic.gdx.math.Vector2;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.HitResolutionComponent;

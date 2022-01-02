@@ -56,39 +56,26 @@ public class HitDetectionSystem extends GameSystem
     }
 
 
-    private boolean hasEntityAttackedOther(Entity thisEntity, Entity thatEntity)
+    private boolean hasEntityAttackedOther(Entity attacker, Entity attacked)
     {
-        PositionComponent thisPos = thisEntity.getComponent(PositionComponent.class);
-        PlayerComponent thisPlayer = thisEntity.getComponent(PlayerComponent.class);
-        AnimationComponent thisAnim = thisEntity.getComponent(AnimationComponent.class);
+        PositionComponent thisPos = attacker.getComponent(PositionComponent.class);
+        PlayerComponent thisPlayer = attacker.getComponent(PlayerComponent.class);
+        AnimationComponent thisAnim = attacker.getComponent(AnimationComponent.class);
 
-        PositionComponent otherPos = thatEntity.getComponent(PositionComponent.class);
-        PlayerComponent otherPlayer = thatEntity.getComponent(PlayerComponent.class);
-        AnimationComponent otherAnim = thatEntity.getComponent(AnimationComponent.class);
+        PositionComponent otherPos = attacked.getComponent(PositionComponent.class);
+        PlayerComponent otherPlayer = attacked.getComponent(PlayerComponent.class);
+        AnimationComponent otherAnim = attacked.getComponent(AnimationComponent.class);
 
-        Array<Rectangle> thisHitboxes = thisAnim.currentAnimation.getKeyFrame(thisAnim.currentTime).hitboxes;
-        Array<Rectangle> otherHurtboxes = otherAnim.currentAnimation.getKeyFrame(otherAnim.currentTime).hurtboxes;
+        AnimationComponent.AnimationFrame thisCurrentFrame = thisAnim.currentAnimation.getKeyFrame(thisAnim.currentTime);
+        AnimationComponent.AnimationFrame otherCurrentFrame = otherAnim.currentAnimation.getKeyFrame(otherAnim.currentTime);
 
-        int thisDir = thisPlayer.facingLeft ? -1 : 1;
-        int otherDir = otherPlayer.facingLeft ? -1 : 1;
-
-        for(Rectangle hitboxRelative : thisHitboxes)
+        Array<Rectangle> hitboxes = thisCurrentFrame.getHitboxesRelativeTo(thisPos.position, thisPlayer.facingLeft);
+        for(Rectangle hit: hitboxes)
         {
-            Rectangle hitboxAbsolute = new Rectangle();
-            hitboxAbsolute.width = thisDir * hitboxRelative.width;
-            hitboxAbsolute.height = hitboxRelative.height;
-            hitboxAbsolute.x = thisDir * (hitboxRelative.x - hitboxRelative.width / 2)  + thisPos.position.x;
-            hitboxAbsolute.y = (hitboxRelative.y - hitboxRelative.height / 2) + thisPos.position.y;
-
-            for(Rectangle hurtboxRelative : otherHurtboxes)
+            Array<Rectangle> hurtboxes = otherCurrentFrame.getHurtboxesRelativeTo(otherPos.position, otherPlayer.facingLeft);
+            for(Rectangle hurt : hurtboxes)
             {
-                Rectangle hurtboxAbsolute = new Rectangle();
-                hurtboxAbsolute.width = otherDir * hurtboxRelative.width;
-                hurtboxAbsolute.height = hurtboxRelative.height;
-                hurtboxAbsolute.x = otherDir * (hurtboxRelative.x - hurtboxRelative.width / 2) + otherPos.position.x;
-                hurtboxAbsolute.y = (otherPos.position.y - hurtboxRelative.height / 2) + otherPos.position.y;
-
-                if(hitboxAbsolute.overlaps(hurtboxAbsolute))
+                if(hit.overlaps(hurt))
                 {
                     return true;
                 }

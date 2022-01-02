@@ -11,6 +11,7 @@ import smashdudes.ecs.systems.*;
 public class Engine
 {
     private Array<Entity> activeEntities = new Array<>();
+    private Array<Entity> createdEntities = new Array<>();
     private Array<Entity> deadEntities = new Array<>();
 
     private Array<GameSystem> systems = new Array<>();
@@ -67,7 +68,15 @@ public class Engine
     public Entity createEntity()
     {
         Entity e = new Entity();
-        activeEntities.add(e);
+
+        if(isUpdating)
+        {
+            createdEntities.add(e);
+        }
+        else
+        {
+            activeEntities.add(e);
+        }
 
         return e;
     }
@@ -165,7 +174,10 @@ public class Engine
         isUpdating = false;
 
         activeEntities.removeAll(deadEntities, true);
-        activeEntities.clear();
+        deadEntities.clear();
+
+        activeEntities.addAll(createdEntities);
+        createdEntities.clear();
     }
 
     public void addEvent(Event event)
