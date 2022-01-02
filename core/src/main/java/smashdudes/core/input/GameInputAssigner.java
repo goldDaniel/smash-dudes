@@ -62,7 +62,7 @@ public class GameInputAssigner
             {
                 if(keycode == Input.Keys.SPACE)
                 {
-                    InputConfig c = new InputConfig(Input.Keys.A, Input.Keys.D, Input.Keys.W, Input.Keys.S);
+                    InputConfig c = new InputConfig(Input.Keys.A, Input.Keys.D, Input.Keys.W, Input.Keys.S, Input.Keys.X);
                     gameInputHandler.register(new PlayerHandle(), new KeyboardInputListener(c));
 
                     keyboardBound = true;

@@ -3,6 +3,7 @@ package smashdudes.ecs.components;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import smashdudes.ecs.Component;
 
@@ -23,15 +24,65 @@ public class AnimationComponent extends Component
             this.hitboxes = hitboxes;
             this.hurtboxes = hurtboxes;
         }
+
+        public Array<Rectangle> getHitboxesRelativeTo(Vector2 pos, boolean mirror)
+        {
+            return getRelativeTo(hitboxes, pos, mirror);
+        }
+
+        public Array<Rectangle> getHurtboxesRelativeTo(Vector2 pos, boolean mirror)
+        {
+            return getRelativeTo(hurtboxes, pos, mirror);
+        }
+
+        private Array<Rectangle> getRelativeTo(Array<Rectangle> boxes, Vector2 pos, boolean mirror)
+        {
+            Array<Rectangle> result = new Array<>();
+
+            int dir = mirror ? -1 : 1;
+
+            for(Rectangle relative : boxes)
+            {
+                Rectangle absolute = new Rectangle();
+                absolute.width = dir * relative.width;
+                absolute.height = relative.height;
+                absolute.x = dir * (relative.x - relative.width / 2) + pos.x;
+                absolute.y = (relative.y - relative.height / 2) + pos.y;
+
+                result.add(absolute);
+            }
+
+            return result;
+        }
     }
 
-    public float currentTime;
-    public final Animation<AnimationFrame> currentAnimation;
-    public float animationDuration;
+    private float currentTime;
+    private final Animation<AnimationFrame> currentAnimation;
 
-    public AnimationComponent(Array<AnimationFrame> frames, float animationDuration)
+
+    public AnimationComponent(Array<AnimationFrame> frames, float animationDuration, Animation.PlayMode mode)
     {
         float frameDuration = animationDuration / frames.size;
-        currentAnimation = new Animation<>( frameDuration, frames, Animation.PlayMode.LOOP);
+        currentAnimation = new Animation<>( frameDuration, frames, mode);
+    }
+
+    public AnimationFrame getCurrentFrame()
+    {
+        return currentAnimation.getKeyFrame(currentTime);
+    }
+
+    public void reset()
+    {
+        currentTime = 0;
+    }
+
+    public void update(float dt)
+    {
+        currentTime += dt;
+    }
+
+    public boolean isFinished()
+    {
+        return currentAnimation.isAnimationFinished(currentTime);
     }
 }

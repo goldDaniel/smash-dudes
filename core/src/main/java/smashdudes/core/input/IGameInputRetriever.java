@@ -10,4 +10,6 @@ public interface IGameInputRetriever
     boolean getRight();
     boolean getUp();
     boolean getDown();
+
+    boolean punch();
 }

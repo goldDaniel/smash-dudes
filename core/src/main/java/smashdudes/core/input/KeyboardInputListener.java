@@ -40,6 +40,11 @@ public class KeyboardInputListener extends InputAdapter implements IGameInputRet
             state.down = true;
         }
 
+        if(keycode == config.punch)
+        {
+            state.punch = true;
+        }
+
         if(keycode == Input.Keys.SPACE)
         {
             confirmPressed = true;
@@ -70,6 +75,11 @@ public class KeyboardInputListener extends InputAdapter implements IGameInputRet
         if(keycode == config.down)
         {
             state.down = false;
+        }
+
+        if(keycode == config.punch)
+        {
+            state.punch = false;
         }
 
         if(keycode == Input.Keys.SPACE)
@@ -103,6 +113,12 @@ public class KeyboardInputListener extends InputAdapter implements IGameInputRet
     public boolean getDown()
     {
         return state.down;
+    }
+
+    @Override
+    public boolean punch()
+    {
+        return state.punch;
     }
 
     @Override

@@ -4,8 +4,6 @@ import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
 
-import java.lang.reflect.GenericArrayType;
-
 public class PlayerIdleSystem extends GameSystem
 {
     public PlayerIdleSystem(Engine engine)
@@ -23,15 +21,24 @@ public class PlayerIdleSystem extends GameSystem
         CharacterInputComponent i = entity.getComponent(CharacterInputComponent.class);
         VelocityComponent v = entity.getComponent(VelocityComponent.class);
 
+        PlayerAnimationContainerComponent container = entity.getComponent(PlayerAnimationContainerComponent.class);
+        if(entity.getComponent(AnimationComponent.class) != container.idle)
+        {
+            entity.removeComponent(AnimationComponent.class);
+            entity.addComponent(container.idle);
+        }
+
         v.velocity.x *= 40 * dt;
-        if(i.currentState.left || i.currentState.right)
+
+        if(i.currentState.punch)
+        {
+            entity.removeComponent(PlayerIdleComponent.class);
+            entity.addComponent(new PlayerOnGroundAttackStateComponent());
+        }
+        else if(i.currentState.left || i.currentState.right)
         {
             entity.removeComponent(PlayerIdleComponent.class);
             entity.addComponent(new PlayerRunningComponent());
-
-            PlayerAnimationContainerComponent container = entity.getComponent(PlayerAnimationContainerComponent.class);
-            entity.removeComponent(AnimationComponent.class);
-            entity.addComponent(container.running);
         }
     }
 }

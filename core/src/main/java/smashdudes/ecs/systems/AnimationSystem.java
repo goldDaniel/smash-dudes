@@ -20,8 +20,8 @@ public class AnimationSystem extends GameSystem
         AnimationComponent anim = entity.getComponent(AnimationComponent.class);
         DrawComponent draw = entity.getComponent(DrawComponent.class);
 
-        anim.currentTime += dt;
+        anim.update(dt);
 
-        draw.texture = anim.currentAnimation.getKeyFrame(anim.currentTime).texture;
+        draw.texture = anim.getCurrentFrame().texture;
     }
 }

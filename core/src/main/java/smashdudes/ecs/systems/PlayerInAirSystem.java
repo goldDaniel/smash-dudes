@@ -4,15 +4,14 @@ import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
 
-public class PlayerRunningSystem extends GameSystem
+public class PlayerInAirSystem extends GameSystem
 {
-    public PlayerRunningSystem(Engine engine)
+    public PlayerInAirSystem(Engine engine)
     {
         super(engine);
-
-        registerComponentType(PlayerRunningComponent.class);
-        registerComponentType(PlayerAnimationContainerComponent.class);
         registerComponentType(CharacterInputComponent.class);
+        registerComponentType(PlayerAnimationContainerComponent.class);
+        registerComponentType(PlayerInAirComponent.class);
         registerComponentType(VelocityComponent.class);
     }
 
@@ -20,29 +19,27 @@ public class PlayerRunningSystem extends GameSystem
     public void updateEntity(Entity entity, float dt)
     {
         CharacterInputComponent ci = entity.getComponent(CharacterInputComponent.class);
-        VelocityComponent v  = entity.getComponent(VelocityComponent.class);
-
+        VelocityComponent v = entity.getComponent(VelocityComponent.class);
         PlayerAnimationContainerComponent container = entity.getComponent(PlayerAnimationContainerComponent.class);
-        if(entity.getComponent(AnimationComponent.class) != container.running)
+
+        AnimationComponent current = entity.getComponent(AnimationComponent.class);
+        if(current != container.jumping || current != container.falling)
         {
             entity.removeComponent(AnimationComponent.class);
-            entity.addComponent(container.running);
+            if(v.velocity.y > 0)
+            {
+                entity.addComponent(container.jumping);
+            }
+            else
+            {
+                entity.addComponent(container.falling);
+            }
         }
 
-        if(ci.currentState.punch)
-        {
-            entity.removeComponent(PlayerRunningComponent.class);
-            entity.addComponent(new PlayerOnGroundAttackStateComponent());
-        }
-        else if(!ci.currentState.left && !ci.currentState.right)
-        {
-            entity.removeComponent(PlayerRunningComponent.class);
-            entity.addComponent(new PlayerIdleComponent());
-        }
-        else
+        v.velocity.x *= 40 * dt;
+        if(ci.currentState.left || ci.currentState.right)
         {
             float speed = 10;
-            v.velocity.x *= 40 * dt;
             if(ci.currentState.left)
             {
                 v.velocity.x -= speed;

@@ -4,9 +4,11 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
+import org.w3c.dom.Text;
 import smashdudes.content.ContentRepo;
 import smashdudes.content.DTO;
 import smashdudes.content.LoadContent;
@@ -45,7 +47,7 @@ public class GameplayScreen extends GameScreen
             }
             if(p.identifier.equals("c"))
             {
-                characterData = ContentRepo.loadCharacter("daniel.json");
+                characterData = ContentRepo.loadCharacter("Daniel.json");
             }
 
             Entity player = buildPlayer(p.handle, p.identifier, characterData);
@@ -80,12 +82,10 @@ public class GameplayScreen extends GameScreen
     {
         ScreenUtils.clear(Color.GRAY);
 
-        float step = 1/144.0f;
-        while(dt >= step)
-        {
-            ecsEngine.update(step);
-            dt -= step;
-        }
+        float maxStep = 1/30f;
+        if(dt > maxStep) dt = maxStep;
+
+        ecsEngine.update(dt);
     }
 
     @Override
@@ -109,32 +109,27 @@ public class GameplayScreen extends GameScreen
         player.addComponent(new VelocityComponent());
         player.addComponent(new JumpComponent(characterData.jumpStrength));
         player.addComponent(new GravityComponent(characterData.gravity));
-        player.addComponent(new PlayerIdleComponent());
+        player.addComponent(new PlayerInAirComponent());
 
         CharacterInputComponent i = new CharacterInputComponent();
         player.addComponent(i);
 
 
         PlayerAnimationContainerComponent animContainer = new PlayerAnimationContainerComponent();
-        animContainer.idle = loadPlayerAnimation(characterData, "idle");
-        animContainer.running = loadPlayerAnimation(characterData, "run");
+        animContainer.idle = loadPlayerAnimation(characterData, "idle", Animation.PlayMode.LOOP);
+        animContainer.running = loadPlayerAnimation(characterData, "run", Animation.PlayMode.LOOP);
+        animContainer.jumping = loadPlayerAnimation(characterData,"jump", Animation.PlayMode.LOOP);
+        animContainer.falling = loadPlayerAnimation(characterData,"fall", Animation.PlayMode.LOOP);
+        animContainer.attack_1 = loadPlayerAnimation(characterData,"attack_1", Animation.PlayMode.NORMAL);
         player.addComponent(animContainer);
 
         player.addComponent(animContainer.idle);
-
-        AnimationDebugComponent ad = new AnimationDebugComponent();
-        player.addComponent(ad);
-
 
         DrawComponent sd = new DrawComponent();
         sd.scale =  characterData.scale;
         player.addComponent(sd);
 
-        DebugDrawComponent dd = new DebugDrawComponent();
-        dd.box = characterData.terrainCollider;
-        player.addComponent(dd);
-
-
+        player.addComponent(new DebugDrawComponent());
 
         TerrainColliderComponent collider = new TerrainColliderComponent();
         collider.collider = characterData.terrainCollider;
@@ -143,7 +138,7 @@ public class GameplayScreen extends GameScreen
         return player;
     }
 
-    public AnimationComponent loadPlayerAnimation(DTO.Character characterData, String animationName)
+    public AnimationComponent loadPlayerAnimation(DTO.Character characterData, String animationName, Animation.PlayMode mode)
     {
         DTO.Animation anim = null;
         for(DTO.Animation a : characterData.animations)
@@ -159,13 +154,13 @@ public class GameplayScreen extends GameScreen
         for (DTO.AnimationFrame dtoFrame : anim.frames)
         {
             AnimationComponent.AnimationFrame frame =
-                    new AnimationComponent.AnimationFrame(new Texture(dtoFrame.texturePath), dtoFrame.hitboxes, dtoFrame.hurtboxes);
+                    new AnimationComponent.AnimationFrame(new Texture(Gdx.files.internal(dtoFrame.texturePath), true), dtoFrame.hitboxes, dtoFrame.hurtboxes);
             frames.add(frame);
         }
 
         float duration = anim.animationDuration;
 
-        return new AnimationComponent(frames, duration);
+        return new AnimationComponent(frames, duration, mode);
     }
 
     public Entity buildTerrain(DTO.Terrain terrainData)
@@ -182,11 +177,6 @@ public class GameplayScreen extends GameScreen
         terrain.addComponent(t);
 
         DebugDrawComponent dd = new DebugDrawComponent();
-        dd.box.x = 0;
-        dd.box.y = 0;
-        dd.box.width = terrainData.width;
-        dd.box.height = terrainData.height;
-        dd.color = Color.GREEN;
         terrain.addComponent(dd);
 
 

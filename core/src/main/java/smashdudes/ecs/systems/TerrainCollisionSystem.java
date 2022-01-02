@@ -1,13 +1,17 @@
 package smashdudes.ecs.systems;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 import smashdudes.core.Collisions;
-import smashdudes.ecs.Component;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
-import smashdudes.ecs.components.*;
+import smashdudes.ecs.components.DebugDrawComponent;
+import smashdudes.ecs.components.PositionComponent;
+import smashdudes.ecs.components.StaticTerrainComponent;
+import smashdudes.ecs.components.TerrainColliderComponent;
 import smashdudes.ecs.events.LandingEvent;
 import smashdudes.ecs.events.TerrainCollisionEvent;
 
@@ -43,6 +47,19 @@ public class TerrainCollisionSystem extends GameSystem
             t.terrain = e.getComponent(StaticTerrainComponent.class);
 
             terrain.add(t);
+
+            if(e.hasComponent(DebugDrawComponent.class))
+            {
+                DebugDrawComponent debug = e.getComponent(DebugDrawComponent.class);
+
+                Rectangle r = new Rectangle();
+                r.x = t.pos.position.x - t.terrain.width / 2;
+                r.y = t.pos.position.y - t.terrain.height / 2;
+                r.width = t.terrain.width;
+                r.height = t.terrain.height;
+
+                debug.pushShape(ShapeRenderer.ShapeType.Filled, r, Color.GREEN);
+            }
         }
     }
 
@@ -56,6 +73,19 @@ public class TerrainCollisionSystem extends GameSystem
 
         PositionComponent p = entity.getComponent(PositionComponent.class);
         TerrainColliderComponent c = entity.getComponent(TerrainColliderComponent.class);
+
+        if(entity.hasComponent(DebugDrawComponent.class))
+        {
+            DebugDrawComponent debug = entity.getComponent(DebugDrawComponent.class);
+
+            Rectangle r = new Rectangle();
+            r.x = p.position.x + c.collider.x - c.collider.width / 2;
+            r.y = p.position.y + c.collider.y - c.collider.height / 2;
+            r.width = c.collider.width;
+            r.height = c.collider.height;
+
+            debug.pushShape(ShapeRenderer.ShapeType.Line, r, Color.GOLD);
+        }
 
         Rectangle r0 = new Rectangle();
         r0.x = p.position.x - c.collider.width/ 2 + c.collider.x;
