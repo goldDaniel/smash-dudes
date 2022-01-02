@@ -116,6 +116,8 @@ public class GameplayScreen extends GameScreen
         PlayerAnimationContainerComponent animContainer = new PlayerAnimationContainerComponent();
         animContainer.idle = loadPlayerAnimation(characterData, "idle");
         animContainer.running = loadPlayerAnimation(characterData, "run");
+        animContainer.jumping = loadPlayerAnimation(characterData,"jump");
+        animContainer.falling = loadPlayerAnimation(characterData,"fall");
         player.addComponent(animContainer);
 
         player.addComponent(animContainer.idle);

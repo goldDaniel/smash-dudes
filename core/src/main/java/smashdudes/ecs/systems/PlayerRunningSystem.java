@@ -22,14 +22,17 @@ public class PlayerRunningSystem extends GameSystem
         CharacterInputComponent ci = entity.getComponent(CharacterInputComponent.class);
         VelocityComponent v  = entity.getComponent(VelocityComponent.class);
 
+        PlayerAnimationContainerComponent container = entity.getComponent(PlayerAnimationContainerComponent.class);
+        if(entity.getComponent(AnimationComponent.class) != container.running)
+        {
+            entity.removeComponent(AnimationComponent.class);
+            entity.addComponent(container.running);
+        }
+
         if(!ci.currentState.left && !ci.currentState.right)
         {
             entity.removeComponent(PlayerRunningComponent.class);
             entity.addComponent(new PlayerIdleComponent());
-
-            PlayerAnimationContainerComponent container = entity.getComponent(PlayerAnimationContainerComponent.class);
-            entity.removeComponent(AnimationComponent.class);
-            entity.addComponent(container.idle);
         }
         else
         {
