@@ -14,7 +14,7 @@ public class HitDetectionSystem extends GameSystem
     private class AttackResult
     {
         public Vector2 direction = new Vector2();
-        public Vector2 collisionPoint = new Vector2();
+        public Rectangle collisionArea = new Rectangle();
     }
 
     private Array<Entity> entities = new Array<>();
@@ -44,12 +44,17 @@ public class HitDetectionSystem extends GameSystem
             AttackResult result = hasEntityAttackedOther(entity, other);
             if (result != null)
             {
-                submitAttackEntity(entity, other, result.direction);
+                if(entity.hasComponent(DebugDrawComponent.class))
+                {
+                    entity.getComponent(DebugDrawComponent.class).pushShape(ShapeRenderer.ShapeType.Filled, result.collisionArea, Color.WHITE);
+                }
+
+                submitAttackResolutionEntity(entity, other, result.direction);
             }
         }
     }
 
-    private void submitAttackEntity(Entity attacker, Entity attacked, Vector2 dir)
+    private void submitAttackResolutionEntity(Entity attacker, Entity attacked, Vector2 dir)
     {
         Entity entity = engine.createEntity();
 
@@ -79,17 +84,10 @@ public class HitDetectionSystem extends GameSystem
                 if(hit.overlaps(hurt))
                 {
                     AttackResult result = new AttackResult();
+                    result.direction.set(hit.x, hit.y).sub(hurt.x, hurt.y);
+                    result.collisionArea.set(calculateOverlapRectangle(hurt, hit));
 
-                    result.direction.set(hit.x, hit.y);
-                    result.direction.sub(hit.x, hit.y);
-
-                    Rectangle overlappingArea = calculateOverlapRectangle(hurt, hit);
-                    result.collisionPoint = overlappingArea.getCenter(result.collisionPoint);
-
-                    if(attacker.hasComponent(DebugDrawComponent.class))
-                    {
-                        attacker.getComponent(DebugDrawComponent.class).pushShape(ShapeRenderer.ShapeType.Filled, overlappingArea, Color.WHITE);
-                    }
+                    return result;
                 }
             }
         }
