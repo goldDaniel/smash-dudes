@@ -4,17 +4,20 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Queue;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import smashdudes.audio.AudioEventReceiver;
 import smashdudes.core.RenderResources;
 import smashdudes.ecs.events.Event;
 import smashdudes.ecs.systems.*;
 
 public class Engine
 {
-    private Array<Entity> entities = new Array<>();
+    private Array<Entity> activeEntities = new Array<>();
+    private Array<Entity> deadEntities = new Array<>();
+
     private Array<GameSystem> systems = new Array<>();
 
     private Queue<Event> events = new Queue<>();
+
+    private boolean isUpdating = false;
 
     private RenderDebugSystem drs;
     private RenderSystem rs;
@@ -64,16 +67,28 @@ public class Engine
     public Entity createEntity()
     {
         Entity e = new Entity();
-        entities.add(e);
+        activeEntities.add(e);
 
         return e;
+    }
+
+    public void destroyEntity(Entity entity)
+    {
+        if(isUpdating)
+        {
+            deadEntities.add(entity);
+        }
+        else
+        {
+            activeEntities.removeValue(entity, true);
+        }
     }
 
     public Array<Entity> getEntities(boolean includeDisabled, Class<? extends Component>... components)
     {
         Array<Entity> result = new Array<>();
 
-        for(Entity entity : entities)
+        for(Entity entity : activeEntities)
         {
             boolean valid = true;
             for(Class<? extends Component> component : components)
@@ -98,7 +113,7 @@ public class Engine
     {
         Array<Entity> result = new Array<>();
 
-        for(Entity entity : entities)
+        for(Entity entity : activeEntities)
         {
             boolean valid = true;
             for(Class<? extends Component> component : components)
@@ -131,19 +146,26 @@ public class Engine
 
     public void update(float dt)
     {
-        for(GameSystem s : systems)
+        isUpdating = true;
         {
-            s.update(dt);
-        }
-
-        while(events.notEmpty())
-        {
-            Event e = events.removeFirst();
-            for(GameSystem s : systems)
+            for (GameSystem s : systems)
             {
-                s.receiveEvent(e);
+                s.update(dt);
+            }
+
+            while (events.notEmpty())
+            {
+                Event e = events.removeFirst();
+                for (GameSystem s : systems)
+                {
+                    s.receiveEvent(e);
+                }
             }
         }
+        isUpdating = false;
+
+        activeEntities.removeAll(deadEntities, true);
+        activeEntities.clear();
     }
 
     public void addEvent(Event event)

@@ -80,11 +80,14 @@ public class GameplayScreen extends GameScreen
     {
         ScreenUtils.clear(Color.GRAY);
 
-        float step = 1/144.0f;
-        while(dt >= step)
+        float maximumStepSize = 1/30f;
+        if(dt > maximumStepSize)
         {
-            ecsEngine.update(step);
-            dt -= step;
+            ecsEngine.update(maximumStepSize);
+        }
+        else
+        {
+            ecsEngine.update(dt);
         }
     }
 

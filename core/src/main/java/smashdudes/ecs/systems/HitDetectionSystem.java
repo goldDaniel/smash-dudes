@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.Array;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.AnimationComponent;
+import smashdudes.ecs.components.HitResolutionComponent;
 import smashdudes.ecs.components.PlayerComponent;
 import smashdudes.ecs.components.PositionComponent;
 import smashdudes.ecs.events.HitEvent;
@@ -32,18 +33,28 @@ public class HitDetectionSystem extends GameSystem
     @Override
     public void updateEntity(Entity entity, float dt)
     {
-        for (Entity e : entities)
+        for (Entity other : entities)
         {
-            if(entity == e) continue;
+            if(entity == other) continue;
 
-            if (hasEntityAttackedOther(entity, e))
+            if (hasEntityAttackedOther(entity, other))
             {
                 Vector2 attackLine = new Vector2(0, 1);
                 attackLine.nor();
-                engine.addEvent(new HitEvent(entity, e, attackLine));
+
+                submitAttackEntity(entity, other);
             }
         }
     }
+
+    private void submitAttackEntity(Entity attacker, Entity attacked)
+    {
+        Entity attackEntry = engine.createEntity();
+
+        HitResolutionComponent resolution = new HitResolutionComponent(attacker, attacked);
+        attackEntry.addComponent(resolution);
+    }
+
 
     private boolean hasEntityAttackedOther(Entity thisEntity, Entity thatEntity)
     {
