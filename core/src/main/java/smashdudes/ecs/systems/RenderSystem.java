@@ -64,7 +64,6 @@ public class RenderSystem extends GameSystem
         {
             sb.draw(d.texture, p.position.x - width / 2, p.position.y - height / 2, width, height);
         }
-
     }
 
     @Override

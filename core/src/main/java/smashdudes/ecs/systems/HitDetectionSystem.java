@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Array;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
+import smashdudes.graphics.AnimationFrame;
 
 public class HitDetectionSystem extends GameSystem
 {
@@ -74,8 +75,8 @@ public class HitDetectionSystem extends GameSystem
         PlayerComponent otherPlayer = attacked.getComponent(PlayerComponent.class);
         AnimationComponent otherAnim = attacked.getComponent(AnimationComponent.class);
 
-        AnimationComponent.AnimationFrame thisCurrentFrame = thisAnim.getCurrentFrame();
-        AnimationComponent.AnimationFrame otherCurrentFrame = otherAnim.getCurrentFrame();
+        AnimationFrame thisCurrentFrame = thisAnim.getCurrentFrame();
+        AnimationFrame otherCurrentFrame = otherAnim.getCurrentFrame();
 
         Array<Rectangle> hitboxes = thisCurrentFrame.getHitboxesRelativeTo(thisPos.position, thisPlayer.facingLeft);
         for(Rectangle hit: hitboxes)
