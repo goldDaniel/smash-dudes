@@ -8,17 +8,16 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
-import org.w3c.dom.Text;
 import smashdudes.content.ContentRepo;
 import smashdudes.content.DTO;
 import smashdudes.content.LoadContent;
-import smashdudes.core.RenderResources;
 import smashdudes.core.input.GameInputHandler;
 import smashdudes.core.input.IGameInputRetriever;
 import smashdudes.core.PlayerHandle;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
+import smashdudes.graphics.AnimationFrame;
 import smashdudes.util.CharacterSelectDescription;
 
 public class GameplayScreen extends GameScreen
@@ -150,11 +149,11 @@ public class GameplayScreen extends GameScreen
             }
         }
 
-        Array<AnimationComponent.AnimationFrame> frames = new Array<>();
+        Array<AnimationFrame> frames = new Array<>();
         for (DTO.AnimationFrame dtoFrame : anim.frames)
         {
-            AnimationComponent.AnimationFrame frame =
-                    new AnimationComponent.AnimationFrame(new Texture(Gdx.files.internal(dtoFrame.texturePath), true), dtoFrame.hitboxes, dtoFrame.hurtboxes);
+            AnimationFrame frame =
+                    new AnimationFrame(new Texture(Gdx.files.internal(dtoFrame.texturePath), true), dtoFrame.hitboxes, dtoFrame.hurtboxes);
             frames.add(frame);
         }
 

@@ -1,8 +1,11 @@
 package smashdudes.ecs.systems;
 
+import com.badlogic.gdx.graphics.Color;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
+import smashdudes.graphics.RenderPass;
+
 
 public class PlayerStunnedSystem extends GameSystem
 {
@@ -28,6 +31,19 @@ public class PlayerStunnedSystem extends GameSystem
         {
             entity.removeComponent(PlayerStunnedComponent.class);
             entity.addComponent(new PlayerInAirComponent());
+            if(entity.hasComponent(DrawComponent.class))
+            {
+                DrawComponent d = entity.getComponent(DrawComponent.class);
+                d.pass = RenderPass.Default;
+            }
+        }
+        else
+        {
+            if(entity.hasComponent(DrawComponent.class))
+            {
+                DrawComponent d = entity.getComponent(DrawComponent.class);
+                d.pass = RenderPass.NoTexture;
+            }
         }
     }
 }

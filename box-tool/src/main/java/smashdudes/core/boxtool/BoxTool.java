@@ -1,7 +1,7 @@
 package smashdudes.core.boxtool;
 
 import com.badlogic.gdx.ApplicationListener;
-import smashdudes.core.RenderResources;
+import smashdudes.graphics.RenderResources;
 import smashdudes.core.boxtool.presentation.UI;
 
 public class BoxTool implements ApplicationListener

@@ -8,6 +8,8 @@ import com.badlogic.gdx.utils.Array;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
+import smashdudes.ecs.events.AttackEvent;
+import smashdudes.graphics.AnimationFrame;
 
 public class HitDetectionSystem extends GameSystem
 {
@@ -15,6 +17,8 @@ public class HitDetectionSystem extends GameSystem
     {
         public Vector2 direction = new Vector2();
         public Rectangle collisionArea = new Rectangle();
+
+        public float stunTime = 0;
     }
 
     private Array<Entity> entities = new Array<>();
@@ -58,12 +62,16 @@ public class HitDetectionSystem extends GameSystem
     {
         Entity entity = engine.createEntity();
 
-        HitResolutionComponent resolution = new HitResolutionComponent(attacker, attacked, dir.nor(), collisionArea, 0.5f);
+        engine.addEvent(new AttackEvent(attacker, attacked));
+
+        HitResolutionComponent resolution = new HitResolutionComponent(attacker, attacked, dir.nor(), collisionArea, 0.1f);
         entity.addComponent(resolution);
     }
 
     private AttackResult hasEntityAttackedOther(Entity attacker, Entity attacked)
     {
+        AttackResult result = null;
+
         PositionComponent thisPos = attacker.getComponent(PositionComponent.class);
         PlayerComponent thisPlayer = attacker.getComponent(PlayerComponent.class);
         AnimationComponent thisAnim = attacker.getComponent(AnimationComponent.class);
@@ -72,8 +80,8 @@ public class HitDetectionSystem extends GameSystem
         PlayerComponent otherPlayer = attacked.getComponent(PlayerComponent.class);
         AnimationComponent otherAnim = attacked.getComponent(AnimationComponent.class);
 
-        AnimationComponent.AnimationFrame thisCurrentFrame = thisAnim.getCurrentFrame();
-        AnimationComponent.AnimationFrame otherCurrentFrame = otherAnim.getCurrentFrame();
+        AnimationFrame thisCurrentFrame = thisAnim.getCurrentFrame();
+        AnimationFrame otherCurrentFrame = otherAnim.getCurrentFrame();
 
         Array<Rectangle> hitboxes = thisCurrentFrame.getHitboxesRelativeTo(thisPos.position, thisPlayer.facingLeft);
         for(Rectangle hit: hitboxes)
@@ -83,15 +91,26 @@ public class HitDetectionSystem extends GameSystem
             {
                 if(hit.overlaps(hurt))
                 {
-                    AttackResult result = new AttackResult();
-                    result.direction.set(hit.x, hit.y).sub(hurt.x, hurt.y);
-                    result.collisionArea.set(calculateOverlapRectangle(hurt, hit));
+                    AttackResult attackRes = new AttackResult();
 
-                    return result;
+                    attackRes.direction.set(hurt.x - hurt.width / 2, hurt.y - hurt.height / 2).sub(hit.x - hit.width / 2, hit.y - hit.height / 2).nor();
+                    attackRes.collisionArea.set(calculateOverlapRectangle(hurt, hit));
+
+                    if(result != null)
+                    {
+                        if(attackRes.collisionArea.area() > result.collisionArea.area())
+                        {
+                            result = attackRes;
+                        }
+                    }
+                    else
+                    {
+                        result = attackRes;
+                    }
                 }
             }
         }
-        return null;
+        return result;
     }
 
     private Rectangle calculateOverlapRectangle(Rectangle a, Rectangle b)
