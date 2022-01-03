@@ -64,6 +64,8 @@ public class HitDetectionSystem extends GameSystem
 
     private AttackResult hasEntityAttackedOther(Entity attacker, Entity attacked)
     {
+        AttackResult result = null;
+
         PositionComponent thisPos = attacker.getComponent(PositionComponent.class);
         PlayerComponent thisPlayer = attacker.getComponent(PlayerComponent.class);
         AnimationComponent thisAnim = attacker.getComponent(AnimationComponent.class);
@@ -83,15 +85,26 @@ public class HitDetectionSystem extends GameSystem
             {
                 if(hit.overlaps(hurt))
                 {
-                    AttackResult result = new AttackResult();
-                    result.direction.set(hit.x, hit.y).sub(hurt.x, hurt.y);
-                    result.collisionArea.set(calculateOverlapRectangle(hurt, hit));
+                    AttackResult attackRes = new AttackResult();
 
-                    return result;
+                    attackRes.direction.set(hit.x, hit.y).sub(hurt.x, hurt.y);
+                    attackRes.collisionArea.set(calculateOverlapRectangle(hurt, hit));
+
+                    if(result != null)
+                    {
+                        if(attackRes.collisionArea.area() > result.collisionArea.area())
+                        {
+                            result = attackRes;
+                        }
+                    }
+                    else
+                    {
+                        result = attackRes;
+                    }
                 }
             }
         }
-        return null;
+        return result;
     }
 
     private Rectangle calculateOverlapRectangle(Rectangle a, Rectangle b)

@@ -9,7 +9,7 @@ public class HitResolutionComponent extends Component
 {
     public final Entity attacker;
     public final Entity attacked;
-    
+
     public final Rectangle collisionArea;
     public final Vector2 launchDirection;
 
