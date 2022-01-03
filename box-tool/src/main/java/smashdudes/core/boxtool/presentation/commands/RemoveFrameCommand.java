@@ -1,30 +1,37 @@
 package smashdudes.core.boxtool.presentation.commands;
 
 import com.badlogic.gdx.utils.Array;
-import smashdudes.core.boxtool.presentation.viewmodel.VM;
+import smashdudes.content.DTO;
 
 public class RemoveFrameCommand extends Command
 {
-    private final VM.Animation animation;
-    private final VM.Animation prevState;
-    private final Array<VM.AnimationFrame> toRemove;
+    private final DTO.Animation animation;
+    private final DTO.AnimationFrame toRemove;
 
-    public RemoveFrameCommand(VM.Animation animation, Array<VM.AnimationFrame> toRemove)
+    private final int prevIndex;
+
+    public RemoveFrameCommand(DTO.Animation animation, Array<DTO.AnimationFrame> toRemove)
     {
         this.animation = animation;
-        this.toRemove = toRemove;
-        prevState = VM.mapping(VM.mapping(animation));
+        this.toRemove = toRemove.first();
+        prevIndex = animation.frames.indexOf(this.toRemove, true);
     }
 
     @Override
     protected void execute()
     {
-        animation.frames.removeAll(toRemove, true);
+        animation.frames.removeIndex(prevIndex);
     }
 
     @Override
     protected void undo()
     {
-        animation.frames = prevState.frames;
+        animation.frames.add(new DTO.AnimationFrame());
+        for (int i = prevIndex; i < animation.frames.size - 1; i++)
+        {
+            animation.frames.set(i + 1, animation.frames.get(i));
+        }
+
+        animation.frames.set(prevIndex, toRemove);
     }
 }
