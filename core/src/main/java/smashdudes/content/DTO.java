@@ -41,6 +41,9 @@ public class DTO
         public float jumpStrength;
         public float gravity;
         public float weight;
+        public float airSpeed;
+        public float runSpeed;
+        public float deceleration;
 
         public String name;
     }

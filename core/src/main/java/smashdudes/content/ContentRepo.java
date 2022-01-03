@@ -1,6 +1,5 @@
 package smashdudes.content;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Json;
 
 import java.io.*;
