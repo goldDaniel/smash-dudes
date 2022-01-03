@@ -15,8 +15,6 @@ import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.DrawComponent;
 import smashdudes.ecs.components.PositionComponent;
-import smashdudes.ecs.events.AttackEvent;
-import smashdudes.ecs.events.Event;
 import smashdudes.graphics.RenderPass;
 
 public class RenderSystem extends GameSystem
@@ -33,8 +31,8 @@ public class RenderSystem extends GameSystem
         }
     }
 
-    private ArrayMap<RenderPass, Array<Renderable>> renderables = new ArrayMap<>();
-    private ArrayMap<RenderPass, ShaderProgram> shaders = new ArrayMap<>();
+    private final ArrayMap<RenderPass, Array<Renderable>> renderables = new ArrayMap<>();
+    private final ArrayMap<RenderPass, ShaderProgram> shaders = new ArrayMap<>();
 
     private OrthographicCamera camera;
     private Viewport viewport;
