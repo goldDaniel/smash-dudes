@@ -1,14 +1,14 @@
 package smashdudes.core.boxtool.presentation.commands;
 
-import smashdudes.core.boxtool.presentation.viewmodel.VM;
+import smashdudes.content.DTO;
 
 public class AnimationDurationCommand extends Command
 {
-    private final VM.Animation animation;
+    private final DTO.Animation animation;
     private final float oldValue;
     private final float newValue;
 
-    public AnimationDurationCommand(VM.Animation animation, float newValue)
+    public AnimationDurationCommand(DTO.Animation animation, float newValue)
     {
         this.animation = animation;
         oldValue = animation.animationDuration;

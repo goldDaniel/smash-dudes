@@ -1,13 +1,17 @@
 package smashdudes.core.boxtool.presentation;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.ArrayMap;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
+import java.util.UUID;
 
 public class Utils
 {
+    private static ArrayMap<Object, UUID> keys = new ArrayMap<>();
+
     public static String chooseFileToLoad(String... fileExtensions)
     {
         String desc = "(";
@@ -46,5 +50,21 @@ public class Utils
         }
 
         return null;
+    }
+
+    public static String getUniqueKey(Object obj)
+    {
+        if(!keys.containsKey(obj))
+        {
+            UUID key = UUID.randomUUID();
+            while (keys.containsValue(key, true)) // fuck you daniel
+            {
+                key = UUID.randomUUID();
+            }
+
+            keys.put(obj, UUID.randomUUID());
+        }
+
+        return keys.get(obj).toString();
     }
 }
