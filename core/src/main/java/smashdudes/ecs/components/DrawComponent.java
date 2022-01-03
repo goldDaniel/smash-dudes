@@ -14,7 +14,7 @@ public class DrawComponent extends Component
 
     private float interpTimer = 1;
 
-    public RenderPass pass = RenderPass.None;
+    public RenderPass pass = RenderPass.Default;
 
     public Texture texture;
     public float scale;

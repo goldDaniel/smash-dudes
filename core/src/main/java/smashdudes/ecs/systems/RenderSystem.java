@@ -2,7 +2,6 @@ package smashdudes.ecs.systems;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -35,17 +34,12 @@ public class RenderSystem extends GameSystem
     }
 
     private ArrayMap<RenderPass, Array<Renderable>> renderables = new ArrayMap<>();
-
     private ArrayMap<RenderPass, ShaderProgram> shaders = new ArrayMap<>();
 
     private OrthographicCamera camera;
     private Viewport viewport;
 
     private final SpriteBatch sb;
-
-    private float passTimer = 0;
-
-
 
     public RenderSystem(Engine engine, SpriteBatch sb)
     {
@@ -57,8 +51,8 @@ public class RenderSystem extends GameSystem
             renderables.put(r, new Array<>());
         }
 
-        shaders.put(RenderPass.None, null);//null will make the spritebatch use its default shader
-        shaders.put(RenderPass.InvertColor, loadShader("shaders/spritebatch.invert.vert.glsl", "shaders/spritebatch.invert.frag.glsl"));
+        //null will make the spritebatch use its default shader
+        shaders.put(RenderPass.Default, null);
 
         registerComponentType(PositionComponent.class);
         registerComponentType(DrawComponent.class);
