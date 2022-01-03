@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Array;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
+import smashdudes.ecs.events.AttackEvent;
 import smashdudes.graphics.AnimationFrame;
 
 public class HitDetectionSystem extends GameSystem
@@ -58,6 +59,8 @@ public class HitDetectionSystem extends GameSystem
     private void submitAttackResolutionEntity(Entity attacker, Entity attacked, Vector2 dir, Rectangle collisionArea)
     {
         Entity entity = engine.createEntity();
+
+        engine.addEvent(new AttackEvent(attacker, attacked));
 
         HitResolutionComponent resolution = new HitResolutionComponent(attacker, attacked, dir.nor(), collisionArea, 0.5f);
         entity.addComponent(resolution);

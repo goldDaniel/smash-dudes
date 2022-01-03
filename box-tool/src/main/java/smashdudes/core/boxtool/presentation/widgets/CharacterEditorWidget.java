@@ -10,16 +10,15 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import imgui.ImGui;
-import imgui.ImVec2;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImFloat;
 import imgui.type.ImInt;
 import imgui.type.ImString;
-import smashdudes.core.RenderResources;
 import smashdudes.core.boxtool.logic.ContentService;
 import smashdudes.core.boxtool.presentation.Utils;
 import smashdudes.core.boxtool.presentation.commands.*;
 import smashdudes.core.boxtool.presentation.viewmodel.VM;
+import smashdudes.graphics.RenderResources;
 
 public class CharacterEditorWidget
 {

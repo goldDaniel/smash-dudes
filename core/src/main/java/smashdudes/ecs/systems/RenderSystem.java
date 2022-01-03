@@ -1,27 +1,69 @@
 package smashdudes.ecs.systems;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ArrayMap;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.DrawComponent;
 import smashdudes.ecs.components.PositionComponent;
+import smashdudes.ecs.events.AttackEvent;
+import smashdudes.ecs.events.Event;
+import smashdudes.graphics.RenderPass;
 
 public class RenderSystem extends GameSystem
 {
+    private class Renderable
+    {
+        final Vector2 position;
+        final DrawComponent draw;
+
+        public Renderable(Vector2 position, DrawComponent d)
+        {
+            this.position = position;
+            this.draw = d;
+        }
+    }
+
+    private ArrayMap<RenderPass, Array<Renderable>> renderables = new ArrayMap<>();
+
+    private ArrayMap<RenderPass, ShaderProgram> shaders = new ArrayMap<>();
+
     private OrthographicCamera camera;
     private Viewport viewport;
 
     private final SpriteBatch sb;
+
+    private float passTimer = 0;
+
+
 
     public RenderSystem(Engine engine, SpriteBatch sb)
     {
         super(engine);
         this.sb = sb;
 
+        for(RenderPass r : RenderPass.values())
+        {
+            renderables.put(r, new Array<>());
+        }
+
+        shaders.put(RenderPass.None, null);//null will make the spritebatch use its default shader
+        shaders.put(RenderPass.InvertColor, loadShader("shaders/spritebatch.invert.vert.glsl", "shaders/spritebatch.invert.frag.glsl"));
+
         registerComponentType(PositionComponent.class);
         registerComponentType(DrawComponent.class);
+
+        registerEventType(AttackEvent.class);
     }
 
     public void setCamera(OrthographicCamera camera)
@@ -43,8 +85,13 @@ public class RenderSystem extends GameSystem
     @Override
     public void preUpdate()
     {
+        ScreenUtils.clear(0,0,0,0);
+        for(RenderPass r : RenderPass.values())
+        {
+            renderables.get(r).clear();
+        }
+
         sb.setProjectionMatrix(camera.combined);
-        sb.begin();
     }
 
     @Override
@@ -53,22 +100,60 @@ public class RenderSystem extends GameSystem
         PositionComponent p = entity.getComponent(PositionComponent.class);
         DrawComponent d = entity.getComponent(DrawComponent.class);
 
-        float width = d.scale;
-        float height = (float)d.texture.getHeight() / (float)d.texture.getWidth() * d.scale;
-
-        if(d.facingLeft)
-        {
-            sb.draw(d.texture, p.position.x + width / 2, p.position.y - height / 2, -width, height);
-        }
-        else
-        {
-            sb.draw(d.texture, p.position.x - width / 2, p.position.y - height / 2, width, height);
-        }
+        d.update(dt);
+        renderables.get(d.pass).add(new Renderable(p.position, d));
     }
 
     @Override
     public void postUpdate()
     {
-        sb.end();
+        for (ObjectMap.Entry<RenderPass, ShaderProgram> v : shaders)
+        {
+            sb.setShader(v.value);
+            sb.begin();
+
+            for(Renderable r : renderables.get(v.key))
+            {
+                Vector2 pos = r.position;
+                DrawComponent d = r.draw;
+
+                sb.setColor(d.getColor());
+
+                float width = d.scale;
+                float height = (float)d.texture.getHeight() / (float)d.texture.getWidth() * d.scale;
+
+                if(d.facingLeft)
+                {
+                    sb.draw(d.texture, pos.x + width / 2, pos.y - height / 2, -width, height);
+                }
+                else
+                {
+                    sb.draw(d.texture, pos.x - width / 2, pos.y - height / 2, width, height);
+                }
+            }
+
+            sb.end();
+        }
+
+    }
+    @Override
+    protected void handleEvent(Event event)
+    {
+        if(event instanceof AttackEvent)
+        {
+            AttackEvent e = (AttackEvent) event;
+            if(e.attacked.hasComponent(DrawComponent.class))
+            {
+                e.attacked.getComponent(DrawComponent.class).hasBeenHit();
+            }
+        }
+    }
+
+    private ShaderProgram loadShader(String vertexPath, String fragmentPath)
+    {
+        FileHandle vertHandle = Gdx.files.internal(vertexPath);
+        FileHandle fragHandle = Gdx.files.internal(fragmentPath);
+
+        return new ShaderProgram(vertHandle, fragHandle);
     }
 }
