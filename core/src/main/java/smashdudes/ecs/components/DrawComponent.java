@@ -7,12 +7,7 @@ import smashdudes.graphics.RenderPass;
 
 public class DrawComponent extends Component
 {
-    private final Color targetColor = Color.WHITE.cpy();
-    private final Color hitColor = Color.RED.cpy();
-
-    private final Color currentColor = targetColor.cpy();
-
-    private float interpTimer = 1;
+    private final Color currentColor = Color.WHITE.cpy();
 
     public RenderPass pass = RenderPass.Default;
 
@@ -20,20 +15,6 @@ public class DrawComponent extends Component
     public float scale;
 
     public boolean facingLeft = false;
-
-    public void hasBeenHit()
-    {
-        currentColor.set(hitColor);
-        interpTimer = 0;
-    }
-
-    public void update(float dt)
-    {
-        interpTimer += dt;
-        if(interpTimer > 1) interpTimer = 1;
-
-        currentColor.set(hitColor).lerp(targetColor, interpTimer);
-    }
 
     public Color getColor()
     {

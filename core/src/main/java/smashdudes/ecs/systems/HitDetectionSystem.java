@@ -17,6 +17,8 @@ public class HitDetectionSystem extends GameSystem
     {
         public Vector2 direction = new Vector2();
         public Rectangle collisionArea = new Rectangle();
+
+        public float stunTime = 0;
     }
 
     private Array<Entity> entities = new Array<>();
@@ -62,7 +64,7 @@ public class HitDetectionSystem extends GameSystem
 
         engine.addEvent(new AttackEvent(attacker, attacked));
 
-        HitResolutionComponent resolution = new HitResolutionComponent(attacker, attacked, dir.nor(), collisionArea, 0.5f);
+        HitResolutionComponent resolution = new HitResolutionComponent(attacker, attacked, dir.nor(), collisionArea, 0.1f);
         entity.addComponent(resolution);
     }
 
@@ -91,7 +93,7 @@ public class HitDetectionSystem extends GameSystem
                 {
                     AttackResult attackRes = new AttackResult();
 
-                    attackRes.direction.set(hit.x, hit.y).sub(hurt.x, hurt.y);
+                    attackRes.direction.set(hurt.x - hurt.width / 2, hurt.y - hurt.height / 2).sub(hit.x - hit.width / 2, hit.y - hit.height / 2).nor();
                     attackRes.collisionArea.set(calculateOverlapRectangle(hurt, hit));
 
                     if(result != null)

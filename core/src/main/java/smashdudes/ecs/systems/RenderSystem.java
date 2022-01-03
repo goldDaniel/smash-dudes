@@ -53,11 +53,10 @@ public class RenderSystem extends GameSystem
 
         //null will make the spritebatch use its default shader
         shaders.put(RenderPass.Default, null);
+        shaders.put(RenderPass.NoTexture, loadShader("shaders/spritebatch.default.vert.glsl", "shaders/spritebatch.notexture.frag.glsl"));
 
         registerComponentType(PositionComponent.class);
         registerComponentType(DrawComponent.class);
-
-        registerEventType(AttackEvent.class);
     }
 
     public void setCamera(OrthographicCamera camera)
@@ -94,7 +93,6 @@ public class RenderSystem extends GameSystem
         PositionComponent p = entity.getComponent(PositionComponent.class);
         DrawComponent d = entity.getComponent(DrawComponent.class);
 
-        d.update(dt);
         renderables.get(d.pass).add(new Renderable(p.position, d));
     }
 
@@ -130,24 +128,15 @@ public class RenderSystem extends GameSystem
         }
 
     }
-    @Override
-    protected void handleEvent(Event event)
-    {
-        if(event instanceof AttackEvent)
-        {
-            AttackEvent e = (AttackEvent) event;
-            if(e.attacked.hasComponent(DrawComponent.class))
-            {
-                e.attacked.getComponent(DrawComponent.class).hasBeenHit();
-            }
-        }
-    }
 
     private ShaderProgram loadShader(String vertexPath, String fragmentPath)
     {
         FileHandle vertHandle = Gdx.files.internal(vertexPath);
         FileHandle fragHandle = Gdx.files.internal(fragmentPath);
 
-        return new ShaderProgram(vertHandle, fragHandle);
+        ShaderProgram shader = new ShaderProgram(vertHandle, fragHandle);
+
+        if (!shader.isCompiled()) throw new IllegalArgumentException("Error compiling shader: " + shader.getLog());
+        return shader;
     }
 }
