@@ -6,20 +6,19 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.FloatArray;
 import imgui.ImGui;
-import imgui.ImVec2;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImFloat;
 import imgui.type.ImInt;
 import imgui.type.ImString;
+import smashdudes.content.DTO;
 import smashdudes.core.RenderResources;
 import smashdudes.core.boxtool.logic.ContentService;
 import smashdudes.core.boxtool.presentation.Utils;
 import smashdudes.core.boxtool.presentation.commands.*;
-import smashdudes.core.boxtool.presentation.viewmodel.VM;
 
 public class CharacterEditorWidget
 {
@@ -30,11 +29,11 @@ public class CharacterEditorWidget
 
     private static CommandList commandList;
     private static ContentService service;
-    private static VM.Character character;
+    private static DTO.Character character;
 
-    private static Animation<VM.AnimationFrame> currentAnimation = null;
-    private static VM.Animation selectedAnimation = null;
-    private static VM.AnimationFrame selectedAnimationFrame = null;
+    private static Animation<DTO.AnimationFrame> currentAnimation = null;
+    private static DTO.Animation selectedAnimation = null;
+    private static DTO.AnimationFrame selectedAnimationFrame = null;
 
     private static boolean playing = false;
 
@@ -67,7 +66,7 @@ public class CharacterEditorWidget
         currentTime = 0;
     }
 
-    public static void render(CommandList commandList, ContentService service, VM.Character character, float dt)
+    public static void render(CommandList commandList, ContentService service, DTO.Character character, float dt)
     {
         CharacterEditorWidget.commandList = commandList;
         CharacterEditorWidget.service = service;
@@ -94,7 +93,7 @@ public class CharacterEditorWidget
             String path = Utils.chooseFileToSave();
             if(path != null)
             {
-                service.updateCharacter(VM.mapping(character), path);
+                service.updateCharacter(character, path);
             }
         }
 
@@ -131,7 +130,7 @@ public class CharacterEditorWidget
 
         ImGui.text("Terrain Collider");
         ImGui.sameLine();
-        float[] dim = {character.terrainCollider.get(0), character.terrainCollider.get(1), character.terrainCollider.get(2), character.terrainCollider.get(3)};
+        float[] dim = {character.terrainCollider.x, character.terrainCollider.y, character.terrainCollider.width, character.terrainCollider.height};
         if(ImGui.inputFloat4("##colliderDimID", dim))
         {
             commandList.execute(new ColliderDimEditCommand(character, dim));
@@ -166,7 +165,7 @@ public class CharacterEditorWidget
             {
                 if(!addAnimationName.get().equals(""))
                 {
-                    VM.Animation anim = new VM.Animation();
+                    DTO.Animation anim = new DTO.Animation();
                     anim.animationName = addAnimationName.get();
 
                     commandList.execute(new AddAnimationCommand(character.animations, anim));
@@ -183,7 +182,7 @@ public class CharacterEditorWidget
             ImGui.endPopup();
         }
 
-        for(VM.Animation entry : character.animations)
+        for(DTO.Animation entry : character.animations)
         {
             if(ImGui.selectable(entry.animationName, selectedAnimation == entry))
             {
@@ -199,9 +198,9 @@ public class CharacterEditorWidget
         ImGui.end();
     }
 
-    private static void drawAnimationFrameData(VM.Animation anim)
+    private static void drawAnimationFrameData(DTO.Animation anim)
     {
-        Array<VM.AnimationFrame> toRemove = new Array<>();
+        Array<DTO.AnimationFrame> toRemove = new Array<>();
         ImGui.separator();
         ImGui.text("Animation Frame Data");
 
@@ -283,7 +282,7 @@ public class CharacterEditorWidget
             {
                 if(!addFrameTexture.equals(""))
                 {
-                    VM.AnimationFrame newFrame = new VM.AnimationFrame();
+                    DTO.AnimationFrame newFrame = new DTO.AnimationFrame();
                     newFrame.texturePath = addFrameTexture;
 
                     Command c = new AddFrameCommand(selectedAnimation, addFrameIdx.get(), newFrame);
@@ -303,11 +302,11 @@ public class CharacterEditorWidget
 
 
         int frameNumber = 0;
-        for(VM.AnimationFrame frame : anim.frames)
+        for(DTO.AnimationFrame frame : anim.frames)
         {
             if(ImGui.collapsingHeader("frame " + frameNumber++))
             {
-                ImGui.pushID(frame + "");
+                ImGui.pushID(Utils.getUniqueKey(frame));
 
                 if(ImGui.button("Show frame"))
                 {
@@ -376,26 +375,23 @@ public class CharacterEditorWidget
         toRemove.clear();
     }
 
-    private static void drawBoxEditor(String name, Array<FloatArray> boxes)
+    private static void drawBoxEditor(String name, Array<Rectangle> boxes)
     {
-        Array<FloatArray> toRemove = new Array<>();
+        Array<Rectangle> toRemove = new Array<>();
         ImGui.text(name);
         ImGui.sameLine();
         if(ImGui.button("Add##" + name))
         {
-            FloatArray arr = new FloatArray(4);
-            for (int i = 0; i < arr.items.length; i++)
-            {
-                arr.add(0);
-            }
+            Rectangle rect = new Rectangle();
 
-            commandList.execute(new AddBoxCommand(boxes, arr));
+            commandList.execute(new AddBoxCommand(boxes, rect));
         }
-        for(FloatArray rect : boxes)
-        {
-            ImGui.pushID(rect.items + "");
 
-            float[] temp = {rect.items[0], rect.items[1],rect.items[2], rect.items[3]};
+        for(Rectangle rect : boxes)
+        {
+            ImGui.pushID(Utils.getUniqueKey(rect));
+
+            float[] temp = {rect.x, rect.y, rect.width, rect.height};
             if(ImGui.inputFloat4("", temp))
             {
                 commandList.execute(new RectangleEditCommand(rect, temp));
@@ -410,9 +406,9 @@ public class CharacterEditorWidget
             ImGui.popID();
         }
 
-        for(FloatArray f : toRemove)
+        for(Rectangle r : toRemove)
         {
-            commandList.execute(new RemoveBoxCommand(boxes, f));
+            commandList.execute(new RemoveBoxCommand(boxes, r));
         }
         toRemove.clear();
     }
@@ -421,10 +417,10 @@ public class CharacterEditorWidget
     {
         if (character != null)
         {
-            float w = character.terrainCollider.get(2);
-            float h = character.terrainCollider.get(3);
-            float x = texturePos.x - w / 2 + character.terrainCollider.get(0);
-            float y = texturePos.y - h / 2 + character.terrainCollider.get(1);
+            float w = character.terrainCollider.width;
+            float h = character.terrainCollider.height;
+            float x = texturePos.x - w / 2 + character.terrainCollider.x;
+            float y = texturePos.y - h / 2 + character.terrainCollider.y;
             sh.setColor(Color.GOLD);
             sh.rect(x, y, w, h);
         }
@@ -452,22 +448,22 @@ public class CharacterEditorWidget
         if(selectedAnimationFrame != null)
         {
             sh.setColor(Color.RED);
-            for(FloatArray hurtbox : selectedAnimationFrame.hurtboxes)
+            for(Rectangle hurtbox : selectedAnimationFrame.hurtboxes)
             {
-                float w = hurtbox.get(2);
-                float h = hurtbox.get(3);
-                float x = (hurtbox.get(0) - w / 2) + texturePos.x;
-                float y = (hurtbox.get(1) - h / 2) + texturePos.y;
+                float w = hurtbox.width;
+                float h = hurtbox.height;
+                float x = (hurtbox.x - w / 2) + texturePos.x;
+                float y = (hurtbox.y - h / 2) + texturePos.y;
 
                 sh.rect(x, y, w, h);
             }
             sh.setColor(Color.BLUE);
-            for(FloatArray hitbox : selectedAnimationFrame.hitboxes)
+            for(Rectangle hitbox : selectedAnimationFrame.hitboxes)
             {
-                float w = hitbox.get(2);
-                float h = hitbox.get(3);
-                float x = (hitbox.get(0) - w / 2) + texturePos.x;
-                float y = (hitbox.get(1) - h / 2) + texturePos.y;
+                float w = hitbox.width;
+                float h = hitbox.height;
+                float x = (hitbox.x - w / 2) + texturePos.x;
+                float y = (hitbox.y - h / 2) + texturePos.y;
 
                 sh.rect(x, y, w, h);
             }

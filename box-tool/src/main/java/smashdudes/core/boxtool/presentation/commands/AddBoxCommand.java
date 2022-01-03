@@ -1,16 +1,16 @@
 package smashdudes.core.boxtool.presentation.commands;
 
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.FloatArray;
 
 public class AddBoxCommand extends Command
 {
 
-    private Array<FloatArray> boxes;
-    private FloatArray box;
+    private Array<Rectangle> boxes;
+    private Rectangle box;
 
 
-    public AddBoxCommand(Array<FloatArray> boxes, FloatArray box)
+    public AddBoxCommand(Array<Rectangle> boxes, Rectangle box)
     {
         this.boxes = boxes;
         this.box = box;

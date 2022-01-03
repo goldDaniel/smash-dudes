@@ -1,11 +1,11 @@
 package smashdudes.core.boxtool.presentation.commands;
 
 
-import com.badlogic.gdx.utils.FloatArray;
+import com.badlogic.gdx.math.Rectangle;
 
 public class RectangleEditCommand extends Command
 {
-    private final FloatArray rect;
+    private final Rectangle rect;
     private final float[] data;
 
     private final float prevX;
@@ -13,32 +13,32 @@ public class RectangleEditCommand extends Command
     private final float prevWidth;
     private final float prevHeight;
 
-    public RectangleEditCommand(FloatArray rect, float[] data)
+    public RectangleEditCommand(Rectangle rect, float[] data)
     {
         this.rect = rect;
         this.data = data;
 
-        prevX = rect.get(0);
-        prevY = rect.get(1);
-        prevWidth = rect.get(2);
-        prevHeight = rect.get(3);
+        prevX = rect.x;
+        prevY = rect.y;
+        prevWidth = rect.width;
+        prevHeight = rect.height;
     }
 
     @Override
     protected void execute()
     {
-        rect.items[0] = data[0];
-        rect.items[1] = data[1];
-        rect.items[2] = data[2];
-        rect.items[3] = data[3];
+        rect.x = data[0];
+        rect.y = data[1];
+        rect.width = data[2];
+        rect.height = data[3];
     }
 
     @Override
     protected void undo()
     {
-        rect.items[0] = prevX;
-        rect.items[1] = prevY;
-        rect.items[2] = prevWidth;
-        rect.items[3] = prevHeight;
+        rect.x = prevX;
+        rect.y = prevY;
+        rect.width = prevWidth;
+        rect.height = prevHeight;
     }
 }

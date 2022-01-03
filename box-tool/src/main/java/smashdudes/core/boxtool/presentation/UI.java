@@ -13,11 +13,9 @@ import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import imgui.type.ImString;
+import smashdudes.content.DTO;
 import smashdudes.core.boxtool.logic.ContentService;
-import smashdudes.core.boxtool.presentation.commands.AddAnimationCommand;
-import smashdudes.core.boxtool.presentation.commands.Command;
 import smashdudes.core.boxtool.presentation.commands.CommandList;
-import smashdudes.core.boxtool.presentation.viewmodel.VM;
 import smashdudes.core.boxtool.presentation.widgets.CharacterEditorWidget;
 
 public class UI
@@ -27,7 +25,7 @@ public class UI
 
     //State--------------------------------------------------
     private CommandList commandList = new CommandList();
-    VM.Character character = null;
+    DTO.Character character = null;
     ImString addCharacterName = new ImString();
     //State--------------------------------------------------
 
@@ -140,7 +138,7 @@ public class UI
                     if(filepath != null)
                     {
                         CharacterEditorWidget.reset();
-                        character = VM.mapping(service.readCharacter(filepath));
+                        character = service.readCharacter(filepath);
                         commandList.clear();
                     }
                 }

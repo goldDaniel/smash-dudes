@@ -1,14 +1,14 @@
 package smashdudes.core.boxtool.presentation.commands;
 
-import smashdudes.core.boxtool.presentation.viewmodel.VM;
+import smashdudes.content.DTO;
 
 public class AddFrameCommand extends Command
 {
-    private final VM.Animation animation;
-    private final VM.AnimationFrame frame;
+    private final DTO.Animation animation;
+    private final DTO.AnimationFrame frame;
     private final int idx;
 
-    public AddFrameCommand(VM.Animation animation, int idx, VM.AnimationFrame frame)
+    public AddFrameCommand(DTO.Animation animation, int idx, DTO.AnimationFrame frame)
     {
         this.animation = animation;
         this.frame = frame;

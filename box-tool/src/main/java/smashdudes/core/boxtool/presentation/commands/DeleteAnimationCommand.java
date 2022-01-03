@@ -1,14 +1,14 @@
 package smashdudes.core.boxtool.presentation.commands;
 
 import com.badlogic.gdx.utils.Array;
-import smashdudes.core.boxtool.presentation.viewmodel.VM;
+import smashdudes.content.DTO;
 
 public class DeleteAnimationCommand extends Command
 {
-    private final Array<VM.Animation> animations;
-    private final VM.Animation anim;
+    private final Array<DTO.Animation> animations;
+    private final DTO.Animation anim;
 
-    public DeleteAnimationCommand(Array<VM.Animation> animations, VM.Animation anim)
+    public DeleteAnimationCommand(Array<DTO.Animation> animations, DTO.Animation anim)
     {
         this.animations = animations;
         this.anim = anim;
