@@ -285,7 +285,7 @@ public class CharacterEditorWidget
         ImGui.sameLine();
         if (ImGui.button("Add Frame.."))
         {
-            addFrameIdx.set(0);
+            addFrameIdx.set(anim.frames.size);
             addFrameTexture = "";
             ImGui.openPopup("Add Frame?");
         }
@@ -329,7 +329,7 @@ public class CharacterEditorWidget
             ImGui.endPopup();
         }
 
-
+        ImGui.begin(anim.animationName + "##" +Utils.getUniqueKey(anim));
         int frameNumber = 0;
         for(DTO.AnimationFrame frame : anim.frames)
         {
@@ -369,6 +369,18 @@ public class CharacterEditorWidget
                 }
 
                 ImGui.sameLine();
+                if(ImGui.button("Change Texture.."))
+                {
+                    String readTexture = Utils.chooseFileToLoad("png", "jpg", "jpeg");
+                    if(readTexture != null)
+                    {
+                        String workingDir = Gdx.files.getLocalStoragePath();
+                        readTexture = readTexture.replace(workingDir, "");
+                        commandList.execute(new PropertyEditCommand<>("texturePath", readTexture, frame));
+                    }
+                }
+
+                ImGui.sameLine();
                 if(ImGui.button("/\\"))
                 {
                     int index = anim.frames.indexOf(frame, true);
@@ -396,6 +408,7 @@ public class CharacterEditorWidget
                 ImGui.popID();
             }
         }
+        ImGui.end();
 
         if(toRemove.notEmpty())
         {
