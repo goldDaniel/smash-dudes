@@ -15,10 +15,10 @@ import imgui.type.ImFloat;
 import imgui.type.ImInt;
 import imgui.type.ImString;
 import smashdudes.content.DTO;
-import smashdudes.core.RenderResources;
 import smashdudes.core.boxtool.logic.ContentService;
 import smashdudes.core.boxtool.presentation.Utils;
 import smashdudes.core.boxtool.presentation.commands.*;
+import smashdudes.graphics.RenderResources;
 
 public class CharacterEditorWidget
 {
@@ -99,50 +99,79 @@ public class CharacterEditorWidget
 
         ImGui.separator();
 
-        ImGui.text("Properties");
-
-        ImGui.text("Jump Strength: ");
-        ImGui.sameLine();
-        ImFloat jump = new ImFloat();
-        jump.set(character.jumpStrength);
-        if(ImGui.inputFloat("##jumpStrengthID", jump))
+        if(ImGui.collapsingHeader("Properties"))
         {
-            commandList.execute(new JumpEditCommand(character, jump.get()));
-        }
+            ImGui.text("Jump Strength: ");
+            ImGui.sameLine();
+            ImFloat jump = new ImFloat();
+            jump.set(character.jumpStrength);
+            if (ImGui.inputFloat("##jumpStrengthID", jump))
+            {
+                commandList.execute(new PropertyEditCommand<>("jumpStrength", jump.get(), character));
+            }
 
-        ImGui.text("Gravity: ");
-        ImGui.sameLine();
-        ImFloat gravity = new ImFloat();
-        gravity.set(character.gravity);
-        if(ImGui.inputFloat("##gravityID", gravity))
-        {
-            commandList.execute(new GravityEditCommand(character, gravity.get()));
-        }
+            ImGui.text("Air Speed: ");
+            ImGui.sameLine();
+            ImFloat air = new ImFloat();
+            air.set(character.airSpeed);
+            if (ImGui.inputFloat("##airSpeedID", air))
+            {
+                commandList.execute(new PropertyEditCommand<>("airSpeed", air.get(), character));
+            }
 
-        ImGui.text("Weight: ");
-        ImGui.sameLine();
-        ImFloat weight = new ImFloat();
-        weight.set(character.weight);
-        if(ImGui.inputFloat("##weightID", weight))
-        {
-            commandList.execute(new WeightEditCommand(character, weight.get()));
-        }
+            ImGui.text("Run Speed: ");
+            ImGui.sameLine();
+            ImFloat run = new ImFloat();
+            run.set(character.runSpeed);
+            if (ImGui.inputFloat("##runSpeedID", run))
+            {
+                commandList.execute(new PropertyEditCommand<>("runSpeed", run.get(), character));
+            }
 
-        ImGui.text("Terrain Collider");
-        ImGui.sameLine();
-        float[] dim = {character.terrainCollider.x, character.terrainCollider.y, character.terrainCollider.width, character.terrainCollider.height};
-        if(ImGui.inputFloat4("##colliderDimID", dim))
-        {
-            commandList.execute(new ColliderDimEditCommand(character, dim));
-        }
+            ImGui.text("Friction: ");
+            ImGui.sameLine();
+            ImFloat fric = new ImFloat();
+            fric.set(character.deceleration);
+            if (ImGui.inputFloat("##decelerationID", fric))
+            {
+                commandList.execute(new PropertyEditCommand<>("deceleration", fric.get(), character));
+            }
 
-        ImGui.text("Scale:");
-        ImGui.sameLine();
-        ImFloat scale = new ImFloat();
-        scale.set(character.scale);
-        if(ImGui.inputFloat("##scaleID", scale))
-        {
-            commandList.execute(new ScaleEditCommand(character, scale.get()));
+            ImGui.text("Gravity: ");
+            ImGui.sameLine();
+            ImFloat gravity = new ImFloat();
+            gravity.set(character.gravity);
+            if (ImGui.inputFloat("##gravityID", gravity))
+            {
+                commandList.execute(new PropertyEditCommand<>("gravity", gravity.get(), character));
+            }
+
+            ImGui.text("Weight: ");
+            ImGui.sameLine();
+            ImFloat weight = new ImFloat();
+            weight.set(character.weight);
+            if (ImGui.inputFloat("##weightID", weight))
+            {
+                commandList.execute(new PropertyEditCommand<>("weight", weight.get(), character));
+            }
+
+            ImGui.text("Terrain Collider");
+            ImGui.sameLine();
+            float[] dim = {character.terrainCollider.x, character.terrainCollider.y, character.terrainCollider.width, character.terrainCollider.height};
+            if (ImGui.inputFloat4("##colliderDimID", dim))
+            {
+                Rectangle rect = new Rectangle(dim[0], dim[1], dim[2], dim[3]);
+                commandList.execute(new PropertyEditCommand<>("terrainCollider", rect, character));
+            }
+
+            ImGui.text("Scale:");
+            ImGui.sameLine();
+            ImFloat scale = new ImFloat();
+            scale.set(character.scale);
+            if (ImGui.inputFloat("##scaleID", scale))
+            {
+                commandList.execute(new PropertyEditCommand<>("scale", scale.get(), character));
+            }
         }
 
         ImGui.separator();
@@ -210,7 +239,7 @@ public class CharacterEditorWidget
         duration.set(anim.animationDuration);
         if(ImGui.inputFloat("##animDurationID", duration))
         {
-            commandList.execute(new AnimationDurationCommand(anim, duration.get()));
+            commandList.execute(new PropertyEditCommand<>("animationDuration", duration.get(), anim));
         }
 
         if (anim.usesSpriteSheet)
