@@ -94,11 +94,11 @@ public class CharacterSelector
             }
             else if(p.identifier.equals("Character.json"))
             {
-                p.texture = RenderResources.getTexture("characters/knight1/idle/knight_idle_1.png");
+                p.texture = RenderResources.getTexture("characters/knight1/animations/idle/knight_idle_1.png");
             }
             else if(p.identifier.equals("Knight2.json"))
             {
-                p.texture = RenderResources.getTexture("characters/knight2/attack1/adventurer-attack1-00.png");
+                p.texture = RenderResources.getTexture("characters/knight2/animations/attack1/adventurer-attack1-00.png");
             }
             portraits.add(p);
         }
