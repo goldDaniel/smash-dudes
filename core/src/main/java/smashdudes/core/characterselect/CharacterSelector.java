@@ -90,15 +90,15 @@ public class CharacterSelector
             }
             if(p.identifier.equals("Daniel.json"))
             {
-                p.texture = RenderResources.getTexture("daniel/daniel_fighter_portrait.png");
+                p.texture = RenderResources.getTexture("characters/daniel/portrait/daniel_fighter_portrait.png");
             }
             else if(p.identifier.equals("Character.json"))
             {
-                p.texture = RenderResources.getTexture("idle/knight_idle_1.png");
+                p.texture = RenderResources.getTexture("characters/knight1/idle/knight_idle_1.png");
             }
             else if(p.identifier.equals("Knight2.json"))
             {
-                p.texture = RenderResources.getTexture("knight2/adventurer-air-attack1-00.png");
+                p.texture = RenderResources.getTexture("characters/knight2/attack1/adventurer-attack1-00.png");
             }
             portraits.add(p);
         }
