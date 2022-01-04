@@ -12,6 +12,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.ObjectMap;
+import smashdudes.content.ContentRepo;
+import smashdudes.content.LoadContent;
 import smashdudes.core.PlayerHandle;
 import smashdudes.graphics.RenderResources;
 import smashdudes.util.CharacterSelectDescription;
@@ -49,17 +51,18 @@ public class CharacterSelector
         float portraitWidth = worldWidth / 8;
         float portraitHeight = portraitWidth;
 
-        int numBoxes = 15;
+        int numBoxes = 3;
         int maxWidth = MathUtils.ceil(numBoxes / 2f);
         if (numBoxes > 6)
         {
-            maxWidth = 4;
+            maxWidth = 5;
         }
         int rowNum = 1;
         float xOffset = (worldWidth - portraitWidth * maxWidth) / 2;
 
 
         float portraitY = worldHeight / 2;
+        String[] identifier = initIdentifier(numBoxes);
         for (int i = 0; i < numBoxes; i++)
         {
             if(i % maxWidth == 0 && i > 0)
@@ -77,13 +80,38 @@ public class CharacterSelector
             }
             CharacterPortrait p = new CharacterPortrait();
             p.rect = new Rectangle(xOffset + (i % maxWidth) * portraitWidth, portraitY, portraitWidth, portraitHeight);
-            p.identifier = "" + (char) ('a' + i);
-            if(p.identifier.equals("c"))
+            if (i < 3)
+            {
+                p.identifier = identifier[i];
+            }
+            else
+            {
+                p.identifier = "" + (char) ('a' + i);
+            }
+            if(p.identifier.equals("Daniel.json"))
             {
                 p.texture = RenderResources.getTexture("daniel/daniel_fighter_portrait.png");
             }
+            else if(p.identifier.equals("Character.json"))
+            {
+                p.texture = RenderResources.getTexture("idle/knight_idle_1.png");
+            }
+            else if(p.identifier.equals("Knight2.json"))
+            {
+                p.texture = RenderResources.getTexture("knight2/adventurer-air-attack1-00.png");
+            }
             portraits.add(p);
         }
+    }
+
+    private String[] initIdentifier(int numCharacters)
+    {
+        String[] filepaths = new String[numCharacters];
+        filepaths[0] = "Character.json";
+        filepaths[1] = "Knight2.json";
+        filepaths[2] = "Daniel.json";
+
+        return filepaths;
     }
 
     public void updateCursorPosition(PlayerHandle p, Vector2 direction, float dt)

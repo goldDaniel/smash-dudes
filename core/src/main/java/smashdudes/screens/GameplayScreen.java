@@ -36,18 +36,7 @@ public class GameplayScreen extends GameScreen
         {
 
             DTO.Character characterData = null;
-            if(p.identifier.equals("a"))
-            {
-                characterData = ContentRepo.loadCharacter("Character.json");
-            }
-            if(p.identifier.equals("b"))
-            {
-                characterData = ContentRepo.loadCharacter("Knight2.json");
-            }
-            if(p.identifier.equals("c"))
-            {
-                characterData = ContentRepo.loadCharacter("Daniel.json");
-            }
+            characterData = ContentRepo.loadCharacter(p.identifier);
 
             Entity player = buildPlayer(p.handle, p.identifier, characterData);
 
