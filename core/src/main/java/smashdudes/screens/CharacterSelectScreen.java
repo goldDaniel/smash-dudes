@@ -25,7 +25,7 @@ public class CharacterSelectScreen extends GameScreen
 
     //SELECTION================================================
     private GameInputAssigner inputAssigner = new GameInputAssigner();
-    private CharacterSelector selector = new CharacterSelector(worldWidth, worldHeight);
+    private CharacterSelector selector = new CharacterSelector(worldWidth, worldHeight, RenderResources.getFont());
 
     public CharacterSelectScreen(Game game)
     {

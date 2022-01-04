@@ -1,16 +1,15 @@
 package smashdudes.core.boxtool.presentation;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.ArrayMap;
+import com.badlogic.gdx.utils.IdentityMap;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.io.File;
 import java.util.UUID;
 
 public class Utils
 {
-    private static ArrayMap<Object, UUID> keys = new ArrayMap<>();
+    private static IdentityMap<Object, UUID> keys = new IdentityMap<>();
 
     public static String chooseFileToLoad(String... fileExtensions)
     {

@@ -64,8 +64,8 @@ public class DTO
     {
         public Rectangle textureRegion;
 
-        public Array<Rectangle> hitboxes = new Array<>();
-        public Array<Rectangle> hurtboxes = new Array<>();
+        public Array<Rectangle> attackboxes = new Array<>();
+        public Array<Rectangle> bodyboxes = new Array<>();
 
         public String texturePath;
     }

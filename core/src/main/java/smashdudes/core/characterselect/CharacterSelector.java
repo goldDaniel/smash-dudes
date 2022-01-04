@@ -1,8 +1,11 @@
 package smashdudes.core.characterselect;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
@@ -23,11 +26,14 @@ public class CharacterSelector
     private final float worldWidth;
     private final float worldHeight;
 
+    private GlyphLayout layout;
+
     private class CharacterPortrait
     {
         public String identifier;
         public Texture texture;
         public Rectangle rect;
+        public String name;
     }
 
     private class PlayerPortrait
@@ -43,15 +49,17 @@ public class CharacterSelector
     private ArrayMap<PlayerHandle, Cursor> cursors = new ArrayMap<>();
     private Array<PlayerPortrait> players = new Array<>();
 
-    public CharacterSelector(float worldWidth, float worldHeight)
+    public CharacterSelector(float worldWidth, float worldHeight, BitmapFont font)
     {
         this.worldWidth = worldWidth;
         this.worldHeight = worldHeight;
+        layout = new GlyphLayout(font, "");
 
         float portraitWidth = worldWidth / 8;
         float portraitHeight = portraitWidth;
 
-        int numBoxes = 3;
+        Array<String> identifiers = initIdentifier();
+        int numBoxes = identifiers.size;
         int maxWidth = MathUtils.ceil(numBoxes / 2f);
         if (numBoxes > 6)
         {
@@ -62,7 +70,6 @@ public class CharacterSelector
 
 
         float portraitY = worldHeight / 2;
-        String[] identifier = initIdentifier(numBoxes);
         for (int i = 0; i < numBoxes; i++)
         {
             if(i % maxWidth == 0 && i > 0)
@@ -80,36 +87,39 @@ public class CharacterSelector
             }
             CharacterPortrait p = new CharacterPortrait();
             p.rect = new Rectangle(xOffset + (i % maxWidth) * portraitWidth, portraitY, portraitWidth, portraitHeight);
-            if (i < 3)
-            {
-                p.identifier = identifier[i];
-            }
-            else
-            {
-                p.identifier = "" + (char) ('a' + i);
-            }
-            if(p.identifier.equals("Daniel.json"))
-            {
-                p.texture = RenderResources.getTexture("characters/daniel/portrait/daniel_fighter_portrait.png");
-            }
-            else if(p.identifier.equals("Character.json"))
-            {
-                p.texture = RenderResources.getTexture("characters/knight1/animations/idle/knight_idle_1.png");
-            }
-            else if(p.identifier.equals("Knight2.json"))
-            {
-                p.texture = RenderResources.getTexture("characters/knight2/animations/attack1/adventurer-attack1-00.png");
-            }
+            p.identifier = identifiers.get(i);
+            p.name = getNameFromIdentifier(identifiers.get(i));
+
+            p.texture = getPortraitForCharacter(identifiers.get(i));
             portraits.add(p);
         }
     }
 
-    private String[] initIdentifier(int numCharacters)
+    private String getNameFromIdentifier(String path)
     {
-        String[] filepaths = new String[numCharacters];
-        filepaths[0] = "Character.json";
-        filepaths[1] = "Knight2.json";
-        filepaths[2] = "Daniel.json";
+        String[] split = path.split("/");
+        String result = split[split.length - 1];
+        return result.replace(".json", "");
+    }
+
+    private Texture getPortraitForCharacter(String path)
+    {
+        path = path.replace(".json", "/portrait/portrait.png");
+        return RenderResources.getTexture(path);
+    }
+
+    private Array<String> initIdentifier()
+    {
+        FileHandle handle = Gdx.files.internal("characters");
+        Array<String> filepaths = new Array<>();
+        for (FileHandle entry : handle.list())
+        {
+            String path = entry.path();
+            if(path.contains(".json"))
+            {
+                filepaths.add(path);
+            }
+        }
 
         return filepaths;
     }
@@ -280,15 +290,18 @@ public class CharacterSelector
     {
         for(CharacterPortrait p : portraits)
         {
-            f.draw(s, p.identifier, p.rect.x + p.rect.width / 2, p.rect.y + p.rect.height / 2);
+            layout.setText(f, p.name);
+            float width = layout.width;
+            float height = layout.height;
+            f.draw(s, p.name, p.rect.x + width / 2, p.rect.y + height);
         }
 
-        for(PlayerPortrait p : players)
-        {
-            if(p.identifier != null)
-            {
-                f.draw(s, p.identifier, p.rect.x + p.rect.width / 2, p.rect.y + p.rect.height / 2);
-            }
-        }
+//        for(PlayerPortrait p : players)
+//        {
+//            if(p.identifier != null)
+//            {
+//                f.draw(s, p.name, p.rect.x + p.rect.width / 2, p.rect.y + p.rect.height / 2);
+//            }
+//        }
     }
 }

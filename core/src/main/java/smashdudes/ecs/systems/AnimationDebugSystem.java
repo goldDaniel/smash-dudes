@@ -38,14 +38,14 @@ public class AnimationDebugSystem extends GameSystem
             mirror = entity.getComponent(PlayerComponent.class).facingLeft;
         }
 
-        Array<Rectangle> hitboxes = frame.getHitboxesRelativeTo(pos.position, mirror);
-        for(Rectangle r : hitboxes)
+        Array<Rectangle> attackboxes = frame.getAttackboxesRelativeTo(pos.position, mirror);
+        for(Rectangle r : attackboxes)
         {
             ddraw.pushShape(ShapeRenderer.ShapeType.Line, r, Color.BLUE);
         }
 
-        Array<Rectangle> hurtboxes = frame.getHurtboxesRelativeTo(pos.position, mirror);
-        for(Rectangle r : hurtboxes)
+        Array<Rectangle> bodyboxes = frame.getBodyboxesRelativeTo(pos.position, mirror);
+        for(Rectangle r : bodyboxes)
         {
             ddraw.pushShape(ShapeRenderer.ShapeType.Line, r, Color.RED);
         }

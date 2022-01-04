@@ -83,18 +83,18 @@ public class HitDetectionSystem extends GameSystem
         AnimationFrame thisCurrentFrame = thisAnim.getCurrentFrame();
         AnimationFrame otherCurrentFrame = otherAnim.getCurrentFrame();
 
-        Array<Rectangle> hitboxes = thisCurrentFrame.getHitboxesRelativeTo(thisPos.position, thisPlayer.facingLeft);
-        for(Rectangle hit: hitboxes)
+        Array<Rectangle> attackboxes = thisCurrentFrame.getAttackboxesRelativeTo(thisPos.position, thisPlayer.facingLeft);
+        for(Rectangle attack: attackboxes)
         {
-            Array<Rectangle> hurtboxes = otherCurrentFrame.getHurtboxesRelativeTo(otherPos.position, otherPlayer.facingLeft);
-            for(Rectangle hurt : hurtboxes)
+            Array<Rectangle> bodyboxes = otherCurrentFrame.getBodyboxesRelativeTo(otherPos.position, otherPlayer.facingLeft);
+            for(Rectangle body : bodyboxes)
             {
-                if(hit.overlaps(hurt))
+                if(attack.overlaps(body))
                 {
                     AttackResult attackRes = new AttackResult();
 
-                    attackRes.direction.set(hurt.x - hurt.width / 2, hurt.y - hurt.height / 2).sub(hit.x - hit.width / 2, hit.y - hit.height / 2).nor();
-                    attackRes.collisionArea.set(calculateOverlapRectangle(hurt, hit));
+                    attackRes.direction.set(body.x - body.width / 2, body.y - body.height / 2).sub(attack.x - attack.width / 2, attack.y - attack.height / 2).nor();
+                    attackRes.collisionArea.set(calculateOverlapRectangle(body, attack));
 
                     if(result != null)
                     {

@@ -147,7 +147,7 @@ public class GameplayScreen extends GameScreen
         for (DTO.AnimationFrame dtoFrame : anim.frames)
         {
             AnimationFrame frame =
-                    new AnimationFrame(new Texture(Gdx.files.internal(dtoFrame.texturePath), true), dtoFrame.hitboxes, dtoFrame.hurtboxes);
+                    new AnimationFrame(new Texture(Gdx.files.internal(dtoFrame.texturePath), true), dtoFrame.attackboxes, dtoFrame.bodyboxes);
             frames.add(frame);
         }
 
