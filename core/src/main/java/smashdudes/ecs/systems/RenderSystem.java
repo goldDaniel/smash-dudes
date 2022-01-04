@@ -3,13 +3,14 @@ package smashdudes.ecs.systems;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.Shader;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
-import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import smashdudes.ecs.Engine;
@@ -34,6 +35,8 @@ public class RenderSystem extends GameSystem
 
     private final ArrayMap<RenderPass, ShaderProgram> shaders = new ArrayMap<>();
     private final ArrayMap<ShaderProgram, Array<Renderable>> renderables = new ArrayMap<>();
+
+    private FrameBuffer targetBuffer;
 
     private OrthographicCamera camera;
     private Viewport viewport;
@@ -74,12 +77,20 @@ public class RenderSystem extends GameSystem
     {
         viewport.update(w, h);
         viewport.apply();
+
+        if(targetBuffer != null)
+        {
+            targetBuffer.dispose();
+        }
+        targetBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, w, h, false);
     }
 
     @Override
     public void preUpdate()
     {
-        ScreenUtils.clear(0,0,0,0);
+        targetBuffer.begin();
+        ScreenUtils.clear(0,0,0,1);
+
         for(ShaderProgram r : shaders.values())
         {
             renderables.get(r).clear();
@@ -128,6 +139,12 @@ public class RenderSystem extends GameSystem
 
             sb.end();
         }
+
+        targetBuffer.end();
+        sb.setProjectionMatrix(new Matrix4());
+        sb.begin();
+        sb.draw(targetBuffer.getColorBufferTexture(), -1, 1, 2, -2);
+        sb.end();
     }
 
     private ShaderProgram loadShader(String vertexPath, String fragmentPath)
