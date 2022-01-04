@@ -1,4 +1,4 @@
-package smashdudes.core;
+package smashdudes.graphics;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;

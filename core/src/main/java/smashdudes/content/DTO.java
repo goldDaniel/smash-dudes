@@ -4,7 +4,9 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
+import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.JsonValue;
+import org.w3c.dom.css.Rect;
 
 import java.util.ArrayList;
 
@@ -33,13 +35,15 @@ public class DTO
         public Array<Animation> animations = new Array<>();
 
         public Rectangle terrainCollider = new Rectangle();
-        public Vector2 debugDim = new Vector2();
-        public Vector2 drawDim = new Vector2();
         public float scale;
+
 
         public float jumpStrength;
         public float gravity;
         public float weight;
+        public float airSpeed;
+        public float runSpeed;
+        public float deceleration;
 
         public String name;
     }
@@ -54,7 +58,6 @@ public class DTO
         public boolean usesSpriteSheet;
 
         public Array<AnimationFrame> frames = new Array<>();
-
     }
 
     public static class AnimationFrame

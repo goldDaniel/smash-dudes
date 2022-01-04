@@ -1,16 +1,16 @@
 package smashdudes.core.boxtool.presentation.commands;
 
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.FloatArray;
 
 public class RemoveBoxCommand extends Command
 {
-    private Array<FloatArray> boxes;
+    private Array<Rectangle> boxes;
     private int index;
-    private FloatArray box;
+    private Rectangle box;
 
 
-    public RemoveBoxCommand(Array<FloatArray> boxes, FloatArray box)
+    public RemoveBoxCommand(Array<Rectangle> boxes, Rectangle box)
     {
         this.boxes = boxes;
         this.box = box;

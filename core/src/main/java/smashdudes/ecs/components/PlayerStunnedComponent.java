@@ -19,6 +19,11 @@ public class PlayerStunnedComponent extends Component
         stunTimer += dt;
     }
 
+    public float getPercentageComplete()
+    {
+        return stunTimer / stunnedTime;
+    }
+
     public boolean isStunned()
     {
         return stunTimer < stunnedTime;

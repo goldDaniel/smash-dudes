@@ -10,6 +10,7 @@ import smashdudes.ecs.components.AnimationComponent;
 import smashdudes.ecs.components.DebugDrawComponent;
 import smashdudes.ecs.components.PlayerComponent;
 import smashdudes.ecs.components.PositionComponent;
+import smashdudes.graphics.AnimationFrame;
 
 public class AnimationDebugSystem extends GameSystem
 {
@@ -29,7 +30,7 @@ public class AnimationDebugSystem extends GameSystem
         AnimationComponent anim = entity.getComponent(AnimationComponent.class);
         DebugDrawComponent ddraw = entity.getComponent(DebugDrawComponent.class);
 
-        AnimationComponent.AnimationFrame frame = anim.getCurrentFrame();
+        AnimationFrame frame = anim.getCurrentFrame();
 
         boolean mirror = false;
         if(entity.hasComponent(PlayerComponent.class))
