@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -31,8 +32,8 @@ public class RenderSystem extends GameSystem
         }
     }
 
-    private final ArrayMap<RenderPass, Array<Renderable>> renderables = new ArrayMap<>();
     private final ArrayMap<RenderPass, ShaderProgram> shaders = new ArrayMap<>();
+    private final ArrayMap<ShaderProgram, Array<Renderable>> renderables = new ArrayMap<>();
 
     private OrthographicCamera camera;
     private Viewport viewport;
@@ -44,14 +45,16 @@ public class RenderSystem extends GameSystem
         super(engine);
         this.sb = sb;
 
-        for(RenderPass r : RenderPass.values())
-        {
-            renderables.put(r, new Array<>());
-        }
-
         //null will make the spritebatch use its default shader
         shaders.put(RenderPass.Default, null);
         shaders.put(RenderPass.NoTexture, loadShader("shaders/spritebatch.default.vert.glsl", "shaders/spritebatch.notexture.frag.glsl"));
+
+        for(ShaderProgram s : shaders.values())
+        {
+            renderables.put(s, new Array<>());
+        }
+
+
 
         registerComponentType(PositionComponent.class);
         registerComponentType(DrawComponent.class);
@@ -77,7 +80,7 @@ public class RenderSystem extends GameSystem
     public void preUpdate()
     {
         ScreenUtils.clear(0,0,0,0);
-        for(RenderPass r : RenderPass.values())
+        for(ShaderProgram r : shaders.values())
         {
             renderables.get(r).clear();
         }
@@ -91,18 +94,19 @@ public class RenderSystem extends GameSystem
         PositionComponent p = entity.getComponent(PositionComponent.class);
         DrawComponent d = entity.getComponent(DrawComponent.class);
 
-        renderables.get(d.pass).add(new Renderable(p.position, d));
+        ShaderProgram shader = shaders.get(d.pass);
+        renderables.get(shader).add(new Renderable(p.position, d));
     }
 
     @Override
     public void postUpdate()
     {
-        for (ObjectMap.Entry<RenderPass, ShaderProgram> v : shaders)
+        for (ShaderProgram shader  : shaders.values())
         {
-            sb.setShader(v.value);
+            sb.setShader(shader);
             sb.begin();
 
-            for(Renderable r : renderables.get(v.key))
+            for(Renderable r : renderables.get(shader))
             {
                 Vector2 pos = r.position;
                 DrawComponent d = r.draw;
@@ -124,7 +128,6 @@ public class RenderSystem extends GameSystem
 
             sb.end();
         }
-
     }
 
     private ShaderProgram loadShader(String vertexPath, String fragmentPath)

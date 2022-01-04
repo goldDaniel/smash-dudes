@@ -35,6 +35,7 @@ public class PlayerStunnedSystem extends GameSystem
             {
                 DrawComponent d = entity.getComponent(DrawComponent.class);
                 d.pass = RenderPass.Default;
+                d.getColor().set(Color.WHITE);
             }
         }
         else
@@ -43,6 +44,12 @@ public class PlayerStunnedSystem extends GameSystem
             {
                 DrawComponent d = entity.getComponent(DrawComponent.class);
                 d.pass = RenderPass.NoTexture;
+
+                Color outputColor = Color.RED.cpy();
+                outputColor.lerp(Color.WHITE, stun.getPercentageComplete());
+
+                d.getColor().set(outputColor);
+                d.getColor().a = stun.getPercentageComplete();
             }
         }
     }
