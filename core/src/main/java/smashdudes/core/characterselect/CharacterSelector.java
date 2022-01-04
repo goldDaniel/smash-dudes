@@ -1,7 +1,11 @@
 package smashdudes.core.characterselect;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
@@ -11,7 +15,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.ObjectMap;
+import smashdudes.content.ContentRepo;
+import smashdudes.content.LoadContent;
 import smashdudes.core.PlayerHandle;
+import smashdudes.graphics.RenderResources;
 import smashdudes.util.CharacterSelectDescription;
 
 public class CharacterSelector
@@ -19,10 +26,14 @@ public class CharacterSelector
     private final float worldWidth;
     private final float worldHeight;
 
+    private GlyphLayout layout;
+
     private class CharacterPortrait
     {
         public String identifier;
+        public Texture texture;
         public Rectangle rect;
+        public String name;
     }
 
     private class PlayerPortrait
@@ -31,36 +42,86 @@ public class CharacterSelector
         public Rectangle rect;
         public boolean lockedIn;
         public String identifier = null;
+        public Texture texture;
     }
 
     private Array<CharacterPortrait> portraits = new Array<>();
     private ArrayMap<PlayerHandle, Cursor> cursors = new ArrayMap<>();
     private Array<PlayerPortrait> players = new Array<>();
 
-    public CharacterSelector(float worldWidth, float worldHeight)
+    public CharacterSelector(float worldWidth, float worldHeight, BitmapFont font)
     {
         this.worldWidth = worldWidth;
         this.worldHeight = worldHeight;
+        layout = new GlyphLayout(font, "");
 
         float portraitWidth = worldWidth / 8;
         float portraitHeight = portraitWidth;
 
-        float numBoxes = 4;
-        float xOffset = (worldWidth - portraitWidth * numBoxes) / 2;
+        Array<String> identifiers = initIdentifier();
+        int numBoxes = identifiers.size;
+        int maxWidth = MathUtils.ceil(numBoxes / 2f);
+        if (numBoxes > 6)
+        {
+            maxWidth = 5;
+        }
+        int rowNum = 1;
+        float xOffset = (worldWidth - portraitWidth * maxWidth) / 2;
 
+
+        float portraitY = worldHeight / 2;
         for (int i = 0; i < numBoxes; i++)
         {
+            if(i % maxWidth == 0 && i > 0)
+            {
+                rowNum++;
+                portraitY -= portraitHeight;
+                if ((numBoxes - rowNum * maxWidth) < 0)
+                {
+                    xOffset = (worldWidth - portraitWidth * (maxWidth + (numBoxes - rowNum * maxWidth))) / 2;
+                }
+                else
+                {
+                    xOffset = (worldWidth - portraitWidth * maxWidth) / 2;
+                }
+            }
             CharacterPortrait p = new CharacterPortrait();
-            p.rect = new Rectangle(xOffset + i * portraitWidth, worldHeight / 2, portraitWidth, portraitHeight);
-            p.identifier = "" + (char) ('a' + i * 2);
-            portraits.add(p);
-            portraits.add(p);
+            p.rect = new Rectangle(xOffset + (i % maxWidth) * portraitWidth, portraitY, portraitWidth, portraitHeight);
+            p.identifier = identifiers.get(i);
+            p.name = getNameFromIdentifier(identifiers.get(i));
 
-            p = new CharacterPortrait();
-            p.rect = new Rectangle(xOffset + i * portraitWidth, worldHeight / 2 - portraitHeight, portraitWidth, portraitHeight);
-            p.identifier = "" + (char) ('a' + (i) * 2 + 1);
+            p.texture = getPortraitForCharacter(identifiers.get(i));
             portraits.add(p);
         }
+    }
+
+    private String getNameFromIdentifier(String path)
+    {
+        String[] split = path.split("/");
+        String result = split[split.length - 1];
+        return result.replace(".json", "");
+    }
+
+    private Texture getPortraitForCharacter(String path)
+    {
+        path = path.replace(".json", "/portrait/portrait.png");
+        return RenderResources.getTexture(path);
+    }
+
+    private Array<String> initIdentifier()
+    {
+        FileHandle handle = Gdx.files.internal("characters");
+        Array<String> filepaths = new Array<>();
+        for (FileHandle entry : handle.list())
+        {
+            String path = entry.path();
+            if(path.contains(".json"))
+            {
+                filepaths.add(path);
+            }
+        }
+
+        return filepaths;
     }
 
     public void updateCursorPosition(PlayerHandle p, Vector2 direction, float dt)
@@ -83,6 +144,7 @@ public class CharacterSelector
                     if(character.rect.contains(c.circle.x, c.circle.y))
                     {
                         p.identifier = character.identifier;
+                        p.texture = character.texture;
                         p.lockedIn = true;
                     }
                 }
@@ -161,8 +223,27 @@ public class CharacterSelector
         players.add(portrait);
     }
 
-    public void render(ShapeRenderer sh)
+    public void render(ShapeRenderer sh, SpriteBatch sb)
     {
+        sb.begin();
+        for(CharacterPortrait p : portraits)
+        {
+            if(p.texture != null)
+            {
+                sb.draw(p.texture, p.rect.x, p.rect.y, p.rect.width, p.rect.height);
+            }
+        }
+
+        for(PlayerPortrait p : players)
+        {
+            if(p.texture != null)
+            {
+                sb.draw(p.texture, p.rect.x, p.rect.y, p.rect.width, p.rect.height);
+            }
+        }
+        sb.end();
+
+        sh.begin(ShapeRenderer.ShapeType.Line);
         for(CharacterPortrait p : portraits)
         {
             sh.setColor(Color.RED);
@@ -184,6 +265,7 @@ public class CharacterSelector
             Rectangle rect = p.rect;
             sh.rect(rect.x, rect.y, rect.width, rect.height);
         }
+        sh.end();
     }
 
     public Array<CharacterSelectDescription.PlayerDescription> getPlayerDescriptions()
@@ -208,15 +290,18 @@ public class CharacterSelector
     {
         for(CharacterPortrait p : portraits)
         {
-            f.draw(s, p.identifier, p.rect.x + p.rect.width / 2, p.rect.y + p.rect.height / 2);
+            layout.setText(f, p.name);
+            float width = layout.width;
+            float height = layout.height;
+            f.draw(s, p.name, p.rect.x + width / 2, p.rect.y + height);
         }
 
-        for(PlayerPortrait p : players)
-        {
-            if(p.identifier != null)
-            {
-                f.draw(s, p.identifier, p.rect.x + p.rect.width / 2, p.rect.y + p.rect.height / 2);
-            }
-        }
+//        for(PlayerPortrait p : players)
+//        {
+//            if(p.identifier != null)
+//            {
+//                f.draw(s, p.name, p.rect.x + p.rect.width / 2, p.rect.y + p.rect.height / 2);
+//            }
+//        }
     }
 }

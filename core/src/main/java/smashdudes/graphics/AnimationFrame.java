@@ -9,24 +9,24 @@ public class AnimationFrame
 {
     public final Texture texture;
 
-    public final Array<Rectangle> hitboxes;
-    public final Array<Rectangle> hurtboxes;
+    public final Array<Rectangle> attackboxes;
+    public final Array<Rectangle> bodyboxes;
 
-    public AnimationFrame(Texture texture, Array<Rectangle> hitboxes, Array<Rectangle> hurtboxes)
+    public AnimationFrame(Texture texture, Array<Rectangle> attackboxes, Array<Rectangle> bodyboxes)
     {
         this.texture = texture;
-        this.hitboxes = hitboxes;
-        this.hurtboxes = hurtboxes;
+        this.attackboxes = attackboxes;
+        this.bodyboxes = bodyboxes;
     }
 
-    public Array<Rectangle> getHitboxesRelativeTo(Vector2 pos, boolean mirror)
+    public Array<Rectangle> getAttackboxesRelativeTo(Vector2 pos, boolean mirror)
     {
-        return getRelativeTo(hitboxes, pos, mirror);
+        return getRelativeTo(attackboxes, pos, mirror);
     }
 
-    public Array<Rectangle> getHurtboxesRelativeTo(Vector2 pos, boolean mirror)
+    public Array<Rectangle> getBodyboxesRelativeTo(Vector2 pos, boolean mirror)
     {
-        return getRelativeTo(hurtboxes, pos, mirror);
+        return getRelativeTo(bodyboxes, pos, mirror);
     }
 
     private Array<Rectangle> getRelativeTo(Array<Rectangle> boxes, Vector2 pos, boolean mirror)

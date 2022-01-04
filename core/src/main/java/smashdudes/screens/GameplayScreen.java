@@ -36,18 +36,7 @@ public class GameplayScreen extends GameScreen
         {
 
             DTO.Character characterData = null;
-            if(p.identifier.equals("a"))
-            {
-                characterData = ContentRepo.loadCharacter("Character.json");
-            }
-            if(p.identifier.equals("b"))
-            {
-                characterData = ContentRepo.loadCharacter("Knight2.json");
-            }
-            if(p.identifier.equals("c"))
-            {
-                characterData = ContentRepo.loadCharacter("Daniel.json");
-            }
+            characterData = ContentRepo.loadCharacter(p.identifier);
 
             Entity player = buildPlayer(p.handle, p.identifier, characterData);
 
@@ -105,10 +94,15 @@ public class GameplayScreen extends GameScreen
 
         player.addComponent(new PlayerComponent(handle, identifier));
         player.addComponent(new PositionComponent(new Vector2(0, 10)));
-        player.addComponent(new VelocityComponent());
         player.addComponent(new JumpComponent(characterData.jumpStrength));
         player.addComponent(new GravityComponent(characterData.gravity));
         player.addComponent(new PlayerInAirComponent());
+
+        VelocityComponent vc = new VelocityComponent();
+        vc.runSpeed = characterData.runSpeed;
+        vc.airSpeed = characterData.airSpeed;
+        vc.deceleration = characterData.deceleration;
+        player.addComponent(vc);
 
         CharacterInputComponent i = new CharacterInputComponent();
         player.addComponent(i);
@@ -153,7 +147,7 @@ public class GameplayScreen extends GameScreen
         for (DTO.AnimationFrame dtoFrame : anim.frames)
         {
             AnimationFrame frame =
-                    new AnimationFrame(new Texture(Gdx.files.internal(dtoFrame.texturePath), true), dtoFrame.hitboxes, dtoFrame.hurtboxes);
+                    new AnimationFrame(new Texture(Gdx.files.internal(dtoFrame.texturePath), true), dtoFrame.attackboxes, dtoFrame.bodyboxes);
             frames.add(frame);
         }
 

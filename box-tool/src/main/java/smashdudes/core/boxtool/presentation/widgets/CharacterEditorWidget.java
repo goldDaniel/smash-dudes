@@ -400,10 +400,19 @@ public class CharacterEditorWidget
                         commandList.execute(new ArraySwapCommand(anim.frames, index, swapIndex));
                     }
                 }
+                ImGui.sameLine();
+                Texture texture = RenderResources.getTexture(frame.texturePath);
+
+                float frameDrawWidth = 80;
+                float frameDrawHeight = frameDrawWidth * (float)texture.getHeight() / (float)texture.getWidth();
+
+                ImGui.image(texture.getTextureObjectHandle(),
+                        frameDrawWidth, frameDrawHeight,
+                        0, 0, 1, 1);
 
 
-                drawBoxEditor("Hitboxes", frame.hitboxes);
-                drawBoxEditor("Hurtboxes", frame.hurtboxes);
+                drawBoxEditor("Attackboxes", frame.attackboxes);
+                drawBoxEditor("Bodyboxes", frame.bodyboxes);
 
                 ImGui.popID();
             }
@@ -490,22 +499,22 @@ public class CharacterEditorWidget
         if(selectedAnimationFrame != null)
         {
             sh.setColor(Color.RED);
-            for(Rectangle hurtbox : selectedAnimationFrame.hurtboxes)
+            for(Rectangle bodybox : selectedAnimationFrame.bodyboxes)
             {
-                float w = hurtbox.width;
-                float h = hurtbox.height;
-                float x = (hurtbox.x - w / 2) + texturePos.x;
-                float y = (hurtbox.y - h / 2) + texturePos.y;
+                float w = bodybox.width;
+                float h = bodybox.height;
+                float x = (bodybox.x - w / 2) + texturePos.x;
+                float y = (bodybox.y - h / 2) + texturePos.y;
 
                 sh.rect(x, y, w, h);
             }
             sh.setColor(Color.BLUE);
-            for(Rectangle hitbox : selectedAnimationFrame.hitboxes)
+            for(Rectangle attackbox : selectedAnimationFrame.attackboxes)
             {
-                float w = hitbox.width;
-                float h = hitbox.height;
-                float x = (hitbox.x - w / 2) + texturePos.x;
-                float y = (hitbox.y - h / 2) + texturePos.y;
+                float w = attackbox.width;
+                float h = attackbox.height;
+                float x = (attackbox.x - w / 2) + texturePos.x;
+                float y = (attackbox.y - h / 2) + texturePos.y;
 
                 sh.rect(x, y, w, h);
             }

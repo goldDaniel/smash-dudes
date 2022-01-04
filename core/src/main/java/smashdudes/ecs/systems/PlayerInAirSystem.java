@@ -36,10 +36,10 @@ public class PlayerInAirSystem extends GameSystem
             }
         }
 
-        v.velocity.x *= 40 * dt;
+        v.velocity.x *= v.deceleration * dt;
         if(ci.currentState.left || ci.currentState.right)
         {
-            float speed = 10;
+            float speed = v.airSpeed;
             if(ci.currentState.left)
             {
                 v.velocity.x -= speed;

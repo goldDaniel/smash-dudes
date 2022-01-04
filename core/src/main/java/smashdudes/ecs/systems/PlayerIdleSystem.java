@@ -30,7 +30,7 @@ public class PlayerIdleSystem extends GameSystem
             entity.addComponent(container.idle);
         }
 
-        v.velocity.x *= 40 * dt;
+        v.velocity.x *= v.deceleration * dt;
 
         if(i.currentState.punch)
         {

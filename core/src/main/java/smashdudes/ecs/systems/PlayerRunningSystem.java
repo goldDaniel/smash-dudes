@@ -55,8 +55,8 @@ public class PlayerRunningSystem extends GameSystem
         }
         else
         {
-            float speed = 10;
-            v.velocity.x *= 40 * dt;
+            float speed = v.runSpeed;
+            v.velocity.x *= v.deceleration * dt;
             if(ci.currentState.left)
             {
                 v.velocity.x -= speed;

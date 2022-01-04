@@ -25,7 +25,7 @@ public class CharacterSelectScreen extends GameScreen
 
     //SELECTION================================================
     private GameInputAssigner inputAssigner = new GameInputAssigner();
-    private CharacterSelector selector = new CharacterSelector(worldWidth, worldHeight);
+    private CharacterSelector selector = new CharacterSelector(worldWidth, worldHeight, RenderResources.getFont());
 
     public CharacterSelectScreen(Game game)
     {
@@ -79,7 +79,7 @@ public class CharacterSelectScreen extends GameScreen
         if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER) && selector.areAllPlayersLockedIn())
         {
             CharacterSelectDescription desc = new CharacterSelectDescription(inputAssigner.getGameInputHandler(),
-                                                                            selector.getPlayerDescriptions());
+                                                                              selector.getPlayerDescriptions());
 
             game.setScreen(new GameplayScreen(game, desc));
         }
@@ -88,7 +88,7 @@ public class CharacterSelectScreen extends GameScreen
     @Override
     public void render()
     {
-        SpriteBatch s = RenderResources.getSpriteBatch();
+        SpriteBatch sb = RenderResources.getSpriteBatch();
         ShapeRenderer sh = RenderResources.getShapeRenderer();
         BitmapFont font = RenderResources.getFont();
 
@@ -96,24 +96,22 @@ public class CharacterSelectScreen extends GameScreen
 
         Matrix4 proj = viewport.getCamera().combined;
         sh.setProjectionMatrix(proj);
-        sh.begin(ShapeRenderer.ShapeType.Line);
-        selector.render(sh);
-        sh.end();
+        sb.setProjectionMatrix(proj);
+        selector.render(sh, sb);
 
-
-        s.setProjectionMatrix(proj);
-        s.begin();
-        selector.render(s, font);
+        sb.setProjectionMatrix(proj);
+        sb.begin();
+        selector.render(sb, font);
         font.getData().setScale(2);
 
-        font.draw(s, "Press -SPACE- on keyboard to join", worldWidth / 2 - 220, worldHeight - 60);
-        font.draw(s, "Press -A- on controller to join", worldWidth / 2 - 160, worldHeight - 120);
+        font.draw(sb, "Press -SPACE- on keyboard to join", worldWidth / 2 - 220, worldHeight - 60);
+        font.draw(sb, "Press -A- on controller to join", worldWidth / 2 - 160, worldHeight - 120);
 
 
         if(selector.areAllPlayersLockedIn())
         {
-            font.draw(s, "Press enter to play", worldWidth / 2 - 120, worldHeight / 4);
+            font.draw(sb, "Press enter to play", worldWidth / 2 - 120, worldHeight / 4);
         }
-        s.end();
+        sb.end();
     }
 }
