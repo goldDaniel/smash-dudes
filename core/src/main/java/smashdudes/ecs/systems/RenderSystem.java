@@ -18,6 +18,7 @@ import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.DrawComponent;
 import smashdudes.ecs.components.PositionComponent;
 import smashdudes.graphics.RenderPass;
+import smashdudes.graphics.RenderResources;
 
 public class RenderSystem extends GameSystem
 {
@@ -50,7 +51,7 @@ public class RenderSystem extends GameSystem
 
         //null will make the spritebatch use its default shader
         shaders.put(RenderPass.Default, null);
-        shaders.put(RenderPass.NoTexture, loadShader("shaders/spritebatch.default.vert.glsl", "shaders/spritebatch.stunned.frag.glsl"));
+        shaders.put(RenderPass.NoTexture, RenderResources.getShader("shaders/spritebatch.default.vert.glsl", "shaders/spritebatch.stunned.frag.glsl"));
 
         for(ShaderProgram s : shaders.values())
         {
@@ -145,16 +146,5 @@ public class RenderSystem extends GameSystem
         sb.begin();
         sb.draw(targetBuffer.getColorBufferTexture(), -1, 1, 2, -2);
         sb.end();
-    }
-
-    private ShaderProgram loadShader(String vertexPath, String fragmentPath)
-    {
-        FileHandle vertHandle = Gdx.files.internal(vertexPath);
-        FileHandle fragHandle = Gdx.files.internal(fragmentPath);
-
-        ShaderProgram shader = new ShaderProgram(vertHandle, fragHandle);
-
-        if (!shader.isCompiled()) throw new IllegalArgumentException("Error compiling shader: " + shader.getLog());
-        return shader;
     }
 }
