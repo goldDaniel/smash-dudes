@@ -2,7 +2,6 @@ package smashdudes.core.boxtool.presentation.commands;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
-import org.lwjgl.system.CallbackI;
 import smashdudes.content.DTO;
 
 import java.lang.reflect.Field;
@@ -19,7 +18,7 @@ public class PropertyEditCommand<T, U> extends Command
     {
         this.instance = instance;
         newData = data;
-        Array<Class<?>> classes = new Array(DTO.class.getDeclaredClasses());
+        Array<Class<?>> classes = new Array<>(DTO.class.getDeclaredClasses());
         if(!classes.contains(instance.getClass(), false))
         {
             throw new IllegalArgumentException("Must be of type 'DTO'");
