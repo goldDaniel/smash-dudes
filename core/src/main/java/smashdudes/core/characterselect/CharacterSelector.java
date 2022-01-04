@@ -1,6 +1,7 @@
 package smashdudes.core.characterselect;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.ObjectMap;
 import smashdudes.core.PlayerHandle;
+import smashdudes.graphics.RenderResources;
 import smashdudes.util.CharacterSelectDescription;
 
 public class CharacterSelector
@@ -22,6 +24,7 @@ public class CharacterSelector
     private class CharacterPortrait
     {
         public String identifier;
+        public Texture texture;
         public Rectangle rect;
     }
 
@@ -31,6 +34,7 @@ public class CharacterSelector
         public Rectangle rect;
         public boolean lockedIn;
         public String identifier = null;
+        public Texture texture;
     }
 
     private Array<CharacterPortrait> portraits = new Array<>();
@@ -45,20 +49,39 @@ public class CharacterSelector
         float portraitWidth = worldWidth / 8;
         float portraitHeight = portraitWidth;
 
-        float numBoxes = 4;
-        float xOffset = (worldWidth - portraitWidth * numBoxes) / 2;
+        int numBoxes = 15;
+        int maxWidth = MathUtils.ceil(numBoxes / 2f);
+        if (numBoxes > 6)
+        {
+            maxWidth = 4;
+        }
+        int rowNum = 1;
+        float xOffset = (worldWidth - portraitWidth * maxWidth) / 2;
 
+
+        float portraitY = worldHeight / 2;
         for (int i = 0; i < numBoxes; i++)
         {
+            if(i % maxWidth == 0 && i > 0)
+            {
+                rowNum++;
+                portraitY -= portraitHeight;
+                if ((numBoxes - rowNum * maxWidth) < 0)
+                {
+                    xOffset = (worldWidth - portraitWidth * (maxWidth + (numBoxes - rowNum * maxWidth))) / 2;
+                }
+                else
+                {
+                    xOffset = (worldWidth - portraitWidth * maxWidth) / 2;
+                }
+            }
             CharacterPortrait p = new CharacterPortrait();
-            p.rect = new Rectangle(xOffset + i * portraitWidth, worldHeight / 2, portraitWidth, portraitHeight);
-            p.identifier = "" + (char) ('a' + i * 2);
-            portraits.add(p);
-            portraits.add(p);
-
-            p = new CharacterPortrait();
-            p.rect = new Rectangle(xOffset + i * portraitWidth, worldHeight / 2 - portraitHeight, portraitWidth, portraitHeight);
-            p.identifier = "" + (char) ('a' + (i) * 2 + 1);
+            p.rect = new Rectangle(xOffset + (i % maxWidth) * portraitWidth, portraitY, portraitWidth, portraitHeight);
+            p.identifier = "" + (char) ('a' + i);
+            if(p.identifier.equals("c"))
+            {
+                p.texture = RenderResources.getTexture("daniel/daniel_fighter_portrait.png");
+            }
             portraits.add(p);
         }
     }
@@ -83,6 +106,7 @@ public class CharacterSelector
                     if(character.rect.contains(c.circle.x, c.circle.y))
                     {
                         p.identifier = character.identifier;
+                        p.texture = character.texture;
                         p.lockedIn = true;
                     }
                 }
@@ -161,8 +185,27 @@ public class CharacterSelector
         players.add(portrait);
     }
 
-    public void render(ShapeRenderer sh)
+    public void render(ShapeRenderer sh, SpriteBatch sb)
     {
+        sb.begin();
+        for(CharacterPortrait p : portraits)
+        {
+            if(p.texture != null)
+            {
+                sb.draw(p.texture, p.rect.x, p.rect.y, p.rect.width, p.rect.height);
+            }
+        }
+
+        for(PlayerPortrait p : players)
+        {
+            if(p.texture != null)
+            {
+                sb.draw(p.texture, p.rect.x, p.rect.y, p.rect.width, p.rect.height);
+            }
+        }
+        sb.end();
+
+        sh.begin(ShapeRenderer.ShapeType.Line);
         for(CharacterPortrait p : portraits)
         {
             sh.setColor(Color.RED);
@@ -184,6 +227,7 @@ public class CharacterSelector
             Rectangle rect = p.rect;
             sh.rect(rect.x, rect.y, rect.width, rect.height);
         }
+        sh.end();
     }
 
     public Array<CharacterSelectDescription.PlayerDescription> getPlayerDescriptions()

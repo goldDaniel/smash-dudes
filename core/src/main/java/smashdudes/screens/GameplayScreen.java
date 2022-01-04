@@ -119,7 +119,7 @@ public class GameplayScreen extends GameScreen
         animContainer.running = loadPlayerAnimation(characterData, "run", Animation.PlayMode.LOOP);
         animContainer.jumping = loadPlayerAnimation(characterData,"jump", Animation.PlayMode.LOOP);
         animContainer.falling = loadPlayerAnimation(characterData,"fall", Animation.PlayMode.LOOP);
-        animContainer.attack_1 = loadPlayerAnimation(characterData,"attack_1", Animation.PlayMode.NORMAL);
+        //animContainer.attack_1 = loadPlayerAnimation(characterData,"attack_1", Animation.PlayMode.NORMAL);
         player.addComponent(animContainer);
 
         player.addComponent(animContainer.idle);
