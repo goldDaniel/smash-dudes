@@ -400,6 +400,15 @@ public class CharacterEditorWidget
                         commandList.execute(new ArraySwapCommand(anim.frames, index, swapIndex));
                     }
                 }
+                ImGui.sameLine();
+                Texture texture = RenderResources.getTexture(frame.texturePath);
+
+                float frameDrawWidth = 80;
+                float frameDrawHeight = frameDrawWidth * (float)texture.getHeight() / (float)texture.getWidth();
+
+                ImGui.image(texture.getTextureObjectHandle(),
+                        frameDrawWidth, frameDrawHeight,
+                        0, 0, 1, 1);
 
 
                 drawBoxEditor("Attackboxes", frame.attackboxes);

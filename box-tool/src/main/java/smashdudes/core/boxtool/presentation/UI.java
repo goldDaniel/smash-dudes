@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import imgui.ImGui;
+import imgui.ImVec2;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
@@ -18,6 +19,7 @@ import smashdudes.content.DTO;
 import smashdudes.core.boxtool.logic.ContentService;
 import smashdudes.core.boxtool.presentation.commands.CommandList;
 import smashdudes.core.boxtool.presentation.widgets.CharacterEditorWidget;
+import smashdudes.graphics.RenderResources;
 
 public class UI
 {
