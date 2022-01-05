@@ -295,13 +295,5 @@ public class CharacterSelector
             float height = layout.height;
             f.draw(s, p.name, p.rect.x + width / 2, p.rect.y + height);
         }
-
-//        for(PlayerPortrait p : players)
-//        {
-//            if(p.identifier != null)
-//            {
-//                f.draw(s, p.name, p.rect.x + p.rect.width / 2, p.rect.y + p.rect.height / 2);
-//            }
-//        }
     }
 }

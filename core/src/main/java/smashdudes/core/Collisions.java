@@ -17,18 +17,17 @@ public class Collisions
      */
     public static CollisionSide getCollisionSide(Rectangle r0, Rectangle r1)
     {
-        CollisionSide result = null;
-        //horizontal side
-        boolean left = r0.x + r0.width / 2 < r1.x + r1.width / 2;
-        //vertical side
-        boolean above = r0.y + r0.height / 2 > r1.y + r1.height / 2;
+        CollisionSide result;
+
+        boolean isLeft = r0.x + r0.width / 2 < r1.x + r1.width / 2;
+        boolean isAbove = r0.y + r0.height / 2 > r1.y + r1.height / 2;
 
         //holds how deep the r1ect is inside the tile on each axis
         float horizontalDif;
         float verticalDif;
 
         //determine the differences for depth
-        if (left)
+        if (isLeft)
         {
             horizontalDif = r0.x + r0.width - r1.x;
         }
@@ -37,7 +36,7 @@ public class Collisions
             horizontalDif = r1.x + r1.width - r0.x;
         }
 
-        if (above)
+        if (isAbove)
         {
             verticalDif = r1.y + r1.height - r0.y;
         }
@@ -48,7 +47,7 @@ public class Collisions
 
         if (horizontalDif < verticalDif)
         {
-            if (left)
+            if (isLeft)
             {
                 result = CollisionSide.Left;
             }
@@ -57,7 +56,7 @@ public class Collisions
                 result = CollisionSide.Right;
             }
         }
-        else if (above)
+        else if (isAbove)
         {
             result = CollisionSide.Top;
         }

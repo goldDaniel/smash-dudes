@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import smashdudes.content.ContentRepo;
 import smashdudes.content.DTO;
 import smashdudes.content.LoadContent;
+import smashdudes.core.AudioResources;
 import smashdudes.core.input.GameInputHandler;
 import smashdudes.core.input.IGameInputRetriever;
 import smashdudes.core.PlayerHandle;
@@ -30,14 +31,10 @@ public class GameplayScreen extends GameScreen
         super(game);
         this.inputHandler = desc.gameInput;
         ecsEngine = new Engine();
-
-
+        
         for(CharacterSelectDescription.PlayerDescription p : desc.descriptions)
         {
-
-            DTO.Character characterData = null;
-            characterData = ContentRepo.loadCharacter(p.identifier);
-
+            DTO.Character characterData = ContentRepo.loadCharacter(p.identifier);
             Entity player = buildPlayer(p.handle, p.identifier, characterData);
 
             IGameInputRetriever retriever = inputHandler.getGameInput(p.handle);
@@ -68,8 +65,6 @@ public class GameplayScreen extends GameScreen
     @Override
     public void update(float dt)
     {
-        ScreenUtils.clear(Color.GRAY);
-
         float maxStep = 1/30f;
         if(dt > maxStep) dt = maxStep;
 

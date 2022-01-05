@@ -19,17 +19,17 @@ public class AnimationFrame
         this.bodyboxes = bodyboxes;
     }
 
-    public Array<Rectangle> getAttackboxesRelativeTo(Vector2 pos, boolean mirror)
+    public Array<Rectangle> getAttackboxesRelativeTo(Vector2 pos, boolean mirrorX)
     {
-        return getRelativeTo(attackboxes, pos, mirror);
+        return getRelativeTo(attackboxes, pos, mirrorX);
     }
 
-    public Array<Rectangle> getBodyboxesRelativeTo(Vector2 pos, boolean mirror)
+    public Array<Rectangle> getBodyboxesRelativeTo(Vector2 pos, boolean mirrorX)
     {
-        return getRelativeTo(bodyboxes, pos, mirror);
+        return getRelativeTo(bodyboxes, pos, mirrorX);
     }
 
-    private Array<Rectangle> getRelativeTo(Array<Rectangle> boxes, Vector2 pos, boolean mirror)
+    private Array<Rectangle> getRelativeTo(Array<Rectangle> boxes, Vector2 pos, boolean mirrorX)
     {
         Array<Rectangle> result = new Array<>();
 
@@ -39,16 +39,10 @@ public class AnimationFrame
             absolute.width = relative.width;
             absolute.height = relative.height;
 
-            if(mirror)
-            {
-                absolute.x = pos.x - relative.x - relative.width / 2;
-            }
-            else
-            {
-                absolute.x = + pos.x + relative.x - relative.width / 2;
-            }
+            int dir = mirrorX ? -1 : 1;
 
-            absolute.y = (relative.y - relative.height / 2) + pos.y;
+            absolute.x = pos.x + (dir * relative.x) - relative.width / 2;
+            absolute.y = pos.y + relative.y - relative.height / 2;
 
             result.add(absolute);
         }
