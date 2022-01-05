@@ -39,12 +39,12 @@ public class AudioSystem extends GameSystem
     {
         if (event instanceof JumpEvent)
         {
-            Sound s = AudioResources.getSoundEffect("audio/Jump.wav");
+            Sound s = AudioResources.getSoundEffect("audio/effects/Jump.wav");
             sounds.addLast(new Audio(s, 0.1f));
         }
         else if (event instanceof LandingEvent)
         {
-            Sound s = AudioResources.getSoundEffect("audio/Land.wav");
+            Sound s = AudioResources.getSoundEffect("audio/effects/Land.wav");
             sounds.addLast(new Audio(s, 0.1f));
         }
     }
