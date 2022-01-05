@@ -1,7 +1,6 @@
 package smashdudes.ecs.systems;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -37,8 +36,6 @@ public class RenderSystem extends GameSystem
     private final ArrayMap<RenderPass, ShaderProgram> shaders = new ArrayMap<>();
     private final ArrayMap<ShaderProgram, Array<Renderable>> renderables = new ArrayMap<>();
 
-    private FrameBuffer targetBuffer;
-
     private OrthographicCamera camera;
     private Viewport viewport;
 
@@ -51,14 +48,12 @@ public class RenderSystem extends GameSystem
 
         //null will make the spritebatch use its default shader
         shaders.put(RenderPass.Default, null);
-        shaders.put(RenderPass.NoTexture, RenderResources.getShader("shaders/spritebatch.default.vert.glsl", "shaders/spritebatch.stunned.frag.glsl"));
+        shaders.put(RenderPass.Stunned, RenderResources.getShader("shaders/spritebatch.default.vert.glsl", "shaders/spritebatch.stunned.frag.glsl"));
 
         for(ShaderProgram s : shaders.values())
         {
             renderables.put(s, new Array<>());
         }
-
-
 
         registerComponentType(PositionComponent.class);
         registerComponentType(DrawComponent.class);
@@ -78,18 +73,11 @@ public class RenderSystem extends GameSystem
     {
         viewport.update(w, h);
         viewport.apply();
-
-        if(targetBuffer != null)
-        {
-            targetBuffer.dispose();
-        }
-        targetBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, w, h, false);
     }
 
     @Override
     public void preUpdate()
     {
-        targetBuffer.begin();
         ScreenUtils.clear(0,0,0,1);
 
         for(ShaderProgram r : shaders.values())
@@ -140,11 +128,5 @@ public class RenderSystem extends GameSystem
 
             sb.end();
         }
-
-        targetBuffer.end();
-        sb.setProjectionMatrix(new Matrix4());
-        sb.begin();
-        sb.draw(targetBuffer.getColorBufferTexture(), -1, 1, 2, -2);
-        sb.end();
     }
 }

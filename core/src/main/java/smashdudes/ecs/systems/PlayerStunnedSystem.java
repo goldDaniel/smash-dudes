@@ -43,7 +43,7 @@ public class PlayerStunnedSystem extends GameSystem
             if(entity.hasComponent(DrawComponent.class))
             {
                 DrawComponent d = entity.getComponent(DrawComponent.class);
-                d.pass = RenderPass.NoTexture;
+                d.pass = RenderPass.Stunned;
 
                 Color outputColor = Color.RED.cpy();
                 outputColor.lerp(Color.WHITE, stun.getPercentageComplete());
