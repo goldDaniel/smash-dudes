@@ -290,10 +290,18 @@ public class CharacterSelector
     {
         for(CharacterPortrait p : portraits)
         {
+            if(p.name.equals("knight1"))
+            {
+                int x = 1;
+            }
+            if(p.name.equals("test"))
+            {
+                int x = 1;
+            }
             layout.setText(f, p.name);
             float width = layout.width;
             float height = layout.height;
-            f.draw(s, p.name, p.rect.x + width / 2, p.rect.y + height);
+            f.draw(s, p.name, p.rect.x + (p.rect.width - width) / 2, p.rect.y + height);
         }
 
 //        for(PlayerPortrait p : players)
