@@ -34,16 +34,16 @@ public class DTO
     {
         public Array<Animation> animations = new Array<>();
 
-        public Rectangle terrainCollider = new Rectangle();
+        public Rectangle terrainCollider = new Rectangle(0, 0, 2, 2);
         public float scale = 2;
 
 
-        public float jumpStrength;
-        public float gravity;
-        public float weight;
-        public float airSpeed;
-        public float runSpeed;
-        public float deceleration;
+        public float jumpStrength = 20;
+        public float gravity = 20;
+        public float weight = 10;
+        public float airSpeed = 10;
+        public float runSpeed = 10;
+        public float deceleration = 40;
 
         public String name;
     }
