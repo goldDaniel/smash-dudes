@@ -1,6 +1,7 @@
 package smashdudes.core.boxtool.presentation;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.IdentityMap;
 
 import javax.swing.*;
@@ -11,27 +12,29 @@ public class Utils
 {
     private static IdentityMap<Object, UUID> keys = new IdentityMap<>();
 
-    public static String chooseFileToLoad(String... fileExtensions)
+
+
+    public static String chooseFileToLoad(FileHandle path, String... fileExtensions)
     {
+        if(!path.isDirectory()) throw new IllegalArgumentException("Filehandle must be a directory");
+
         String desc = "(";
         for (String s : fileExtensions)
         {
             desc += "*." + s + ", ";
         }
         desc += ")";
+
         FileNameExtensionFilter filter = new FileNameExtensionFilter(desc, fileExtensions);
-        final JFileChooser fc = new JFileChooser(Gdx.files.getLocalStoragePath());
+        final JFileChooser fc = new JFileChooser(path.toString());
+
         fc.setDialogTitle("Select a file to load...");
         fc.setFileFilter(filter);
 
-        int returnVal = fc.showOpenDialog(null);
-
-        if (returnVal == JFileChooser.APPROVE_OPTION)
+        if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
         {
-            String path = fc.getSelectedFile().getAbsolutePath();
-            return path;
+            return fc.getSelectedFile().getAbsolutePath();
         }
-
         return null;
     }
 

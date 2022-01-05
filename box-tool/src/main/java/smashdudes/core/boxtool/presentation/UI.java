@@ -3,6 +3,7 @@ package smashdudes.core.boxtool.presentation;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -143,7 +144,8 @@ public class UI
 
                 if(ImGui.menuItem("Load..."))
                 {
-                    String filepath = Utils.chooseFileToLoad("json");
+                    FileHandle dir = Gdx.files.internal("characters");
+                    String filepath = Utils.chooseFileToLoad(dir, "json");
                     if(filepath != null)
                     {
                         loadCharacter(filepath);

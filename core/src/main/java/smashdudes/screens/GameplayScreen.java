@@ -19,6 +19,7 @@ import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
 import smashdudes.graphics.AnimationFrame;
+import smashdudes.graphics.RenderResources;
 import smashdudes.util.CharacterSelectDescription;
 
 public class GameplayScreen extends GameScreen
@@ -138,17 +139,25 @@ public class GameplayScreen extends GameScreen
             }
         }
 
+        //if we do not have an animation with the name passed, create an animation with the default texture
         Array<AnimationFrame> frames = new Array<>();
-        for (DTO.AnimationFrame dtoFrame : anim.frames)
+        if(anim == null)
         {
-            AnimationFrame frame =
-                    new AnimationFrame(new Texture(Gdx.files.internal(dtoFrame.texturePath), true), dtoFrame.attackboxes, dtoFrame.bodyboxes);
-            frames.add(frame);
+            frames.add(new AnimationFrame(RenderResources.getTexture("textures/default.png"), new Array<>(), new Array<>()));
+
+            return new AnimationComponent(frames, 1, mode);
         }
+        else
+        {
+            for (DTO.AnimationFrame dtoFrame : anim.frames)
+            {
+                AnimationFrame frame =
+                        new AnimationFrame(RenderResources.getTexture(dtoFrame.texturePath), dtoFrame.attackboxes, dtoFrame.bodyboxes);
+                frames.add(frame);
+            }
 
-        float duration = anim.animationDuration;
-
-        return new AnimationComponent(frames, duration, mode);
+            return new AnimationComponent(frames,  anim.animationDuration, mode);
+        }
     }
 
     public Entity buildTerrain(DTO.Terrain terrainData)

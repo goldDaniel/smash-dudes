@@ -35,7 +35,7 @@ public class DTO
         public Array<Animation> animations = new Array<>();
 
         public Rectangle terrainCollider = new Rectangle();
-        public float scale;
+        public float scale = 2;
 
 
         public float jumpStrength;
