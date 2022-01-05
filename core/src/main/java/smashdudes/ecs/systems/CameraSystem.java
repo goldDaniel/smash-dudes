@@ -12,8 +12,9 @@ import smashdudes.ecs.components.PositionComponent;
 
 public class CameraSystem extends GameSystem
 {
-    private OrthographicCamera camera;
+    private final float excludeThreshold = 30f;
 
+    private OrthographicCamera camera;
     private Array<Vector2> positions = new Array<>();
 
     public CameraSystem(Engine engine)
@@ -33,13 +34,19 @@ public class CameraSystem extends GameSystem
     protected void preUpdate()
     {
         positions.clear();
+        //add the zero vector so the camera always gravitates toward the center of the stage
+        positions.add(new Vector2());
     }
 
     @Override
     protected void updateEntity(Entity entity, float dt)
     {
         PositionComponent p = entity.getComponent(PositionComponent.class);
-        positions.add(p.position);
+
+        if(p.position.len2() < excludeThreshold*excludeThreshold)
+        {
+            positions.add(p.position);
+        }
     }
 
     @Override
