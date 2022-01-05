@@ -31,13 +31,10 @@ public class GameplayScreen extends GameScreen
         super(game);
         this.inputHandler = desc.gameInput;
         ecsEngine = new Engine();
-
-
+        
         for(CharacterSelectDescription.PlayerDescription p : desc.descriptions)
         {
-
             DTO.Character characterData = ContentRepo.loadCharacter(p.identifier);
-
             Entity player = buildPlayer(p.handle, p.identifier, characterData);
 
             IGameInputRetriever retriever = inputHandler.getGameInput(p.handle);
