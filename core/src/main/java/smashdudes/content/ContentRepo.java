@@ -46,22 +46,26 @@ public class ContentRepo
         }
     }
 
-    public static void createCharacter(String filepath, String name)
+    public static String createCharacter(String filepath, String name)
     {
         DTO.Character character = new DTO.Character();
         character.name = name;
-        File file = new File(name + ".json");
+        File file = new File("characters/" + name + ".json");
         try
         {
             if (file.createNewFile())
             {
-                saveCharacter(filepath + name + ".json", character);
+                String path = filepath + name + ".json";
+                saveCharacter(path, character);
+                return path;
             }
         }
         catch (IOException e)
         {
             e.printStackTrace();
         }
+
+        return null;
     }
 
     public static void deleteCharacter(DTO.Character character)

@@ -21,10 +21,14 @@ import smashdudes.core.boxtool.presentation.commands.CommandList;
 import smashdudes.core.boxtool.presentation.widgets.CharacterEditorWidget;
 import smashdudes.graphics.RenderResources;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 public class UI
 {
     private ContentService service = new ContentService();
-    private String assetsPath;
+    private String characterPath;
 
     //State--------------------------------------------------
     private CommandList commandList = new CommandList();
@@ -52,7 +56,7 @@ public class UI
         int WORLD_WIDTH = 16;
         int WORLD_HEIGHT = 9;
 
-        assetsPath = Gdx.files.getLocalStoragePath();
+        characterPath = Gdx.files.getLocalStoragePath() + "/characters/";
 
         camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
         viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
@@ -142,9 +146,7 @@ public class UI
                     String filepath = Utils.chooseFileToLoad("json");
                     if(filepath != null)
                     {
-                        CharacterEditorWidget.reset();
-                        character = service.readCharacter(filepath);
-                        commandList.clear();
+                        loadCharacter(filepath);
                     }
                 }
 
@@ -180,7 +182,12 @@ public class UI
             {
                 if(!addCharacterName.get().equals(""))
                 {
-                    service.createCharacter(assetsPath, addCharacterName.get());
+                    String path = service.createCharacter(characterPath, addCharacterName.get());
+                    if(path != null)
+                    {
+                        createDirectoryStructure(path);
+                        loadCharacter(path);
+                    }
                     ImGui.closeCurrentPopup();
                 }
             }
@@ -192,6 +199,28 @@ public class UI
             }
 
             ImGui.endPopup();
+        }
+    }
+
+    private void loadCharacter(String filepath)
+    {
+        CharacterEditorWidget.reset();
+        character = service.readCharacter(filepath);
+        commandList.clear();
+    }
+
+    private void createDirectoryStructure(String filepath)
+    {
+        try
+        {
+            filepath = filepath.replace(".json", "");
+            Files.createDirectory(Paths.get(filepath));
+            Files.createDirectory(Paths.get(filepath + "/animations"));
+            Files.createDirectory(Paths.get(filepath + "/portrait"));
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
         }
     }
 }
