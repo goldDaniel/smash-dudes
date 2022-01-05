@@ -36,8 +36,7 @@ public class GameplayScreen extends GameScreen
         for(CharacterSelectDescription.PlayerDescription p : desc.descriptions)
         {
 
-            DTO.Character characterData = null;
-            characterData = ContentRepo.loadCharacter(p.identifier);
+            DTO.Character characterData = ContentRepo.loadCharacter(p.identifier);
 
             Entity player = buildPlayer(p.handle, p.identifier, characterData);
 
