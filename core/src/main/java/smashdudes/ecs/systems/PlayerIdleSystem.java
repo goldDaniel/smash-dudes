@@ -1,5 +1,6 @@
 package smashdudes.ecs.systems;
 
+import smashdudes.core.AttackType;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
@@ -32,11 +33,17 @@ public class PlayerIdleSystem extends GameSystem
 
         v.velocity.x *= v.deceleration * dt;
 
-        if(i.currentState.punch)
+        if(i.currentState.special)
         {
             entity.removeComponent(PlayerIdleComponent.class);
-            entity.addComponent(new PlayerOnGroundAttackStateComponent());
+            entity.addComponent(new PlayerOnGroundAttackStateComponent(AttackType.NEUTRAL_SPECIAL_ATTACK));
         }
+        else if(i.currentState.punch)
+        {
+            entity.removeComponent(PlayerIdleComponent.class);
+            entity.addComponent(new PlayerOnGroundAttackStateComponent(AttackType.NEUTRAL_ATTACK));
+        }
+
         else if(i.currentState.up && v.velocity.y == 0)
         {
             v.velocity.y = j.jumpStrength;

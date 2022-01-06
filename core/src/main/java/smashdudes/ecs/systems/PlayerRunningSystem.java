@@ -1,5 +1,6 @@
 package smashdudes.ecs.systems;
 
+import smashdudes.core.AttackType;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
@@ -35,7 +36,7 @@ public class PlayerRunningSystem extends GameSystem
         if(ci.currentState.punch)
         {
             entity.removeComponent(PlayerRunningComponent.class);
-            entity.addComponent(new PlayerOnGroundAttackStateComponent());
+            entity.addComponent(new PlayerOnGroundAttackStateComponent(AttackType.NEUTRAL_ATTACK));
         }
         else if(ci.currentState.up && v.velocity.y == 0)
         {

@@ -9,8 +9,8 @@ public class AnimationFrame
 {
     public final Texture texture;
 
-    public final Array<Rectangle> attackboxes;
-    public final Array<Rectangle> bodyboxes;
+    private final Array<Rectangle> attackboxes;
+    private final Array<Rectangle> bodyboxes;
 
     public AnimationFrame(Texture texture, Array<Rectangle> attackboxes, Array<Rectangle> bodyboxes)
     {

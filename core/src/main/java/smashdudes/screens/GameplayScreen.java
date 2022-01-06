@@ -44,6 +44,10 @@ public class GameplayScreen extends GameScreen
             player.addComponent(pc);
         }
 
+        DTO.Character characterData = ContentRepo.loadCharacter(desc.descriptions.first().identifier);
+        Entity player = buildPlayer(desc.descriptions.first().handle, desc.descriptions.first().identifier, characterData);
+        player.addComponent(new AIControllerComponent());
+
         Array<DTO.Terrain> terrainData = LoadContent.loadTerrainData("Terrain.json");
         for (DTO.Terrain data : terrainData)
         {
@@ -103,13 +107,13 @@ public class GameplayScreen extends GameScreen
         CharacterInputComponent i = new CharacterInputComponent();
         player.addComponent(i);
 
-
         PlayerAnimationContainerComponent animContainer = new PlayerAnimationContainerComponent();
         animContainer.idle = loadPlayerAnimation(characterData, "idle", Animation.PlayMode.LOOP);
         animContainer.running = loadPlayerAnimation(characterData, "run", Animation.PlayMode.LOOP);
         animContainer.jumping = loadPlayerAnimation(characterData,"jump", Animation.PlayMode.LOOP);
         animContainer.falling = loadPlayerAnimation(characterData,"fall", Animation.PlayMode.LOOP);
         animContainer.attack_1 = loadPlayerAnimation(characterData,"attack_1", Animation.PlayMode.NORMAL);
+        animContainer.special_1 = loadPlayerAnimation(characterData, "special_1", Animation.PlayMode.NORMAL);
         player.addComponent(animContainer);
 
         player.addComponent(animContainer.idle);

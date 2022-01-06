@@ -111,7 +111,7 @@ public class CharacterEditorWidget
             String portraitPath = Utils.chooseFileToLoad(Gdx.files.local("textures"), "png", "jpeg", "jpg");
             FileHandle directory = Gdx.files.internal("characters/" + character.name + "/portrait");
             String path = Gdx.files.getLocalStoragePath().toString() + directory.toString() + "/portrait.png";
-            if (portraitPath != null && directory != null)
+            if (portraitPath != null)
             {
                 try
                 {

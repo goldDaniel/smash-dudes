@@ -12,6 +12,7 @@ public class InputState
     public boolean down  = false;
 
     public boolean punch = false;
+    public boolean special = false;
 
     public InputState() {}
 
@@ -22,5 +23,6 @@ public class InputState
         this.up     = state.up;
         this.down   = state.down;
         this.punch = state.punch;
+        this.special = state.special;
     }
 }

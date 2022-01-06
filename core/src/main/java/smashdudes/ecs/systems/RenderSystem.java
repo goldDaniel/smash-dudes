@@ -1,8 +1,11 @@
 package smashdudes.ecs.systems;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
@@ -36,11 +39,15 @@ public class RenderSystem extends GameSystem
     private Viewport viewport;
 
     private final SpriteBatch sb;
+    private final BitmapFont font;
 
-    public RenderSystem(Engine engine, SpriteBatch sb)
+    private float dt;
+
+    public RenderSystem(Engine engine, SpriteBatch sb, BitmapFont font)
     {
         super(engine);
         this.sb = sb;
+        this.font = font;
 
         //null will make the spritebatch use its default shader
         shaders.put(RenderPass.Default, null);
@@ -87,6 +94,7 @@ public class RenderSystem extends GameSystem
     @Override
     public void updateEntity(Entity entity, float dt)
     {
+        this.dt = dt;
         PositionComponent p = entity.getComponent(PositionComponent.class);
         DrawComponent d = entity.getComponent(DrawComponent.class);
 
@@ -124,5 +132,11 @@ public class RenderSystem extends GameSystem
 
             sb.end();
         }
+
+        sb.setShader(null);
+        sb.setProjectionMatrix(new OrthographicCamera(1280, 720).combined);
+        sb.begin();
+        font.draw(sb, "FPS: " + Gdx.graphics.getFramesPerSecond(), -640, -300);
+        sb.end();
     }
 }

@@ -3,6 +3,7 @@ package smashdudes.core.input;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.ArrayMap;
 
 /**
  * Listens for keyboard input and allows retrieval of state through the GameInputRetriever interface
@@ -11,38 +12,29 @@ public class KeyboardInputListener extends InputAdapter implements IGameInputRet
 {
 
     private final InputConfig config;
-    private final InputState state = new InputState();
     private boolean confirmPressed = false;
     private boolean cancelPressed = false;
+    private ArrayMap<Integer, Boolean> keyState = new ArrayMap<>();
 
     public KeyboardInputListener(InputConfig config)
     {
         this.config = config;
+
+        keyState.put(config.left, false);
+        keyState.put(config.right, false);
+        keyState.put(config.up, false);
+        keyState.put(config.down, false);
+
+        keyState.put(config.punch, false);
+        keyState.put(config.special, false);
     }
 
     @Override
     public boolean keyDown(int keycode)
     {
-        if(keycode == config.left)
+        if(keyState.containsKey(keycode))
         {
-            state.left = true;
-        }
-        if(keycode == config.right)
-        {
-            state.right = true;
-        }
-        if(keycode == config.up)
-        {
-            state.up = true;
-        }
-        if(keycode == config.down)
-        {
-            state.down = true;
-        }
-
-        if(keycode == config.punch)
-        {
-            state.punch = true;
+            keyState.put(keycode, true);
         }
 
         if(keycode == Input.Keys.SPACE)
@@ -60,26 +52,9 @@ public class KeyboardInputListener extends InputAdapter implements IGameInputRet
     @Override
     public boolean keyUp(int keycode)
     {
-        if(keycode == config.left)
+        if(keyState.containsKey(keycode))
         {
-            state.left = false;
-        }
-        if(keycode == config.right)
-        {
-            state.right = false;
-        }
-        if(keycode == config.up)
-        {
-            state.up = false;
-        }
-        if(keycode == config.down)
-        {
-            state.down = false;
-        }
-
-        if(keycode == config.punch)
-        {
-            state.punch = false;
+            keyState.put(keycode, false);
         }
 
         if(keycode == Input.Keys.SPACE)
@@ -95,41 +70,47 @@ public class KeyboardInputListener extends InputAdapter implements IGameInputRet
     }
 
     @Override
-    public boolean getLeft() { return state.left; }
+    public boolean getLeft() { return keyState.get(config.left); }
 
     @Override
     public boolean getRight()
     {
-        return state.right;
+        return keyState.get(config.right);
     }
 
     @Override
     public boolean getUp()
     {
-        return state.up;
+        return keyState.get(config.up);
     }
 
     @Override
     public boolean getDown()
     {
-        return state.down;
+        return keyState.get(config.down);
     }
 
     @Override
     public boolean punch()
     {
-        return state.punch;
+        return keyState.get(config.punch);
+    }
+
+    @Override
+    public boolean special()
+    {
+        return keyState.get(config.special);
     }
 
     @Override
     public Vector2 getDirection()
     {
         Vector2 result = new Vector2();
-        if(state.left) result.x -= 1;
-        if(state.right) result.x += 1;
+        if(keyState.get(config.left)) result.x -= 1;
+        if(keyState.get(config.right)) result.x += 1;
 
-        if(state.down) result.y -= 1;
-        if(state.up) result.y += 1;
+        if(keyState.get(config.down)) result.y -= 1;
+        if(keyState.get(config.up)) result.y += 1;
 
         return result.nor();
     }
