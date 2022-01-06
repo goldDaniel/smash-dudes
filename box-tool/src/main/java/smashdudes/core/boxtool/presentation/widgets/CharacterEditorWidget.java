@@ -22,6 +22,11 @@ import smashdudes.core.boxtool.presentation.commands.*;
 import smashdudes.graphics.AnimationFrame;
 import smashdudes.graphics.RenderResources;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+
 public class CharacterEditorWidget
 {
     private static String addFrameTexture = "";
@@ -90,12 +95,32 @@ public class CharacterEditorWidget
     {
         ImGui.begin("Character Data: " + character.name, ImGuiWindowFlags.NoCollapse);
 
-        if(ImGui.button("Save"))
+        if(ImGui.button("Save.."))
         {
             String path = Utils.chooseFileToSave();
             if(path != null)
             {
                 service.updateCharacter(character, path);
+            }
+        }
+
+        ImGui.sameLine();
+
+        if(ImGui.button("Change Portrait.."))
+        {
+            String portraitPath = Utils.chooseFileToLoad(Gdx.files.local("textures"), "png", "jpeg", "jpg");
+            FileHandle directory = Gdx.files.internal("characters/" + character.name + "/portrait");
+            String path = Gdx.files.getLocalStoragePath().toString() + directory.toString() + "/portrait.png";
+            if (portraitPath != null && directory != null)
+            {
+                try
+                {
+                    Files.copy(Paths.get(portraitPath), Paths.get(path), StandardCopyOption.REPLACE_EXISTING);
+                }
+                catch(IOException e)
+                {
+                    e.printStackTrace();
+                }
             }
         }
 
