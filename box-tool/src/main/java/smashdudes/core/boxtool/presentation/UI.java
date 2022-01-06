@@ -22,9 +22,11 @@ import smashdudes.core.boxtool.presentation.commands.CommandList;
 import smashdudes.core.boxtool.presentation.widgets.CharacterEditorWidget;
 import smashdudes.graphics.RenderResources;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 public class UI
 {
@@ -187,8 +189,15 @@ public class UI
                     String path = service.createCharacter(characterPath, addCharacterName.get());
                     if(path != null)
                     {
-                        createDirectoryStructure(path);
-                        loadCharacter(path);
+                        try
+                        {
+                            createCharacter(path);
+                            loadCharacter(path);
+                        }
+                        catch(IOException e)
+                        {
+                            e.printStackTrace();
+                        }
                     }
                     ImGui.closeCurrentPopup();
                 }
@@ -204,6 +213,12 @@ public class UI
         }
     }
 
+    private void createCharacter(String path) throws IOException
+    {
+        createDirectoryStructure(path);
+        createPortrait(path);
+    }
+
     private void loadCharacter(String filepath)
     {
         CharacterEditorWidget.reset();
@@ -211,18 +226,18 @@ public class UI
         commandList.clear();
     }
 
-    private void createDirectoryStructure(String filepath)
+    private void createDirectoryStructure(String filepath) throws IOException
     {
-        try
-        {
-            filepath = filepath.replace(".json", "");
-            Files.createDirectory(Paths.get(filepath));
-            Files.createDirectory(Paths.get(filepath + "/animations"));
-            Files.createDirectory(Paths.get(filepath + "/portrait"));
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
+        filepath = filepath.replace(".json", "");
+        Files.createDirectory(Paths.get(filepath));
+        Files.createDirectory(Paths.get(filepath + "/animations"));
+        Files.createDirectory(Paths.get(filepath + "/portrait"));
+    }
+
+    private void createPortrait(String path) throws IOException
+    {
+        String portraitPath = Utils.chooseFileToLoad(Gdx.files.local("textures"), "png", "jpeg", "jpg");
+        if(portraitPath == null) throw new IOException("No portrait chosen");
+        Files.copy(Paths.get(portraitPath), Paths.get(path.replace(".json", "/portrait/portrait.png")), StandardCopyOption.REPLACE_EXISTING);
     }
 }

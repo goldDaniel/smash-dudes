@@ -43,7 +43,7 @@ public class RenderResources
             return textures.get(fileName);
         }
 
-        Texture t = new Texture(fileName);
+        Texture t = new Texture(Gdx.files.internal(fileName), true);
         textures.put(fileName, t);
 
         return t;

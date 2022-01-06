@@ -12,7 +12,7 @@ import smashdudes.ecs.components.PositionComponent;
 
 public class CameraSystem extends GameSystem
 {
-    private final float excludeThreshold = 30f;
+    private final float excludeThreshold = 50f;
 
     private OrthographicCamera camera;
     private Array<Vector2> positions = new Array<>();
