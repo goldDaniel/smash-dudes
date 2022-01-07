@@ -48,7 +48,8 @@ public class PlayerRunningSystem extends GameSystem
             entity.removeComponent(PlayerRunningComponent.class);
             entity.removeComponent(PlayerIdleComponent.class);
         }
-        else if(!ci.currentState.left && !ci.currentState.right)
+        else if( (ci.currentState.left && ci.currentState.right) ||
+                !(ci.currentState.left || ci.currentState.right))
         {
             entity.removeComponent(PlayerRunningComponent.class);
             entity.addComponent(new PlayerIdleComponent());

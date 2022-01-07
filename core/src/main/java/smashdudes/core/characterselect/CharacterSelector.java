@@ -293,7 +293,7 @@ public class CharacterSelector
             layout.setText(f, p.name);
             float width = layout.width;
             float height = layout.height;
-            f.draw(s, p.name, p.rect.x + width / 2, p.rect.y + height);
+            f.draw(s, p.name, p.rect.x + (p.rect.width - width) / 2, p.rect.y + height);
         }
     }
 }

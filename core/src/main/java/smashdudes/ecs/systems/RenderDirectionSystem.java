@@ -21,13 +21,16 @@ public class RenderDirectionSystem extends GameSystem
         PlayerComponent p = entity.getComponent(PlayerComponent.class);
         DrawComponent d = entity.getComponent(DrawComponent.class);
 
-        if(ci.currentState.left)
+        if(!(ci.currentState.left && ci.currentState.right))
         {
-            p.facingLeft = true;
-        }
-        else if(ci.currentState.right)
-        {
-            p.facingLeft = false;
+            if(ci.currentState.left)
+            {
+                p.facingLeft = true;
+            }
+            else if(ci.currentState.right)
+            {
+                p.facingLeft = false;
+            }
         }
 
         d.facingLeft = p.facingLeft;

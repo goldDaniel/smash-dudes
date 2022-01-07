@@ -1,6 +1,7 @@
 package smashdudes.core.boxtool.presentation.widgets;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -18,7 +19,13 @@ import smashdudes.content.DTO;
 import smashdudes.core.boxtool.logic.ContentService;
 import smashdudes.core.boxtool.presentation.Utils;
 import smashdudes.core.boxtool.presentation.commands.*;
+import smashdudes.graphics.AnimationFrame;
 import smashdudes.graphics.RenderResources;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 public class CharacterEditorWidget
 {
@@ -88,12 +95,32 @@ public class CharacterEditorWidget
     {
         ImGui.begin("Character Data: " + character.name, ImGuiWindowFlags.NoCollapse);
 
-        if(ImGui.button("Save"))
+        if(ImGui.button("Save.."))
         {
             String path = Utils.chooseFileToSave();
             if(path != null)
             {
                 service.updateCharacter(character, path);
+            }
+        }
+
+        ImGui.sameLine();
+
+        if(ImGui.button("Change Portrait.."))
+        {
+            String portraitPath = Utils.chooseFileToLoad(Gdx.files.local("textures"), "png", "jpeg", "jpg");
+            FileHandle directory = Gdx.files.internal("characters/" + character.name + "/portrait");
+            String path = Gdx.files.getLocalStoragePath().toString() + directory.toString() + "/portrait.png";
+            if (portraitPath != null && directory != null)
+            {
+                try
+                {
+                    Files.copy(Paths.get(portraitPath), Paths.get(path), StandardCopyOption.REPLACE_EXISTING);
+                }
+                catch(IOException e)
+                {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -230,191 +257,193 @@ public class CharacterEditorWidget
     private static void drawAnimationFrameData(DTO.Animation anim)
     {
         Array<DTO.AnimationFrame> toRemove = new Array<>();
-        ImGui.separator();
-        ImGui.text("Animation Frame Data");
-
-        ImGui.text("Animation Duration: ");
-        ImGui.sameLine();
-        ImFloat duration = new ImFloat();
-        duration.set(anim.animationDuration);
-        if(ImGui.inputFloat("##animDurationID", duration))
+        ImGui.begin(anim.animationName + "##" +Utils.getUniqueKey(anim));
         {
-            commandList.execute(new PropertyEditCommand<>("animationDuration", duration.get(), anim));
-        }
-
-        if (anim.usesSpriteSheet)
-        {
-            ImGui.labelText(anim.textureFilePath, "Texture File Path");
-        }
-        ImGui.labelText(anim.animationName, "Animation Name");
-
-        if (ImGui.button("Play/Pause animation"))
-        {
-            playing = !playing;
-        }
-
-        ImGui.sameLine();
-        if (ImGui.button("Delete animation"))
-        {
-            ImGui.openPopup("Delete Animation?");
-        }
-        ImGui.setNextWindowSize(128, 56);
-        if(ImGui.beginPopupModal("Delete Animation?", ImGuiWindowFlags.NoResize))
-        {
-            if(ImGui.button("Delete"))
+            if (ImGui.button("Add Frame.."))
             {
-                commandList.execute(new DeleteAnimationCommand(character.animations, anim));
-                if (anim.frames.contains(selectedAnimationFrame, true))
-                {
-                    selectedAnimationFrame = null;
-                }
-               selectedAnimation = null;
-
-                ImGui.closeCurrentPopup();
+                addFrameIdx.set(anim.frames.size);
+                addFrameTexture = "";
+                ImGui.openPopup("Add Frame?");
             }
+            ImGui.setNextWindowSize(400, 120);
+            if(ImGui.beginPopupModal("Add Frame?", ImGuiWindowFlags.NoResize))
+            {
+                ImGui.inputInt("Frame Index", addFrameIdx);
+
+                if(ImGui.button("select texture..."))
+                {
+                    FileHandle directory = Gdx.files.internal("characters/" + character.name + "/animations/");
+                    String readTexture = Utils.chooseFileToLoad(directory, "png", "jpg", "jpeg");
+
+                    if(readTexture != null)
+                    {
+                        addFrameTexture = readTexture;
+
+                        String workingDir = Gdx.files.getLocalStoragePath();
+                        addFrameTexture = addFrameTexture.replace(workingDir, "");
+                    }
+                }
+                ImGui.text(addFrameTexture);
+
+                if(ImGui.button("Confirm"))
+                {
+                    if(!addFrameTexture.equals(""))
+                    {
+                        DTO.AnimationFrame newFrame = new DTO.AnimationFrame();
+                        newFrame.texturePath = addFrameTexture;
+
+                        Command c = new AddFrameCommand(selectedAnimation, addFrameIdx.get(), newFrame);
+                        commandList.execute(c);
+
+                        ImGui.closeCurrentPopup();
+                    }
+                }
+                ImGui.sameLine();
+                if(ImGui.button("Cancel"))
+                {
+                    ImGui.closeCurrentPopup();
+                }
+
+                ImGui.endPopup();
+            }
+            ImGui.separator();
+            ImGui.text("Animation Frame Data");
+
+            ImGui.text("Animation Duration: ");
             ImGui.sameLine();
-            if(ImGui.button("Cancel"))
+            ImFloat duration = new ImFloat();
+            duration.set(anim.animationDuration);
+            if(ImGui.inputFloat("##animDurationID", duration))
             {
-                ImGui.closeCurrentPopup();
+                commandList.execute(new PropertyEditCommand<>("animationDuration", duration.get(), anim));
             }
 
-            ImGui.endPopup();
-        }
-
-        ImGui.text("Frames");
-        ImGui.sameLine();
-        if (ImGui.button("Add Frame.."))
-        {
-            addFrameIdx.set(anim.frames.size);
-            addFrameTexture = "";
-            ImGui.openPopup("Add Frame?");
-        }
-        ImGui.setNextWindowSize(400, 120);
-        if(ImGui.beginPopupModal("Add Frame?", ImGuiWindowFlags.NoResize))
-        {
-            ImGui.inputInt("Frame Index", addFrameIdx);
-
-            if(ImGui.button("select texture..."))
+            if (anim.usesSpriteSheet)
             {
-                String readTexture = Utils.chooseFileToLoad("png", "jpg", "jpeg");
-                if(readTexture != null)
-                {
-                    addFrameTexture = readTexture;
-
-                    String workingDir = Gdx.files.getLocalStoragePath();
-                    addFrameTexture = addFrameTexture.replace(workingDir, "");
-                }
+                ImGui.labelText(anim.textureFilePath, "Texture File Path");
             }
-            ImGui.text(addFrameTexture);
+            ImGui.labelText(anim.animationName, "Animation Name");
 
-            if(ImGui.button("Confirm"))
+            if (ImGui.button("Play/Pause animation"))
             {
-                if(!addFrameTexture.equals(""))
-                {
-                    DTO.AnimationFrame newFrame = new DTO.AnimationFrame();
-                    newFrame.texturePath = addFrameTexture;
+                playing = !playing;
+            }
 
-                    Command c = new AddFrameCommand(selectedAnimation, addFrameIdx.get(), newFrame);
-                    commandList.execute(c);
+            ImGui.sameLine();
+            if (ImGui.button("Delete animation"))
+            {
+                ImGui.openPopup("Delete Animation?");
+            }
+            ImGui.setNextWindowSize(128, 56);
+            if(ImGui.beginPopupModal("Delete Animation?", ImGuiWindowFlags.NoResize))
+            {
+                if(ImGui.button("Delete"))
+                {
+                    commandList.execute(new DeleteAnimationCommand(character.animations, anim));
+                    if (anim.frames.contains(selectedAnimationFrame, true))
+                    {
+                        selectedAnimationFrame = null;
+                    }
+                    selectedAnimation = null;
 
                     ImGui.closeCurrentPopup();
                 }
-            }
-            ImGui.sameLine();
-            if(ImGui.button("Cancel"))
-            {
-                ImGui.closeCurrentPopup();
-            }
-
-            ImGui.endPopup();
-        }
-
-        ImGui.begin(anim.animationName + "##" +Utils.getUniqueKey(anim));
-        int frameNumber = 0;
-        for(DTO.AnimationFrame frame : anim.frames)
-        {
-            if(ImGui.collapsingHeader("frame " + frameNumber++))
-            {
-                ImGui.pushID(Utils.getUniqueKey(frame));
-
-                if(ImGui.button("Show frame"))
-                {
-                    selectedAnimationFrame = frame;
-                }
-
                 ImGui.sameLine();
-                if (ImGui.button("Delete Frame.."))
+                if(ImGui.button("Cancel"))
                 {
-                    ImGui.openPopup("Delete Frame?");
+                    ImGui.closeCurrentPopup();
                 }
-                ImGui.setNextWindowSize(128, 56);
-                if(ImGui.beginPopupModal("Delete Frame?", ImGuiWindowFlags.NoResize))
+
+                ImGui.endPopup();
+            }
+
+            int frameNumber = 0;
+            for (DTO.AnimationFrame frame : anim.frames)
+            {
+                if (ImGui.collapsingHeader("frame " + frameNumber++))
                 {
-                    if(ImGui.button("Delete"))
+                    ImGui.pushID(Utils.getUniqueKey(frame));
+
+                    if (ImGui.button("Show frame"))
                     {
-                        toRemove.add(frame);
-                        if (frame == selectedAnimationFrame)
+                        selectedAnimationFrame = frame;
+                    }
+
+                    ImGui.sameLine();
+                    if (ImGui.button("Delete Frame.."))
+                    {
+                        ImGui.openPopup("Delete Frame?");
+                    }
+                    ImGui.setNextWindowSize(128, 56);
+                    if (ImGui.beginPopupModal("Delete Frame?", ImGuiWindowFlags.NoResize))
+                    {
+                        if (ImGui.button("Delete"))
                         {
-                            selectedAnimationFrame = null;
+                            toRemove.add(frame);
+                            if (frame == selectedAnimationFrame)
+                            {
+                                selectedAnimationFrame = null;
+                            }
+                            ImGui.closeCurrentPopup();
                         }
-                        ImGui.closeCurrentPopup();
+                        ImGui.sameLine();
+                        if (ImGui.button("Cancel"))
+                        {
+                            ImGui.closeCurrentPopup();
+                        }
+
+                        ImGui.endPopup();
+                    }
+
+                    ImGui.sameLine();
+                    if (ImGui.button("Change Texture.."))
+                    {
+                        FileHandle directory = Gdx.files.internal("characters/" + character.name + "/animations/");
+                        String readTexture = Utils.chooseFileToLoad(directory, "png", "jpg", "jpeg");
+                        if (readTexture != null)
+                        {
+                            String workingDir = Gdx.files.getLocalStoragePath();
+                            readTexture = readTexture.replace(workingDir, "");
+                            commandList.execute(new PropertyEditCommand<>("texturePath", readTexture, frame));
+                        }
+                    }
+
+                    ImGui.sameLine();
+                    if (ImGui.button("/\\"))
+                    {
+                        int index = anim.frames.indexOf(frame, true);
+                        if (index > 0)
+                        {
+                            int swapIndex = index - 1;
+                            commandList.execute(new ArraySwapCommand(anim.frames, index, swapIndex));
+                        }
                     }
                     ImGui.sameLine();
-                    if(ImGui.button("Cancel"))
+                    if (ImGui.button("\\/"))
                     {
-                        ImGui.closeCurrentPopup();
+                        int index = anim.frames.indexOf(frame, true);
+                        if (index < anim.frames.size - 1)
+                        {
+                            int swapIndex = index + 1;
+                            commandList.execute(new ArraySwapCommand(anim.frames, index, swapIndex));
+                        }
                     }
+                    ImGui.sameLine();
+                    Texture texture = RenderResources.getTexture(frame.texturePath);
 
-                    ImGui.endPopup();
+                    float frameDrawWidth = 80;
+                    float frameDrawHeight = frameDrawWidth * (float) texture.getHeight() / (float) texture.getWidth();
+
+                    ImGui.image(texture.getTextureObjectHandle(),
+                            frameDrawWidth, frameDrawHeight,
+                            0, 0, 1, 1);
+
+
+                    drawBoxEditor("Attackboxes", frame.attackboxes);
+                    drawBoxEditor("Bodyboxes", frame.bodyboxes);
+
+                    ImGui.popID();
                 }
-
-                ImGui.sameLine();
-                if(ImGui.button("Change Texture.."))
-                {
-                    String readTexture = Utils.chooseFileToLoad("png", "jpg", "jpeg");
-                    if(readTexture != null)
-                    {
-                        String workingDir = Gdx.files.getLocalStoragePath();
-                        readTexture = readTexture.replace(workingDir, "");
-                        commandList.execute(new PropertyEditCommand<>("texturePath", readTexture, frame));
-                    }
-                }
-
-                ImGui.sameLine();
-                if(ImGui.button("/\\"))
-                {
-                    int index = anim.frames.indexOf(frame, true);
-                    if(index > 0)
-                    {
-                        int swapIndex = index - 1;
-                        commandList.execute(new ArraySwapCommand(anim.frames, index, swapIndex));
-                    }
-                }
-                ImGui.sameLine();
-                if(ImGui.button("\\/"))
-                {
-                    int index = anim.frames.indexOf(frame, true);
-                    if(index < anim.frames.size - 1)
-                    {
-                        int swapIndex = index + 1;
-                        commandList.execute(new ArraySwapCommand(anim.frames, index, swapIndex));
-                    }
-                }
-                ImGui.sameLine();
-                Texture texture = RenderResources.getTexture(frame.texturePath);
-
-                float frameDrawWidth = 80;
-                float frameDrawHeight = frameDrawWidth * (float)texture.getHeight() / (float)texture.getWidth();
-
-                ImGui.image(texture.getTextureObjectHandle(),
-                        frameDrawWidth, frameDrawHeight,
-                        0, 0, 1, 1);
-
-
-                drawBoxEditor("Attackboxes", frame.attackboxes);
-                drawBoxEditor("Bodyboxes", frame.bodyboxes);
-
-                ImGui.popID();
             }
         }
         ImGui.end();

@@ -15,8 +15,8 @@ public class ContentService
         return ContentRepo.loadCharacter(path);
     }
 
-    public void createCharacter(String filepath, String name)
+    public String createCharacter(String filepath, String name)
     {
-        ContentRepo.createCharacter(filepath, name);
+        return ContentRepo.createCharacter(filepath, name);
     }
 }

@@ -3,6 +3,7 @@ package smashdudes.core.boxtool.presentation;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -21,10 +22,16 @@ import smashdudes.core.boxtool.presentation.commands.CommandList;
 import smashdudes.core.boxtool.presentation.widgets.CharacterEditorWidget;
 import smashdudes.graphics.RenderResources;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+
 public class UI
 {
     private ContentService service = new ContentService();
-    private String assetsPath;
+    private String characterPath;
 
     //State--------------------------------------------------
     private CommandList commandList = new CommandList();
@@ -52,7 +59,7 @@ public class UI
         int WORLD_WIDTH = 16;
         int WORLD_HEIGHT = 9;
 
-        assetsPath = Gdx.files.getLocalStoragePath();
+        characterPath = Gdx.files.getLocalStoragePath() + "/characters/";
 
         camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
         viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
@@ -139,12 +146,11 @@ public class UI
 
                 if(ImGui.menuItem("Load..."))
                 {
-                    String filepath = Utils.chooseFileToLoad("json");
+                    FileHandle dir = Gdx.files.internal("characters");
+                    String filepath = Utils.chooseFileToLoad(dir, "json");
                     if(filepath != null)
                     {
-                        CharacterEditorWidget.reset();
-                        character = service.readCharacter(filepath);
-                        commandList.clear();
+                        loadCharacter(filepath);
                     }
                 }
 
@@ -180,7 +186,19 @@ public class UI
             {
                 if(!addCharacterName.get().equals(""))
                 {
-                    service.createCharacter(assetsPath, addCharacterName.get());
+                    String path = service.createCharacter(characterPath, addCharacterName.get());
+                    if(path != null)
+                    {
+                        try
+                        {
+                            createCharacter(path);
+                            loadCharacter(path);
+                        }
+                        catch(IOException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
                     ImGui.closeCurrentPopup();
                 }
             }
@@ -193,5 +211,33 @@ public class UI
 
             ImGui.endPopup();
         }
+    }
+
+    private void createCharacter(String path) throws IOException
+    {
+        createDirectoryStructure(path);
+        createPortrait(path);
+    }
+
+    private void loadCharacter(String filepath)
+    {
+        CharacterEditorWidget.reset();
+        character = service.readCharacter(filepath);
+        commandList.clear();
+    }
+
+    private void createDirectoryStructure(String filepath) throws IOException
+    {
+        filepath = filepath.replace(".json", "");
+        Files.createDirectory(Paths.get(filepath));
+        Files.createDirectory(Paths.get(filepath + "/animations"));
+        Files.createDirectory(Paths.get(filepath + "/portrait"));
+    }
+
+    private void createPortrait(String path) throws IOException
+    {
+        String portraitPath = Utils.chooseFileToLoad(Gdx.files.local("textures"), "png", "jpeg", "jpg");
+        if(portraitPath == null) throw new IOException("No portrait chosen");
+        Files.copy(Paths.get(portraitPath), Paths.get(path.replace(".json", "/portrait/portrait.png")), StandardCopyOption.REPLACE_EXISTING);
     }
 }
