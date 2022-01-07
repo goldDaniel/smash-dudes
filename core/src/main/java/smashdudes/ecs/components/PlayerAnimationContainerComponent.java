@@ -10,5 +10,4 @@ public class PlayerAnimationContainerComponent extends Component
     public AnimationComponent falling;
 
     public AnimationComponent attack_1;
-    public AnimationComponent special_1;
 }

@@ -10,22 +10,22 @@ import smashdudes.graphics.RenderResources;
 
 public class Engine
 {
-    private final Array<Entity> activeEntities = new Array<>();
-    private final Array<Entity> createdEntities = new Array<>();
-    private final Array<Entity> deadEntities = new Array<>();
+    private Array<Entity> activeEntities = new Array<>();
+    private Array<Entity> createdEntities = new Array<>();
+    private Array<Entity> deadEntities = new Array<>();
 
-    private final Array<GameSystem> systems = new Array<>();
+    private Array<GameSystem> systems = new Array<>();
 
-    private final Queue<Event> events = new Queue<>();
+    private Queue<Event> events = new Queue<>();
 
     private boolean isUpdating = false;
 
-    private final RenderDebugSystem drs;
-    private final RenderSystem rs;
+    private RenderDebugSystem drs;
+    private RenderSystem rs;
 
     public Engine()
     {
-        rs = new RenderSystem(this, RenderResources.getSpriteBatch(), RenderResources.getFont());
+        rs = new RenderSystem(this, RenderResources.getSpriteBatch());
         drs = new RenderDebugSystem(this, RenderResources.getShapeRenderer());
 
 

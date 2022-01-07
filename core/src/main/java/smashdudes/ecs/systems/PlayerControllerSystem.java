@@ -31,7 +31,6 @@ public class PlayerControllerSystem extends GameSystem
         nextState.up = pc.retriever.getUp();
         nextState.down = pc.retriever.getDown();
         nextState.punch = pc.retriever.punch();
-        nextState.special = pc.retriever.special();
 
         ci.currentState = nextState;
     }

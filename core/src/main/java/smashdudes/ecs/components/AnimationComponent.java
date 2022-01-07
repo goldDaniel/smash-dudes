@@ -8,6 +8,8 @@ import smashdudes.graphics.AnimationFrame;
 
 public class AnimationComponent extends Component
 {
+
+
     private float currentTime;
     private final Animation<AnimationFrame> currentAnimation;
 

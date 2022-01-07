@@ -5,6 +5,7 @@ import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerAdapter;
 import com.badlogic.gdx.math.Vector2;
 import org.libsdl.SDL;
+import smashdudes.core.input.InputState;
 
 /**
  * Listens for controller input and allows retrieval of state through the GameInputRetriever interface
@@ -130,12 +131,6 @@ public class ControllerInputListener extends ControllerAdapter implements IGameI
     public boolean punch()
     {
         return state.punch;
-    }
-
-    @Override
-    public boolean special()
-    {
-        return false;
     }
 
     @Override

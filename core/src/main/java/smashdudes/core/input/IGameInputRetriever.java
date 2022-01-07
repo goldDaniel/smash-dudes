@@ -12,5 +12,4 @@ public interface IGameInputRetriever
     boolean getDown();
 
     boolean punch();
-    boolean special();
 }

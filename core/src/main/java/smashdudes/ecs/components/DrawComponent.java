@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import smashdudes.ecs.Component;
 import smashdudes.graphics.RenderPass;
-import smashdudes.graphics.RenderResources;
 
 public class DrawComponent extends Component
 {
@@ -12,8 +11,8 @@ public class DrawComponent extends Component
 
     public RenderPass pass = RenderPass.Default;
 
-    public Texture texture = RenderResources.getTexture("textures/default.png");
-    public float scale = 2;
+    public Texture texture;
+    public float scale;
 
     public boolean facingLeft = false;
 
