@@ -47,6 +47,7 @@ public class Engine
         systems.add(new AudioSystem(this));
 
         systems.add(new AnimationSystem(this));
+        systems.add(new ParticleSystem(this));
         systems.add(new AnimationDebugSystem(this));
 
         int WORLD_WIDTH = 20;
