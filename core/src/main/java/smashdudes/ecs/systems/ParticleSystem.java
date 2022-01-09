@@ -35,16 +35,20 @@ public class ParticleSystem extends GameSystem
             Entity emitter = engine.createEntity();
 
             ParticleEmitterComponent comp = new ParticleEmitterComponent();
-            comp.emissionRate = 16;
+            comp.emissionRate = 128;
             comp.emissionPoint = utils.getWorldFromScreen(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+
             comp.startColor = new Color(MathUtils.random(),MathUtils.random(),MathUtils.random(), 1);
-            comp.endColor = new Color(MathUtils.random(),MathUtils.random(),MathUtils.random(), 1);
-            comp.lifespanStartRange = 0.2f;
-            comp.lifespanEndRange = 2.f;
-            comp.sizeStartRange = new Vector2(0.4f, 2.f);
-            comp.sizeEndRange = new Vector2(0.0f, 0.4f);
-            comp.velocityMin = new Vector2(-2.f, -2.f);
-            comp.velocityMax = new Vector2(2.f, 2.f);
+            comp.endColor = new Color(MathUtils.random(),MathUtils.random(),MathUtils.random(), 0);
+
+            comp.lifespanStartRange = 0.1f;
+            comp.lifespanEndRange = 0.6f;
+
+            comp.sizeStartRange = new Vector2(0.2f, 0.4f);
+            comp.sizeEndRange = new Vector2(0.4f, 0.6f);
+
+            comp.velocityMin = new Vector2(-8.f, -8.f);
+            comp.velocityMax = new Vector2(8.f, 8.f);
 
             emitter.addComponent(comp);
         }

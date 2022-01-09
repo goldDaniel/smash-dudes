@@ -6,9 +6,12 @@ import smashdudes.ecs.Component;
 
 public class ParticleEmitterComponent extends Component
 {
+    private float elapsedTime;
     private float time;
 
     public float emissionRate;
+
+    public float lifetime = -1;
 
     public PositionComponent position;
     public Vector2 emissionPoint;
@@ -28,6 +31,7 @@ public class ParticleEmitterComponent extends Component
     public void update(float dt)
     {
         time += dt;
+        elapsedTime += dt;
     }
 
     public boolean canSpawn()
@@ -40,5 +44,16 @@ public class ParticleEmitterComponent extends Component
         }
 
         return result;
+    }
+
+    public boolean isAlive()
+    {
+        //-1 means infinite life
+        if(lifetime == -1)
+        {
+            return true;
+        }
+
+        return elapsedTime <= lifetime;
     }
 }

@@ -33,7 +33,6 @@ public class ParticleEmitterSystem extends GameSystem
 
             Color startColor = emitter.startColor;
             Color endColor = emitter.endColor;
-            endColor.a = 0.0f;
             float startSize = MathUtils.random(emitter.sizeStartRange.x, emitter.sizeStartRange.y);
             float endSize = MathUtils.random(emitter.sizeEndRange.x, emitter.sizeEndRange.y);
             Vector2 vel = new Vector2(MathUtils.random(emitter.velocityMin.x, emitter.velocityMax.x),
@@ -54,6 +53,11 @@ public class ParticleEmitterSystem extends GameSystem
             particle.addComponent(position);
             particle.addComponent(par);
             particle.addComponent(draw);
+        }
+
+        if(!emitter.isAlive())
+        {
+            engine.destroyEntity(entity);
         }
     }
 }
