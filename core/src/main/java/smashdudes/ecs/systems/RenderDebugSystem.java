@@ -1,17 +1,12 @@
 package smashdudes.ecs.systems;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.DebugDrawComponent;
-import smashdudes.ecs.components.PositionComponent;
 
 public class RenderDebugSystem extends GameSystem
 {
