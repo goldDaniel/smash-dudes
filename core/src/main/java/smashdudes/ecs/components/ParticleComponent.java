@@ -28,8 +28,8 @@ public class ParticleComponent extends Component
         this.lifetime = lifetime;
         this.currentLifetime = 0;
 
-        this.startColor = start;
-        this.endColor = end;
+        this.startColor = start.cpy();
+        this.endColor = end.cpy();
 
         this.velocity = velocity.cpy();
 
@@ -51,9 +51,10 @@ public class ParticleComponent extends Component
     public Color getColor()
     {
         float percentage = currentLifetime / lifetime;
-        Color color = new Color().set(startColor).lerp(endColor, percentage);
 
-        color.a = MathUtils.clamp(1.0f - percentage, 0.0f, 1.0f);
+        Color color = new Color().set(startColor).lerp(endColor, percentage);
+        color.a = MathUtils.clamp(color.a, 0.0f, 1.0f);
+
         return color;
     }
 
