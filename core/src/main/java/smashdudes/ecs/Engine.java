@@ -2,6 +2,7 @@ package smashdudes.ecs;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Queue;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import smashdudes.core.WorldUtils;
@@ -33,7 +34,7 @@ public class Engine
         int WORLD_HEIGHT = 12;
 
         OrthographicCamera camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
-        camera.zoom = 1.2f;
+        camera.zoom = 5f;
 
         ExtendViewport viewport = new ExtendViewport(WORLD_WIDTH,WORLD_HEIGHT, camera);
 
@@ -167,6 +168,10 @@ public class Engine
         isUpdating = false;
 
         activeEntities.removeAll(deadEntities, true);
+        for(Entity e : deadEntities)
+        {
+            destroyEntity(e);
+        }
         deadEntities.clear();
 
         activeEntities.addAll(createdEntities);

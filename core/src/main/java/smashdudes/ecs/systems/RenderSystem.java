@@ -43,10 +43,9 @@ public class RenderSystem extends GameSystem
     {
         super(engine);
         this.sb = sb;
-
-        //null will make the spritebatch use its default shader
-        shaders.put(RenderPass.Default, null);
+        
         shaders.put(RenderPass.Stunned, RenderResources.getShader("shaders/spritebatch.default.vert.glsl", "shaders/spritebatch.stunned.frag.glsl"));
+        shaders.put(RenderPass.Default, null); //null will make the spritebatch use its default shader
 
         for(ShaderProgram s : shaders.values())
         {

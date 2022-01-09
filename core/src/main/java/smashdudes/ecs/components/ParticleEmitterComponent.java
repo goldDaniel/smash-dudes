@@ -13,7 +13,6 @@ public class ParticleEmitterComponent extends Component
 
     public float lifetime = -1;
 
-    public PositionComponent position;
     public Vector2 emissionPoint;
 
     public Color startColor;
