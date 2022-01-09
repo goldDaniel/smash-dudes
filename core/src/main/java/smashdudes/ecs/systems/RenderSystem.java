@@ -15,6 +15,8 @@ import smashdudes.ecs.components.PositionComponent;
 import smashdudes.graphics.RenderPass;
 import smashdudes.graphics.RenderResources;
 
+import java.util.Comparator;
+
 public class RenderSystem extends GameSystem
 {
     private class Renderable
@@ -41,10 +43,9 @@ public class RenderSystem extends GameSystem
     {
         super(engine);
         this.sb = sb;
-
-        //null will make the spritebatch use its default shader
-        shaders.put(RenderPass.Default, null);
+        
         shaders.put(RenderPass.Stunned, RenderResources.getShader("shaders/spritebatch.default.vert.glsl", "shaders/spritebatch.stunned.frag.glsl"));
+        shaders.put(RenderPass.Default, null); //null will make the spritebatch use its default shader
 
         for(ShaderProgram s : shaders.values())
         {
@@ -101,6 +102,11 @@ public class RenderSystem extends GameSystem
         {
             sb.setShader(shader);
             sb.begin();
+
+            //we must sort by texture before z-index. While sorting by texture after would reduce draw calls it can
+            //mess up our z-index ordering.
+            renderables.get(shader).sort(Comparator.comparingInt(r -> r.draw.texture.glTarget));
+            renderables.get(shader).sort(Comparator.comparingInt(r -> r.draw.zIndex));
 
             for(Renderable r : renderables.get(shader))
             {

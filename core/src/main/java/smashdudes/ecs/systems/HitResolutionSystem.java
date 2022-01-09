@@ -36,5 +36,4 @@ public class HitResolutionSystem extends GameSystem
 
         engine.destroyEntity(entity);
     }
-
 }

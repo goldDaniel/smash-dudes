@@ -2,11 +2,16 @@ package smashdudes.ecs;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Queue;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import smashdudes.core.WorldUtils;
 import smashdudes.ecs.events.Event;
 import smashdudes.ecs.systems.*;
 import smashdudes.graphics.RenderResources;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 public class Engine
 {
@@ -25,6 +30,14 @@ public class Engine
 
     public Engine()
     {
+        int WORLD_WIDTH = 20;
+        int WORLD_HEIGHT = 12;
+
+        OrthographicCamera camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
+        camera.zoom = 5f;
+
+        ExtendViewport viewport = new ExtendViewport(WORLD_WIDTH,WORLD_HEIGHT, camera);
+
         rs = new RenderSystem(this, RenderResources.getSpriteBatch());
         drs = new RenderDebugSystem(this, RenderResources.getShapeRenderer());
 
@@ -47,15 +60,9 @@ public class Engine
         systems.add(new AudioSystem(this));
 
         systems.add(new AnimationSystem(this));
+        systems.add(new ParticleSystem(this, new WorldUtils(viewport)));
+        systems.add(new ParticleEmitterSystem(this));
         systems.add(new AnimationDebugSystem(this));
-
-        int WORLD_WIDTH = 20;
-        int WORLD_HEIGHT = 12;
-
-        OrthographicCamera camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
-        camera.zoom = 1.2f;
-
-        ExtendViewport viewport = new ExtendViewport(WORLD_WIDTH,WORLD_HEIGHT, camera);
 
         CameraSystem cs = new CameraSystem(this);
         cs.setCamera(camera);
@@ -88,6 +95,8 @@ public class Engine
 
     public void destroyEntity(Entity entity)
     {
+        if(!activeEntities.contains(entity, true)) throw new IllegalArgumentException("Entity is not in ECS!!");
+
         if(isUpdating)
         {
             deadEntities.add(entity);
