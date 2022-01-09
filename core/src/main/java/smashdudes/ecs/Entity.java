@@ -1,6 +1,8 @@
 package smashdudes.ecs;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ArrayMap;
+import com.badlogic.gdx.utils.ObjectMap;
 
 public class Entity
 {
@@ -9,52 +11,33 @@ public class Entity
 
     protected Entity() {}
 
-    private Array<Component> components = new Array<>();
+    private ObjectMap<Class<? extends Component>, Component> components = new ObjectMap<>();
 
     public<T extends Component> void removeComponent(Class<T> clazz)
     {
-        for(Component other : components)
-        {
-            if(other.getClass() == clazz)
-            {
-                //we remove while iterating but thats ok because we exit immediately after
-                components.removeValue(other, true);
-                return;
-            }
-        }
+        components.remove(clazz);
     }
 
     public void addComponent(Component c)
     {
-        for(Component other : components)
+        if(components.containsKey(c.getClass()))
         {
-            if(other.getClass() == c.getClass())
-            {
-                throw new IllegalStateException("Component already exists on entity!");
-            }
+            throw new IllegalStateException("Component already exists on entity!");
         }
 
-        components.add(c);
+        components.put(c.getClass(), c);
     }
 
     public<T extends Component> T getComponent(Class<T> clazz)
     {
-        for(Component c : components)
-        {
-            if(c.getClass() == clazz)
-            {
-                return (T)c;
-            }
-        }
-
-        return null;
+        return (T)components.get(clazz);
     }
 
     public boolean hasComponent(Class<? extends Component>... clazz)
     {
         for(Class<? extends Component> c : clazz)
         {
-            if(getComponent(c) == null)
+            if(!components.containsKey(c))
             {
                 return false;
             }
