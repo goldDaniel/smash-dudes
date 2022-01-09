@@ -48,7 +48,7 @@ public class ParticleEmitterSystem extends GameSystem
             ParticleComponent par = new ParticleComponent(lifespan, startColor, endColor, vel, startSize, endSize);
             DrawComponent draw = new DrawComponent();
             draw.texture = RenderResources.getTexture("textures/circle.png");
-            draw.zIndex = 5;
+            draw.zIndex = emitter.zIndex;
 
             particle.addComponent(position);
             particle.addComponent(par);

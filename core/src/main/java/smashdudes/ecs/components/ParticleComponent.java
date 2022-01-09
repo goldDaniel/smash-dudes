@@ -60,7 +60,8 @@ public class ParticleComponent extends Component
 
     public Vector2 getVelocity()
     {
-        return velocity;
+        float percentage = currentLifetime / lifetime;
+        return velocity.cpy().scl(1.0f - percentage);
     }
 
     public boolean isAlive()

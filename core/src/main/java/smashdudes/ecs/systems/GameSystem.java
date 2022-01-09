@@ -48,18 +48,7 @@ public abstract class GameSystem
     {
         if(events.contains(event.getClass(), true))
         {
-            boolean valid = true;
-            for (Class c : components)
-            {
-                if (!event.entity.hasComponent(c))
-                {
-                    valid = false;
-                }
-            }
-            if (valid)
-            {
-                handleEvent(event);
-            }
+            handleEvent(event);
         }
     }
 

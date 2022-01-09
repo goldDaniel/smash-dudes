@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import smashdudes.core.WorldUtils;
 import smashdudes.ecs.Engine;
@@ -12,6 +13,8 @@ import smashdudes.ecs.components.DrawComponent;
 import smashdudes.ecs.components.ParticleComponent;
 import smashdudes.ecs.components.ParticleEmitterComponent;
 import smashdudes.ecs.components.PositionComponent;
+import smashdudes.ecs.events.Event;
+import smashdudes.ecs.events.LandingEvent;
 
 public class ParticleSystem extends GameSystem
 {
@@ -25,6 +28,8 @@ public class ParticleSystem extends GameSystem
         registerComponentType(PositionComponent.class);
         registerComponentType(ParticleComponent.class);
         registerComponentType(DrawComponent.class);
+
+        registerEventType(LandingEvent.class);
     }
 
     @Override
@@ -71,6 +76,40 @@ public class ParticleSystem extends GameSystem
         if(!particle.isAlive())
         {
             engine.destroyEntity(entity);
+        }
+    }
+
+    @Override
+    protected void handleEvent(Event event)
+    {
+        if(event instanceof LandingEvent)
+        {
+            System.out.println("land");
+            LandingEvent e = (LandingEvent)event;
+
+            Entity emitter = engine.createEntity();
+
+            ParticleEmitterComponent comp = new ParticleEmitterComponent();
+            comp.emissionPoint = e.landingPoint;
+
+            comp.lifetime = 0.2f;
+            comp.emissionRate = 128;
+
+            comp.startColor = new Color(0.2f, 0.2f, 0.2f, 1);
+            comp.endColor = new Color(0.8f, 0.8f, 0.8f, 0);
+
+            comp.lifespanStartRange = 0.2f;
+            comp.lifespanEndRange = 0.4f;
+
+            comp.sizeStartRange = new Vector2(0.4f, 0.6f);
+            comp.sizeEndRange = new Vector2(0.0f, 0.4f);
+
+            comp.velocityMin = new Vector2(-5.f, 0.1f);
+            comp.velocityMax = new Vector2(5.f, 3.f);
+
+            comp.zIndex = 20;
+
+            emitter.addComponent(comp);
         }
     }
 }

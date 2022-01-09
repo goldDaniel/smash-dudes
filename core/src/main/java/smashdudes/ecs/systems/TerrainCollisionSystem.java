@@ -3,6 +3,7 @@ package smashdudes.ecs.systems;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 import smashdudes.core.Collisions;
@@ -114,7 +115,8 @@ public class TerrainCollisionSystem extends GameSystem
 
                     if (!onGroundLastFrame.get(entity))
                     {
-                        engine.addEvent(new LandingEvent(entity));
+                        Vector2 landingPoint = p.position.cpy().sub(0, r0.height / 2);
+                        engine.addEvent(new LandingEvent(entity, landingPoint));
                     }
 
                     touchedGround = true;

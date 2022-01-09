@@ -28,6 +28,8 @@ public class ParticleEmitterComponent extends Component
     public Vector2 velocityMin;
     public Vector2 velocityMax;
 
+    public int zIndex = 10;
+
     public void update(float dt)
     {
         time += dt;
