@@ -104,6 +104,9 @@ public class RenderSystem extends GameSystem
             sb.setShader(shader);
             sb.begin();
 
+            //we must sort by texture before z-index. While sorting by texture after would reduce draw calls it can
+            //mess up our z-index ordering.
+            renderables.get(shader).sort(Comparator.comparingInt(r -> r.draw.texture.glTarget));
             renderables.get(shader).sort(Comparator.comparingInt(r -> r.draw.zIndex));
 
             for(Renderable r : renderables.get(shader))
