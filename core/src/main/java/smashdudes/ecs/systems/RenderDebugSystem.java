@@ -16,7 +16,6 @@ public class RenderDebugSystem extends GameSystem
 
     private final ShapeRenderer sh;
 
-
     public RenderDebugSystem(Engine engine, ShapeRenderer sh)
     {
         super(engine);

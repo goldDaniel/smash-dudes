@@ -64,8 +64,6 @@ public class Engine
         systems.add(new ParticleEmitterSystem(this));
         systems.add(new AnimationDebugSystem(this));
 
-
-
         CameraSystem cs = new CameraSystem(this);
         cs.setCamera(camera);
         drs.setCamera(camera);
@@ -97,6 +95,8 @@ public class Engine
 
     public void destroyEntity(Entity entity)
     {
+        if(!activeEntities.contains(entity, true)) throw new IllegalArgumentException("Entity is not in ECS!!");
+
         if(isUpdating)
         {
             deadEntities.add(entity);
@@ -168,10 +168,6 @@ public class Engine
         isUpdating = false;
 
         activeEntities.removeAll(deadEntities, true);
-        for(Entity e : deadEntities)
-        {
-            destroyEntity(e);
-        }
         deadEntities.clear();
 
         activeEntities.addAll(createdEntities);
