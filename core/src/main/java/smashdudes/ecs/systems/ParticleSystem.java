@@ -10,6 +10,7 @@ import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.DrawComponent;
 import smashdudes.ecs.components.ParticleComponent;
 import smashdudes.ecs.components.PositionComponent;
+import smashdudes.graphics.RenderResources;
 
 public class ParticleSystem extends GameSystem
 {
@@ -27,7 +28,7 @@ public class ParticleSystem extends GameSystem
     {
         if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT))
         {
-            int amount = 10000;
+            int amount = 1000;
             for(int i = 0; i < amount; i++)
             {
                 Entity particle = engine.createEntity();
@@ -42,6 +43,8 @@ public class ParticleSystem extends GameSystem
                 PositionComponent position = new PositionComponent();
                 ParticleComponent par = new ParticleComponent(lifespan, startColor, endColor, vel, startSize, endSize);
                 DrawComponent draw = new DrawComponent();
+                draw.texture = RenderResources.getTexture("textures/circle.png");
+                draw.zIndex = 5;
 
                 particle.addComponent(position);
                 particle.addComponent(par);

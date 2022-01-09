@@ -17,6 +17,8 @@ public class DrawComponent extends Component
 
     public boolean facingLeft = false;
 
+    public int zIndex = 10;
+
     public Color getColor()
     {
         return currentColor;

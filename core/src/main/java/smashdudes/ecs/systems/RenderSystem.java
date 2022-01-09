@@ -15,6 +15,8 @@ import smashdudes.ecs.components.PositionComponent;
 import smashdudes.graphics.RenderPass;
 import smashdudes.graphics.RenderResources;
 
+import java.util.Comparator;
+
 public class RenderSystem extends GameSystem
 {
     private class Renderable
@@ -101,6 +103,8 @@ public class RenderSystem extends GameSystem
         {
             sb.setShader(shader);
             sb.begin();
+
+            renderables.get(shader).sort(Comparator.comparingInt(r -> r.draw.zIndex));
 
             for(Renderable r : renderables.get(shader))
             {
