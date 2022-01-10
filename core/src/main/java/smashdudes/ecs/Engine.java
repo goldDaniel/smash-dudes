@@ -118,17 +118,7 @@ public class Engine
 
         for(Entity entity : activeEntities)
         {
-            boolean valid = true;
-            for(Class<? extends Component> component : components)
-            {
-                Component comp = entity.getComponent(component);
-                if(comp == null || !comp.isEnabled())
-                {
-                    valid = false;
-                }
-            }
-
-            if(valid)
+            if(entity.hasComponent(components))
             {
                 result.add(entity);
             }

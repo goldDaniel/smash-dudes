@@ -35,6 +35,11 @@ public class Entity
 
     public boolean hasComponent(Class<? extends Component>... clazz)
     {
+        return hasComponent(new Array<>(clazz));
+    }
+
+    public boolean hasComponent(Array<Class<? extends Component>> clazz)
+    {
         for(Class<? extends Component> c : clazz)
         {
             if(!components.containsKey(c))
