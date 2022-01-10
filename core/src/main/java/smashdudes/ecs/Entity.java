@@ -3,13 +3,37 @@ package smashdudes.ecs;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.Pool;
 
-public class Entity
+public class Entity implements Pool.Poolable
 {
+    private static Pool<Entity> entityPool = new Pool<Entity>()
+    {
+        @Override
+        protected Entity newObject()
+        {
+            return new Entity();
+        }
+    };
+
     private static int nextID = 1;
     public final int ID = nextID++;
 
-    protected Entity() {}
+    protected static Entity create()
+    {
+        return entityPool.obtain();
+    }
+
+    protected static void destroy(Entity entity)
+    {
+        entityPool.free(entity);
+    }
+    protected static void destroy(Array<Entity> entity)
+    {
+        entityPool.freeAll(entity);
+    }
+
+    private Entity() {}
 
     private ObjectMap<Class<? extends Component>, Component> components = new ObjectMap<>();
 
@@ -33,9 +57,9 @@ public class Entity
         return (T)components.get(clazz);
     }
 
-    public boolean hasComponent(Class<? extends Component>... clazz)
+    public boolean hasComponent(Class<? extends Component> clazz)
     {
-        return hasComponent(new Array<>(clazz));
+        return components.containsKey(clazz);
     }
 
     public boolean hasComponent(Array<Class<? extends Component>> clazz)
@@ -48,5 +72,11 @@ public class Entity
             }
         }
         return true;
+    }
+
+    @Override
+    public void reset()
+    {
+        components.clear();
     }
 }

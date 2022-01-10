@@ -12,6 +12,7 @@ import smashdudes.graphics.RenderResources;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Comparator;
 
 public class Engine
 {
@@ -79,7 +80,7 @@ public class Engine
 
     public Entity createEntity()
     {
-        Entity e = new Entity();
+        Entity e = Entity.create();
 
         if(isUpdating)
         {
@@ -106,7 +107,7 @@ public class Engine
             activeEntities.removeValue(entity, true);
         }
     }
-
+    
     public Array<Entity> getEntities(Class<? extends Component>... components)
     {
         return getEntities(new Array<>(components));
@@ -148,6 +149,7 @@ public class Engine
         isUpdating = false;
 
         activeEntities.removeAll(deadEntities, true);
+        Entity.destroy(deadEntities);
         deadEntities.clear();
 
         activeEntities.addAll(createdEntities);
