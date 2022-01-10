@@ -16,8 +16,11 @@ public class Entity implements Pool.Poolable
         }
     };
 
+
+    private ObjectMap<Class<? extends Component>, Component> components = new ObjectMap<>();
     private static int nextID = 1;
     public final int ID = nextID++;
+
 
     protected static Entity create()
     {
@@ -35,7 +38,6 @@ public class Entity implements Pool.Poolable
 
     private Entity() {}
 
-    private ObjectMap<Class<? extends Component>, Component> components = new ObjectMap<>();
 
     public<T extends Component> void removeComponent(Class<T> clazz)
     {
