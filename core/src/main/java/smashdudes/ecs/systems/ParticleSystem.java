@@ -35,31 +35,7 @@ public class ParticleSystem extends GameSystem
     @Override
     protected void preUpdate()
     {
-        if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT))
-        {
-            Entity emitter = engine.createEntity();
-
-            ParticleEmitterComponent comp = new ParticleEmitterComponent();
-            comp.emissionRate = 512;
-            comp.emissionPoint = utils.getWorldFromScreen(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
-
-            comp.startColor = Color.ORANGE.cpy();
-            comp.endColor = Color.RED.cpy();
-            comp.endColor.a = 0.0f;
-
-            comp.lifespanStartRange = 0.1f;
-            comp.lifespanEndRange = 0.6f;
-
-            comp.sizeStartRange = new Vector2(0.1f, 0.2f);
-            comp.sizeEndRange = new Vector2(0.0f, 0.2f);
-
-            comp.velocityMin = new Vector2(-1.5f, 0.1f);
-            comp.velocityMax = new Vector2(1.5f, 6.f);
-
-            comp.zIndex = 5;
-
-            emitter.addComponent(comp);
-        }
+        
     }
 
     @Override

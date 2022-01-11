@@ -16,11 +16,12 @@ public class Entity implements Pool.Poolable
         }
     };
 
+    private static int nextID = 1;
+
+    private int componentSignature;
 
     private ObjectMap<Class<? extends Component>, Component> components = new ObjectMap<>();
-    private static int nextID = 1;
     public final int ID = nextID++;
-
 
     protected static Entity create()
     {

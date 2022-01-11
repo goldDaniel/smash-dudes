@@ -53,7 +53,8 @@ public class GameplayScreen extends GameScreen
     {
         Gdx.input.setInputProcessor(inputHandler.getInputProcessor());
 
-        for(int i = 0; i < 200; i++)
+        int emitterCount = 200;
+        for(int i = 0; i < emitterCount; i++)
         {
             Entity emitter = ecsEngine.createEntity();
 
