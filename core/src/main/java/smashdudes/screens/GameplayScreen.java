@@ -52,33 +52,6 @@ public class GameplayScreen extends GameScreen
     public void show()
     {
         Gdx.input.setInputProcessor(inputHandler.getInputProcessor());
-
-        int emitterCount = 200;
-        for(int i = 0; i < emitterCount; i++)
-        {
-            Entity emitter = ecsEngine.createEntity();
-
-            ParticleEmitterComponent comp = new ParticleEmitterComponent();
-            comp.emissionRate = 512;
-            comp.emissionPoint = new Vector2();
-
-            comp.startColor = Color.ORANGE.cpy();
-            comp.endColor = Color.RED.cpy();
-            comp.endColor.a = 0.0f;
-
-            comp.lifespanStartRange = 0.1f;
-            comp.lifespanEndRange = 0.6f;
-
-            comp.sizeStartRange = new Vector2(0.1f, 0.2f);
-            comp.sizeEndRange = new Vector2(0.0f, 0.2f);
-
-            comp.velocityMin = new Vector2(-1.5f, 0.1f);
-            comp.velocityMax = new Vector2(1.5f, 6.f);
-
-            comp.zIndex = 5;
-
-            emitter.addComponent(comp);
-        }
     }
 
     @Override
