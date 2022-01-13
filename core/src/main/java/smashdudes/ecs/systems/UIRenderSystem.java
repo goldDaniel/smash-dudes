@@ -74,6 +74,7 @@ public class UIRenderSystem extends GameSystem
     {
         PlayerComponent play = entity.getComponent(PlayerComponent.class);
         String name = play.identifier.replace("characters/", "").replace(".json", "");
+        name = name.substring(0, 1).toUpperCase() + name.substring(1);
         CharacterDisplay portrait = new CharacterDisplay(name, entity.ID);
 
         if(!players.contains(portrait, false))
