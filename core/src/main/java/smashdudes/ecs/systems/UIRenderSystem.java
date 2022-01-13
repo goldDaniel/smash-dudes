@@ -104,7 +104,7 @@ public class UIRenderSystem extends GameSystem
         sb.begin();
         for(CharacterDisplay player : players)
         {
-            font.draw(sb, player.name, 0, 100 * player.ID);
+            font.draw(sb, player.name, -800 + 400 * player.ID, -300);
         }
         sb.end();
     }
