@@ -41,26 +41,20 @@ public class ParticleSystem extends GameSystem
 
             Entity emitter = engine.createEntity();
             ParticleEmitterComponent comp = new ParticleEmitterComponent();
-            comp.emissionRate = 512;
+            comp.emissionRate = 256;
             comp.emissionPoint = utils.getWorldFromScreen(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
 
             Color startColor =Color.YELLOW.cpy();
             comp.colors.add(startColor);
 
             Color red = Color.RED.cpy().add(-0.2f, -0.2f, -0.2f, 0);
-            red.a = 0.8f;
             comp.colors.add(red);
 
             Color end = Color.GRAY.cpy();
-            end.a = 0.5f;
             comp.colors.add(end);
 
             end = Color.GRAY.cpy();
-            end.a = 0.4f;
-            comp.colors.add(end);
-
-            end = Color.GRAY.cpy();
-            end.a = 0.0f;
+            end.a = 0;
             comp.colors.add(end);
 
             comp.lifespanStartRange = 0.3f;
@@ -84,16 +78,17 @@ public class ParticleSystem extends GameSystem
         DrawComponent draw = entity.getComponent(DrawComponent.class);
 
         particle.update(dt);
+        if(!particle.isAlive())
+        {
+            engine.destroyEntity(entity);
+            return;
+        }
 
         pos.position.add(particle.getVelocity().cpy().scl(dt));
 
         draw.getColor().set(particle.getColor());
-        draw.scale = particle.getSize();
 
-        if(!particle.isAlive())
-        {
-            engine.destroyEntity(entity);
-        }
+        draw.scale = particle.getSize();
     }
 
     @Override
