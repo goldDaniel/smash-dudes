@@ -3,6 +3,7 @@ package smashdudes.ecs.systems;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import smashdudes.core.WorldUtils;
 import smashdudes.ecs.Engine;
@@ -35,7 +36,44 @@ public class ParticleSystem extends GameSystem
     @Override
     protected void preUpdate()
     {
-        
+        if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT))
+        {
+
+            Entity emitter = engine.createEntity();
+            ParticleEmitterComponent comp = new ParticleEmitterComponent();
+            comp.emissionRate = 512;
+            comp.emissionPoint = utils.getWorldFromScreen(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+
+            Color startColor =Color.YELLOW.cpy();
+            comp.colors.add(startColor);
+
+            Color red = Color.RED.cpy().add(-0.2f, -0.2f, -0.2f, 0);
+            red.a = 0.8f;
+            comp.colors.add(red);
+
+            Color end = Color.GRAY.cpy();
+            end.a = 0.5f;
+            comp.colors.add(end);
+
+            end = Color.GRAY.cpy();
+            end.a = 0.4f;
+            comp.colors.add(end);
+
+            end = Color.GRAY.cpy();
+            end.a = 0.0f;
+            comp.colors.add(end);
+
+            comp.lifespanStartRange = 0.3f;
+            comp.lifespanEndRange = 2.4f;
+
+            comp.sizeStartRange = new Vector2(0.05f, 0.2f);
+            comp.sizeEndRange = new Vector2(0.0f, 0.05f);
+
+            comp.velocityMin = new Vector2(-0.5f, 0.5f);
+            comp.velocityMax = new Vector2(0.5f, 3.f);
+            comp.zIndex = 5;
+            emitter.addComponent(comp);
+        }
     }
 
     @Override
@@ -72,16 +110,16 @@ public class ParticleSystem extends GameSystem
             comp.emissionPoint = e.landingPoint;
 
             comp.lifetime = 0.05f;
-            comp.emissionRate = 2048;
+            comp.emissionRate = 1024;
 
-            comp.startColor = new Color(0.2f, 0.2f, 0.2f, 1);
-            comp.endColor = new Color(0.8f, 0.8f, 0.8f, 0);
+            comp.colors.add(new Color(0.2f, 0.2f, 0.2f, 1));
+            comp.colors.add(new Color(0.8f, 0.8f, 0.8f, 0));
 
             comp.lifespanStartRange = 0.2f;
             comp.lifespanEndRange = 0.4f;
 
-            comp.sizeStartRange = new Vector2(0.1f, 0.2f);
-            comp.sizeEndRange = new Vector2(0.0f, 0.1f);
+            comp.sizeStartRange = new Vector2(0.2f, 0.3f);
+            comp.sizeEndRange = new Vector2(0.0f, 0.2f);
 
             comp.velocityMin = new Vector2(-5.f, 0.1f);
             comp.velocityMax = new Vector2(5.f, 3.f);
@@ -103,9 +141,10 @@ public class ParticleSystem extends GameSystem
             comp.lifetime = 0.05f;
             comp.emissionRate = 512;
 
-            comp.startColor = Color.RED.cpy();
-            comp.endColor = Color.ORANGE.cpy();
-            comp.endColor.a = 0.0f;
+            comp.colors.add(Color.RED.cpy());
+            Color end = Color.ORANGE.cpy();
+            end.a = 0;
+            comp.colors.add(end);
 
             comp.lifespanStartRange = 0.1f;
             comp.lifespanEndRange = 0.3f;
