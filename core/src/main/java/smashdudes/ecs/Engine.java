@@ -15,18 +15,19 @@ import java.lang.reflect.InvocationTargetException;
 
 public class Engine
 {
-    private Array<Entity> activeEntities = new Array<>();
-    private Array<Entity> createdEntities = new Array<>();
-    private Array<Entity> deadEntities = new Array<>();
+    private final Array<Entity> activeEntities = new Array<>();
+    private final Array<Entity> createdEntities = new Array<>();
+    private final Array<Entity> deadEntities = new Array<>();
 
-    private Array<GameSystem> systems = new Array<>();
+    private final Array<GameSystem> systems = new Array<>();
 
-    private Queue<Event> events = new Queue<>();
+    private final Queue<Event> events = new Queue<>();
 
     private boolean isUpdating = false;
 
-    private RenderDebugSystem drs;
-    private RenderSystem rs;
+    private final RenderSystem rs;
+    private final RenderDebugSystem drs;
+    private final UIRenderSystem urs;
 
     public Engine()
     {
@@ -40,6 +41,7 @@ public class Engine
 
         rs = new RenderSystem(this, RenderResources.getSpriteBatch());
         drs = new RenderDebugSystem(this, RenderResources.getShapeRenderer());
+        urs = new UIRenderSystem(this, RenderResources.getSpriteBatch(), RenderResources.getFont());
 
 
         systems.add(new PlayerIdleSystem(this));
@@ -66,15 +68,16 @@ public class Engine
 
         CameraSystem cs = new CameraSystem(this);
         cs.setCamera(camera);
-        drs.setCamera(camera);
         rs.setCamera(camera);
+        drs.setCamera(camera);
 
-        drs.setViewport(viewport);
         rs.setViewport(viewport);
+        drs.setViewport(viewport);
 
         systems.add(cs);
         systems.add(rs);
         systems.add(drs);
+        systems.add(urs);
     }
 
     public Entity createEntity()
@@ -183,5 +186,6 @@ public class Engine
     {
         rs.resize(w, h);
         drs.resize(w, h);
+        urs.resize(w, h);
     }
 }
