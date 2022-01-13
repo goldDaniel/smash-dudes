@@ -73,29 +73,14 @@ public class UIRenderSystem extends GameSystem
     public void updateEntity(Entity entity, float dt)
     {
         PlayerComponent play = entity.getComponent(PlayerComponent.class);
-        CharacterDisplay portrait = new CharacterDisplay(play.identifier, entity.ID);
+        String name = play.identifier.replace("characters/", "").replace(".json", "");
+        CharacterDisplay portrait = new CharacterDisplay(name, entity.ID);
 
         if(!players.contains(portrait, false))
         {
             players.add(portrait);
             players.sort();
         }
-
-//        boolean newCharacter = true;
-//        for(CharacterDisplay player : players)
-//        {
-//            if(player.ID == entity.ID)
-//            {
-//                newCharacter = false;
-//                break;
-//            }
-//        }
-//
-//        if(newCharacter)
-//        {
-//            players.add(portrait);
-//            players.sort();
-//        }
     }
 
     @Override
