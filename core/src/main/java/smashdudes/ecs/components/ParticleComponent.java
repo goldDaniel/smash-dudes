@@ -53,15 +53,15 @@ public class ParticleComponent extends Component
     {
         if(colors.size == 1) return colors.first().cpy();
 
-        float totalPercentage = MathUtils.clamp(currentLifetime / lifetime, 0.f, 0.999f);
+        float totalPercentage = currentLifetime / lifetime;
+        float intervalPercentage = 1.0f / (colors.size - 1);
         int indexA = MathUtils.floor(totalPercentage * (colors.size - 1));
         int indexB = indexA + 1;
 
+        float tValue = totalPercentage % intervalPercentage;
+        float t = MathUtils.map(0, intervalPercentage, 0.0f, 1.0f, tValue);
 
-        float t = (colors.size - 1) / (float)indexB * totalPercentage;
-
-
-        Color result = new Color(colors.get(indexA));
+        Color result = colors.get(indexA).cpy();
         result.lerp(colors.get(indexB), t);
 
         return result;

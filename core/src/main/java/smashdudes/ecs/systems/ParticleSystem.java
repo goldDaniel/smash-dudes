@@ -56,21 +56,17 @@ public class ParticleSystem extends GameSystem
             comp.colors.add(end);
 
             end = Color.GRAY.cpy();
-            end.a = 0.4f;
-            comp.colors.add(end);
-
-            end = Color.GRAY.cpy();
             end.a = 0.0f;
             comp.colors.add(end);
 
-            comp.lifespanStartRange = 0.3f;
-            comp.lifespanEndRange = 2.4f;
+            comp.lifespanStartRange = 1.3f;
+            comp.lifespanEndRange = 4.4f;
 
-            comp.sizeStartRange = new Vector2(0.05f, 0.2f);
+            comp.sizeStartRange = new Vector2(0.1f, 0.2f);
             comp.sizeEndRange = new Vector2(0.0f, 0.05f);
 
-            comp.velocityMin = new Vector2(-0.5f, 0.5f);
-            comp.velocityMax = new Vector2(0.5f, 3.f);
+            comp.velocityMin = new Vector2(-0.2f, 0.5f);
+            comp.velocityMax = new Vector2(0.2f, 3.f);
             comp.zIndex = 5;
             emitter.addComponent(comp);
         }
@@ -84,16 +80,16 @@ public class ParticleSystem extends GameSystem
         DrawComponent draw = entity.getComponent(DrawComponent.class);
 
         particle.update(dt);
+        if(!particle.isAlive())
+        {
+            engine.destroyEntity(entity);
+            return;
+        }
 
         pos.position.add(particle.getVelocity().cpy().scl(dt));
 
         draw.getColor().set(particle.getColor());
         draw.scale = particle.getSize();
-
-        if(!particle.isAlive())
-        {
-            engine.destroyEntity(entity);
-        }
     }
 
     @Override
