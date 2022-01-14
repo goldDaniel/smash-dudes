@@ -41,33 +41,31 @@ public class ParticleSystem extends GameSystem
 
             Entity emitter = engine.createEntity();
             ParticleEmitterComponent comp = new ParticleEmitterComponent();
-            comp.emissionRate = 512;
+            comp.lifetime = 0.1f;
+
+            comp.emissionRate = 2048;
             comp.emissionPoint = utils.getWorldFromScreen(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
 
-            Color startColor =Color.YELLOW.cpy();
+            Color startColor =Color.GREEN.cpy();
             comp.colors.add(startColor);
 
-            Color red = Color.RED.cpy().add(-0.2f, -0.2f, -0.2f, 0);
+            Color red = Color.YELLOW.cpy().add(-0.2f, -0.2f, -0.2f, 0);
             red.a = 0.8f;
             comp.colors.add(red);
 
-            Color end = Color.GRAY.cpy();
+            Color end = Color.WHITE.cpy();
             end.a = 0.5f;
             comp.colors.add(end);
 
-            end = Color.GRAY.cpy();
-            end.a = 0.0f;
-            comp.colors.add(end);
+            comp.lifespanStartRange = 0.1f;
+            comp.lifespanEndRange = 0.3f;
 
-            comp.lifespanStartRange = 1.3f;
-            comp.lifespanEndRange = 4.4f;
+            comp.sizeStartRange = new Vector2(0.2f, 0.4f);
+            comp.sizeEndRange = new Vector2(0.0f, 0.1f);
 
-            comp.sizeStartRange = new Vector2(0.1f, 0.2f);
-            comp.sizeEndRange = new Vector2(0.0f, 0.05f);
-
-            comp.velocityMin = new Vector2(-0.2f, 0.5f);
-            comp.velocityMax = new Vector2(0.2f, 3.f);
-            comp.zIndex = 5;
+            comp.velocityMin = new Vector2(-1f, -1).nor().scl(15);
+            comp.velocityMax = new Vector2( 1, 1).nor().scl(15);
+            comp.zIndex = 25;
             emitter.addComponent(comp);
         }
     }

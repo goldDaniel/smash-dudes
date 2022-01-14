@@ -38,8 +38,12 @@ public class ParticleEmitterSystem extends GameSystem
             float lifespan = MathUtils.random(emitter.lifespanStartRange, emitter.lifespanEndRange);
 
 
+
+            float angle = MathUtils.random() * MathUtils.PI2;
+            Vector2 velocity = new Vector2(MathUtils.cos(angle), MathUtils.sin(angle)).scl(vel.len());
+
             PositionComponent position = new PositionComponent(emitter.emissionPoint);
-            ParticleComponent par = new ParticleComponent(lifespan, emitter.colors, vel, startSize, endSize);
+            ParticleComponent par = new ParticleComponent(lifespan, emitter.colors, velocity, startSize, endSize);
             DrawComponent draw = new DrawComponent();
             draw.texture = emitter.texture;
             draw.zIndex = emitter.zIndex;
