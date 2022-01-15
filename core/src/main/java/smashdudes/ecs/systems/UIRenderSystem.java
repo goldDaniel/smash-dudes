@@ -2,6 +2,7 @@ package smashdudes.ecs.systems;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
@@ -42,6 +43,11 @@ public class UIRenderSystem extends GameSystem
     private OrthographicCamera camera;
     private Viewport viewport;
 
+    private final float worldWidth;
+    private final float worldHeight;
+
+    private GlyphLayout layout;
+
     private final SpriteBatch sb;
     private final BitmapFont font;
 
@@ -53,7 +59,11 @@ public class UIRenderSystem extends GameSystem
         this.sb = sb;
         this.font = font;
 
-        this.viewport = new ExtendViewport(1280, 720);
+        worldWidth = 1280;
+        worldHeight = 720;
+        layout = new GlyphLayout(font, "");
+
+        this.viewport = new ExtendViewport(worldWidth, worldHeight);
         this.camera = (OrthographicCamera)viewport.getCamera();
 
         registerComponentType(PlayerComponent.class);
@@ -90,9 +100,15 @@ public class UIRenderSystem extends GameSystem
     public void postUpdate()
     {
         sb.begin();
+        int sections = players.size;
+        int i = 1;
         for(CharacterDisplay player : players)
         {
-            font.draw(sb, player.name, -800 + 400 * player.ID, -300);
+            layout.setText(font, player.name);
+            float width = layout.width;
+            float height = layout.height;
+            font.draw(sb, player.name, - width / 2 - worldWidth / 2 + i * worldWidth / (sections + 1), -worldHeight / 2 + height);
+            i++;
         }
         sb.end();
     }
