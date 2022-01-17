@@ -64,7 +64,7 @@ public class HitDetectionSystem extends GameSystem
 
         engine.addEvent(new AttackEvent(attacker, attacked, collisionArea));
 
-        HitResolutionComponent resolution = new HitResolutionComponent(attacker, attacked, dir.nor(), collisionArea, 0.2f);
+        HitResolutionComponent resolution = new HitResolutionComponent(attacker, attacked, dir.nor(), collisionArea, 0.2f, 8.1f);
         entity.addComponent(resolution);
     }
 

@@ -34,6 +34,12 @@ public class HitResolutionSystem extends GameSystem
             }
         }
 
+        if(res.attacked.hasComponent(HealthComponent.class))
+        {
+            HealthComponent health = res.attacked.getComponent(HealthComponent.class);
+            health.health += res.damage;
+        }
+
         engine.destroyEntity(entity);
     }
 }
