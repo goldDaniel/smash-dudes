@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import smashdudes.ecs.Engine;
@@ -40,13 +39,13 @@ public class UIRenderSystem extends GameSystem
         }
     }
 
-    private OrthographicCamera camera;
-    private Viewport viewport;
+    private final OrthographicCamera camera;
+    private final Viewport viewport;
 
     private final float worldWidth;
     private final float worldHeight;
 
-    private GlyphLayout layout;
+    private final GlyphLayout layout;
 
     private final SpriteBatch sb;
     private final BitmapFont font;
@@ -85,7 +84,7 @@ public class UIRenderSystem extends GameSystem
     public void updateEntity(Entity entity, float dt)
     {
         PlayerComponent play = entity.getComponent(PlayerComponent.class);
-        String name = play.identifier.replace("characters/", "").replace(".json", "");
+        String name = play.name;
         name = name.substring(0, 1).toUpperCase() + name.substring(1);
         CharacterDisplay portrait = new CharacterDisplay(name, entity.ID);
 
@@ -101,14 +100,12 @@ public class UIRenderSystem extends GameSystem
     {
         sb.begin();
         int sections = players.size;
-        int i = 1;
-        for(CharacterDisplay player : players)
+        for(int i = 0; i < players.size; i++)
         {
-            layout.setText(font, player.name);
+            layout.setText(font, players.get(i).name);
             float width = layout.width;
             float height = layout.height;
-            font.draw(sb, player.name, - width / 2 - worldWidth / 2 + i * worldWidth / (sections + 1), -worldHeight / 2 + height);
-            i++;
+            font.draw(sb, players.get(i).name, - width / 2 - worldWidth / 2 + (i + 1) * worldWidth / (sections + 1), -worldHeight / 2 + height);
         }
         sb.end();
     }

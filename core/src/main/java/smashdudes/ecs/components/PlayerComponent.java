@@ -6,13 +6,13 @@ import smashdudes.ecs.Component;
 public class PlayerComponent extends Component
 {
     public final PlayerHandle handle;
-    public final String identifier;
+    public final String name;
 
     public boolean facingLeft = false;
 
-    public PlayerComponent(PlayerHandle handle, String id)
+    public PlayerComponent(PlayerHandle handle, String name)
     {
         this.handle = handle;
-        this.identifier = id;
+        this.name = name;
     }
 }
