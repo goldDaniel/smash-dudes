@@ -2,6 +2,7 @@ package smashdudes.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Vector2;
@@ -33,7 +34,7 @@ public class GameplayScreen extends GameScreen
         for(CharacterSelectDescription.PlayerDescription p : desc.descriptions)
         {
             DTO.Character characterData = ContentRepo.loadCharacter(p.identifier);
-            Entity player = buildPlayer(p.handle, p.identifier, characterData);
+            Entity player = buildPlayer(p.portrait, p.handle, characterData);
 
             IGameInputRetriever retriever = inputHandler.getGameInput(p.handle);
 
@@ -81,15 +82,17 @@ public class GameplayScreen extends GameScreen
         ecsEngine.resize(width, height);
     }
 
-    private Entity buildPlayer(PlayerHandle handle, String identifier, DTO.Character characterData)
+    private Entity buildPlayer(Texture portrait, PlayerHandle handle, DTO.Character characterData)
     {
         Entity player = ecsEngine.createEntity();
 
-        player.addComponent(new PlayerComponent(handle, identifier));
+        player.addComponent(new PlayerComponent(handle, characterData.name));
         player.addComponent(new PositionComponent(new Vector2(0, 10)));
         player.addComponent(new JumpComponent(characterData.jumpStrength));
         player.addComponent(new GravityComponent(characterData.gravity));
         player.addComponent(new PlayerInAirComponent());
+        player.addComponent(new HealthComponent());
+        player.addComponent(new UIComponent(portrait));
 
         VelocityComponent vc = new VelocityComponent();
         vc.runSpeed = characterData.runSpeed;

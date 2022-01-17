@@ -277,7 +277,7 @@ public class CharacterSelector
         for(PlayerPortrait p : players)
         {
             CharacterSelectDescription.PlayerDescription desc =
-                    new CharacterSelectDescription.PlayerDescription(p.identifier, p.handle);
+                    new CharacterSelectDescription.PlayerDescription(p.identifier, p.handle, getPortraitForCharacter(p.identifier));
 
             result.add(desc);
         }
