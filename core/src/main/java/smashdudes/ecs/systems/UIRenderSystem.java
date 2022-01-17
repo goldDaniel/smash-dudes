@@ -33,13 +33,6 @@ public class UIRenderSystem extends GameSystem
             if(o.getClass() != CharacterDisplay.class) throw new IllegalArgumentException("Can only compare similar object types (CharacterDisplay.class)");
             return ID - ((CharacterDisplay) o).ID;
         }
-
-        @Override
-        public boolean equals(Object o)
-        {
-            if(o.getClass() != CharacterDisplay.class) throw new IllegalArgumentException("Can only equate similar object types (CharacterDisplay.class)");
-            return ((CharacterDisplay) o).ID == ID;
-        }
     }
 
     private final OrthographicCamera camera;
