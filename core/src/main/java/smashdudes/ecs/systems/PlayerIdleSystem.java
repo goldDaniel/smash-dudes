@@ -40,7 +40,6 @@ public class PlayerIdleSystem extends GameSystem
         else if(i.currentState.up && v.velocity.y == 0)
         {
             v.velocity.y = j.jumpStrength;
-            j.disable();
             engine.addEvent(new JumpEvent(entity));
 
             entity.addComponent(new PlayerInAirComponent());

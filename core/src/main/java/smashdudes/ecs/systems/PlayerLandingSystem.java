@@ -29,7 +29,6 @@ public class PlayerLandingSystem extends GameSystem
 
             if(e.collisionSide == Collisions.CollisionSide.Top)
             {
-                j.enable();
                 entity.removeComponent(PlayerInAirComponent.class);
                 if(!entity.hasComponent(PlayerIdleComponent.class) &&
                    !entity.hasComponent(PlayerRunningComponent.class) &&
