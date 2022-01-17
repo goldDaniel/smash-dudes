@@ -40,7 +40,6 @@ public class PlayerRunningSystem extends GameSystem
         else if(ci.currentState.up && v.velocity.y == 0)
         {
             v.velocity.y = j.jumpStrength;
-            j.disable();
             engine.addEvent(new JumpEvent(entity));
 
             entity.addComponent(new PlayerInAirComponent());

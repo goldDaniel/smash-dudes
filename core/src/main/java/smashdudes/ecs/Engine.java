@@ -12,6 +12,7 @@ import smashdudes.graphics.RenderResources;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Comparator;
 
 public class Engine
 {
@@ -82,7 +83,7 @@ public class Engine
 
     public Entity createEntity()
     {
-        Entity e = new Entity();
+        Entity e = Entity.create();
 
         if(isUpdating)
         {
@@ -109,45 +110,25 @@ public class Engine
             activeEntities.removeValue(entity, true);
         }
     }
-
-    public Array<Entity> getEntities(boolean includeDisabled, Class<? extends Component>... components)
+    
+    public Array<Entity> getEntities(Class<? extends Component>... components)
     {
-        return getEntities(includeDisabled, new Array<>(components));
+        return getEntities(new Array<>(components));
     }
 
-    public Array<Entity> getEntities(boolean includeDisabled, Array<Class<? extends Component>> components)
+    public Array<Entity> getEntities(Array<Class<? extends Component>> components)
     {
         Array<Entity> result = new Array<>();
 
         for(Entity entity : activeEntities)
         {
-            boolean valid = true;
-            for(Class<? extends Component> component : components)
-            {
-                Component comp = entity.getComponent(component);
-                if(comp == null || (!includeDisabled && !comp.isEnabled()))
-                {
-                    valid = false;
-                }
-            }
-
-            if(valid)
+            if(entity.hasComponent(components))
             {
                 result.add(entity);
             }
         }
 
         return result;
-    }
-
-    public Array<Entity> getEntities(Class<? extends Component>... components)
-    {
-        return getEntities(false, components);
-    }
-
-    public Array<Entity> getEntities(Array<Class<? extends Component>> components)
-    {
-        return getEntities(false, components);
     }
 
     public void update(float dt)
@@ -171,6 +152,7 @@ public class Engine
         isUpdating = false;
 
         activeEntities.removeAll(deadEntities, true);
+        Entity.destroy(deadEntities);
         deadEntities.clear();
 
         activeEntities.addAll(createdEntities);

@@ -1,5 +1,6 @@
 package smashdudes.ecs.systems;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -75,7 +76,7 @@ public class RenderSystem extends GameSystem
     @Override
     public void preUpdate()
     {
-        ScreenUtils.clear(0,0,0,1);
+        ScreenUtils.clear(Color.SKY);
 
         for(ShaderProgram r : shaders.values())
         {

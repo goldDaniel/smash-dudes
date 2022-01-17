@@ -3,6 +3,7 @@ package smashdudes.ecs.components;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import smashdudes.ecs.Component;
 
 public class ParticleComponent extends Component
@@ -10,26 +11,26 @@ public class ParticleComponent extends Component
     private final float lifetime;
     private float currentLifetime;
 
-    private final Color startColor;
-    private final Color endColor;
+    private final Array<Color> colors;
 
     private final float startSize;
     private final float endSize;
 
     private final Vector2 velocity;
 
-    public ParticleComponent(float lifetime, Color start, Color end, Vector2 velocity)
+    public ParticleComponent(float lifetime, Array<Color> colors, Vector2 velocity)
     {
-        this(lifetime, start, end, velocity, 1, 1);
+        this(lifetime, colors, velocity, 1, 1);
     }
 
-    public ParticleComponent(float lifetime, Color start, Color end, Vector2 velocity, float startSize, float endSize)
+    public ParticleComponent(float lifetime, Array<Color> colors, Vector2 velocity, float startSize, float endSize)
     {
+        if(colors.isEmpty()) throw new IllegalArgumentException("Must have at least 1 color");
+
         this.lifetime = lifetime;
         this.currentLifetime = 0;
 
-        this.startColor = start.cpy();
-        this.endColor = end.cpy();
+        this.colors = colors;
 
         this.velocity = velocity.cpy();
 
@@ -50,12 +51,23 @@ public class ParticleComponent extends Component
 
     public Color getColor()
     {
-        float percentage = currentLifetime / lifetime;
+        if(colors.size == 1) return colors.first().cpy();
 
-        Color color = new Color().set(startColor).lerp(endColor, percentage);
-        color.a = MathUtils.clamp(color.a, 0.0f, 1.0f);
+        float totalPercentage = MathUtils.clamp(currentLifetime / lifetime, 0.f, 1.0f);
+        int intervalCount = colors.size - 1;
 
-        return color;
+        int indexA = MathUtils.floor(totalPercentage * intervalCount);
+        int indexB = indexA + 1;
+
+        float intervalPercentage = 1.0f / intervalCount;
+        float tValue = totalPercentage % intervalPercentage;
+
+        float t = MathUtils.map(0, intervalPercentage, 0.0f, 1.0f, tValue);
+
+        Color result = colors.get(indexA).cpy();
+        result.lerp(colors.get(indexB), t);
+
+        return result;
     }
 
     public Vector2 getVelocity()

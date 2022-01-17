@@ -1,64 +1,85 @@
 package smashdudes.ecs;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ArrayMap;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.Pool;
 
-public class Entity
+public class Entity implements Pool.Poolable
 {
+    private static Pool<Entity> entityPool = new Pool<Entity>()
+    {
+        @Override
+        protected Entity newObject()
+        {
+            return new Entity();
+        }
+    };
+
     private static int nextID = 1;
+
+    private int componentSignature;
+
+    private ObjectMap<Class<? extends Component>, Component> components = new ObjectMap<>();
     public final int ID = nextID++;
 
-    protected Entity() {}
+    protected static Entity create()
+    {
+        return entityPool.obtain();
+    }
 
-    private Array<Component> components = new Array<>();
+    protected static void destroy(Entity entity)
+    {
+        entityPool.free(entity);
+    }
+    protected static void destroy(Array<Entity> entity)
+    {
+        entityPool.freeAll(entity);
+    }
+
+    private Entity() {}
+
 
     public<T extends Component> void removeComponent(Class<T> clazz)
     {
-        for(Component other : components)
-        {
-            if(other.getClass() == clazz)
-            {
-                //we remove while iterating but thats ok because we exit immediately after
-                components.removeValue(other, true);
-                return;
-            }
-        }
+        components.remove(clazz);
     }
 
     public void addComponent(Component c)
     {
-        for(Component other : components)
+        if(components.containsKey(c.getClass()))
         {
-            if(other.getClass() == c.getClass())
-            {
-                throw new IllegalStateException("Component already exists on entity!");
-            }
+            throw new IllegalStateException("Component already exists on entity!");
         }
 
-        components.add(c);
+        components.put(c.getClass(), c);
     }
 
     public<T extends Component> T getComponent(Class<T> clazz)
     {
-        for(Component c : components)
-        {
-            if(c.getClass() == clazz)
-            {
-                return (T)c;
-            }
-        }
-
-        return null;
+        return (T)components.get(clazz);
     }
 
-    public boolean hasComponent(Class<? extends Component>... clazz)
+    public boolean hasComponent(Class<? extends Component> clazz)
+    {
+        return components.containsKey(clazz);
+    }
+
+    public boolean hasComponent(Array<Class<? extends Component>> clazz)
     {
         for(Class<? extends Component> c : clazz)
         {
-            if(getComponent(c) == null)
+            if(!components.containsKey(c))
             {
                 return false;
             }
         }
         return true;
+    }
+
+    @Override
+    public void reset()
+    {
+        components.clear();
     }
 }

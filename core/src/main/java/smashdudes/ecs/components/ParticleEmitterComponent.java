@@ -1,8 +1,11 @@
 package smashdudes.ecs.components;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import smashdudes.ecs.Component;
+import smashdudes.graphics.RenderResources;
 
 public class ParticleEmitterComponent extends Component
 {
@@ -15,8 +18,7 @@ public class ParticleEmitterComponent extends Component
 
     public Vector2 emissionPoint;
 
-    public Color startColor;
-    public Color endColor;
+    public Array<Color> colors = new Array<>();
 
     public float lifespanStartRange;
     public float lifespanEndRange;
@@ -26,6 +28,8 @@ public class ParticleEmitterComponent extends Component
 
     public Vector2 velocityMin;
     public Vector2 velocityMax;
+
+    public Texture texture = RenderResources.getTexture("textures/circle.png");
 
     public int zIndex = 10;
 
