@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
+import smashdudes.ecs.components.HealthComponent;
 import smashdudes.ecs.components.PlayerComponent;
 
 public class UIRenderSystem extends GameSystem
@@ -17,11 +18,13 @@ public class UIRenderSystem extends GameSystem
     {
         final String name;
         final int ID;
+        float health;
 
-        public CharacterDisplay(String name, int ID)
+        public CharacterDisplay(String name, int ID, float health)
         {
             this.name = name;
             this.ID = ID;
+            this.health = health;
         }
 
         @Override
@@ -66,6 +69,7 @@ public class UIRenderSystem extends GameSystem
         this.camera = (OrthographicCamera)viewport.getCamera();
 
         registerComponentType(PlayerComponent.class);
+        registerComponentType(HealthComponent.class);
     }
 
     public void resize(int w, int h)
@@ -84,15 +88,13 @@ public class UIRenderSystem extends GameSystem
     public void updateEntity(Entity entity, float dt)
     {
         PlayerComponent play = entity.getComponent(PlayerComponent.class);
-        String name = play.name;
-        name = name.substring(0, 1).toUpperCase() + name.substring(1);
-        CharacterDisplay portrait = new CharacterDisplay(name, entity.ID);
+        HealthComponent health = entity.getComponent(HealthComponent.class);
 
-        if(!players.contains(portrait, false))
-        {
-            players.add(portrait);
-            players.sort();
-        }
+        String name = play.name.substring(0, 1).toUpperCase() + play.name.substring(1);
+        CharacterDisplay portrait = new CharacterDisplay(name, entity.ID, health.health);
+
+        players.add(portrait);
+        players.sort();
     }
 
     @Override
@@ -102,11 +104,21 @@ public class UIRenderSystem extends GameSystem
         int sections = players.size;
         for(int i = 0; i < players.size; i++)
         {
+            float xOffset = (i + 1) * worldWidth / (sections + 1) - worldWidth / 2;
+
             layout.setText(font, players.get(i).name);
-            float width = layout.width;
-            float height = layout.height;
-            font.draw(sb, players.get(i).name, - width / 2 - worldWidth / 2 + (i + 1) * worldWidth / (sections + 1), -worldHeight / 2 + height);
+            float nameWidth = layout.width;
+            float nameHeight = layout.height;
+            font.draw(sb, players.get(i).name, xOffset - nameWidth / 2, nameHeight - worldHeight / 2);
+
+            String healthValue = String.format("%4.2f", players.get(i).health);
+            layout.setText(font, healthValue);
+            float healthWidth = layout.width;
+            float healthHeight = layout.height;
+            font.draw(sb, healthValue, xOffset - healthWidth / 2, healthHeight + nameHeight - worldHeight / 2);
         }
         sb.end();
+
+        players.clear();
     }
 }
