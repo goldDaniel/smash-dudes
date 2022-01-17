@@ -1,6 +1,8 @@
 package smashdudes.ecs.systems;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -11,6 +13,7 @@ import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.HealthComponent;
 import smashdudes.ecs.components.PlayerComponent;
+import smashdudes.ecs.components.UIComponent;
 
 public class UIRenderSystem extends GameSystem
 {
@@ -18,13 +21,15 @@ public class UIRenderSystem extends GameSystem
     {
         final String name;
         final int ID;
-        float health;
+        final float health;
+        final Texture texture;
 
-        public CharacterDisplay(String name, int ID, float health)
+        public CharacterDisplay(String name, int ID, float health, Texture texture)
         {
             this.name = name;
             this.ID = ID;
             this.health = health;
+            this.texture = texture;
         }
 
         @Override
@@ -63,6 +68,7 @@ public class UIRenderSystem extends GameSystem
 
         registerComponentType(PlayerComponent.class);
         registerComponentType(HealthComponent.class);
+        registerComponentType(UIComponent.class);
     }
 
     public void resize(int w, int h)
@@ -82,9 +88,10 @@ public class UIRenderSystem extends GameSystem
     {
         PlayerComponent play = entity.getComponent(PlayerComponent.class);
         HealthComponent health = entity.getComponent(HealthComponent.class);
+        UIComponent UI = entity.getComponent(UIComponent.class);
 
         String name = play.name.substring(0, 1).toUpperCase() + play.name.substring(1);
-        CharacterDisplay portrait = new CharacterDisplay(name, entity.ID, health.health);
+        CharacterDisplay portrait = new CharacterDisplay(name, entity.ID, health.health, UI.tex);
 
         players.add(portrait);
         players.sort();
@@ -93,6 +100,7 @@ public class UIRenderSystem extends GameSystem
     @Override
     public void postUpdate()
     {
+        sb.setColor(Color.WHITE);
         sb.begin();
         int sections = players.size;
         for(int i = 0; i < players.size; i++)
@@ -102,6 +110,13 @@ public class UIRenderSystem extends GameSystem
             layout.setText(font, players.get(i).name);
             float nameWidth = layout.width;
             float nameHeight = layout.height;
+
+            Texture texture = players.get(i).texture;
+            float ratio = (float) texture.getHeight() / (float) texture.getWidth();
+            float width = 1.5f * nameWidth;
+            float height = ratio * width;
+            sb.draw(players.get(i).texture, xOffset - width / 2, - worldHeight / 2, width, height);
+
             font.draw(sb, players.get(i).name, xOffset - nameWidth / 2, nameHeight - worldHeight / 2);
 
             String healthValue = String.format("%4.2f", players.get(i).health);
