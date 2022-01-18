@@ -6,6 +6,8 @@ import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Queue;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import smashdudes.core.WorldUtils;
+import smashdudes.ecs.components.AveragePositionCameraComponent;
+import smashdudes.ecs.components.CameraComponent;
 import smashdudes.ecs.events.Event;
 import smashdudes.ecs.systems.*;
 import smashdudes.graphics.RenderResources;
@@ -35,7 +37,13 @@ public class Engine
         int WORLD_WIDTH = 20;
         int WORLD_HEIGHT = 12;
 
+        Entity camEntity = createEntity();
+        CameraComponent cam = new CameraComponent();
+        camEntity.addComponent(new AveragePositionCameraComponent());
+        camEntity.addComponent(cam);
+
         OrthographicCamera camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
+        cam.camera = camera;
         camera.zoom = 5f;
 
         ExtendViewport viewport = new ExtendViewport(WORLD_WIDTH,WORLD_HEIGHT, camera);
@@ -67,15 +75,14 @@ public class Engine
         systems.add(new ParticleEmitterSystem(this));
         systems.add(new AnimationDebugSystem(this));
 
-        CameraSystem cs = new CameraSystem(this);
-        cs.setCamera(camera);
+
         rs.setCamera(camera);
         drs.setCamera(camera);
 
         rs.setViewport(viewport);
         drs.setViewport(viewport);
 
-        systems.add(cs);
+        systems.add(new AveragePositionCameraSystem(this));
         systems.add(rs);
         systems.add(drs);
         systems.add(urs);

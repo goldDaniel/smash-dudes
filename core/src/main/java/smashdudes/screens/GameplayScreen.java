@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import smashdudes.content.ContentRepo;
@@ -30,11 +31,19 @@ public class GameplayScreen extends GameScreen
         super(game);
         this.inputHandler = desc.gameInput;
         ecsEngine = new Engine();
-        
+
+        DTO.Stage stage = LoadContent.loadStage("Terrain.json");
+
+        for (DTO.Terrain data : stage.terrain)
+        {
+            buildTerrain(data);
+        }
+
+
         for(CharacterSelectDescription.PlayerDescription p : desc.descriptions)
         {
             DTO.Character characterData = ContentRepo.loadCharacter(p.identifier);
-            Entity player = buildPlayer(p.portrait, p.handle, characterData);
+            Entity player = buildPlayer(p.portrait, p.handle, characterData, stage.spawnPoints);
 
             IGameInputRetriever retriever = inputHandler.getGameInput(p.handle);
 
@@ -42,11 +51,7 @@ public class GameplayScreen extends GameScreen
             player.addComponent(pc);
         }
 
-        Array<DTO.Terrain> terrainData = LoadContent.loadTerrainData("Terrain.json");
-        for (DTO.Terrain data : terrainData)
-        {
-            buildTerrain(data);
-        }
+
     }
 
     @Override
@@ -82,12 +87,16 @@ public class GameplayScreen extends GameScreen
         ecsEngine.resize(width, height);
     }
 
-    private Entity buildPlayer(Texture portrait, PlayerHandle handle, DTO.Character characterData)
+    private Entity buildPlayer(Texture portrait, PlayerHandle handle, DTO.Character characterData, Array<Vector2> spawnPoints)
     {
         Entity player = ecsEngine.createEntity();
 
         player.addComponent(new PlayerComponent(handle, characterData.name));
-        player.addComponent(new PositionComponent(new Vector2(0, 10)));
+
+        int spawnIdx = MathUtils.random(0, spawnPoints.size - 1);
+        Vector2 pos = spawnPoints.removeIndex(spawnIdx);
+        player.addComponent(new PositionComponent(pos));
+
         player.addComponent(new JumpComponent(characterData.jumpStrength));
         player.addComponent(new GravityComponent(characterData.gravity));
         player.addComponent(new PlayerInAirComponent());

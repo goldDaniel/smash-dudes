@@ -1,5 +1,6 @@
 package smashdudes.content;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
@@ -32,16 +33,40 @@ public class LoadContent
         throw new IllegalStateException("Could not load file: " + fileName);
     }
 
-    public static Array<DTO.Terrain> loadTerrainData(String fileName)
+    public static DTO.Stage loadStage(String filename)
     {
-        JsonValue json = loadJson(fileName);
-        JsonValue terrainData = json.get("terrain");
+        JsonValue json = loadJson(filename);
 
+        DTO.Stage result = new DTO.Stage();
+
+        result.terrain  = loadTerrainData(json.get("terrain"));
+        result.spawnPoints = loadSpawnPoints(json.get("spawn_points"));
+
+        return result;
+    }
+
+    public static Array<Vector2> loadSpawnPoints(JsonValue json)
+    {
+        Array<Vector2> result = new Array<>();
+        for (int i = 0; i < json.size; i++)
+        {
+            Vector2 value = new Vector2();
+            value.x = json.get(i).get(0).asFloat();
+            value.y = json.get(i).get(1).asFloat();
+
+            result.add(value);
+        }
+
+        return result;
+    }
+
+    public static Array<DTO.Terrain> loadTerrainData(JsonValue json)
+    {
         Array<DTO.Terrain> data = new Array<>();
-        for (int i = 0; i < terrainData.size; i++)
+        for (int i = 0; i < json.size; i++)
         {
             DTO.Terrain terrainPiece = new DTO.Terrain();
-            terrainPiece.setTerrainData(terrainData.get(i));
+            terrainPiece.setTerrainData(json.get(i));
             data.add(terrainPiece);
         }
 

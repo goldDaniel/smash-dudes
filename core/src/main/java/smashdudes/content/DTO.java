@@ -12,6 +12,12 @@ import java.util.ArrayList;
 
 public class DTO
 {
+    public static class Stage
+    {
+        public Array<Terrain> terrain = new Array<>();
+        public Array<Vector2> spawnPoints = new Array<>();
+    }
+
     public static class Terrain
     {
         public String textureFilePath;
