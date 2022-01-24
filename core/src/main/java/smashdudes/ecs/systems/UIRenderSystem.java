@@ -14,6 +14,9 @@ import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.HealthComponent;
 import smashdudes.ecs.components.PlayerComponent;
 import smashdudes.ecs.components.UIComponent;
+import smashdudes.ecs.events.CountdownEvent;
+import smashdudes.ecs.events.Event;
+import smashdudes.ecs.events.TerrainCollisionEvent;
 
 public class UIRenderSystem extends GameSystem
 {
@@ -53,6 +56,9 @@ public class UIRenderSystem extends GameSystem
 
     private final Array<CharacterDisplay> players = new Array<>();
 
+    private String countDisplay = "";
+    private float timer;
+
     public UIRenderSystem(Engine engine, SpriteBatch sb, BitmapFont font)
     {
         super(engine);
@@ -63,12 +69,16 @@ public class UIRenderSystem extends GameSystem
         worldHeight = 720;
         layout = new GlyphLayout(font, "");
 
+        timer = 0;
+
         this.viewport = new ExtendViewport(worldWidth, worldHeight);
         this.camera = (OrthographicCamera)viewport.getCamera();
 
         registerComponentType(PlayerComponent.class);
         registerComponentType(HealthComponent.class);
         registerComponentType(UIComponent.class);
+
+        registerEventType(CountdownEvent.class);
     }
 
     public void resize(int w, int h)
@@ -95,6 +105,17 @@ public class UIRenderSystem extends GameSystem
 
         players.add(portrait);
         players.sort();
+
+        if(countDisplay.equals("GO!"))
+        {
+            timer += dt;
+
+            if(timer >= 1)
+            {
+                timer = 0;
+                countDisplay = "";
+            }
+        }
     }
 
     @Override
@@ -125,8 +146,33 @@ public class UIRenderSystem extends GameSystem
             float healthHeight = layout.height;
             font.draw(sb, healthValue, xOffset - healthWidth / 2, healthHeight + nameHeight - worldHeight / 2);
         }
+        if(!countDisplay.equals(""))
+        {
+            layout.setText(font, countDisplay);
+            float width = layout.width;
+            float height = layout.height;
+            font.draw(sb, countDisplay, - width / 2, - height / 2);
+        }
+        sb.end();
+
+        sb.begin();
+
         sb.end();
 
         players.clear();
+    }
+
+    @Override
+    public void handleEvent(Event event)
+    {
+        if(event instanceof CountdownEvent)
+        {
+            CountdownEvent c = (CountdownEvent)event;
+            countDisplay = c.currTime + "";
+            if(c.currTime == 0)
+            {
+                countDisplay = "GO!";
+            }
+        }
     }
 }
