@@ -56,6 +56,7 @@ public class Engine
         PlayerControllerSystem ctrlSys = new PlayerControllerSystem(this);
         ctrlSys.setEnabled(false);
 
+        systems.add(new CountdownSystem(this));
         systems.add(new PlayerIdleSystem(this));
         systems.add(new PlayerRunningSystem(this));
         systems.add(new PlayerInAirSystem(this));
@@ -145,11 +146,11 @@ public class Engine
     {
         isUpdating = true;
         {
-            for (GameSystem s : systems)
+            for (int i = 0; i < systems.size; i++)
             {
-                if(s.isEnabled())
+                if(systems.get(i).isEnabled())
                 {
-                    s.update(dt);
+                    systems.get(i).update(dt);
                 }
             }
 
@@ -182,5 +183,29 @@ public class Engine
         rs.resize(w, h);
         drs.resize(w, h);
         urs.resize(w, h);
+    }
+
+    public <T extends GameSystem> void enableSystem(Class<T> clazz)
+    {
+        for(GameSystem system : systems)
+        {
+            if(system.getClass().equals(clazz))
+            {
+                system.setEnabled(true);
+                return;
+            }
+        }
+    }
+
+    public <T extends GameSystem> void disableSystem(Class<T> clazz)
+    {
+        for(GameSystem system : systems)
+        {
+            if(system.getClass().equals(clazz))
+            {
+                system.setEnabled(false);
+                return;
+            }
+        }
     }
 }
