@@ -155,10 +155,6 @@ public class UIRenderSystem extends GameSystem
         }
         sb.end();
 
-        sb.begin();
-
-        sb.end();
-
         players.clear();
     }
 
