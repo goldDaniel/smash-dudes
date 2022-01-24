@@ -53,13 +53,16 @@ public class Engine
         urs = new UIRenderSystem(this, RenderResources.getSpriteBatch(), RenderResources.getFont());
 
 
+        PlayerControllerSystem ctrlSys = new PlayerControllerSystem(this);
+        ctrlSys.setEnabled(false);
+
         systems.add(new PlayerIdleSystem(this));
         systems.add(new PlayerRunningSystem(this));
         systems.add(new PlayerInAirSystem(this));
         systems.add(new GroundAttackSystem(this));
         systems.add(new PlayerLandingSystem(this));
         systems.add(new RenderDirectionSystem(this));
-        systems.add(new PlayerControllerSystem(this));
+        systems.add(ctrlSys);
         systems.add(new AIControllerSystem(this));
         systems.add(new GravitySystem(this));
         systems.add(new MovementSystem(this));
@@ -144,7 +147,10 @@ public class Engine
         {
             for (GameSystem s : systems)
             {
-                s.update(dt);
+                if(s.isEnabled())
+                {
+                    s.update(dt);
+                }
             }
 
             while (events.notEmpty())
