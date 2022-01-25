@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import smashdudes.core.WorldUtils;
 import smashdudes.ecs.components.AveragePositionCameraComponent;
 import smashdudes.ecs.components.CameraComponent;
+import smashdudes.ecs.components.CountdownComponent;
 import smashdudes.ecs.events.Event;
 import smashdudes.ecs.systems.*;
 import smashdudes.graphics.RenderResources;
@@ -39,7 +40,7 @@ public class Engine
 
         Entity camEntity = createEntity();
         CameraComponent cam = new CameraComponent();
-        camEntity.addComponent(new AveragePositionCameraComponent());
+        camEntity.addComponent(new CountdownComponent(3));
         camEntity.addComponent(cam);
 
         OrthographicCamera camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
@@ -86,11 +87,8 @@ public class Engine
         rs.setViewport(viewport);
         drs.setViewport(viewport);
 
-        AveragePositionCameraSystem avPosCam = new AveragePositionCameraSystem(this);
-        avPosCam.setEnabled(false);
-
         systems.add(new CountdownCameraSystem(this));
-        systems.add(avPosCam);
+        systems.add(new AveragePositionCameraSystem(this));
         systems.add(rs);
         systems.add(drs);
         systems.add(urs);

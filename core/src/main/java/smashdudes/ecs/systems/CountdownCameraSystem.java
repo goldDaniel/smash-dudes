@@ -1,14 +1,14 @@
 package smashdudes.ecs.systems;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
-import smashdudes.ecs.components.CameraComponent;
-import smashdudes.ecs.components.CountdownComponent;
-import smashdudes.ecs.components.PlayerComponent;
-import smashdudes.ecs.components.PositionComponent;
+import smashdudes.ecs.components.*;
+
+import java.lang.reflect.GenericArrayType;
 
 public class CountdownCameraSystem extends GameSystem
 {
@@ -23,6 +23,7 @@ public class CountdownCameraSystem extends GameSystem
         super(engine);
 
         registerComponentType(CountdownComponent.class);
+        registerComponentType(CameraComponent.class);
 
         numPlayers = 0;
         currPlayer = 1;
@@ -52,6 +53,7 @@ public class CountdownCameraSystem extends GameSystem
     public void updateEntity(Entity entity, float dt)
     {
         CountdownComponent count = entity.getComponent(CountdownComponent.class);
+        CameraComponent cam = entity.getComponent(CameraComponent.class);
 
         float max = count.maxDuration;
         float curr = count.currDuration;
@@ -66,12 +68,9 @@ public class CountdownCameraSystem extends GameSystem
         }
         else
         {
-            engine.disableSystem(this.getClass());
-            engine.enableSystem(AveragePositionCameraSystem.class);
+            entity.removeComponent(CountdownComponent.class);
+            entity.addComponent(new AveragePositionCameraComponent());
         }
-
-        Array<Entity> camEntities = engine.getEntities(CameraComponent.class);
-        CameraComponent cam = camEntities.get(0).getComponent(CameraComponent.class);
 
         cam.camera.position.lerp(new Vector3(position, 0), 1/50f);
         cam.camera.zoom = 2f;//MathUtils.lerp(cam.camera.zoom, MathUtils.clamp(max.dst(min) * 0.1f, 1.4f, 2.6f), 1/50f);

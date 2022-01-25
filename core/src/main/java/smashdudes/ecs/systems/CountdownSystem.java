@@ -31,7 +31,6 @@ public class CountdownSystem extends GameSystem
         if (cc.currDuration <= 0)
         {
             engine.enableSystem(PlayerControllerSystem.class);
-            engine.destroyEntity(entity);
         }
 
         if(cc.currDuration > 2)

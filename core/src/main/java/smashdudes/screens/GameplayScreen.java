@@ -50,9 +50,6 @@ public class GameplayScreen extends GameScreen
             PlayerControllerComponent pc = new PlayerControllerComponent(retriever);
             player.addComponent(pc);
         }
-
-        Entity countdown = ecsEngine.createEntity();
-        countdown.addComponent(new CountdownComponent(3));
     }
 
     @Override
