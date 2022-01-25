@@ -73,7 +73,7 @@ public class CountdownCameraSystem extends GameSystem
         }
 
         cam.camera.position.lerp(new Vector3(position, 0), 1/50f);
-        cam.camera.zoom = 2f;//MathUtils.lerp(cam.camera.zoom, MathUtils.clamp(max.dst(min) * 0.1f, 1.4f, 2.6f), 1/50f);
+        cam.camera.zoom = 1f;//MathUtils.lerp(cam.camera.zoom, MathUtils.clamp(max.dst(min) * 0.1f, 1.4f, 2.6f), 1/50f);
         cam.camera.update();
     }
 }
