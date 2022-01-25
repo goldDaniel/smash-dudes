@@ -86,7 +86,11 @@ public class Engine
         rs.setViewport(viewport);
         drs.setViewport(viewport);
 
-        systems.add(new AveragePositionCameraSystem(this));
+        AveragePositionCameraSystem avPosCam = new AveragePositionCameraSystem(this);
+        avPosCam.setEnabled(false);
+
+        systems.add(new CountdownCameraSystem(this));
+        systems.add(avPosCam);
         systems.add(rs);
         systems.add(drs);
         systems.add(urs);
