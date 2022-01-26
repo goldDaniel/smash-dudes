@@ -10,6 +10,7 @@ public abstract class GameSystem
 {
     private final Array<Class<? extends Component>> components = new Array<>();
     private final Array<Class<? extends Event>> events = new Array<>();
+    private boolean enabled = true;
 
     protected final Engine engine;
 
@@ -59,4 +60,14 @@ public abstract class GameSystem
     protected void updateEntity(Entity entity, float dt) { }
 
     protected void postUpdate() {}
+
+    public boolean isEnabled()
+    {
+        return enabled;
+    }
+
+    public void setEnabled(boolean value)
+    {
+        enabled = value;
+    }
 }

@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import smashdudes.core.WorldUtils;
 import smashdudes.ecs.components.AveragePositionCameraComponent;
 import smashdudes.ecs.components.CameraComponent;
+import smashdudes.ecs.components.CountdownComponent;
 import smashdudes.ecs.events.Event;
 import smashdudes.ecs.systems.*;
 import smashdudes.graphics.RenderResources;
@@ -39,7 +40,7 @@ public class Engine
 
         Entity camEntity = createEntity();
         CameraComponent cam = new CameraComponent();
-        camEntity.addComponent(new AveragePositionCameraComponent());
+        camEntity.addComponent(new CountdownComponent(3));
         camEntity.addComponent(cam);
 
         OrthographicCamera camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
@@ -53,13 +54,17 @@ public class Engine
         urs = new UIRenderSystem(this, RenderResources.getSpriteBatch(), RenderResources.getFont());
 
 
+        PlayerControllerSystem ctrlSys = new PlayerControllerSystem(this);
+        ctrlSys.setEnabled(false);
+
+        systems.add(new CountdownSystem(this));
         systems.add(new PlayerIdleSystem(this));
         systems.add(new PlayerRunningSystem(this));
         systems.add(new PlayerInAirSystem(this));
         systems.add(new GroundAttackSystem(this));
         systems.add(new PlayerLandingSystem(this));
         systems.add(new RenderDirectionSystem(this));
-        systems.add(new PlayerControllerSystem(this));
+        systems.add(ctrlSys);
         systems.add(new AIControllerSystem(this));
         systems.add(new GravitySystem(this));
         systems.add(new MovementSystem(this));
@@ -82,6 +87,7 @@ public class Engine
         rs.setViewport(viewport);
         drs.setViewport(viewport);
 
+        systems.add(new CountdownCameraSystem(this));
         systems.add(new AveragePositionCameraSystem(this));
         systems.add(rs);
         systems.add(drs);
@@ -142,9 +148,12 @@ public class Engine
     {
         isUpdating = true;
         {
-            for (GameSystem s : systems)
+            for (int i = 0; i < systems.size; i++)
             {
-                s.update(dt);
+                if(systems.get(i).isEnabled())
+                {
+                    systems.get(i).update(dt);
+                }
             }
 
             while (events.notEmpty())
@@ -176,5 +185,29 @@ public class Engine
         rs.resize(w, h);
         drs.resize(w, h);
         urs.resize(w, h);
+    }
+
+    public <T extends GameSystem> void enableSystem(Class<T> clazz)
+    {
+        for(GameSystem system : systems)
+        {
+            if(system.getClass().equals(clazz))
+            {
+                system.setEnabled(true);
+                return;
+            }
+        }
+    }
+
+    public <T extends GameSystem> void disableSystem(Class<T> clazz)
+    {
+        for(GameSystem system : systems)
+        {
+            if(system.getClass().equals(clazz))
+            {
+                system.setEnabled(false);
+                return;
+            }
+        }
     }
 }
