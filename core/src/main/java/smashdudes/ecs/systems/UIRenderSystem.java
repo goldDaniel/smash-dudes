@@ -16,7 +16,6 @@ import smashdudes.ecs.components.PlayerComponent;
 import smashdudes.ecs.components.UIComponent;
 import smashdudes.ecs.events.CountdownEvent;
 import smashdudes.ecs.events.Event;
-import smashdudes.ecs.events.TerrainCollisionEvent;
 
 public class UIRenderSystem extends GameSystem
 {
@@ -56,8 +55,10 @@ public class UIRenderSystem extends GameSystem
 
     private final Array<CharacterDisplay> players = new Array<>();
 
-    private String countDisplay = "";
-    private float timer;
+    private static final String FINISH_COUNTDOWN = "";
+
+    private String countDisplay = " ";
+    private float goDisplayTimer;
 
     public UIRenderSystem(Engine engine, SpriteBatch sb, BitmapFont font)
     {
@@ -69,7 +70,7 @@ public class UIRenderSystem extends GameSystem
         worldHeight = 720;
         layout = new GlyphLayout(font, "");
 
-        timer = 0;
+        goDisplayTimer = 0;
 
         this.viewport = new ExtendViewport(worldWidth, worldHeight);
         this.camera = (OrthographicCamera)viewport.getCamera();
@@ -108,12 +109,12 @@ public class UIRenderSystem extends GameSystem
 
         if(countDisplay.equals("GO!"))
         {
-            timer += dt;
+            goDisplayTimer += dt;
 
-            if(timer >= 1)
+            if(goDisplayTimer >= 1)
             {
-                timer = 0;
-                countDisplay = "";
+                goDisplayTimer = 0;
+                countDisplay = FINISH_COUNTDOWN; // after GO! is displayed for 1 second,
             }
         }
     }
@@ -146,7 +147,7 @@ public class UIRenderSystem extends GameSystem
             float healthHeight = layout.height;
             font.draw(sb, healthValue, xOffset - healthWidth / 2, healthHeight + nameHeight - worldHeight / 2);
         }
-        if(!countDisplay.equals(""))
+        if(!countDisplay.equals(FINISH_COUNTDOWN))
         {
             layout.setText(font, countDisplay);
             float width = layout.width;

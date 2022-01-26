@@ -1,6 +1,5 @@
 package smashdudes.ecs.systems;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
@@ -8,15 +7,11 @@ import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
 
-import java.lang.reflect.GenericArrayType;
-
 public class CountdownCameraSystem extends GameSystem
 {
     private final Vector2 position = new Vector2(0, 0);
     private int numPlayers;
     private int currPlayer;
-
-    private float timer;
 
     public CountdownCameraSystem(Engine engine)
     {
@@ -27,13 +22,14 @@ public class CountdownCameraSystem extends GameSystem
 
         numPlayers = 0;
         currPlayer = 1;
-        timer = 0;
     }
 
     @Override
     public void preUpdate()
     {
         Array<Entity> entities = engine.getEntities(PositionComponent.class, PlayerComponent.class);
+        numPlayers = entities.size;
+
         for(Entity e : entities)
         {
             int ID = e.getComponent(PlayerComponent.class).handle.ID;
@@ -41,10 +37,6 @@ public class CountdownCameraSystem extends GameSystem
             if(ID == currPlayer)
             {
                 position.set(e.getComponent(PositionComponent.class).position);
-            }
-            if(ID > numPlayers)
-            {
-                numPlayers = ID;
             }
         }
     }
@@ -55,13 +47,14 @@ public class CountdownCameraSystem extends GameSystem
         CountdownComponent count = entity.getComponent(CountdownComponent.class);
         CameraComponent cam = entity.getComponent(CameraComponent.class);
 
+        //increments the currPlayer variable every maxDuration/numPlayer seconds. Making it so every character gets zoomed in on
+        //to for an equal number of seconds. When currPlayer is 1, player 1 is zoomed in one, etc.
         float max = count.maxDuration;
         float curr = count.currDuration;
         float threshold = max / numPlayers;
-        timer += dt;
-        if(timer < max)
+        if(curr > 0)
         {
-            if (curr <= max - currPlayer * threshold)
+            if (curr <= max - currPlayer * threshold) // once threshold seconds have passed, go to the next player
             {
                 currPlayer++;
             }
@@ -73,7 +66,7 @@ public class CountdownCameraSystem extends GameSystem
         }
 
         cam.camera.position.lerp(new Vector3(position, 0), 1/50f);
-        cam.camera.zoom = 1f;//MathUtils.lerp(cam.camera.zoom, MathUtils.clamp(max.dst(min) * 0.1f, 1.4f, 2.6f), 1/50f);
+        cam.camera.zoom = 1f;
         cam.camera.update();
     }
 }
