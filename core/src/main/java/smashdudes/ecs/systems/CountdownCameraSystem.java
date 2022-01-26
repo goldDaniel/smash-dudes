@@ -30,13 +30,11 @@ public class CountdownCameraSystem extends GameSystem
         Array<Entity> entities = engine.getEntities(PositionComponent.class, PlayerComponent.class);
         numPlayers = entities.size;
 
-        for(Entity e : entities)
+        for(int i = 0; i < numPlayers; i++)
         {
-            int ID = e.getComponent(PlayerComponent.class).handle.ID;
-
-            if(ID == currPlayer)
+            if(i + 1 == currPlayer)
             {
-                position.set(e.getComponent(PositionComponent.class).position);
+                position.set(entities.get(i).getComponent(PositionComponent.class).position);
             }
         }
     }
