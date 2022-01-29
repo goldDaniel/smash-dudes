@@ -5,6 +5,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ArrayMap;
@@ -15,10 +16,12 @@ public class RenderResources
 
     private static SpriteBatch s;
     private static ShapeRenderer sh;
-    private static BitmapFont font;
 
     private static ArrayMap<String, ShaderProgram> shaders;
+
     private static ArrayMap<String, Texture> textures;
+
+    private static ArrayMap<String, BitmapFont> fonts;
 
     public static void init()
     {
@@ -30,10 +33,10 @@ public class RenderResources
 
         sh = new ShapeRenderer();
 
-        font = new BitmapFont();
 
         textures = new ArrayMap<>();
         shaders = new ArrayMap<>();
+        fonts = new ArrayMap<>();
     }
 
     public static Texture getTexture(String fileName)
@@ -79,8 +82,28 @@ public class RenderResources
         return sh;
     }
 
-    public static BitmapFont getFont()
+    public static BitmapFont getFont(String fontName, int fontSize)
     {
+        String fileName = "fonts/" + fontName + ".ttf";
+        String key = fileName + "##" + fontSize;
+        if(fonts.containsKey(key))
+        {
+            return fonts.get(key);
+        }
+
+        BitmapFont font = createFont(fileName, fontSize);
+        fonts.put(key, font);
+
         return font;
+    }
+
+    private static BitmapFont createFont(String filename, int fontSize)
+    {
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal(filename));
+
+        FreeTypeFontGenerator.FreeTypeFontParameter params = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        params.size = fontSize;
+
+        return generator.generateFont(params);
     }
 }
