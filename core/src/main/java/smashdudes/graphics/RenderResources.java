@@ -9,6 +9,10 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ArrayMap;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 public class RenderResources
 {
@@ -84,26 +88,48 @@ public class RenderResources
 
     public static BitmapFont getFont(String fontName, int fontSize)
     {
-        String fileName = "fonts/" + fontName + ".ttf";
-        String key = fileName + "##" + fontSize;
+        String key = fontName + "##" + fontSize;
         if(fonts.containsKey(key))
         {
             return fonts.get(key);
         }
 
-        BitmapFont font = createFont(fileName, fontSize);
+        BitmapFont font = createFont(fontName, fontSize);
         fonts.put(key, font);
 
         return font;
     }
 
-    private static BitmapFont createFont(String filename, int fontSize)
+    private static BitmapFont createFont(String fontName, int fontSize)
     {
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal(filename));
+
+        String fileName = "fonts/" + fontName;
+
+        //check to see if it exists, we can support ttf and otf files
+        FileHandle handle = getFontFileHandle(fileName);
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(handle);
 
         FreeTypeFontGenerator.FreeTypeFontParameter params = new FreeTypeFontGenerator.FreeTypeFontParameter();
         params.size = fontSize;
 
         return generator.generateFont(params);
+    }
+
+    private static FileHandle getFontFileHandle(String filenameWithoutExtension)
+    {
+        String[] filetypes = {".otf", ".ttf"};
+
+        for(String extension : filetypes)
+        {
+            String filename = filenameWithoutExtension + extension;
+            FileHandle handle = Gdx.files.internal(filename);
+
+            if(handle.exists())
+            {
+                return handle;
+            }
+        }
+
+        throw new IllegalArgumentException("No font file found for font: " + filenameWithoutExtension);
     }
 }

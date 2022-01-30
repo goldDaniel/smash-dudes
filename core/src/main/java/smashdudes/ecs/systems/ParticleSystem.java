@@ -3,7 +3,6 @@ package smashdudes.ecs.systems;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import smashdudes.core.WorldUtils;
 import smashdudes.ecs.Engine;
