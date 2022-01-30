@@ -1,6 +1,7 @@
 package smashdudes.graphics.ui;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -18,7 +19,6 @@ public class GameSkin extends Skin
         add("splash_continue", new Label.LabelStyle(getFont("splash_continue_font"), Color.WHITE));
 
 
-
         //MAIN MENU UI/////////////////////////////////////////////////////////////////////////////////////
         add("text_button_font", RenderResources.getFont("rexlia", 32));
 
@@ -26,13 +26,28 @@ public class GameSkin extends Skin
         add("text_button_down", RenderResources.getTexture("ui/grey_button02.png"));
         add("text_button_over", RenderResources.getTexture("ui/grey_button03.png"));
 
-        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.up = newDrawable("text_button_up", Color.LIGHT_GRAY);
-        textButtonStyle.down = newDrawable("text_button_down", Color.WHITE);
-        textButtonStyle.over = newDrawable("text_button_over", Color.WHITE);
-        textButtonStyle.font = getFont("text_button_font");
-        textButtonStyle.fontColor = Color.BLACK;
-        textButtonStyle.overFontColor = Color.MAROON;
-        add("text_button_main_menu", textButtonStyle);
+        TextButton.TextButtonStyle menuButtonStyle = new TextButton.TextButtonStyle();
+        menuButtonStyle.up = newDrawable("text_button_up", Color.LIGHT_GRAY);
+        menuButtonStyle.down = newDrawable("text_button_down", Color.WHITE);
+        menuButtonStyle.over = newDrawable("text_button_over", Color.WHITE);
+        menuButtonStyle.font = getFont("text_button_font");
+        menuButtonStyle.fontColor = Color.BLACK;
+        menuButtonStyle.overFontColor = Color.MAROON;
+        add("text_button_main_menu", menuButtonStyle);
+
+        //SETTINGS UI////////////////////////////////////////////////////////////////////////////////////////
+
+        add("checkbox_settings_on", RenderResources.getTexture("ui/grey_box.png"));
+        add("checkbox_settings_off", RenderResources.getTexture("ui/grey_boxCheckmark.png"));
+
+        CheckBox.CheckBoxStyle checkboxStyle = new CheckBox.CheckBoxStyle();
+        checkboxStyle.checkboxOn = newDrawable("checkbox_settings_on", Color.WHITE);
+        checkboxStyle.checkboxOnOver = newDrawable("checkbox_settings_on", Color.LIGHT_GRAY);
+        checkboxStyle.checkboxOff = newDrawable("checkbox_settings_off", Color.WHITE);
+        checkboxStyle.checkboxOver = newDrawable("checkbox_settings_off", Color.LIGHT_GRAY);
+        checkboxStyle.font = getFont("text_button_font");
+        checkboxStyle.fontColor = Color.WHITE;
+
+        add("checkbox_settings", checkboxStyle);
     }
 }

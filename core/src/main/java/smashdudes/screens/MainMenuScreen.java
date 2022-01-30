@@ -36,9 +36,40 @@ public class MainMenuScreen extends GameScreen
         table.add(new Label("Smash Dudes", skin, "splash_title"));
         table.row();
 
-        table.add(createPlayButton(table)).padTop(256);
+        table.add(createButton("Play", new Action()
+        {
+            @Override
+            public boolean act(float delta)
+            {
+                game.setScreen(new CharacterSelectScreen(game));
+                return true;
+            }
+        },
+        table)).padTop(256);
+
         table.row();
-        table.add(createExitButton(table)).padTop(64);
+
+        table.add(createButton("Settings", new Action()
+        {
+            @Override
+            public boolean act(float delta)
+            {
+                game.setScreen(new SettingsScreen(game));
+                return true;
+            }
+        }, table)).padTop(64);
+
+        table.row();
+
+        table.add(createButton("Exit", new Action()
+        {
+            @Override
+            public boolean act(float delta)
+            {
+                Gdx.app.exit();
+                return true;
+            }
+        }, table)).padTop(64);
     }
 
     @Override
@@ -73,53 +104,20 @@ public class MainMenuScreen extends GameScreen
         uiStage.draw();
     }
 
-    private TextButton createPlayButton(Table table)
+    private TextButton createButton(String text, Action action, Table table)
     {
-        TextButton playButton = new TextButton("Play", skin, "text_button_main_menu");
-        playButton.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.25f)));
-        playButton.addListener(new ChangeListener()
+        TextButton result = new TextButton(text, skin, "text_button_main_menu");
+        result.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.25f)));
+        result.addListener(new ChangeListener()
         {
             @Override
             public void changed(ChangeEvent event, Actor actor)
             {
-                Action sequence = Actions.sequence(Actions.fadeOut(1f), new Action()
-                {
-                    @Override
-                    public boolean act(float delta)
-                    {
-                        game.setScreen(new CharacterSelectScreen(game));
-                        return true;
-                    }
-                });
-                table.addAction(sequence);
+                table.addAction(Actions.sequence(Actions.fadeOut(1f), action));
+                result.removeListener(this);
             }
         });
 
-        return playButton;
-    }
-
-    private TextButton createExitButton(Table table)
-    {
-        TextButton exitButton = new TextButton("Exit", skin, "text_button_main_menu");
-        exitButton.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.25f)));
-        exitButton.addListener(new ChangeListener()
-        {
-            @Override
-            public void changed(ChangeEvent event, Actor actor)
-            {
-                Action sequence = Actions.sequence(Actions.fadeOut(1f), new Action()
-                {
-                    @Override
-                    public boolean act(float delta)
-                    {
-                        Gdx.app.exit();
-                        return true;
-                    }
-                });
-                table.addAction(sequence);
-            }
-        });
-
-        return exitButton;
+        return result;
     }
 }
