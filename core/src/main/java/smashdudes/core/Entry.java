@@ -3,6 +3,7 @@ package smashdudes.core;
 import com.badlogic.gdx.Game;
 import smashdudes.graphics.RenderResources;
 import smashdudes.screens.CharacterSelectScreen;
+import smashdudes.screens.MainMenuScreen;
 import smashdudes.screens.SplashScreen;
 
 /**

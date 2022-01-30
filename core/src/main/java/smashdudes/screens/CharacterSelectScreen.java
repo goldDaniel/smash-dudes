@@ -3,6 +3,7 @@ package smashdudes.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -10,10 +11,10 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import smashdudes.core.PlayerHandle;
-import smashdudes.graphics.RenderResources;
 import smashdudes.core.characterselect.CharacterSelector;
 import smashdudes.core.input.GameInputAssigner;
 import smashdudes.core.input.IMenuInputRetriever;
+import smashdudes.graphics.RenderResources;
 import smashdudes.util.CharacterSelectDescription;
 
 public class CharacterSelectScreen extends GameScreen
@@ -99,6 +100,7 @@ public class CharacterSelectScreen extends GameScreen
         Matrix4 proj = viewport.getCamera().combined;
         sh.setProjectionMatrix(proj);
         sb.setProjectionMatrix(proj);
+        sb.setColor(Color.WHITE);
         selector.render(sh, sb);
 
         sb.setProjectionMatrix(proj);
