@@ -27,7 +27,7 @@ public class GameSkin extends Skin
         add("text_button_over", RenderResources.getTexture("ui/grey_button03.png"));
 
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.up = newDrawable("text_button_up", Color.WHITE);
+        textButtonStyle.up = newDrawable("text_button_up", Color.LIGHT_GRAY);
         textButtonStyle.down = newDrawable("text_button_down", Color.WHITE);
         textButtonStyle.over = newDrawable("text_button_over", Color.WHITE);
         textButtonStyle.font = getFont("text_button_font");
