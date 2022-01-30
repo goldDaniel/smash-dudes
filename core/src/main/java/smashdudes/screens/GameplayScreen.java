@@ -3,7 +3,6 @@ package smashdudes.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -12,8 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import smashdudes.content.ContentRepo;
 import smashdudes.content.DTO;
-import smashdudes.content.LoadContent;
+import smashdudes.content.ContentLoader;
 import smashdudes.core.PlayerHandle;
+import smashdudes.core.WorldUtils;
 import smashdudes.core.input.GameInputHandler;
 import smashdudes.core.input.IGameInputRetriever;
 import smashdudes.ecs.Engine;
@@ -34,7 +34,9 @@ public class GameplayScreen extends GameScreen
         this.inputHandler = desc.gameInput;
         ecsEngine = new Engine();
 
-        DTO.Stage stage = LoadContent.loadStage("Terrain.json");
+        DTO.Stage stage = ContentLoader.loadStage("stage.json");
+
+        WorldUtils.setStage(stage);
 
         for (DTO.Terrain data : stage.terrain)
         {
@@ -98,7 +100,9 @@ public class GameplayScreen extends GameScreen
     {
         Entity player = ecsEngine.createEntity();
 
-        player.addComponent(new PlayerComponent(handle, characterData.name));
+        PlayerComponent pc = new PlayerComponent(handle, characterData.name);
+        pc.lives = 3;
+        player.addComponent(pc);
 
         int spawnIdx = MathUtils.random(0, spawnPoints.size - 1);
         Vector2 pos = spawnPoints.removeIndex(spawnIdx);

@@ -5,6 +5,8 @@ import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.PlayerComponent;
 import smashdudes.ecs.components.PlayerControllerComponent;
 import smashdudes.ecs.components.PlayerInAirComponent;
+import smashdudes.ecs.events.Event;
+import smashdudes.ecs.events.RespawnEvent;
 
 public class PlayerResetSystem extends GameSystem
 {
@@ -13,14 +15,16 @@ public class PlayerResetSystem extends GameSystem
         super(engine);
         registerComponentType(PlayerComponent.class);
         registerComponentType(PlayerControllerComponent.class);
+
+        registerEventType(RespawnEvent.class);
     }
 
     @Override
-    public void updateEntity(Entity entity, float dt)
+    public void handleEvent(Event event)
     {
-        if(!entity.hasComponent(PlayerInAirComponent.class))
+        if(event instanceof RespawnEvent)
         {
-            entity.addComponent(new PlayerInAirComponent());
+            
         }
     }
 }

@@ -17,12 +17,9 @@ import smashdudes.ecs.events.LandingEvent;
 
 public class ParticleSystem extends GameSystem
 {
-    private WorldUtils utils;
-
-    public ParticleSystem(Engine engine, WorldUtils utils)
+    public ParticleSystem(Engine engine)
     {
         super(engine);
-        this.utils = utils;
 
         registerComponentType(PositionComponent.class);
         registerComponentType(ParticleComponent.class);
@@ -30,43 +27,6 @@ public class ParticleSystem extends GameSystem
 
         registerEventType(LandingEvent.class);
         registerEventType(AttackEvent.class);
-    }
-
-    @Override
-    protected void preUpdate()
-    {
-        if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT))
-        {
-
-            Entity emitter = engine.createEntity();
-            ParticleEmitterComponent comp = new ParticleEmitterComponent();
-            comp.lifetime = 0.1f;
-
-            comp.emissionRate = 2048;
-            comp.emissionPoint = utils.getWorldFromScreen(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
-
-            Color startColor =Color.GREEN.cpy();
-            comp.colors.add(startColor);
-
-            Color red = Color.YELLOW.cpy().add(-0.2f, -0.2f, -0.2f, 0);
-            red.a = 0.8f;
-            comp.colors.add(red);
-
-            Color end = Color.WHITE.cpy();
-            end.a = 0.5f;
-            comp.colors.add(end);
-
-            comp.lifespanStartRange = 0.1f;
-            comp.lifespanEndRange = 0.3f;
-
-            comp.sizeStartRange = new Vector2(0.2f, 0.4f);
-            comp.sizeEndRange = new Vector2(0.0f, 0.1f);
-
-            comp.velocityMin = new Vector2(-1f, -1).nor().scl(15);
-            comp.velocityMax = new Vector2( 1, 1).nor().scl(15);
-            comp.zIndex = 25;
-            emitter.addComponent(comp);
-        }
     }
 
     @Override

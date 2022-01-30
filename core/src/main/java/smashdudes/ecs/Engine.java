@@ -66,11 +66,12 @@ public class Engine
         systems.add(new HitDetectionSystem(this));
         systems.add(new HitResolutionSystem(this));
         systems.add(new PlayerStunnedSystem(this));
+        systems.add(new BoundsSystem(this));
         systems.add(new PlayerResetSystem(this));
         systems.add(new AudioSystem(this));
 
         systems.add(new AnimationSystem(this));
-        systems.add(new ParticleSystem(this, new WorldUtils(viewport)));
+        systems.add(new ParticleSystem(this));
         systems.add(new ParticleEmitterSystem(this));
         systems.add(new AnimationDebugSystem(this));
 
