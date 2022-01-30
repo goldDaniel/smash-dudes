@@ -38,7 +38,8 @@ public class MainMenuScreen extends GameScreen
         table.add(new Label("Smash Dudes", skin, "splash_title"));
         table.row();
 
-        TextButton playButton = new TextButton("Play", skin, "default");
+        TextButton playButton = new TextButton("Play", skin, "text_button_main_menu");
+        playButton.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.25f)));
         playButton.addListener(new ChangeListener()
         {
             @Override
@@ -60,8 +61,8 @@ public class MainMenuScreen extends GameScreen
         table.add(playButton).padTop(256);
         table.row();
 
-        TextButton exitButton = new TextButton("Exit", skin, "default");
-
+        TextButton exitButton = new TextButton("Exit", skin, "text_button_main_menu");
+        exitButton.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.25f)));
         exitButton.addListener(new ChangeListener()
         {
             @Override

@@ -32,6 +32,6 @@ public class GameSkin extends Skin
         textButtonStyle.over = newDrawable("text_button_over", Color.WHITE);
         textButtonStyle.font = getFont("text_button_font");
         textButtonStyle.fontColor = Color.BLACK;
-        add("default", textButtonStyle);
+        add("text_button_main_menu", textButtonStyle);
     }
 }
