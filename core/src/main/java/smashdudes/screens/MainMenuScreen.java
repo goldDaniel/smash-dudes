@@ -17,10 +17,9 @@ import smashdudes.graphics.ui.GameSkin;
 
 public class MainMenuScreen extends GameScreen
 {
-    GameSkin skin;
-    Stage uiStage;
-
-    ExtendViewport viewport;
+    private GameSkin skin;
+    private Stage uiStage;
+    private ExtendViewport viewport;
 
     public MainMenuScreen(Game game)
     {

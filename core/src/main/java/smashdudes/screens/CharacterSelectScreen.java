@@ -44,6 +44,7 @@ public class CharacterSelectScreen extends GameScreen
     @Override
     public void show()
     {
+        Gdx.input.setInputProcessor(null);
         inputAssigner.startListening();
     }
 
@@ -51,6 +52,7 @@ public class CharacterSelectScreen extends GameScreen
     public void hide()
     {
         inputAssigner.stopListening();
+        Gdx.input.setInputProcessor(null);
     }
 
     @Override
