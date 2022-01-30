@@ -7,10 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -41,7 +38,7 @@ public class SettingsScreen extends GameScreen
         table.add(settingsLabel).padTop(100);
         table.row();
 
-        CheckBox fullscreenCheckbox = new CheckBox(" Fullscreen", skin, "checkbox_settings");
+        CheckBox fullscreenCheckbox = new CheckBox("", skin, "checkbox_settings");
         fullscreenCheckbox.setChecked(!Gdx.graphics.isFullscreen());
         fullscreenCheckbox.addListener(new ChangeListener()
         {
@@ -61,6 +58,12 @@ public class SettingsScreen extends GameScreen
             }
         });
         table.add(fullscreenCheckbox).padTop(20);
+        table.add(new Label("Fullscreen", skin, "splash_continue"));
+        table.row();
+
+        Slider masterVolumeSlider = new Slider(0f, 100f, 1f, false, skin, "slider_settings");
+        table.add(masterVolumeSlider).padTop(20);
+        table.add(new Label("Volume", skin, "splash_continue"));
         table.row();
 
         TextButton backButton = new TextButton("Back", skin, "text_button_main_menu");

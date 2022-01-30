@@ -1,10 +1,7 @@
 package smashdudes.graphics.ui;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import smashdudes.graphics.RenderResources;
 
 public class GameSkin extends Skin
@@ -49,5 +46,17 @@ public class GameSkin extends Skin
         checkboxStyle.fontColor = Color.WHITE;
 
         add("checkbox_settings", checkboxStyle);
+
+
+        add("slider_settings_background", RenderResources.getTexture("ui/grey_sliderHorizontal.png"));
+        add("slider_settings_knob_default", RenderResources.getTexture("ui/grey_sliderDown.png"));
+
+        Slider.SliderStyle sliderStyle = new Slider.SliderStyle();
+        sliderStyle.background = newDrawable("slider_settings_background", Color.WHITE);
+        sliderStyle.knob = newDrawable("slider_settings_knob_default", Color.WHITE);
+        sliderStyle.knobOver = newDrawable("slider_settings_knob_default", Color.LIGHT_GRAY);
+
+
+        add("slider_settings", sliderStyle);
     }
 }
