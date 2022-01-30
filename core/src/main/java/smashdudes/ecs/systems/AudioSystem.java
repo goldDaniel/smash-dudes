@@ -7,6 +7,7 @@ import smashdudes.ecs.Engine;
 import smashdudes.ecs.events.Event;
 import smashdudes.ecs.events.JumpEvent;
 import smashdudes.ecs.events.LandingEvent;
+import smashdudes.ecs.events.*;
 
 public class AudioSystem extends GameSystem
 {
@@ -32,6 +33,7 @@ public class AudioSystem extends GameSystem
 
         registerEventType(JumpEvent.class);
         registerEventType(LandingEvent.class);
+        registerEventType(CountdownEvent.class);
     }
 
     @Override
@@ -46,6 +48,12 @@ public class AudioSystem extends GameSystem
         {
             Sound s = AudioResources.getSoundEffect("audio/effects/Land.wav");
             sounds.addLast(new Audio(s, 0.1f * masterVolume));
+        }
+
+        if(event instanceof CountdownEvent)
+        {
+            Sound s = AudioResources.getSoundEffect("audio/effects/Jump.wav");
+            sounds.addLast(new Audio(s, 0.5f));
         }
     }
 

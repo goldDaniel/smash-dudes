@@ -39,9 +39,11 @@ public class Entity implements Pool.Poolable
     private Entity() {}
 
 
-    public<T extends Component> void removeComponent(Class<T> clazz)
+    public<T extends Component> T removeComponent(Class<T> clazz)
     {
+        T component = (T)components.get(clazz);
         components.remove(clazz);
+        return component;
     }
 
     public void addComponent(Component c)
