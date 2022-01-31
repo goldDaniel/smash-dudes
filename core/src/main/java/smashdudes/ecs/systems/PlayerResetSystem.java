@@ -30,16 +30,6 @@ public class PlayerResetSystem extends GameSystem
         PlayerResetComponent res = entity.getComponent(PlayerResetComponent.class);
         PlayerComponent play = entity.getComponent(PlayerComponent.class);
 
-        if(res.currDuration == 0)
-        {
-            if(!removedComponents.containsKey(play.handle))
-            {
-                removedComponents.put(play.handle, new Array<>());
-            }
-            removedComponents.get(play.handle).add(entity.removeComponent(GravityComponent.class));
-            removedComponents.get(play.handle).add(entity.removeComponent(PlayerControllerComponent.class));
-        }
-
         if(res.currDuration >= res.maxDuration)
         {
             for (Component c : removedComponents.get(play.handle))
@@ -60,10 +50,21 @@ public class PlayerResetSystem extends GameSystem
         if(event instanceof RespawnEvent)
         {
             RespawnEvent e = (RespawnEvent)event;
+
             VelocityComponent vel = e.entity.getComponent(VelocityComponent.class);
-            vel.velocity.set(new Vector2());
+            PlayerComponent play = e.entity.getComponent(PlayerComponent.class);
+
+            vel.velocity.setZero();
+
             float maxDuration = 1.5f;
             e.entity.addComponent(new PlayerResetComponent(maxDuration));
+
+            if(!removedComponents.containsKey(play.handle))
+            {
+                removedComponents.put(play.handle, new Array<>());
+            }
+            removedComponents.get(play.handle).add(e.entity.removeComponent(VelocityComponent.class));
+            removedComponents.get(play.handle).add(e.entity.removeComponent(PlayerControllerComponent.class));
         }
     }
 }

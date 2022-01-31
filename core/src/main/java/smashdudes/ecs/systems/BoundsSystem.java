@@ -31,6 +31,11 @@ public class BoundsSystem extends GameSystem
             play.lives--;
             engine.addEvent(new RespawnEvent(entity, WorldUtils.getRespawnPoint()));
         }
+
+        if(play.lives <= 0)
+        {
+            engine.destroyEntity(entity);
+        }
     }
 
     @Override
