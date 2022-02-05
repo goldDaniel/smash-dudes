@@ -53,15 +53,14 @@ public class CharacterSelectScreen extends GameScreen
     @Override
     public void show()
     {
-        Gdx.input.setInputProcessor(null);
-        inputAssigner.startListening();
+        super.show();
+        addInputProcessor(inputAssigner.getListener());
     }
 
     @Override
     public void hide()
     {
-        inputAssigner.stopListening();
-        Gdx.input.setInputProcessor(null);
+        super.hide();
     }
 
     @Override

@@ -59,7 +59,7 @@ public abstract class GameScreen implements Screen
 
     protected final void transitionTo(GameScreen screen)
     {
-        uiStage.addAction(Actions.sequence(Actions.fadeOut(1f), new Action()
+        uiStage.addAction(Actions.sequence(Actions.fadeOut(0.5f), new Action()
         {
             @Override
             public boolean act(float delta)
