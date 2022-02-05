@@ -1,7 +1,9 @@
 package smashdudes.screens;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -55,6 +57,19 @@ public abstract class GameScreen implements Screen
         multiplexer.addProcessor(processor);
     }
 
+    protected final void transitionTo(GameScreen screen)
+    {
+        uiStage.addAction(Actions.sequence(Actions.fadeOut(1f), new Action()
+        {
+            @Override
+            public boolean act(float delta)
+            {
+                game.setScreen(screen);
+                return true;
+            }
+        }));
+    }
+
     @Override
     public void resize(int width, int height)
     {
@@ -72,6 +87,7 @@ public abstract class GameScreen implements Screen
     public void show()
     {
         Gdx.input.setInputProcessor(multiplexer);
+        uiStage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(1f)));
     }
 
     @Override

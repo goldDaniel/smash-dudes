@@ -37,7 +37,7 @@ public class MainMenuScreen extends GameScreen
             @Override
             public boolean act(float delta)
             {
-                game.setScreen(new CharacterSelectScreen(game));
+                transitionTo(new CharacterSelectScreen(game));
                 return true;
             }
         };
@@ -49,14 +49,14 @@ public class MainMenuScreen extends GameScreen
             @Override
             public boolean act(float delta)
             {
-                game.setScreen(new SettingsScreen(game));
+                transitionTo(new SettingsScreen(game));
                 return true;
             }
         };
         table.add(createButton("Settings", settingsAction, table, skin)).padTop(64);
         table.row();
 
-        Action extiAction = new Action()
+        Action extiAction = Actions.sequence(Actions.fadeOut(1f), new Action()
         {
             @Override
             public boolean act(float delta)
@@ -64,7 +64,7 @@ public class MainMenuScreen extends GameScreen
                 Gdx.app.exit();
                 return true;
             }
-        };
+        });
         table.add(createButton("Exit", extiAction, table, skin)).padTop(64);
     }
 
@@ -83,13 +83,12 @@ public class MainMenuScreen extends GameScreen
     private TextButton createButton(String text, Action action, Table table, Skin skin)
     {
         TextButton result = new TextButton(text, skin, "text_button_main_menu");
-        result.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.25f)));
         result.addListener(new ChangeListener()
         {
             @Override
             public void changed(ChangeEvent event, Actor actor)
             {
-                table.addAction(Actions.sequence(Actions.fadeOut(1f), action));
+                table.addAction(action);
                 result.removeListener(this);
             }
         });

@@ -36,7 +36,7 @@ public class SplashScreen extends GameScreen
     {
         if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER))
         {
-            game.setScreen(new MainMenuScreen(game));
+            transitionTo(new MainMenuScreen(game));
         }
     }
 
