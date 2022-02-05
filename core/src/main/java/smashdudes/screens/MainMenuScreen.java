@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -17,26 +18,21 @@ import smashdudes.graphics.ui.GameSkin;
 
 public class MainMenuScreen extends GameScreen
 {
-    private GameSkin skin;
-    private Stage uiStage;
-    private ExtendViewport viewport;
 
     public MainMenuScreen(Game game)
     {
         super(game);
+    }
 
-        skin = new GameSkin();
-        viewport = new ExtendViewport(1280, 720);
-        uiStage = new Stage(viewport, RenderResources.getSpriteBatch());
-        Table table = new Table();
-        table.setFillParent(true);
-        uiStage.addActor(table);
-
+    @Override
+    public void buildUI(Table table, Skin skin)
+    {
         table.top();
+
         table.add(new Label("Smash Dudes", skin, "splash_title"));
         table.row();
 
-        table.add(createButton("Play", new Action()
+        Action playAction = new Action()
         {
             @Override
             public boolean act(float delta)
@@ -44,12 +40,11 @@ public class MainMenuScreen extends GameScreen
                 game.setScreen(new CharacterSelectScreen(game));
                 return true;
             }
-        },
-        table)).padTop(256);
-
+        };
+        table.add(createButton("Play", playAction, table, skin)).padTop(256);
         table.row();
 
-        table.add(createButton("Settings", new Action()
+        Action settingsAction = new Action()
         {
             @Override
             public boolean act(float delta)
@@ -57,11 +52,11 @@ public class MainMenuScreen extends GameScreen
                 game.setScreen(new SettingsScreen(game));
                 return true;
             }
-        }, table)).padTop(64);
-
+        };
+        table.add(createButton("Settings", settingsAction, table, skin)).padTop(64);
         table.row();
 
-        table.add(createButton("Exit", new Action()
+        Action extiAction = new Action()
         {
             @Override
             public boolean act(float delta)
@@ -69,42 +64,23 @@ public class MainMenuScreen extends GameScreen
                 Gdx.app.exit();
                 return true;
             }
-        }, table)).padTop(64);
-    }
-
-    @Override
-    public void show()
-    {
-        Gdx.input.setInputProcessor(uiStage);
-    }
-
-    @Override
-    public void hide()
-    {
-        Gdx.input.setInputProcessor(null);
-    }
-
-    @Override
-    public void resize(int width, int height)
-    {
-        viewport.update(width, height);
-        viewport.apply();
+        };
+        table.add(createButton("Exit", extiAction, table, skin)).padTop(64);
     }
 
     @Override
     public void update(float dt)
     {
-        uiStage.act(dt);
+
     }
 
     @Override
     public void render()
     {
         ScreenUtils.clear(0,0,0,1);
-        uiStage.draw();
     }
 
-    private TextButton createButton(String text, Action action, Table table)
+    private TextButton createButton(String text, Action action, Table table, Skin skin)
     {
         TextButton result = new TextButton(text, skin, "text_button_main_menu");
         result.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.25f)));

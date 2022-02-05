@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import smashdudes.core.PlayerHandle;
@@ -33,6 +35,12 @@ public class CharacterSelectScreen extends GameScreen
         super(game);
         viewport.getCamera().translate(worldWidth / 2, worldHeight / 2, 0);
         viewport.getCamera().update();
+    }
+
+    @Override
+    public void buildUI(Table table, Skin skin)
+    {
+
     }
 
     @Override

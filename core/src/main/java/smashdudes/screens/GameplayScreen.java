@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import smashdudes.content.ContentRepo;
 import smashdudes.content.DTO;
@@ -55,21 +57,25 @@ public class GameplayScreen extends GameScreen
     @Override
     public void show()
     {
-        Gdx.input.setInputProcessor(inputHandler.getInputProcessor());
+        super.show();
+        addInputProcessor(inputHandler.getInputProcessor());
     }
 
     @Override
     public void hide()
     {
-        Gdx.input.setInputProcessor(null);
+        super.hide();
+    }
+
+    @Override
+    public void buildUI(Table table, Skin skin)
+    {
+
     }
 
     @Override
     public void update(float dt)
     {
-        float maxStep = 1/30f;
-        if(dt > maxStep) dt = maxStep;
-
         ecsEngine.update(dt);
     }
 

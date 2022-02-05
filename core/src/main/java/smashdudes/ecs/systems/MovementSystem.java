@@ -4,7 +4,6 @@ import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.PositionComponent;
 import smashdudes.ecs.components.VelocityComponent;
-import smashdudes.ecs.events.Event;
 
 public class MovementSystem extends GameSystem
 {
