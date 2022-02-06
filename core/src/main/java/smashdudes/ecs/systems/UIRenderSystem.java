@@ -135,8 +135,8 @@ public class UIRenderSystem extends GameSystem
             float nameWidth = layout.width;
             float nameHeight = layout.height;
 
-            float xOffset = (i + 1) * worldWidth / (sections + 1) - worldWidth / 2; // stock icon size
-            float yOffset = nameHeight;
+            float xOffset = (i + 1) * worldWidth / (sections + 1) - worldWidth / 2;
+            float yOffset = nameHeight; // stock icon size
 
             Texture texture = players.get(i).texture;
             float ratio = (float) texture.getHeight() / (float) texture.getWidth();
