@@ -74,7 +74,7 @@ public abstract class GameScreen implements Screen
     public void resize(int width, int height)
     {
         viewport.update(width, height);
-        viewport.apply();
+        viewport.apply(true);
     }
 
     @Override

@@ -20,13 +20,12 @@ public class SettingsScreen extends GameScreen
     @Override
     public void buildUI(Table table, Skin skin)
     {
-        table.setDebug(true);
         table.top();
 
         Label settingsLabel = new Label("Settings", skin, "splash_title");
         table.add(settingsLabel).padTop(100).row();
 
-        CheckBox fullscreenCheckbox = new CheckBox("Fullscreen", skin, "checkbox_settings");
+        CheckBox fullscreenCheckbox = new CheckBox("  Fullscreen", skin, "checkbox_settings");
         fullscreenCheckbox.setChecked(!Gdx.graphics.isFullscreen());
         fullscreenCheckbox.addListener(new ChangeListener()
         {

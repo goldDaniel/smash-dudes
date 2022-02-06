@@ -24,7 +24,6 @@ public class Lwjgl3Launcher
         Lwjgl3ApplicationConfiguration configuration = new Lwjgl3ApplicationConfiguration();
         configuration.setTitle("smash-dudes");
         configuration.setWindowedMode(1280, 720);
-        configuration.setResizable(false);
         configuration.setWindowIcon("libgdx128.png", "libgdx64.png", "libgdx32.png", "libgdx16.png");
         return configuration;
     }
