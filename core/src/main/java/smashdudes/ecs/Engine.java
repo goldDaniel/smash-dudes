@@ -2,20 +2,14 @@ package smashdudes.ecs;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Queue;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import smashdudes.core.WorldUtils;
-import smashdudes.ecs.components.AveragePositionCameraComponent;
 import smashdudes.ecs.components.CameraComponent;
 import smashdudes.ecs.components.CountdownComponent;
 import smashdudes.ecs.events.Event;
 import smashdudes.ecs.systems.*;
 import smashdudes.graphics.RenderResources;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Comparator;
 
 public class Engine
 {

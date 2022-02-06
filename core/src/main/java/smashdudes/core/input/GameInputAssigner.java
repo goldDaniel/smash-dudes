@@ -1,9 +1,6 @@
 package smashdudes.core.input;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerAdapter;
 import com.badlogic.gdx.controllers.Controllers;
@@ -79,19 +76,9 @@ public class GameInputAssigner
     /**
      * attaches our listeners to libGDX to receive input events
      */
-    public void startListening()
+    public InputProcessor getListener()
     {
-        Gdx.input.setInputProcessor(new InputMultiplexer(inputListener, gameInputHandler.getInputProcessor()));
-        Controllers.addListener(controllerListener);
-    }
-
-    /**
-     * stops listeners from receiving input events
-     */
-    public void stopListening()
-    {
-        Gdx.input.setInputProcessor(null);
-        Controllers.removeListener(controllerListener);
+        return new InputMultiplexer(inputListener, gameInputHandler.getInputProcessor());
     }
 
     public IMenuInputRetriever getMenuInput(PlayerHandle p)

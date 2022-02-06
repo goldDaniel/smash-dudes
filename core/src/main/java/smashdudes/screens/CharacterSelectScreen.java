@@ -3,17 +3,20 @@ package smashdudes.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import smashdudes.core.PlayerHandle;
-import smashdudes.graphics.RenderResources;
 import smashdudes.core.characterselect.CharacterSelector;
 import smashdudes.core.input.GameInputAssigner;
 import smashdudes.core.input.IMenuInputRetriever;
+import smashdudes.graphics.RenderResources;
 import smashdudes.util.CharacterSelectDescription;
 
 public class CharacterSelectScreen extends GameScreen
@@ -35,6 +38,12 @@ public class CharacterSelectScreen extends GameScreen
     }
 
     @Override
+    public void buildUI(Table table, Skin skin)
+    {
+
+    }
+
+    @Override
     public void resize(int width, int height)
     {
         viewport.update(width, height);
@@ -44,13 +53,14 @@ public class CharacterSelectScreen extends GameScreen
     @Override
     public void show()
     {
-        inputAssigner.startListening();
+        super.show();
+        addInputProcessor(inputAssigner.getListener());
     }
 
     @Override
     public void hide()
     {
-        inputAssigner.stopListening();
+        super.hide();
     }
 
     @Override
@@ -97,6 +107,7 @@ public class CharacterSelectScreen extends GameScreen
         Matrix4 proj = viewport.getCamera().combined;
         sh.setProjectionMatrix(proj);
         sb.setProjectionMatrix(proj);
+        sb.setColor(Color.WHITE);
         selector.render(sh, sb);
 
         sb.setProjectionMatrix(proj);
