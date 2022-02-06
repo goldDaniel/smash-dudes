@@ -16,6 +16,7 @@ import smashdudes.ecs.components.PlayerComponent;
 import smashdudes.ecs.components.UIComponent;
 import smashdudes.ecs.events.CountdownEvent;
 import smashdudes.ecs.events.Event;
+import smashdudes.graphics.RenderResources;
 
 public class UIRenderSystem extends GameSystem
 {
@@ -26,12 +27,15 @@ public class UIRenderSystem extends GameSystem
         final float health;
         final Texture texture;
 
-        public CharacterDisplay(String name, int ID, float health, Texture texture)
+        int lives;
+
+        public CharacterDisplay(String name, int ID, float health, Texture texture, int lives)
         {
             this.name = name;
             this.ID = ID;
             this.health = health;
             this.texture = texture;
+            this.lives = lives;
         }
 
         @Override
@@ -102,7 +106,7 @@ public class UIRenderSystem extends GameSystem
         UIComponent UI = entity.getComponent(UIComponent.class);
 
         String name = play.name.substring(0, 1).toUpperCase() + play.name.substring(1);
-        CharacterDisplay portrait = new CharacterDisplay(name, entity.ID, health.health, UI.tex);
+        CharacterDisplay portrait = new CharacterDisplay(name, play.handle.ID, health.health, UI.tex, play.lives);
 
         players.add(portrait);
         players.sort();
@@ -128,6 +132,7 @@ public class UIRenderSystem extends GameSystem
         for(int i = 0; i < players.size; i++)
         {
             float xOffset = (i + 1) * worldWidth / (sections + 1) - worldWidth / 2;
+            float yOffset = 25; // stock icon size
 
             layout.setText(font, players.get(i).name);
             float nameWidth = layout.width;
@@ -139,13 +144,36 @@ public class UIRenderSystem extends GameSystem
             float height = ratio * width;
             sb.draw(players.get(i).texture, xOffset - width / 2, - worldHeight / 2, width, height);
 
-            font.draw(sb, players.get(i).name, xOffset - nameWidth / 2, nameHeight - worldHeight / 2);
+            font.draw(sb, players.get(i).name, xOffset - nameWidth / 2, nameHeight + yOffset - worldHeight / 2);
 
             String healthValue = String.format("%4.2f", players.get(i).health);
             layout.setText(font, healthValue);
             float healthWidth = layout.width;
             float healthHeight = layout.height;
-            font.draw(sb, healthValue, xOffset - healthWidth / 2, healthHeight + nameHeight - worldHeight / 2);
+            font.draw(sb, healthValue, xOffset - healthWidth / 2, healthHeight + nameHeight + yOffset - worldHeight / 2);
+
+            int lives = players.get(i).lives;
+            Texture stockTex = RenderResources.getTexture("textures/circle.png"); // should be changed to a texture corresponding to the player
+            float stockRatio = (float) stockTex.getWidth() / (float) stockTex.getHeight();
+            float stockHeight = yOffset;
+            float stockWidth = stockRatio * stockHeight;
+            if(lives < 6) // maximum of 5 stock icons to avoid resizing
+            {
+                for(int j = 0; j < lives; j++)
+                {
+                    float stockShift = (j - (int)lives / 2) * stockWidth;
+                    sb.draw(stockTex, stockShift + xOffset - stockWidth / 2, - worldHeight / 2, stockWidth, stockHeight);
+                }
+            }
+            else
+            {
+                layout.setText(font, "" + lives);
+                float livesWidth = layout.width;
+                float livesHeight = layout.height;
+                font.draw(sb, "" + lives, xOffset - livesWidth / 2, livesHeight - worldHeight / 2);
+
+                sb.draw(stockTex,  -( 1.5f * livesWidth + stockWidth / 2), -worldHeight / 2, stockWidth, stockHeight);
+            }
         }
         if(!countDisplay.equals(FINISH_COUNTDOWN))
         {
