@@ -3,14 +3,16 @@ package smashdudes.ecs.systems;
 import smashdudes.core.WorldUtils;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
+import smashdudes.ecs.components.HealthComponent;
 import smashdudes.ecs.components.PlayerComponent;
 import smashdudes.ecs.components.PositionComponent;
+import smashdudes.ecs.components.UIComponent;
 import smashdudes.ecs.events.Event;
 import smashdudes.ecs.events.RespawnEvent;
 
-public class BoundsSystem extends GameSystem
+public class BoundySystem extends GameSystem
 {
-    public BoundsSystem(Engine engine)
+    public BoundySystem(Engine engine)
     {
         super(engine);
 
@@ -26,15 +28,14 @@ public class BoundsSystem extends GameSystem
         PlayerComponent play = entity.getComponent(PlayerComponent.class);
         PositionComponent pos = entity.getComponent(PositionComponent.class);
 
-        if(!WorldUtils.getStageBounds().contains(pos.position))
+        if(play.lives <= 0)
+        {
+            entity.removeAllOtherComponents(PlayerComponent.class, HealthComponent.class, UIComponent.class);
+        }
+        else if(!WorldUtils.getStageBounds().contains(pos.position))
         {
             play.lives--;
             engine.addEvent(new RespawnEvent(entity, WorldUtils.getRespawnPoint()));
-        }
-
-        if(play.lives <= 0)
-        {
-            engine.destroyEntity(entity);
         }
     }
 

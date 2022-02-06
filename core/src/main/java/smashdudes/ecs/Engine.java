@@ -66,7 +66,7 @@ public class Engine
         systems.add(new HitDetectionSystem(this));
         systems.add(new HitResolutionSystem(this));
         systems.add(new PlayerStunnedSystem(this));
-        systems.add(new BoundsSystem(this));
+        systems.add(new BoundySystem(this));
         systems.add(new PlayerResetSystem(this));
         systems.add(new AudioSystem(this));
 

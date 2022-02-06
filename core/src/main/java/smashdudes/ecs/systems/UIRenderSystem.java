@@ -146,13 +146,16 @@ public class UIRenderSystem extends GameSystem
 
             font.draw(sb, players.get(i).name, xOffset - nameWidth / 2, nameHeight + yOffset - worldHeight / 2);
 
-            String healthValue = String.format("%4.2f", players.get(i).health);
-            layout.setText(font, healthValue);
-            float healthWidth = layout.width;
-            float healthHeight = layout.height;
-            font.draw(sb, healthValue, xOffset - healthWidth / 2, healthHeight + nameHeight + yOffset - worldHeight / 2);
-
             int lives = players.get(i).lives;
+            if(lives > 0)
+            {
+                String healthValue = String.format("%4.2f", players.get(i).health);
+                layout.setText(font, healthValue);
+                float healthWidth = layout.width;
+                float healthHeight = layout.height;
+                font.draw(sb, healthValue, xOffset - healthWidth / 2, healthHeight + nameHeight + yOffset - worldHeight / 2);
+            }
+
             Texture stockTex = RenderResources.getTexture("textures/circle.png"); // should be changed to a texture corresponding to the player
             float stockRatio = (float) stockTex.getWidth() / (float) stockTex.getHeight();
             float stockHeight = yOffset;

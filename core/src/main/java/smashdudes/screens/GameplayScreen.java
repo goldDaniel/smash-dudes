@@ -101,7 +101,7 @@ public class GameplayScreen extends GameScreen
         Entity player = ecsEngine.createEntity();
 
         PlayerComponent pc = new PlayerComponent(handle, characterData.name);
-        pc.lives = 7;
+        pc.lives = 1;
         player.addComponent(pc);
 
         int spawnIdx = MathUtils.random(0, spawnPoints.size - 1);
