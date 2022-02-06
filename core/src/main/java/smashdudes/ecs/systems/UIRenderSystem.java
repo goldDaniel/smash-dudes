@@ -131,12 +131,12 @@ public class UIRenderSystem extends GameSystem
         int sections = players.size;
         for(int i = 0; i < players.size; i++)
         {
-            float xOffset = (i + 1) * worldWidth / (sections + 1) - worldWidth / 2;
-            float yOffset = 25; // stock icon size
-
             layout.setText(font, players.get(i).name);
             float nameWidth = layout.width;
             float nameHeight = layout.height;
+
+            float xOffset = (i + 1) * worldWidth / (sections + 1) - worldWidth / 2; // stock icon size
+            float yOffset = nameHeight;
 
             Texture texture = players.get(i).texture;
             float ratio = (float) texture.getHeight() / (float) texture.getWidth();
@@ -161,7 +161,7 @@ public class UIRenderSystem extends GameSystem
             {
                 for(int j = 0; j < lives; j++)
                 {
-                    float stockShift = (j - (int)lives / 2) * stockWidth;
+                    float stockShift = (j - (float) (lives - 1) / 2) * stockWidth;
                     sb.draw(stockTex, stockShift + xOffset - stockWidth / 2, - worldHeight / 2, stockWidth, stockHeight);
                 }
             }
@@ -170,9 +170,9 @@ public class UIRenderSystem extends GameSystem
                 layout.setText(font, "" + lives);
                 float livesWidth = layout.width;
                 float livesHeight = layout.height;
-                font.draw(sb, "" + lives, xOffset - livesWidth / 2, livesHeight - worldHeight / 2);
+                font.draw(sb, "" + lives, xOffset, livesHeight - worldHeight / 2);
 
-                sb.draw(stockTex,  -( 1.5f * livesWidth + stockWidth / 2), -worldHeight / 2, stockWidth, stockHeight);
+                sb.draw(stockTex,  -(livesWidth + stockWidth / 2), -worldHeight / 2, stockWidth, stockHeight);
             }
         }
         if(!countDisplay.equals(FINISH_COUNTDOWN))
