@@ -25,7 +25,7 @@ public class CharacterSelectScreen extends GameScreen
 
     //SELECTION================================================
     private GameInputAssigner inputAssigner = new GameInputAssigner();
-    private CharacterSelector selector = new CharacterSelector(worldWidth, worldHeight, RenderResources.getFont());
+    private CharacterSelector selector = new CharacterSelector(worldWidth, worldHeight, RenderResources.getFont("crimes", 12));
 
     public CharacterSelectScreen(Game game)
     {
@@ -90,7 +90,7 @@ public class CharacterSelectScreen extends GameScreen
     {
         SpriteBatch sb = RenderResources.getSpriteBatch();
         ShapeRenderer sh = RenderResources.getShapeRenderer();
-        BitmapFont font = RenderResources.getFont();
+        BitmapFont font = RenderResources.getFont("crimes", 32);
 
         ScreenUtils.clear(0,0,0,1);
 
@@ -102,7 +102,6 @@ public class CharacterSelectScreen extends GameScreen
         sb.setProjectionMatrix(proj);
         sb.begin();
         selector.render(sb, font);
-        font.getData().setScale(2);
 
         font.draw(sb, "Press -SPACE- on keyboard to join", worldWidth / 2 - 220, worldHeight - 60);
         font.draw(sb, "Press -A- on controller to join", worldWidth / 2 - 160, worldHeight - 120);

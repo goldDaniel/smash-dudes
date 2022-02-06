@@ -51,7 +51,7 @@ public class Engine
 
         rs = new RenderSystem(this, RenderResources.getSpriteBatch());
         drs = new RenderDebugSystem(this, RenderResources.getShapeRenderer());
-        urs = new UIRenderSystem(this, RenderResources.getSpriteBatch(), RenderResources.getFont());
+        urs = new UIRenderSystem(this, RenderResources.getSpriteBatch(), RenderResources.getFont("crimes", 24));
 
 
         PlayerControllerSystem ctrlSys = new PlayerControllerSystem(this);
