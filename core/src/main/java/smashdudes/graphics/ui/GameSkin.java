@@ -34,8 +34,8 @@ public class GameSkin extends Skin
 
         //SETTINGS UI////////////////////////////////////////////////////////////////////////////////////////
 
-        add("checkbox_settings_on", RenderResources.getTexture("ui/grey_box.png"));
-        add("checkbox_settings_off", RenderResources.getTexture("ui/grey_boxCheckmark.png"));
+        add("checkbox_settings_on", RenderResources.getTexture("ui/grey_boxCheckmark.png"));
+        add("checkbox_settings_off", RenderResources.getTexture("ui/grey_box.png"));
 
         CheckBox.CheckBoxStyle checkboxStyle = new CheckBox.CheckBoxStyle();
         checkboxStyle.checkboxOn = newDrawable("checkbox_settings_on", Color.WHITE);

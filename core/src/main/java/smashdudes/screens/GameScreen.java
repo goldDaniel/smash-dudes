@@ -87,7 +87,7 @@ public abstract class GameScreen implements Screen
     public void show()
     {
         Gdx.input.setInputProcessor(multiplexer);
-        uiStage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(1f)));
+        uiStage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.5f)));
     }
 
     @Override

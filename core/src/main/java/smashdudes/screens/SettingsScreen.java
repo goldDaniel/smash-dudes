@@ -26,7 +26,7 @@ public class SettingsScreen extends GameScreen
         table.add(settingsLabel).padTop(100).row();
 
         CheckBox fullscreenCheckbox = new CheckBox("  Fullscreen", skin, "checkbox_settings");
-        fullscreenCheckbox.setChecked(!Gdx.graphics.isFullscreen());
+        fullscreenCheckbox.setChecked(Gdx.graphics.isFullscreen());
         fullscreenCheckbox.addListener(new ChangeListener()
         {
             @Override
@@ -52,17 +52,7 @@ public class SettingsScreen extends GameScreen
             @Override
             public void changed(ChangeEvent event, Actor actor)
             {
-                Action sequence = Actions.sequence(Actions.fadeOut(1f), new Action()
-                {
-                    @Override
-                    public boolean act(float delta)
-                    {
-                        game.setScreen(new MainMenuScreen(game));
-                        return true;
-                    }
-                });
-
-                table.addAction(sequence);
+                transitionTo(new MainMenuScreen(game));
             }
         });
         table.add(backButton).padTop(100);
