@@ -19,6 +19,7 @@ import smashdudes.core.input.IGameInputRetriever;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
+import smashdudes.ecs.systems.GameOverSystem;
 import smashdudes.graphics.AnimationFrame;
 import smashdudes.graphics.RenderResources;
 import smashdudes.util.CharacterSelectDescription;
@@ -32,7 +33,7 @@ public class GameplayScreen extends GameScreen
     {
         super(game);
         this.inputHandler = desc.gameInput;
-        ecsEngine = new Engine();
+        ecsEngine = new Engine(() -> transitionTo(new MainMenuScreen(game)));
 
         DTO.Stage stage = ContentLoader.loadStage("stage.json");
 
@@ -101,7 +102,7 @@ public class GameplayScreen extends GameScreen
         Entity player = ecsEngine.createEntity();
 
         PlayerComponent pc = new PlayerComponent(handle, characterData.name);
-        pc.lives = 1;
+        pc.lives = 10;
         player.addComponent(pc);
 
         int spawnIdx = MathUtils.random(0, spawnPoints.size - 1);

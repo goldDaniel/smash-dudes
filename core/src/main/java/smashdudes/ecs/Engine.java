@@ -27,7 +27,7 @@ public class Engine
     private final RenderDebugSystem drs;
     private final UIRenderSystem urs;
 
-    public Engine()
+    public Engine(GameOverSystem.IScreenTransition transition)
     {
         int WORLD_WIDTH = 20;
         int WORLD_HEIGHT = 12;
@@ -74,6 +74,8 @@ public class Engine
         systems.add(new ParticleSystem(this));
         systems.add(new ParticleEmitterSystem(this));
         systems.add(new AnimationDebugSystem(this));
+
+        systems.add(new GameOverSystem(this, transition));
 
 
         rs.setCamera(camera);

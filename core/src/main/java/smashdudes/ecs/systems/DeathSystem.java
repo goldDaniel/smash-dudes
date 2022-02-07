@@ -5,10 +5,7 @@ import smashdudes.core.PlayerHandle;
 import smashdudes.core.WorldUtils;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
-import smashdudes.ecs.components.HealthComponent;
-import smashdudes.ecs.components.PlayerComponent;
-import smashdudes.ecs.components.PositionComponent;
-import smashdudes.ecs.components.UIComponent;
+import smashdudes.ecs.components.*;
 import smashdudes.ecs.events.Event;
 import smashdudes.ecs.events.RespawnEvent;
 import smashdudes.ecs.events.WinEvent;
@@ -16,6 +13,7 @@ import smashdudes.ecs.events.WinEvent;
 public class DeathSystem extends GameSystem
 {
     private final Array<Entity> alivePlayers = new Array<>();
+    private boolean hasFiredWinEvent = false;
 
     public DeathSystem(Engine engine)
     {
@@ -55,9 +53,11 @@ public class DeathSystem extends GameSystem
     @Override
     public void postUpdate()
     {
-        if(alivePlayers.size == 1)
+        if(alivePlayers.size == 1 && !hasFiredWinEvent)
         {
             engine.addEvent(new WinEvent(alivePlayers.get(0)));
+            hasFiredWinEvent = true;
+            engine.createEntity().addComponent(new GameOverComponent());
         }
 
         alivePlayers.clear();

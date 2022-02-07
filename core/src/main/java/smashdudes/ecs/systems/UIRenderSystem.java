@@ -123,16 +123,6 @@ public class UIRenderSystem extends GameSystem
                 countDisplay = FINISH_COUNTDOWN; // after GO! is displayed for 1 second,
             }
         }
-        if(countDisplay.equals("GAME!"))
-        {
-            displayTimer += dt;
-
-            if(displayTimer >= 2)
-            {
-                displayTimer = 0;
-                countDisplay = FINISH_COUNTDOWN; // after GAME! is displayed for 2 seconds,
-            }
-        }
     }
 
     @Override
@@ -182,12 +172,12 @@ public class UIRenderSystem extends GameSystem
             }
             else
             {
-                layout.setText(font, "" + lives);
+                layout.setText(font, "1");
                 float livesWidth = layout.width;
                 float livesHeight = layout.height;
                 font.draw(sb, "" + lives, xOffset, livesHeight - worldHeight / 2);
 
-                sb.draw(stockTex,  -(livesWidth + stockWidth / 2), -worldHeight / 2, stockWidth, stockHeight);
+                sb.draw(stockTex,  xOffset -(livesWidth + stockWidth / 2), -worldHeight / 2, stockWidth, stockHeight);
             }
         }
         if(!countDisplay.equals(FINISH_COUNTDOWN))

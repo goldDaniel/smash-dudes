@@ -26,7 +26,7 @@ public class ContentRepo
             e.printStackTrace();
         }
 
-        return null;
+        throw new IllegalArgumentException("File not found: " + filepath);
     }
 
     public static void saveCharacter(String filepath, DTO.Character character)
