@@ -16,6 +16,7 @@ import smashdudes.ecs.components.PlayerComponent;
 import smashdudes.ecs.components.UIComponent;
 import smashdudes.ecs.events.CountdownEvent;
 import smashdudes.ecs.events.Event;
+import smashdudes.ecs.events.WinEvent;
 import smashdudes.graphics.RenderResources;
 
 public class UIRenderSystem extends GameSystem
@@ -62,7 +63,7 @@ public class UIRenderSystem extends GameSystem
     private static final String FINISH_COUNTDOWN = "";
 
     private String countDisplay = " ";
-    private float goDisplayTimer;
+    private float displayTimer;
 
     public UIRenderSystem(Engine engine, SpriteBatch sb, BitmapFont font)
     {
@@ -74,7 +75,7 @@ public class UIRenderSystem extends GameSystem
         worldHeight = 720;
         layout = new GlyphLayout(font, "");
 
-        goDisplayTimer = 0;
+        displayTimer = 0;
 
         this.viewport = new ExtendViewport(worldWidth, worldHeight);
         this.camera = (OrthographicCamera)viewport.getCamera();
@@ -84,6 +85,7 @@ public class UIRenderSystem extends GameSystem
         registerComponentType(UIComponent.class);
 
         registerEventType(CountdownEvent.class);
+        registerEventType(WinEvent.class);
     }
 
     public void resize(int w, int h)
@@ -113,12 +115,22 @@ public class UIRenderSystem extends GameSystem
 
         if(countDisplay.equals("GO!"))
         {
-            goDisplayTimer += dt;
+            displayTimer += dt;
 
-            if(goDisplayTimer >= 1)
+            if(displayTimer >= 1)
             {
-                goDisplayTimer = 0;
+                displayTimer = 0;
                 countDisplay = FINISH_COUNTDOWN; // after GO! is displayed for 1 second,
+            }
+        }
+        if(countDisplay.equals("GAME!"))
+        {
+            displayTimer += dt;
+
+            if(displayTimer >= 2)
+            {
+                displayTimer = 0;
+                countDisplay = FINISH_COUNTDOWN; // after GAME! is displayed for 2 seconds,
             }
         }
     }
@@ -201,6 +213,11 @@ public class UIRenderSystem extends GameSystem
             {
                 countDisplay = "GO!";
             }
+        }
+        if(event instanceof WinEvent)
+        {
+            WinEvent w = (WinEvent)event;
+            countDisplay = "GAME!";
         }
     }
 }

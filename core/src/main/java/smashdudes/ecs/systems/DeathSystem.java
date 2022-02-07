@@ -1,5 +1,7 @@
 package smashdudes.ecs.systems;
 
+import com.badlogic.gdx.utils.Array;
+import smashdudes.core.PlayerHandle;
 import smashdudes.core.WorldUtils;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
@@ -9,10 +11,13 @@ import smashdudes.ecs.components.PositionComponent;
 import smashdudes.ecs.components.UIComponent;
 import smashdudes.ecs.events.Event;
 import smashdudes.ecs.events.RespawnEvent;
+import smashdudes.ecs.events.WinEvent;
 
-public class BoundySystem extends GameSystem
+public class DeathSystem extends GameSystem
 {
-    public BoundySystem(Engine engine)
+    private final Array<Entity> alivePlayers = new Array<>();
+
+    public DeathSystem(Engine engine)
     {
         super(engine);
 
@@ -20,6 +25,7 @@ public class BoundySystem extends GameSystem
         registerComponentType(PositionComponent.class);
 
         registerEventType(RespawnEvent.class);
+        registerEventType(WinEvent.class);
     }
 
     @Override
@@ -28,6 +34,7 @@ public class BoundySystem extends GameSystem
         PlayerComponent play = entity.getComponent(PlayerComponent.class);
         PositionComponent pos = entity.getComponent(PositionComponent.class);
 
+        boolean attemptRespawn = false;
         if(play.lives <= 0)
         {
             entity.removeAllOtherComponents(PlayerComponent.class, HealthComponent.class, UIComponent.class);
@@ -35,8 +42,25 @@ public class BoundySystem extends GameSystem
         else if(!WorldUtils.getStageBounds().contains(pos.position))
         {
             play.lives--;
-            engine.addEvent(new RespawnEvent(entity, WorldUtils.getRespawnPoint()));
+            attemptRespawn = true;
         }
+
+        if(play.lives > 0)
+        {
+            alivePlayers.add(entity);
+            if(attemptRespawn) engine.addEvent(new RespawnEvent(entity, WorldUtils.getRespawnPoint()));
+        }
+    }
+
+    @Override
+    public void postUpdate()
+    {
+        if(alivePlayers.size == 1)
+        {
+            engine.addEvent(new WinEvent(alivePlayers.get(0)));
+        }
+
+        alivePlayers.clear();
     }
 
     @Override
