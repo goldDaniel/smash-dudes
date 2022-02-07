@@ -1,19 +1,26 @@
 package smashdudes.core;
 
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import smashdudes.content.DTO;
 
 public class WorldUtils
 {
-    private Viewport viewport;
+    private static DTO.Stage stage;
 
-    public WorldUtils(Viewport viewport)
+    public static void setStage(DTO.Stage stage)
     {
-        this.viewport = viewport;
+        WorldUtils.stage = stage;
     }
 
-    public Vector2 getWorldFromScreen(Vector2 pos)
+    public static Rectangle getStageBounds()
     {
-        return viewport.unproject(pos);
+        return new Rectangle(stage.stageBounds);
+    }
+
+    public static Vector2 getRespawnPoint()
+    {
+        return stage.respawnPoint.cpy();
     }
 }

@@ -39,9 +39,37 @@ public class Entity implements Pool.Poolable
     private Entity() {}
 
 
-    public<T extends Component> void removeComponent(Class<T> clazz)
+    public<T extends Component> T removeComponent(Class<T> clazz)
     {
+        T component = (T)components.get(clazz);
         components.remove(clazz);
+        return component;
+    }
+
+    public Array<Component> removeAllOtherComponents(Class<? extends Component>... componentsToKeep)
+    {
+        return removeAllOtherComponents(new Array<>(componentsToKeep));
+    }
+
+    public Array<Component> removeAllOtherComponents(Array<Class<? extends Component>> componentsToKeep)
+    {
+        Array<Component> result = new Array<>();
+        Array<Class<? extends Component>> toRemove = new Array<>();
+
+        for(ObjectMap.Entry entry : components)
+        {
+            if(!componentsToKeep.contains((Class<? extends Component>) entry.key, true))
+            {
+                toRemove.add((Class<? extends Component>) entry.key);
+            }
+        }
+
+        for(Class<? extends Component> clazz : toRemove)
+        {
+            result.add(this.removeComponent(clazz));
+        }
+
+        return result;
     }
 
     public void addComponent(Component c)

@@ -15,8 +15,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.ObjectMap;
-import smashdudes.content.ContentRepo;
-import smashdudes.content.LoadContent;
 import smashdudes.core.PlayerHandle;
 import smashdudes.graphics.RenderResources;
 import smashdudes.util.CharacterSelectDescription;

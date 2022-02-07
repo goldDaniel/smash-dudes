@@ -16,6 +16,8 @@ import smashdudes.ecs.components.PlayerComponent;
 import smashdudes.ecs.components.UIComponent;
 import smashdudes.ecs.events.CountdownEvent;
 import smashdudes.ecs.events.Event;
+import smashdudes.ecs.events.WinEvent;
+import smashdudes.graphics.RenderResources;
 
 public class UIRenderSystem extends GameSystem
 {
@@ -26,12 +28,15 @@ public class UIRenderSystem extends GameSystem
         final float health;
         final Texture texture;
 
-        public CharacterDisplay(String name, int ID, float health, Texture texture)
+        int lives;
+
+        public CharacterDisplay(String name, int ID, float health, Texture texture, int lives)
         {
             this.name = name;
             this.ID = ID;
             this.health = health;
             this.texture = texture;
+            this.lives = lives;
         }
 
         @Override
@@ -58,7 +63,7 @@ public class UIRenderSystem extends GameSystem
     private static final String FINISH_COUNTDOWN = "";
 
     private String countDisplay = " ";
-    private float goDisplayTimer;
+    private float displayTimer;
 
     public UIRenderSystem(Engine engine, SpriteBatch sb, BitmapFont font)
     {
@@ -70,7 +75,7 @@ public class UIRenderSystem extends GameSystem
         worldHeight = 720;
         layout = new GlyphLayout(font, "");
 
-        goDisplayTimer = 0;
+        displayTimer = 0;
 
         this.viewport = new ExtendViewport(worldWidth, worldHeight);
         this.camera = (OrthographicCamera)viewport.getCamera();
@@ -80,6 +85,7 @@ public class UIRenderSystem extends GameSystem
         registerComponentType(UIComponent.class);
 
         registerEventType(CountdownEvent.class);
+        registerEventType(WinEvent.class);
     }
 
     public void resize(int w, int h)
@@ -102,18 +108,18 @@ public class UIRenderSystem extends GameSystem
         UIComponent UI = entity.getComponent(UIComponent.class);
 
         String name = play.name.substring(0, 1).toUpperCase() + play.name.substring(1);
-        CharacterDisplay portrait = new CharacterDisplay(name, entity.ID, health.health, UI.tex);
+        CharacterDisplay portrait = new CharacterDisplay(name, play.handle.ID, health.health, UI.tex, play.lives);
 
         players.add(portrait);
         players.sort();
 
         if(countDisplay.equals("GO!"))
         {
-            goDisplayTimer += dt;
+            displayTimer += dt;
 
-            if(goDisplayTimer >= 1)
+            if(displayTimer >= 1)
             {
-                goDisplayTimer = 0;
+                displayTimer = 0;
                 countDisplay = FINISH_COUNTDOWN; // after GO! is displayed for 1 second,
             }
         }
@@ -127,11 +133,12 @@ public class UIRenderSystem extends GameSystem
         int sections = players.size;
         for(int i = 0; i < players.size; i++)
         {
-            float xOffset = (i + 1) * worldWidth / (sections + 1) - worldWidth / 2;
-
             layout.setText(font, players.get(i).name);
             float nameWidth = layout.width;
             float nameHeight = layout.height;
+
+            float xOffset = (i + 1) * worldWidth / (sections + 1) - worldWidth / 2;
+            float yOffset = nameHeight; // stock icon size
 
             Texture texture = players.get(i).texture;
             float ratio = (float) texture.getHeight() / (float) texture.getWidth();
@@ -139,13 +146,39 @@ public class UIRenderSystem extends GameSystem
             float height = ratio * width;
             sb.draw(players.get(i).texture, xOffset - width / 2, - worldHeight / 2, width, height);
 
-            font.draw(sb, players.get(i).name, xOffset - nameWidth / 2, nameHeight - worldHeight / 2);
+            font.draw(sb, players.get(i).name, xOffset - nameWidth / 2, nameHeight + yOffset - worldHeight / 2);
 
-            String healthValue = String.format("%4.2f", players.get(i).health);
-            layout.setText(font, healthValue);
-            float healthWidth = layout.width;
-            float healthHeight = layout.height;
-            font.draw(sb, healthValue, xOffset - healthWidth / 2, healthHeight + nameHeight - worldHeight / 2);
+            int lives = players.get(i).lives;
+            if(lives > 0)
+            {
+                String healthValue = String.format("%4.2f", players.get(i).health);
+                layout.setText(font, healthValue);
+                float healthWidth = layout.width;
+                float healthHeight = layout.height;
+                font.draw(sb, healthValue, xOffset - healthWidth / 2, healthHeight + nameHeight + yOffset - worldHeight / 2);
+            }
+
+            Texture stockTex = RenderResources.getTexture("textures/circle.png"); // should be changed to a texture corresponding to the player
+            float stockRatio = (float) stockTex.getWidth() / (float) stockTex.getHeight();
+            float stockHeight = yOffset;
+            float stockWidth = stockRatio * stockHeight;
+            if(lives < 6) // maximum of 5 stock icons to avoid resizing
+            {
+                for(int j = 0; j < lives; j++)
+                {
+                    float stockShift = (j - (float) (lives - 1) / 2) * stockWidth;
+                    sb.draw(stockTex, stockShift + xOffset - stockWidth / 2, - worldHeight / 2, stockWidth, stockHeight);
+                }
+            }
+            else
+            {
+                layout.setText(font, "1");
+                float livesWidth = layout.width;
+                float livesHeight = layout.height;
+                font.draw(sb, "" + lives, xOffset, livesHeight - worldHeight / 2);
+
+                sb.draw(stockTex,  xOffset -(livesWidth + stockWidth / 2), -worldHeight / 2, stockWidth, stockHeight);
+            }
         }
         if(!countDisplay.equals(FINISH_COUNTDOWN))
         {
@@ -170,6 +203,11 @@ public class UIRenderSystem extends GameSystem
             {
                 countDisplay = "GO!";
             }
+        }
+        if(event instanceof WinEvent)
+        {
+            WinEvent w = (WinEvent)event;
+            countDisplay = "GAME!";
         }
     }
 }

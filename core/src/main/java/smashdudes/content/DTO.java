@@ -16,6 +16,9 @@ public class DTO
     {
         public Array<Terrain> terrain = new Array<>();
         public Array<Vector2> spawnPoints = new Array<>();
+
+        public Rectangle stageBounds;
+        public Vector2 respawnPoint;
     }
 
     public static class Terrain

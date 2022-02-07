@@ -1,5 +1,6 @@
 package smashdudes.content;
 
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
@@ -8,7 +9,7 @@ import com.badlogic.gdx.utils.JsonValue;
 import java.io.File;
 import java.util.Scanner;
 
-public class LoadContent
+public class ContentLoader
 {
     public static JsonValue loadJson(String fileName)
     {
@@ -41,8 +42,15 @@ public class LoadContent
 
         result.terrain  = loadTerrainData(json.get("terrain"));
         result.spawnPoints = loadSpawnPoints(json.get("spawn_points"));
+        result.stageBounds = loadStageBounds(json.get("stage_bounds"));
+        result.respawnPoint = loadRespawnPoint(json.get("respawn_point"));
 
         return result;
+    }
+
+    public static Vector2 loadRespawnPoint(JsonValue json)
+    {
+        return new Vector2(json.get(0).asFloat(), json.get(1).asFloat());
     }
 
     public static Array<Vector2> loadSpawnPoints(JsonValue json)
@@ -58,6 +66,11 @@ public class LoadContent
         }
 
         return result;
+    }
+
+    public static Rectangle loadStageBounds(JsonValue json)
+    {
+        return new Rectangle(json.get(0).asFloat(), json.get(1).asFloat(), json.get(2).asFloat(), json.get(3).asFloat());
     }
 
     public static Array<DTO.Terrain> loadTerrainData(JsonValue json)
