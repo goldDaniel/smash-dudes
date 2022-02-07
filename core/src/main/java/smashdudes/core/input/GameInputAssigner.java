@@ -78,6 +78,7 @@ public class GameInputAssigner
      */
     public InputProcessor getListener()
     {
+        Controllers.addListener(controllerListener);
         return new InputMultiplexer(inputListener, gameInputHandler.getInputProcessor());
     }
 

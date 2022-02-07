@@ -3,6 +3,7 @@ package smashdudes.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -46,6 +47,7 @@ public class CharacterSelectScreen extends GameScreen
     @Override
     public void resize(int width, int height)
     {
+        super.resize(width, height);
         viewport.update(width, height);
         viewport.apply();
     }
@@ -61,6 +63,7 @@ public class CharacterSelectScreen extends GameScreen
     public void hide()
     {
         super.hide();
+        Controllers.clearListeners();
     }
 
     @Override
