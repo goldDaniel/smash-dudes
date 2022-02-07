@@ -11,11 +11,11 @@ import smashdudes.ecs.components.*;
 import smashdudes.ecs.events.Event;
 import smashdudes.ecs.events.RespawnEvent;
 
-public class PlayerResetSystem extends GameSystem
+public class RespawnSystem extends GameSystem
 {
     private final ArrayMap<PlayerHandle, Array<Component>> removedComponents = new ArrayMap<>();
 
-    public PlayerResetSystem(Engine engine)
+    public RespawnSystem(Engine engine)
     {
         super(engine);
         registerComponentType(PlayerResetComponent.class);

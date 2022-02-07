@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Queue;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import smashdudes.core.WorldUtils;
 import smashdudes.ecs.components.CameraComponent;
 import smashdudes.ecs.components.CountdownComponent;
 import smashdudes.ecs.events.Event;
@@ -67,7 +66,7 @@ public class Engine
         systems.add(new HitResolutionSystem(this));
         systems.add(new PlayerStunnedSystem(this));
         systems.add(new DeathSystem(this));
-        systems.add(new PlayerResetSystem(this));
+        systems.add(new RespawnSystem(this));
         systems.add(new AudioSystem(this));
 
         systems.add(new AnimationSystem(this));
