@@ -76,6 +76,9 @@ public class GameplayScreen extends GameScreen
     @Override
     public void update(float dt)
     {
+        float maxStep = 1/30f;
+
+        if(dt > maxStep) dt = maxStep;
         ecsEngine.update(dt);
     }
 
