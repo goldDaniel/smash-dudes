@@ -42,6 +42,8 @@ public abstract class GameScreen implements Screen
     @Override
     public final void render(float dt)
     {
+        ScreenUtils.clear(0,0,0,1);
+
         uiStage.act(dt);
         this.update(dt);
 

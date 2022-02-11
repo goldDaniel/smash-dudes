@@ -72,7 +72,7 @@ public class MainMenuScreen extends GameScreen
     @Override
     public void render()
     {
-        ScreenUtils.clear(0,0,0,1);
+
     }
 
     private TextButton createButton(String text, Action action, Table table, Skin skin)

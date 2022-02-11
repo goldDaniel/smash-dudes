@@ -105,8 +105,6 @@ public class CharacterSelectScreen extends GameScreen
         ShapeRenderer sh = RenderResources.getShapeRenderer();
         BitmapFont font = RenderResources.getFont("crimes", 32);
 
-        ScreenUtils.clear(0,0,0,1);
-
         Matrix4 proj = viewport.getCamera().combined;
         sh.setProjectionMatrix(proj);
         sb.setProjectionMatrix(proj);
