@@ -76,8 +76,6 @@ public class RenderSystem extends GameSystem
     @Override
     public void preUpdate()
     {
-        ScreenUtils.clear(Color.SKY);
-
         for(ShaderProgram r : shaders.values())
         {
             renderables.get(r).clear();

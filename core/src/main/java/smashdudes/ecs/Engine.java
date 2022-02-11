@@ -1,5 +1,6 @@
 package smashdudes.ecs;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Queue;
@@ -16,7 +17,8 @@ public class Engine
     private final Array<Entity> createdEntities = new Array<>();
     private final Array<Entity> deadEntities = new Array<>();
 
-    private final Array<GameSystem> systems = new Array<>();
+    private final Array<GameSystem> gameSystems = new Array<>();
+    private final Array<GameSystem> renderSystems = new Array<>();
 
     private final Queue<Event> events = new Queue<>();
 
@@ -50,31 +52,31 @@ public class Engine
         PlayerControllerSystem ctrlSys = new PlayerControllerSystem(this);
         ctrlSys.setEnabled(false);
 
-        systems.add(new CountdownSystem(this));
-        systems.add(new PlayerIdleSystem(this));
-        systems.add(new PlayerRunningSystem(this));
-        systems.add(new PlayerInAirSystem(this));
-        systems.add(new GroundAttackSystem(this));
-        systems.add(new PlayerLandingSystem(this));
-        systems.add(new RenderDirectionSystem(this));
-        systems.add(ctrlSys);
-        systems.add(new AIControllerSystem(this));
-        systems.add(new GravitySystem(this));
-        systems.add(new MovementSystem(this));
-        systems.add(new TerrainCollisionSystem(this));
-        systems.add(new HitDetectionSystem(this));
-        systems.add(new HitResolutionSystem(this));
-        systems.add(new PlayerStunnedSystem(this));
-        systems.add(new DeathSystem(this));
-        systems.add(new RespawnSystem(this));
-        systems.add(new AudioSystem(this));
+        gameSystems.add(new CountdownSystem(this));
+        gameSystems.add(new PlayerIdleSystem(this));
+        gameSystems.add(new PlayerRunningSystem(this));
+        gameSystems.add(new PlayerInAirSystem(this));
+        gameSystems.add(new GroundAttackSystem(this));
+        gameSystems.add(new PlayerLandingSystem(this));
+        gameSystems.add(new RenderDirectionSystem(this));
+        gameSystems.add(ctrlSys);
+        gameSystems.add(new AIControllerSystem(this));
+        gameSystems.add(new GravitySystem(this));
+        gameSystems.add(new MovementSystem(this));
+        gameSystems.add(new TerrainCollisionSystem(this));
+        gameSystems.add(new HitDetectionSystem(this));
+        gameSystems.add(new HitResolutionSystem(this));
+        gameSystems.add(new PlayerStunnedSystem(this));
+        gameSystems.add(new DeathSystem(this));
+        gameSystems.add(new RespawnSystem(this));
+        gameSystems.add(new AudioSystem(this));
 
-        systems.add(new AnimationSystem(this));
-        systems.add(new ParticleSystem(this));
-        systems.add(new ParticleEmitterSystem(this));
-        systems.add(new AnimationDebugSystem(this));
+        gameSystems.add(new AnimationSystem(this));
+        gameSystems.add(new ParticleSystem(this));
+        gameSystems.add(new ParticleEmitterSystem(this));
+        gameSystems.add(new AnimationDebugSystem(this));
 
-        systems.add(new GameOverSystem(this, transition));
+        gameSystems.add(new GameOverSystem(this, transition));
 
 
         rs.setCamera(camera);
@@ -83,11 +85,11 @@ public class Engine
         rs.setViewport(viewport);
         drs.setViewport(viewport);
 
-        systems.add(new CountdownCameraSystem(this));
-        systems.add(new AveragePositionCameraSystem(this));
-        systems.add(rs);
-        systems.add(drs);
-        systems.add(urs);
+        gameSystems.add(new CountdownCameraSystem(this));
+        gameSystems.add(new AveragePositionCameraSystem(this));
+        renderSystems.add(rs);
+        renderSystems.add(drs);
+        renderSystems.add(urs);
     }
 
     public Entity createEntity()
@@ -144,18 +146,22 @@ public class Engine
     {
         isUpdating = true;
         {
-            for (int i = 0; i < systems.size; i++)
+            for (int i = 0; i < gameSystems.size; i++)
             {
-                if(systems.get(i).isEnabled())
+                if(gameSystems.get(i).isEnabled())
                 {
-                    systems.get(i).update(dt);
+                    gameSystems.get(i).update(dt);
                 }
             }
 
             while (events.notEmpty())
             {
                 Event e = events.removeFirst();
-                for (GameSystem s : systems)
+                for (GameSystem s : gameSystems)
+                {
+                    s.receiveEvent(e);
+                }
+                for (GameSystem s : renderSystems)
                 {
                     s.receiveEvent(e);
                 }
@@ -169,6 +175,17 @@ public class Engine
 
         activeEntities.addAll(createdEntities);
         createdEntities.clear();
+    }
+
+    public void render()
+    {
+        for (int i = 0; i < renderSystems.size; i++)
+        {
+            if(renderSystems.get(i).isEnabled())
+            {
+                renderSystems.get(i).update(Gdx.graphics.getDeltaTime());
+            }
+        }
     }
 
     public void addEvent(Event event)
@@ -185,7 +202,16 @@ public class Engine
 
     public <T extends GameSystem> void enableSystem(Class<T> clazz)
     {
-        for(GameSystem system : systems)
+        for(GameSystem system : gameSystems)
+        {
+            if(system.getClass().equals(clazz))
+            {
+                system.setEnabled(true);
+                return;
+            }
+        }
+
+        for(GameSystem system : renderSystems)
         {
             if(system.getClass().equals(clazz))
             {
@@ -197,11 +223,20 @@ public class Engine
 
     public <T extends GameSystem> void disableSystem(Class<T> clazz)
     {
-        for(GameSystem system : systems)
+        for(GameSystem system : gameSystems)
         {
             if(system.getClass().equals(clazz))
             {
                 system.setEnabled(false);
+                return;
+            }
+        }
+
+        for(GameSystem system : renderSystems)
+        {
+            if(system.getClass().equals(clazz))
+            {
+                system.setEnabled(true);
                 return;
             }
         }
