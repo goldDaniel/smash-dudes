@@ -41,7 +41,17 @@ public class PauseScreen extends GameScreen
                 game.setScreen(gameScreen);
             }
         });
-        table.add(resumeButton).padTop(100);
+        table.add(resumeButton).padTop(100).row();
+
+        TextButton menuButton = new TextButton("Menu", skin, "text_button_main_menu");
+        menuButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor)
+            {
+                transitionTo(new MainMenuScreen(game));
+            }
+        });
+        table.add(menuButton).padTop(100);
     }
 
     @Override

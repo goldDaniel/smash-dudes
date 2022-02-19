@@ -3,6 +3,8 @@ package smashdudes.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -12,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
+import org.libsdl.SDL;
 import smashdudes.content.ContentRepo;
 import smashdudes.content.DTO;
 import smashdudes.content.ContentLoader;
@@ -82,7 +85,16 @@ public class GameplayScreen extends GameScreen
     @Override
     public void update(float dt)
     {
-        if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
+        for(Controller c : Controllers.getControllers())
+        {
+            if(c.getButton(SDL.SDL_CONTROLLER_BUTTON_START))
+            {
+                game.setScreen(new PauseScreen(game, this));
+                return;
+            }
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
         {
             game.setScreen(new PauseScreen(game, this));
         }
