@@ -53,7 +53,7 @@ public class RespawnSystem extends GameSystem
 
             e.entity.getComponent(VelocityComponent.class).velocity.setZero();
             e.entity.getComponent(HealthComponent.class).health = 0;
-            
+
             float maxDuration = 1.5f;
             e.entity.addComponent(new PlayerResetComponent(maxDuration));
 
