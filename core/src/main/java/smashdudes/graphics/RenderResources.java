@@ -50,10 +50,18 @@ public class RenderResources
             return textures.get(fileName);
         }
 
-        Texture t = new Texture(Gdx.files.internal(fileName), true);
-        textures.put(fileName, t);
+        FileHandle handle = Gdx.files.internal(fileName);
+        if(handle.exists())
+        {
+            Texture t = new Texture(handle, true);
+            textures.put(fileName, t);
 
-        return t;
+            return t;
+        }
+        else
+        {
+            return getTexture("textures/default.png");
+        }
     }
 
     public static ShaderProgram getShader(String vertexPath, String fragmentPath)
