@@ -51,20 +51,21 @@ public class RespawnSystem extends GameSystem
         {
             RespawnEvent e = (RespawnEvent)event;
 
-            VelocityComponent vel = e.entity.getComponent(VelocityComponent.class);
-            PlayerComponent play = e.entity.getComponent(PlayerComponent.class);
-
-            vel.velocity.setZero();
-
+            e.entity.getComponent(VelocityComponent.class).velocity.setZero();
+            e.entity.getComponent(HealthComponent.class).health = 0;
+            
             float maxDuration = 1.5f;
             e.entity.addComponent(new PlayerResetComponent(maxDuration));
 
-            if(!removedComponents.containsKey(play.handle))
+            PlayerHandle handle = e.entity.getComponent(PlayerComponent.class).handle;
+
+            if(!removedComponents.containsKey(handle))
             {
-                removedComponents.put(play.handle, new Array<>());
+                removedComponents.put(handle, new Array<>());
             }
-            removedComponents.get(play.handle).add(e.entity.removeComponent(VelocityComponent.class));
-            removedComponents.get(play.handle).add(e.entity.removeComponent(PlayerControllerComponent.class));
+            removedComponents.get(handle).add(e.entity.removeComponent(VelocityComponent.class));
+            removedComponents.get(handle).add(e.entity.removeComponent(PlayerControllerComponent.class));
+            removedComponents.get(handle).add(e.entity.removeComponent(AttackableComponent.class));
         }
     }
 }

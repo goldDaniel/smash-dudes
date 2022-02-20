@@ -164,6 +164,8 @@ public class GameplayScreen extends GameScreen
         TerrainColliderComponent collider = new TerrainColliderComponent(characterData.terrainCollider);
         player.addComponent(collider);
 
+        player.addComponent(new AttackableComponent());
+
         return player;
     }
 
