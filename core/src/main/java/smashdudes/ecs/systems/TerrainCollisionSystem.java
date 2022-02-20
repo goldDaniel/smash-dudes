@@ -9,10 +9,7 @@ import com.badlogic.gdx.utils.ArrayMap;
 import smashdudes.core.Collisions;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
-import smashdudes.ecs.components.DebugDrawComponent;
-import smashdudes.ecs.components.PositionComponent;
-import smashdudes.ecs.components.StaticTerrainComponent;
-import smashdudes.ecs.components.TerrainColliderComponent;
+import smashdudes.ecs.components.*;
 import smashdudes.ecs.events.LandingEvent;
 import smashdudes.ecs.events.TerrainCollisionEvent;
 
@@ -79,20 +76,39 @@ public class TerrainCollisionSystem extends GameSystem
         {
             DebugDrawComponent debug = entity.getComponent(DebugDrawComponent.class);
 
-            Rectangle r = new Rectangle();
-            r.x = p.position.x + c.collider.x - c.collider.width / 2;
-            r.y = p.position.y + c.collider.y - c.collider.height / 2;
-            r.width = c.collider.width;
-            r.height = c.collider.height;
+            Rectangle r;
+            if(entity.hasComponent(PlayerComponent.class))
+            {
+                r = c.getCollider(entity.getComponent(PlayerComponent.class).facingLeft);
+            }
+            else
+            {
+                r = c.getCollider(false);
+            }
+
+
+
+            r.x = p.position.x + r.x - r.width / 2;
+            r.y = p.position.y + r.y - r.height / 2;
+
 
             debug.pushShape(ShapeRenderer.ShapeType.Line, r, Color.GOLD);
         }
 
-        Rectangle r0 = new Rectangle();
-        r0.x = p.position.x - c.collider.width/ 2 + c.collider.x;
-        r0.y = p.position.y - c.collider.height / 2 + c.collider.y;
-        r0.width = c.collider.width;
-        r0.height = c.collider.height;
+        Rectangle r0;
+        Rectangle collider;
+        if(entity.hasComponent(PlayerComponent.class))
+        {
+            r0 = c.getCollider(entity.getComponent(PlayerComponent.class).facingLeft);
+
+        }
+        else
+        {
+            r0 = c.getCollider(false);
+        }
+        collider = new Rectangle(r0);
+        r0.x = p.position.x - r0.width / 2 + r0.x;
+        r0.y = p.position.y - r0.height / 2 + r0.y;
 
         boolean touchedGround = false;
 
@@ -111,7 +127,7 @@ public class TerrainCollisionSystem extends GameSystem
 
                 if(side == Collisions.CollisionSide.Top)
                 {
-                    p.position.y = t.pos.position.y + c.collider.height / 2 - c.collider.y + t.terrain.height / 2;
+                    p.position.y = t.pos.position.y + collider.height / 2 - collider.y + t.terrain.height / 2;
 
                     if (!onGroundLastFrame.get(entity))
                     {
@@ -123,15 +139,15 @@ public class TerrainCollisionSystem extends GameSystem
                 }
                 else if(side == Collisions.CollisionSide.Bottom)
                 {
-                    p.position.y = t.pos.position.y - c.collider.height / 2 - c.collider.y - t.terrain.height / 2;
+                    p.position.y = t.pos.position.y - collider.height / 2 - collider.y - t.terrain.height / 2;
                 }
                 else if(side == Collisions.CollisionSide.Left)
                 {
-                    p.position.x = t.pos.position.x - c.collider.width / 2 - c.collider.x - t.terrain.width / 2;
+                    p.position.x = t.pos.position.x - collider.width / 2 - collider.x - t.terrain.width / 2;
                 }
                 else if(side == Collisions.CollisionSide.Right)
                 {
-                    p.position.x = t.pos.position.x + c.collider.width / 2 - c.collider.x + t.terrain.width / 2;
+                    p.position.x = t.pos.position.x + collider.width / 2 - collider.x + t.terrain.width / 2;
                 }
             }
         }

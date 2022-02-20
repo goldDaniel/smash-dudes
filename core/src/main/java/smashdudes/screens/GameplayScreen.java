@@ -161,9 +161,10 @@ public class GameplayScreen extends GameScreen
 
         player.addComponent(new DebugDrawComponent());
 
-        TerrainColliderComponent collider = new TerrainColliderComponent();
-        collider.collider = characterData.terrainCollider;
+        TerrainColliderComponent collider = new TerrainColliderComponent(characterData.terrainCollider);
         player.addComponent(collider);
+
+        player.addComponent(new AttackableComponent());
 
         return player;
     }
@@ -193,7 +194,7 @@ public class GameplayScreen extends GameScreen
             for (DTO.AnimationFrame dtoFrame : anim.frames)
             {
                 AnimationFrame frame =
-                        new AnimationFrame(RenderResources.getTexture(dtoFrame.texturePath), dtoFrame.attackboxes, dtoFrame.bodyboxes);
+                        new AnimationFrame(RenderResources.getTextureDownsampled(dtoFrame.texturePath, 64), dtoFrame.attackboxes, dtoFrame.bodyboxes);
                 frames.add(frame);
             }
 

@@ -35,7 +35,7 @@ public class HitDetectionSystem extends GameSystem
     @Override
     protected void preUpdate()
     {
-        entities = engine.getEntities(AnimationComponent.class, PositionComponent.class, PlayerComponent.class);
+        entities = engine.getEntities(AnimationComponent.class, PositionComponent.class, PlayerComponent.class, AttackableComponent.class);
     }
 
     @Override

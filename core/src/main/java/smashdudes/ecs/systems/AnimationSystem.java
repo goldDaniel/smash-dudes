@@ -4,6 +4,9 @@ import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.AnimationComponent;
 import smashdudes.ecs.components.DrawComponent;
+import smashdudes.ecs.components.PlayerAnimationContainerComponent;
+import smashdudes.ecs.events.Event;
+import smashdudes.ecs.events.RespawnEvent;
 
 public class AnimationSystem extends GameSystem
 {
@@ -12,6 +15,8 @@ public class AnimationSystem extends GameSystem
         super(engine);
         registerComponentType(AnimationComponent.class);
         registerComponentType(DrawComponent.class);
+
+        registerEventType(RespawnEvent.class);
     }
 
     @Override
@@ -23,5 +28,19 @@ public class AnimationSystem extends GameSystem
         anim.update(dt);
 
         draw.texture = anim.getCurrentFrame().texture;
+    }
+
+    @Override
+    protected void handleEvent(Event event)
+    {
+        if(event instanceof RespawnEvent)
+        {
+            event.entity.removeComponent(AnimationComponent.class);
+
+            PlayerAnimationContainerComponent container = event.entity.getComponent(PlayerAnimationContainerComponent.class);
+
+            event.entity.addComponent(container.idle);
+
+        }
     }
 }
