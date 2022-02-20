@@ -194,7 +194,7 @@ public class GameplayScreen extends GameScreen
             for (DTO.AnimationFrame dtoFrame : anim.frames)
             {
                 AnimationFrame frame =
-                        new AnimationFrame(RenderResources.getTextureDownsampled(dtoFrame.texturePath, 96), dtoFrame.attackboxes, dtoFrame.bodyboxes);
+                        new AnimationFrame(RenderResources.getTextureDownsampled(dtoFrame.texturePath, 64), dtoFrame.attackboxes, dtoFrame.bodyboxes);
                 frames.add(frame);
             }
 
