@@ -16,10 +16,10 @@ import imgui.type.ImFloat;
 import imgui.type.ImInt;
 import imgui.type.ImString;
 import smashdudes.content.DTO;
+import smashdudes.core.Projectile;
 import smashdudes.core.boxtool.logic.ContentService;
 import smashdudes.core.boxtool.presentation.Utils;
 import smashdudes.core.boxtool.presentation.commands.*;
-import smashdudes.graphics.AnimationFrame;
 import smashdudes.graphics.RenderResources;
 
 import java.io.IOException;
@@ -442,6 +442,54 @@ public class CharacterEditorWidget
                     drawBoxEditor("Attackboxes", frame.attackboxes);
                     drawBoxEditor("Bodyboxes", frame.bodyboxes);
 
+                    ImGui.text("Projectiles");
+                    ImGui.sameLine();
+                    if(ImGui.button("Add##projectileID"))
+                    {
+                        commandList.execute(new AddProjectileCommand(frame.projectiles, new Projectile()));
+                    }
+                    for(Projectile projectile : frame.projectiles)
+                    {
+                        ImGui.pushID("##" + Utils.getUniqueKey(projectile));
+                        ImGui.text("");
+                        ImGui.text("" + (frame.projectiles.indexOf(projectile, true) + 1));
+                        ImGui.sameLine();
+                        float[] speed = {projectile.speed.x, projectile.speed.y};
+                        if(ImGui.inputFloat2("speed##projSpeedID", speed))
+                        {
+                            Projectile p = projectile.copy();
+                            p.speed.x = speed[0];
+                            p.speed.y = speed[1];
+                            commandList.execute(new ProjecileEditCommand(projectile, p));
+                        }
+                        float[] dim = {projectile.dim.x, projectile.dim.y};
+                        ImGui.text(" ");
+                        ImGui.sameLine();
+                        if(ImGui.inputFloat2("dimensions##projDimID", dim))
+                        {
+                            Projectile p = projectile.copy();
+                            p.dim.x = dim[0];
+                            p.dim.y = dim[1];
+                            commandList.execute(new ProjecileEditCommand(projectile, p));
+                        }
+                        float[] pos = {projectile.pos.x, projectile.pos.y};
+                        ImGui.text(" ");
+                        ImGui.sameLine();
+                        if(ImGui.inputFloat2("position##projPosID", pos))
+                        {
+                            Projectile p = projectile.copy();
+                            p.pos.x = pos[0];
+                            p.pos.y = pos[1];
+                            commandList.execute(new ProjecileEditCommand(projectile, p));
+                        }
+                        ImGui.sameLine();
+                        if(ImGui.button("Remove"))
+                        {
+                            commandList.execute(new RemoveProjectileCommand(frame.projectiles, projectile));
+                        }
+                        ImGui.popID();
+                    }
+
                     ImGui.popID();
                 }
             }
@@ -470,7 +518,8 @@ public class CharacterEditorWidget
         for(Rectangle rect : boxes)
         {
             ImGui.pushID(Utils.getUniqueKey(rect));
-
+            ImGui.text("" + (boxes.indexOf(rect, true) + 1));
+            ImGui.sameLine();
             float[] temp = {rect.x, rect.y, rect.width, rect.height};
             if(ImGui.inputFloat4("", temp))
             {

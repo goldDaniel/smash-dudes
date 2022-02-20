@@ -6,8 +6,8 @@ import com.badlogic.gdx.utils.Array;
 public class AddBoxCommand extends Command
 {
 
-    private Array<Rectangle> boxes;
-    private Rectangle box;
+    private final Array<Rectangle> boxes;
+    private final Rectangle box;
 
 
     public AddBoxCommand(Array<Rectangle> boxes, Rectangle box)

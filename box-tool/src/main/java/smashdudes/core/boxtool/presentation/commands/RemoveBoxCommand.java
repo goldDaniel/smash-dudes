@@ -5,9 +5,9 @@ import com.badlogic.gdx.utils.Array;
 
 public class RemoveBoxCommand extends Command
 {
-    private Array<Rectangle> boxes;
-    private int index;
-    private Rectangle box;
+    private final Array<Rectangle> boxes;
+    private final int index;
+    private final Rectangle box;
 
 
     public RemoveBoxCommand(Array<Rectangle> boxes, Rectangle box)
