@@ -2,12 +2,15 @@ package smashdudes.graphics;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -62,6 +65,36 @@ public class RenderResources
         {
             return getTexture("textures/default.png");
         }
+    }
+
+    public static Texture getTextureDownsampled(String filename, int pixelSize)
+    {
+        String key = filename + pixelSize;
+        if(textures.containsKey(key))
+        {
+            return textures.get(key);
+        }
+
+        Texture texture = new Texture(filename);
+        float ratio = (float)texture.getHeight() / texture.getWidth();
+        FrameBuffer buffer = new FrameBuffer(Pixmap.Format.RGBA8888, pixelSize, (int)(pixelSize * ratio), false);
+        buffer.getColorBufferTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+
+        buffer.begin();
+        {
+            s.setProjectionMatrix(new Matrix4());
+            s.begin();
+            s.draw(texture, -1, 1, 2, -2);
+            s.end();
+        }
+        buffer.end();
+
+
+
+        textures.put(key, buffer.getColorBufferTexture());
+        texture.dispose();
+
+        return buffer.getColorBufferTexture();
     }
 
     public static ShaderProgram getShader(String vertexPath, String fragmentPath)
