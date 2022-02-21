@@ -134,7 +134,7 @@ public class GameplayScreen extends GameScreen
                 BackgroundComponent background = new BackgroundComponent();
                 background.offset.y = 6;
 
-                background.parallax.x = 0.1f * i;
+                background.parallax.x = 0.05f * i;
 
                 DrawComponent draw = new DrawComponent();
                 draw.scale = 30;

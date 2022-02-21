@@ -61,7 +61,7 @@ public class GroundAttackSystem extends GameSystem
 
                 VelocityComponent vel = new VelocityComponent();
                 int dir = play.facingLeft ? -1 : 1;
-                vel.velocity = new Vector2(dir * projectile.speed.x, projectile.speed.y);
+                vel.velocity.set(dir * projectile.speed.x, projectile.speed.y);
                 bullet.addComponent(vel);
 
                 DrawComponent draw = new DrawComponent();
