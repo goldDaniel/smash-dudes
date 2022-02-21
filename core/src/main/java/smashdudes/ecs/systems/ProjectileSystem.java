@@ -59,12 +59,13 @@ public class ProjectileSystem extends GameSystem
             {
                 if(projBox.overlaps(bodyBox))
                 {
-                    engine.destroyEntity(projectile);
                     Entity collision = engine.createEntity();
                     collision.addComponent(new HitResolutionComponent(projBullet.owner, target,
                                                                       projectile.getComponent(VelocityComponent.class).velocity.cpy(),
                                                                       Collisions.calculateOverlapRectangle(projBox, bodyBox),
                                                                       1.0f, projBullet.damage, projBullet.knockback));
+                    engine.destroyEntity(projectile);
+                    break;
                 }
             }
         }
