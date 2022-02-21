@@ -57,8 +57,9 @@ public class RenderResources
         if(handle.file().exists())
         {
             Texture t = new Texture(handle, true);
-            textures.put(fileName, t);
+            t.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
+            textures.put(fileName, t);
             return t;
         }
         else
@@ -76,6 +77,8 @@ public class RenderResources
         }
 
         Texture texture = new Texture(filename);
+        texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+
         float ratio = (float)texture.getHeight() / texture.getWidth();
         FrameBuffer buffer = new FrameBuffer(Pixmap.Format.RGBA8888, pixelSize, (int)(pixelSize * ratio), false);
         buffer.getColorBufferTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);

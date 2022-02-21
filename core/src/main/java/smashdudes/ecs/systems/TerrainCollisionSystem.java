@@ -56,7 +56,7 @@ public class TerrainCollisionSystem extends GameSystem
                 r.width = t.terrain.width;
                 r.height = t.terrain.height;
 
-                debug.pushShape(ShapeRenderer.ShapeType.Filled, r, Color.FOREST.cpy().sub(0.1f, 0.1f, 0.1f, 0.0f));
+                debug.pushShape(ShapeRenderer.ShapeType.Filled, r, Color.ORANGE.cpy().sub(0.1f, 0.1f, 0.1f, 0.0f));
             }
         }
     }
@@ -86,11 +86,8 @@ public class TerrainCollisionSystem extends GameSystem
                 r = c.getCollider(false);
             }
 
-
-
             r.x = p.position.x + r.x - r.width / 2;
             r.y = p.position.y + r.y - r.height / 2;
-
 
             debug.pushShape(ShapeRenderer.ShapeType.Line, r, Color.GOLD);
         }

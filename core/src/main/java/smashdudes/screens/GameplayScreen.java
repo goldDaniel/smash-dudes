@@ -33,6 +33,9 @@ import smashdudes.util.CharacterSelectDescription;
 
 public class GameplayScreen extends GameScreen
 {
+    private final int WORLD_WIDTH = 20;
+    private final int WORLD_HEIGHT = 12;
+
     private GameInputHandler inputHandler;
     private Engine ecsEngine;
 
@@ -40,7 +43,7 @@ public class GameplayScreen extends GameScreen
     {
         super(game);
         this.inputHandler = desc.gameInput;
-        ecsEngine = new Engine(() -> transitionTo(new MainMenuScreen(game)));
+        ecsEngine = new Engine(WORLD_WIDTH, WORLD_HEIGHT, () -> transitionTo(new MainMenuScreen(game)));
 
         DTO.Stage stage = ContentLoader.loadStage("stage.json");
 
@@ -52,7 +55,7 @@ public class GameplayScreen extends GameScreen
         }
 
 
-        for(CharacterSelectDescription.PlayerDescription p : desc.descriptions)
+        for (CharacterSelectDescription.PlayerDescription p : desc.descriptions)
         {
             DTO.Character characterData = ContentRepo.loadCharacter(p.identifier);
             Entity player = buildPlayer(p.portrait, p.handle, characterData, stage.spawnPoints);
@@ -62,6 +65,8 @@ public class GameplayScreen extends GameScreen
             PlayerControllerComponent pc = new PlayerControllerComponent(retriever);
             player.addComponent(pc);
         }
+
+        buildParallaxBackground();
     }
 
     @Override
@@ -86,9 +91,9 @@ public class GameplayScreen extends GameScreen
     @Override
     public void update(float dt)
     {
-        for(Controller c : Controllers.getControllers())
+        for (Controller c : Controllers.getControllers())
         {
-            if(c.getButton(SDL.SDL_CONTROLLER_BUTTON_START))
+            if (c.getButton(SDL.SDL_CONTROLLER_BUTTON_START))
             {
                 game.setScreen(new PauseScreen(game, this));
                 return;
@@ -99,9 +104,9 @@ public class GameplayScreen extends GameScreen
         {
             game.setScreen(new PauseScreen(game, this));
         }
-        float maxStep = 1/30f;
+        float maxStep = 1 / 30f;
 
-        if(dt > maxStep) dt = maxStep;
+        if (dt > maxStep) dt = maxStep;
         ecsEngine.update(dt);
     }
 
@@ -116,6 +121,34 @@ public class GameplayScreen extends GameScreen
     public void resize(int width, int height)
     {
         ecsEngine.resize(width, height);
+    }
+
+    private void buildParallaxBackground()
+    {
+        for(int i = 0; i < 10; i++)
+        {
+
+            for(int adjustment = -1; adjustment <= 1; adjustment++)
+            {
+                PositionComponent p = new PositionComponent();
+                BackgroundComponent background = new BackgroundComponent();
+                background.offset.y = 6;
+
+                background.parallax.x = 0.1f * i;
+
+                DrawComponent draw = new DrawComponent();
+                draw.scale = 30;
+                background.offset.x = draw.scale * adjustment;
+
+                draw.texture = RenderResources.getTexture("textures/background/layer" + i + ".png");
+                draw.zIndex = -10 + i;
+
+                Entity entity = ecsEngine.createEntity();
+                entity.addComponent(p);
+                entity.addComponent(background);
+                entity.addComponent(draw);
+            }
+        }
     }
 
     private Entity buildPlayer(Texture portrait, PlayerHandle handle, DTO.Character characterData, Array<Vector2> spawnPoints)
@@ -204,6 +237,7 @@ public class GameplayScreen extends GameScreen
                 AnimationFrame frame =
                         new AnimationFrame(RenderResources.getTextureDownsampled(dtoFrame.texturePath, 64),
                                            dtoFrame.attackboxes, dtoFrame.bodyboxes, projectiles);
+
                 frames.add(frame);
             }
 
