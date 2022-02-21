@@ -13,7 +13,7 @@ public class DrawComponent extends Component
     public RenderPass pass = RenderPass.Default;
 
     public Texture texture = RenderResources.getTexture("textures/default.png");
-    public float scale;
+    public float scale = 1;
 
     public boolean facingLeft = false;
 

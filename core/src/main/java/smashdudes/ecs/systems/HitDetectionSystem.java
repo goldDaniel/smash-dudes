@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import smashdudes.core.AttackResult;
+import smashdudes.core.Collisions;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
@@ -13,14 +15,6 @@ import smashdudes.graphics.AnimationFrame;
 
 public class HitDetectionSystem extends GameSystem
 {
-    private class AttackResult
-    {
-        public Vector2 direction = new Vector2();
-        public Rectangle collisionArea = new Rectangle();
-
-        public float stunTime = 0;
-    }
-
     private Array<Entity> entities = new Array<>();
 
     public HitDetectionSystem(Engine engine)
@@ -94,7 +88,7 @@ public class HitDetectionSystem extends GameSystem
                     AttackResult attackRes = new AttackResult();
 
                     attackRes.direction.set(body.x - body.width / 2, body.y - body.height / 2).sub(attack.x - attack.width / 2, attack.y - attack.height / 2).nor();
-                    attackRes.collisionArea.set(calculateOverlapRectangle(body, attack));
+                    attackRes.collisionArea.set(Collisions.calculateOverlapRectangle(body, attack));
 
                     if(result != null)
                     {
@@ -111,17 +105,5 @@ public class HitDetectionSystem extends GameSystem
             }
         }
         return result;
-    }
-
-    private Rectangle calculateOverlapRectangle(Rectangle a, Rectangle b)
-    {
-        float left = Math.max(a.x, b.x);
-        float right = Math.min(a.x + a.width, b.x + b.width);
-
-        float top = Math.max(a.y, b.y);
-        float bottom = Math.min(a.y + a.height, b.y + b.height);
-
-
-        return new Rectangle(left, top, right - left, bottom - top);
     }
 }
