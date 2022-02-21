@@ -40,11 +40,6 @@ public class GroundAttackSystem extends GameSystem
         }
 
         AnimationComponent anim = entity.getComponent(AnimationComponent.class);
-        if(anim.isFinished())
-        {
-            entity.removeComponent(PlayerOnGroundAttackStateComponent.class);
-            entity.addComponent(new PlayerIdleComponent());
-        }
 
         if(!hasEntered.contains(play.handle, true))
         {
@@ -69,11 +64,12 @@ public class GroundAttackSystem extends GameSystem
                 hasEntered.add(play.handle);
             }
         }
-    }
 
-    @Override
-    public void postUpdate()
-    {
-        hasEntered.clear();
+        if(anim.isFinished())
+        {
+            entity.removeComponent(PlayerOnGroundAttackStateComponent.class);
+            entity.addComponent(new PlayerIdleComponent());
+            hasEntered.removeValue(play.handle, true);
+        }
     }
 }
