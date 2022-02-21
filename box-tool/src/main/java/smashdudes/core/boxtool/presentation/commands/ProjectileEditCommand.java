@@ -1,18 +1,18 @@
 package smashdudes.core.boxtool.presentation.commands;
 
 import com.badlogic.gdx.math.Vector2;
-import smashdudes.core.Projectile;
+import smashdudes.content.DTO;
 
-public class ProjecileEditCommand extends Command
+public class ProjectileEditCommand extends Command
 {
-    private final Projectile proj;
-    private final Projectile data;
+    private final DTO.Projectile proj;
+    private final DTO.Projectile data;
 
     private final Vector2 prevSpeed;
     private final Vector2 prevDim;
     private final Vector2 prevPos;
 
-    public ProjecileEditCommand(Projectile proj, Projectile data)
+    public ProjectileEditCommand(DTO.Projectile proj, DTO.Projectile data)
     {
         this.proj = proj;
         this.data = data;

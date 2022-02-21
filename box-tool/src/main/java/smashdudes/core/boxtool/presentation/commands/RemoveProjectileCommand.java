@@ -1,15 +1,15 @@
 package smashdudes.core.boxtool.presentation.commands;
 
 import com.badlogic.gdx.utils.Array;
-import smashdudes.core.Projectile;
+import smashdudes.content.DTO;
 
 public class RemoveProjectileCommand extends Command
 {
-    private final Array<Projectile> projectiles;
+    private final Array<DTO.Projectile> projectiles;
     private final int index;
-    private final Projectile projectile;
+    private final DTO.Projectile projectile;
 
-    public RemoveProjectileCommand(Array<Projectile> projectiles, Projectile projectile)
+    public RemoveProjectileCommand(Array<DTO.Projectile> projectiles, DTO.Projectile projectile)
     {
         this.projectiles = projectiles;
         this.projectile = projectile;

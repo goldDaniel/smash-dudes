@@ -1,14 +1,14 @@
 package smashdudes.core.boxtool.presentation.commands;
 
 import com.badlogic.gdx.utils.Array;
-import smashdudes.core.Projectile;
+import smashdudes.content.DTO;
 
 public class AddProjectileCommand extends Command
 {
-    private final Array<Projectile> projs;
-    private final Projectile proj;
+    private final Array<DTO.Projectile> projs;
+    private final DTO.Projectile proj;
 
-    public AddProjectileCommand(Array<Projectile> projs, Projectile proj)
+    public AddProjectileCommand(Array<DTO.Projectile> projs, DTO.Projectile proj)
     {
         this.projs = projs;
         this.proj = proj;

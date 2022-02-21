@@ -50,6 +50,8 @@ public class GroundAttackSystem extends GameSystem
                 ProjectileComponent proj = new ProjectileComponent();
                 proj.owner = entity;
                 proj.dim = projectile.dim.cpy();
+                proj.damage = projectile.damage;
+                proj.knockback = projectile.knockback;
                 bullet.addComponent(proj);
 
                 PositionComponent pos = new PositionComponent(new Vector2(projectile.pos.x + entity.getComponent(PositionComponent.class).position.x,
@@ -61,7 +63,10 @@ public class GroundAttackSystem extends GameSystem
                 vel.velocity = new Vector2(dir * projectile.speed.x, projectile.speed.y);
                 bullet.addComponent(vel);
 
-                bullet.addComponent(new DrawComponent());
+                DrawComponent draw = new DrawComponent();
+                draw.texture = projectile.texture;
+                bullet.addComponent(draw);
+
                 hasEntered.add(play.handle);
             }
         }

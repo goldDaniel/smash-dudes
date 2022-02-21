@@ -54,7 +54,7 @@ public class RenderResources
         }
 
         FileHandle handle = Gdx.files.internal(fileName);
-        if(handle.exists())
+        if(handle.file().exists())
         {
             Texture t = new Texture(handle, true);
             textures.put(fileName, t);

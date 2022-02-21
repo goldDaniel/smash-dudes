@@ -16,7 +16,6 @@ import imgui.type.ImFloat;
 import imgui.type.ImInt;
 import imgui.type.ImString;
 import smashdudes.content.DTO;
-import smashdudes.core.Projectile;
 import smashdudes.core.boxtool.logic.ContentService;
 import smashdudes.core.boxtool.presentation.Utils;
 import smashdudes.core.boxtool.presentation.commands.*;
@@ -396,17 +395,7 @@ public class CharacterEditorWidget
                     }
 
                     ImGui.sameLine();
-                    if (ImGui.button("Change Texture.."))
-                    {
-                        FileHandle directory = Gdx.files.internal("characters/" + character.name + "/animations/");
-                        String readTexture = Utils.chooseFileToLoad(directory, "png", "jpg", "jpeg");
-                        if (readTexture != null)
-                        {
-                            String workingDir = Gdx.files.getLocalStoragePath();
-                            readTexture = readTexture.replace(workingDir, "");
-                            commandList.execute(new PropertyEditCommand<>("texturePath", readTexture, frame));
-                        }
-                    }
+                    changeTexture("characters/" + character.name + "/animations/", frame);
 
                     ImGui.sameLine();
                     if (ImGui.button("/\\"))
@@ -446,47 +435,70 @@ public class CharacterEditorWidget
                     ImGui.sameLine();
                     if(ImGui.button("Add##projectileID"))
                     {
-                        commandList.execute(new AddProjectileCommand(frame.projectiles, new Projectile()));
+                        commandList.execute(new AddProjectileCommand(frame.projectiles, new DTO.Projectile()));
                     }
-                    for(Projectile projectile : frame.projectiles)
+                    for(DTO.Projectile projectile : frame.projectiles)
                     {
                         ImGui.pushID("##" + Utils.getUniqueKey(projectile));
                         ImGui.text("");
                         ImGui.text("" + (frame.projectiles.indexOf(projectile, true) + 1));
                         ImGui.sameLine();
+
                         float[] speed = {projectile.speed.x, projectile.speed.y};
                         if(ImGui.inputFloat2("speed##projSpeedID", speed))
                         {
-                            Projectile p = projectile.copy();
+                            DTO.Projectile p = projectile.copy();
                             p.speed.x = speed[0];
                             p.speed.y = speed[1];
-                            commandList.execute(new ProjecileEditCommand(projectile, p));
+                            commandList.execute(new ProjectileEditCommand(projectile, p));
                         }
+
                         float[] dim = {projectile.dim.x, projectile.dim.y};
                         ImGui.text(" ");
                         ImGui.sameLine();
                         if(ImGui.inputFloat2("dimensions##projDimID", dim))
                         {
-                            Projectile p = projectile.copy();
+                            DTO.Projectile p = projectile.copy();
                             p.dim.x = dim[0];
                             p.dim.y = dim[1];
-                            commandList.execute(new ProjecileEditCommand(projectile, p));
+                            commandList.execute(new ProjectileEditCommand(projectile, p));
                         }
+
                         float[] pos = {projectile.pos.x, projectile.pos.y};
                         ImGui.text(" ");
                         ImGui.sameLine();
                         if(ImGui.inputFloat2("position##projPosID", pos))
                         {
-                            Projectile p = projectile.copy();
+                            DTO.Projectile p = projectile.copy();
                             p.pos.x = pos[0];
                             p.pos.y = pos[1];
-                            commandList.execute(new ProjecileEditCommand(projectile, p));
+                            commandList.execute(new ProjectileEditCommand(projectile, p));
                         }
+
+                        ImFloat knockback = new ImFloat(projectile.knockback);
+                        ImGui.text(" ");
+                        ImGui.sameLine();
+                        if(ImGui.inputFloat("knockback##projKnockID", knockback))
+                        {
+                            commandList.execute(new PropertyEditCommand<>("knockback", knockback.get(), projectile));
+                        }
+
+                        ImFloat damage = new ImFloat(projectile.damage);
+                        ImGui.text(" ");
+                        ImGui.sameLine();
+                        if(ImGui.inputFloat("damage##projDamageID", damage))
+                        {
+                            commandList.execute(new PropertyEditCommand<>("damage", damage.get(), projectile));
+                        }
+
+                        changeTexture("textures/", projectile);
+
                         ImGui.sameLine();
                         if(ImGui.button("Remove"))
                         {
                             commandList.execute(new RemoveProjectileCommand(frame.projectiles, projectile));
                         }
+
                         ImGui.popID();
                     }
 
@@ -611,5 +623,20 @@ public class CharacterEditorWidget
 
         currentTime += dt;
         selectedAnimationFrame = currentAnimation.getKeyFrame(currentTime);
+    }
+
+    private static <U> void changeTexture(String filePath, U instance)
+    {
+        if (ImGui.button("Change Texture.."))
+        {
+            FileHandle directory = Gdx.files.internal(filePath);
+            String readTexture = Utils.chooseFileToLoad(directory, "png", "jpg", "jpeg");
+            if (readTexture != null)
+            {
+                String workingDir = Gdx.files.getLocalStoragePath();
+                readTexture = readTexture.replace(workingDir, "");
+                commandList.execute(new PropertyEditCommand<>("texturePath", readTexture, instance));
+            }
+        }
     }
 }
