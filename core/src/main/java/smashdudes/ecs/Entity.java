@@ -24,16 +24,23 @@ public class Entity implements Pool.Poolable
 
     protected static Entity create()
     {
-        return entityPool.obtain();
+        Entity result = entityPool.obtain();
+        result.components.clear();
+        return result;
     }
 
     protected static void destroy(Entity entity)
     {
         entityPool.free(entity);
+        entity.components.clear();
     }
-    protected static void destroy(Array<Entity> entity)
+    protected static void destroy(Array<Entity> entities)
     {
-        entityPool.freeAll(entity);
+        entityPool.freeAll(entities);
+        for (Entity entity : entities)
+        {
+            entity.components.clear();
+        }
     }
 
     private Entity() {}

@@ -120,6 +120,7 @@ public class Engine
         else
         {
             activeEntities.removeValue(entity, true);
+            Entity.destroy(entity);
         }
     }
     

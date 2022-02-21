@@ -42,11 +42,11 @@ public class ProjectileSystem extends GameSystem
         }
     }
 
-    private void checkProjectileCollisions(Entity entity)
+    private void checkProjectileCollisions(Entity projectile)
     {
-        ProjectileComponent projBullet = entity.getComponent(ProjectileComponent.class);
-        Vector2 posBullet = entity.getComponent(PositionComponent.class).position;
-        Rectangle projBox = new Rectangle(posBullet.x, posBullet.y, projBullet.dim.x, projBullet.dim.y);
+        ProjectileComponent projBullet = projectile.getComponent(ProjectileComponent.class);
+        Vector2 posBullet = projectile.getComponent(PositionComponent.class).position;
+        Rectangle projBox = new Rectangle(posBullet.x - projBullet.dim.x / 2, posBullet.y - projBullet.dim.y / 2, projBullet.dim.x, projBullet.dim.y);
 
         for(Entity target : attackables)
         {
@@ -57,12 +57,12 @@ public class ProjectileSystem extends GameSystem
             Array<Rectangle> bodyBoxes = anim.getCurrentFrame().getBodyboxesRelativeTo(target.getComponent(PositionComponent.class).position, play.facingLeft);
             for(Rectangle bodyBox : bodyBoxes)
             {
-                if(projBox.contains(bodyBox))
+                if(projBox.overlaps(bodyBox))
                 {
-                    engine.destroyEntity(entity);
+                    engine.destroyEntity(projectile);
                     Entity collision = engine.createEntity();
                     collision.addComponent(new HitResolutionComponent(projBullet.owner, target,
-                                                                    entity.getComponent(VelocityComponent.class).velocity,
+                                                                    projectile.getComponent(VelocityComponent.class).velocity,
                                                                     Collisions.calculateOverlapRectangle(projBox, bodyBox),
                                                             1.0f, 1.0f));
                 }
