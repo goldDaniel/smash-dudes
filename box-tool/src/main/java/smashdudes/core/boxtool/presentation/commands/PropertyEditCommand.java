@@ -18,6 +18,11 @@ public class PropertyEditCommand<T, U> extends Command
     {
         this.instance = instance;
         newData = data;
+        Array<Class<?>> classes = new Array<>(DTO.class.getDeclaredClasses());
+        if(!classes.contains(instance.getClass(), false))
+        {
+            throw new IllegalArgumentException("Must be of type 'DTO'");
+        }
         try
         {
             Field property = instance.getClass().getField(propertyName);
