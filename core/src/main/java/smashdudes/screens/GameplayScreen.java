@@ -131,12 +131,12 @@ public class GameplayScreen extends GameScreen
             {
                 PositionComponent p = new PositionComponent();
                 BackgroundComponent background = new BackgroundComponent();
-                background.offset.y = 4;
+                background.offset.y = 6;
 
                 background.parallax.x = 0.1f * i;
 
                 DrawComponent draw = new DrawComponent();
-                draw.scale = 25;
+                draw.scale = 30;
                 background.offset.x = draw.scale * adjustment;
 
                 draw.texture = RenderResources.getTexture("textures/background/layer" + i + ".png");
