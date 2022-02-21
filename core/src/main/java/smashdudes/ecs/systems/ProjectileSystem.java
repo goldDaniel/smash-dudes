@@ -62,9 +62,9 @@ public class ProjectileSystem extends GameSystem
                     engine.destroyEntity(projectile);
                     Entity collision = engine.createEntity();
                     collision.addComponent(new HitResolutionComponent(projBullet.owner, target,
-                                                                    projectile.getComponent(VelocityComponent.class).velocity,
-                                                                    Collisions.calculateOverlapRectangle(projBox, bodyBox),
-                                                            1.0f, 1.0f));
+                                                                      projectile.getComponent(VelocityComponent.class).velocity,
+                                                                      Collisions.calculateOverlapRectangle(projBox, bodyBox),
+                                                              1.0f, 1.0f));
                 }
             }
         }
