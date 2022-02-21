@@ -67,4 +67,16 @@ public class Collisions
 
         return result;
     }
+
+    public static Rectangle calculateOverlapRectangle(Rectangle a, Rectangle b)
+    {
+        float left = Math.max(a.x, b.x);
+        float right = Math.min(a.x + a.width, b.x + b.width);
+
+        float top = Math.max(a.y, b.y);
+        float bottom = Math.min(a.y + a.height, b.y + b.height);
+
+
+        return new Rectangle(left, top, right - left, bottom - top);
+    }
 }

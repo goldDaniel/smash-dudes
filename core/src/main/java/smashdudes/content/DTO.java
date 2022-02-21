@@ -1,14 +1,11 @@
 package smashdudes.content;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ArrayMap;
-import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.JsonValue;
-import org.w3c.dom.css.Rect;
-
-import java.util.ArrayList;
+import smashdudes.core.Projectile;
 
 public class DTO
 {
@@ -76,6 +73,37 @@ public class DTO
         public Array<Rectangle> attackboxes = new Array<>();
         public Array<Rectangle> bodyboxes = new Array<>();
 
+        public Array<Projectile> projectiles = new Array<>();
+
         public String texturePath;
+    }
+
+    public static class Projectile
+    {
+        public Vector2 speed = new Vector2();
+        public Vector2 dim = new Vector2();
+        public Vector2 pos = new Vector2();
+
+        public float knockback;
+        public float damage;
+        public float lifeTime;
+
+        public String texturePath = "";
+
+        public Projectile copy()
+        {
+            Projectile proj = new Projectile();
+            proj.speed = speed.cpy();
+            proj.dim = dim.cpy();
+            proj.pos = pos.cpy();
+
+            proj.knockback = knockback;
+            proj.damage = damage;
+            proj.lifeTime = lifeTime;
+
+            proj.texturePath = texturePath;
+
+            return proj;
+        }
     }
 }

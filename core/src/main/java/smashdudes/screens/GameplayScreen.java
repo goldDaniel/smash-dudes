@@ -19,6 +19,7 @@ import smashdudes.content.ContentRepo;
 import smashdudes.content.DTO;
 import smashdudes.content.ContentLoader;
 import smashdudes.core.PlayerHandle;
+import smashdudes.core.Projectile;
 import smashdudes.core.WorldUtils;
 import smashdudes.core.input.GameInputHandler;
 import smashdudes.core.input.IGameInputRetriever;
@@ -218,7 +219,7 @@ public class GameplayScreen extends GameScreen
         Array<AnimationFrame> frames = new Array<>();
         if(anim == null)
         {
-            frames.add(new AnimationFrame(RenderResources.getTexture("textures/default.png"), new Array<>(), new Array<>()));
+            frames.add(new AnimationFrame(RenderResources.getTexture("textures/default.png"), new Array<>(), new Array<>(), new Array<>()));
 
             return new AnimationComponent(frames, 1, mode);
         }
@@ -226,8 +227,17 @@ public class GameplayScreen extends GameScreen
         {
             for (DTO.AnimationFrame dtoFrame : anim.frames)
             {
+                Array<Projectile> projectiles = new Array<>();
+                for(DTO.Projectile projectile : dtoFrame.projectiles)
+                {
+                    projectiles.add(new Projectile(projectile.speed, projectile.dim, projectile.pos,
+                                                   projectile.knockback, projectile.damage, projectile.lifeTime,
+                                                   RenderResources.getTexture(projectile.texturePath)));
+                }
                 AnimationFrame frame =
-                        new AnimationFrame(RenderResources.getTextureDownsampled(dtoFrame.texturePath, 48), dtoFrame.attackboxes, dtoFrame.bodyboxes);
+                        new AnimationFrame(RenderResources.getTextureDownsampled(dtoFrame.texturePath, 64),
+                                           dtoFrame.attackboxes, dtoFrame.bodyboxes, projectiles);
+
                 frames.add(frame);
             }
 

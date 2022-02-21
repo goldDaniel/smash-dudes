@@ -15,14 +15,18 @@ public class HitResolutionComponent extends Component
 
     public final float stunTime;
     public final float damage;
+    public final float knockback;
 
-    public HitResolutionComponent(Entity attacker, Entity attacked, Vector2 launchDirection, Rectangle collisionArea, float stunTime, float damage)
+    public HitResolutionComponent(Entity attacker, Entity attacked, Vector2 launchDirection, Rectangle collisionArea, float stunTime, float damage, float knockback)
     {
         this.attacker = attacker;
         this.attacked = attacked;
+
         this.collisionArea = collisionArea;
         this.launchDirection = launchDirection;
+
         this.stunTime = stunTime;
         this.damage = damage;
+        this.knockback = knockback;
     }
 }
