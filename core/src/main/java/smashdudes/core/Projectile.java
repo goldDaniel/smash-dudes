@@ -11,10 +11,11 @@ public class Projectile
 
     public float knockback;
     public float damage;
+    public float lifeTime;
 
     public Texture texture;
 
-    public Projectile(Vector2 speed, Vector2 dim, Vector2 pos, float knockback, float damage, Texture texture)
+    public Projectile(Vector2 speed, Vector2 dim, Vector2 pos, float knockback, float damage, float lifeTime, Texture texture)
     {
         this.speed = speed.cpy();
         this.dim = dim.cpy();
@@ -22,17 +23,18 @@ public class Projectile
 
         this.knockback = knockback;
         this.damage = damage;
+        this.lifeTime = lifeTime;
 
         this.texture = texture;
     }
 
     public Projectile()
     {
-        this(new Vector2(), new Vector2(), new Vector2(), 0, 0, null);
+        this(new Vector2(), new Vector2(), new Vector2(), 0, 0, 0, null);
     }
 
     public Projectile copy()
     {
-        return new Projectile(speed, dim, pos, knockback, damage, texture);
+        return new Projectile(speed, dim, pos, knockback, damage, lifeTime, texture);
     }
 }

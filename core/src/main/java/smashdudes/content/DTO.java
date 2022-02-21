@@ -86,6 +86,7 @@ public class DTO
 
         public float knockback;
         public float damage;
+        public float lifeTime;
 
         public String texturePath = "";
 
@@ -98,6 +99,7 @@ public class DTO
 
             proj.knockback = knockback;
             proj.damage = damage;
+            proj.lifeTime = lifeTime;
 
             proj.texturePath = texturePath;
 

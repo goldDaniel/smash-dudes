@@ -491,6 +491,14 @@ public class CharacterEditorWidget
                             commandList.execute(new PropertyEditCommand<>("damage", damage.get(), projectile));
                         }
 
+                        ImFloat lifeTime = new ImFloat(projectile.lifeTime);
+                        ImGui.text(" ");
+                        ImGui.sameLine();
+                        if(ImGui.inputFloat("life time##projLifeTimeID", lifeTime))
+                        {
+                            commandList.execute(new PropertyEditCommand<>("lifeTime", lifeTime.get(), projectile));
+                        }
+
                         changeTexture("textures/", projectile);
 
                         ImGui.sameLine();

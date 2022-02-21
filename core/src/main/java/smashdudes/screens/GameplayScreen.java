@@ -198,7 +198,8 @@ public class GameplayScreen extends GameScreen
                 for(DTO.Projectile projectile : dtoFrame.projectiles)
                 {
                     projectiles.add(new Projectile(projectile.speed, projectile.dim, projectile.pos,
-                                                   projectile.knockback, projectile.damage, RenderResources.getTexture(projectile.texturePath)));
+                                                   projectile.knockback, projectile.damage, projectile.lifeTime,
+                                                   RenderResources.getTexture(projectile.texturePath)));
                 }
                 AnimationFrame frame =
                         new AnimationFrame(RenderResources.getTextureDownsampled(dtoFrame.texturePath, 64),

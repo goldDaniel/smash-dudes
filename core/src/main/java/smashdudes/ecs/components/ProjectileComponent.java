@@ -13,6 +13,6 @@ public class ProjectileComponent extends Component
      public float knockback;
      public float damage;
 
-     public float lifeTime = 2;
+     public float lifeTime;
 
 }

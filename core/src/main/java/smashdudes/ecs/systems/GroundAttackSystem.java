@@ -52,6 +52,7 @@ public class GroundAttackSystem extends GameSystem
                 proj.dim = projectile.dim.cpy();
                 proj.damage = projectile.damage;
                 proj.knockback = projectile.knockback;
+                proj.lifeTime = projectile.lifeTime;
                 bullet.addComponent(proj);
 
                 PositionComponent pos = new PositionComponent(new Vector2(projectile.pos.x + entity.getComponent(PositionComponent.class).position.x,
