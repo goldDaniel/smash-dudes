@@ -33,7 +33,7 @@ public class RenderSystem extends GameSystem
     }
 
     private final ArrayMap<RenderPass, ShaderProgram> shaders = new ArrayMap<>();
-    private final ArrayMap<ShaderProgram, Array<Renderable>> renderables = new ArrayMap<>();
+    private final Array<Renderable> renderables = new Array<>();
 
     private OrthographicCamera camera;
     private Viewport viewport;
@@ -48,10 +48,6 @@ public class RenderSystem extends GameSystem
         shaders.put(RenderPass.Default, null); //null will make the spritebatch use its default shader
         shaders.put(RenderPass.Stunned, RenderResources.getShader("shaders/spritebatch.default.vert.glsl", "shaders/spritebatch.stunned.frag.glsl"));
 
-        for(ShaderProgram s : shaders.values())
-        {
-            renderables.put(s, new Array<>());
-        }
 
         registerComponentType(PositionComponent.class);
         registerComponentType(DrawComponent.class);
@@ -76,11 +72,7 @@ public class RenderSystem extends GameSystem
     @Override
     public void preUpdate()
     {
-        for(ShaderProgram r : shaders.values())
-        {
-            renderables.get(r).clear();
-        }
-
+        renderables.clear();
         sb.setProjectionMatrix(camera.combined);
     }
 
@@ -91,43 +83,54 @@ public class RenderSystem extends GameSystem
         DrawComponent d = entity.getComponent(DrawComponent.class);
 
         ShaderProgram shader = shaders.get(d.pass);
-        renderables.get(shader).add(new Renderable(p.position, d));
+        renderables.add(new Renderable(p.position, d));
     }
 
     @Override
     public void postUpdate()
     {
-        for (ShaderProgram shader  : shaders.values())
+        //we must sort by texture before z-index. While sorting by texture after would reduce draw calls it can
+        //mess up our z-index ordering.
+        renderables.sort(Comparator.comparingInt(r -> r.draw.texture.glTarget));
+        renderables.sort(Comparator.comparingInt(r -> r.draw.pass.ordinal()));
+        renderables.sort(Comparator.comparingInt(r -> r.draw.zIndex));
+
+        RenderPass lastPass = null;
+        for(Renderable r : renderables)
         {
-            sb.setShader(shader);
-            sb.begin();
-
-            //we must sort by texture before z-index. While sorting by texture after would reduce draw calls it can
-            //mess up our z-index ordering.
-            renderables.get(shader).sort(Comparator.comparingInt(r -> r.draw.texture.glTarget));
-            renderables.get(shader).sort(Comparator.comparingInt(r -> r.draw.zIndex));
-
-            for(Renderable r : renderables.get(shader))
+            if(lastPass == null || lastPass != r.draw.pass)
             {
-                Vector2 pos = r.position;
-                DrawComponent d = r.draw;
+                lastPass = r.draw.pass;
+                if(sb.isDrawing()) sb.end();
 
-                sb.setColor(d.getColor());
-
-                float width = d.scale;
-                float height = (float)d.texture.getHeight() / (float)d.texture.getWidth() * d.scale;
-
-                if(d.facingLeft)
-                {
-                    sb.draw(d.texture, pos.x + width / 2, pos.y - height / 2, -width, height);
-                }
-                else
-                {
-                    sb.draw(d.texture, pos.x - width / 2, pos.y - height / 2, width, height);
-                }
+                sb.setShader(shaders.get(r.draw.pass));
+                sb.begin();
             }
 
-            sb.end();
+            Vector2 pos = r.position;
+            DrawComponent d = r.draw;
+
+            sb.setColor(d.getColor());
+
+
+            float width = d.scale.x;
+            float height = d.scale.y;
+            if(d.maintainAspectRatio)
+            {
+                width = d.scale.x;
+                height = (float)d.texture.getHeight() / (float)d.texture.getWidth() * width;
+            }
+
+            if(d.facingLeft)
+            {
+                sb.draw(d.texture, pos.x + width / 2, pos.y - height / 2, -width, height);
+            }
+            else
+            {
+                sb.draw(d.texture, pos.x - width / 2, pos.y - height / 2, width, height);
+            }
         }
+
+        if(sb.isDrawing()) sb.end();
     }
 }

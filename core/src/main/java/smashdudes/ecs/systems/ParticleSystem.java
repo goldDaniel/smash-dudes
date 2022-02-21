@@ -46,7 +46,7 @@ public class ParticleSystem extends GameSystem
         pos.position.add(particle.getVelocity().cpy().scl(dt));
 
         draw.getColor().set(particle.getColor());
-        draw.scale = particle.getSize();
+        draw.scale.set(particle.getSize(),particle.getSize());
     }
 
     @Override
@@ -92,7 +92,7 @@ public class ParticleSystem extends GameSystem
             comp.emissionPoint = e.collisionArea.getCenter(new Vector2());
 
             comp.lifetime = 0.05f;
-            comp.emissionRate = 512;
+            comp.emissionRate = 64;
 
             comp.colors.add(Color.RED.cpy());
             Color end = Color.ORANGE.cpy();
@@ -100,12 +100,12 @@ public class ParticleSystem extends GameSystem
             comp.colors.add(end);
 
             comp.lifespanStartRange = 0.1f;
-            comp.lifespanEndRange = 0.3f;
+            comp.lifespanEndRange = 0.2f;
 
-            comp.sizeStartRange = new Vector2(0.2f, 0.4f);
-            comp.sizeEndRange = new Vector2(0.0f, 0.2f);
+            comp.sizeStartRange = new Vector2(0.1f, 0.2f);
+            comp.sizeEndRange = new Vector2(0.0f, 0.1f);
 
-            comp.velocityMin = new Vector2(2.f, -8f);
+            comp.velocityMin = new Vector2(-8.f, -8f);
             comp.velocityMax = new Vector2(8.f,   8f);
 
             comp.zIndex = 50;

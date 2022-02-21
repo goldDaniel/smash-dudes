@@ -23,7 +23,11 @@ public class DTO
         public String textureFilePath;
         public Vector2 position = new Vector2();
 
-        public float width, height;
+        public float textureWidth;
+        public float textureHeight;
+
+        public float collisionWidth;
+        public float collisionHeight;
 
         protected void setTerrainData(JsonValue terrainData)
         {
@@ -31,8 +35,11 @@ public class DTO
             position.x = terrainData.get("position").asFloatArray()[0];
             position.y = terrainData.get("position").asFloatArray()[1];
 
-            width = terrainData.get("dim").get("width").asFloat();
-            height = terrainData.get("dim").get("height").asFloat();
+            textureWidth = terrainData.get("texture_dim").get("width").asFloat();
+            textureHeight = terrainData.get("texture_dim").get("height").asFloat();
+
+            collisionWidth = terrainData.get("dim").get("width").asFloat();
+            collisionHeight = terrainData.get("dim").get("height").asFloat();
         }
     }
 

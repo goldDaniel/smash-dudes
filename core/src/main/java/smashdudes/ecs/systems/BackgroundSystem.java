@@ -1,6 +1,7 @@
 package smashdudes.ecs.systems;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ArrayMap;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
@@ -12,7 +13,7 @@ public class BackgroundSystem extends GameSystem
 {
     private OrthographicCamera camera;
 
-    private ArrayMap<DrawComponent, Float> initialScale = new ArrayMap<>();
+    private ArrayMap<DrawComponent, Vector2> initialScale = new ArrayMap<>();
 
     public BackgroundSystem(Engine engine)
     {
@@ -37,14 +38,13 @@ public class BackgroundSystem extends GameSystem
 
         if(!initialScale.containsKey(draw))
         {
-            initialScale.put(draw, draw.scale);
+            initialScale.put(draw, draw.scale.cpy());
         }
 
         float x = camera.position.x + background.offset.x * camera.zoom + camera.position.x * background.parallax.x;
         float y = camera.position.y + background.offset.y * camera.zoom + camera.position.y * background.parallax.y;
 
         pos.position.set(x, y);
-
-        draw.scale = initialScale.get(draw) * camera.zoom;
+        draw.scale.set(initialScale.get(draw).cpy().scl(camera.zoom));
     }
 }
