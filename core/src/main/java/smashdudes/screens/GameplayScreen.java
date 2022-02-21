@@ -137,8 +137,8 @@ public class GameplayScreen extends GameScreen
                 background.parallax.x = 0.05f * i;
 
                 DrawComponent draw = new DrawComponent();
-                draw.scale = 30;
-                background.offset.x = draw.scale * adjustment;
+                draw.scale.x = 30;
+                background.offset.x = draw.scale.x * adjustment;
 
                 draw.texture = RenderResources.getTexture("textures/background/layer" + i + ".png");
                 draw.zIndex = -10 + i;
@@ -190,7 +190,7 @@ public class GameplayScreen extends GameScreen
         player.addComponent(animContainer.idle);
 
         DrawComponent sd = new DrawComponent();
-        sd.scale =  characterData.scale;
+        sd.scale.x = characterData.scale;
         player.addComponent(sd);
 
         player.addComponent(new DebugDrawComponent());
@@ -254,13 +254,20 @@ public class GameplayScreen extends GameScreen
         terrain.addComponent(tp);
 
         StaticTerrainComponent t = new StaticTerrainComponent();
-        t.width = terrainData.width;
-        t.height = terrainData.height;
+        t.width = terrainData.collisionWidth;
+        t.height = terrainData.collisionHeight;
         terrain.addComponent(t);
 
         DebugDrawComponent dd = new DebugDrawComponent();
         terrain.addComponent(dd);
 
+        DrawComponent d = new DrawComponent();
+        d.texture = RenderResources.getTexture(terrainData.textureFilePath);
+        d.maintainAspectRatio = false;
+        d.scale.x = terrainData.textureWidth;
+        d.scale.y = terrainData.textureHeight;
+        d.zIndex = 1;
+        terrain.addComponent(d);
 
         return terrain;
     }

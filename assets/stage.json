@@ -3,7 +3,12 @@
   "terrain":
   [
     {
-      "texture": "textures/ArrowTest.png",
+      "texture": "textures/terrain/terrain.png",
+      "texture_dim": 
+      {
+        "width": 30,
+        "height": 2
+      },
       "position": [0,-5],
       "dim":
       {
@@ -12,21 +17,31 @@
       }
     },
     {
-      "texture": "textures/ArrowTest.png",
+      "texture": "textures/terrain/terrain.png",
+      "texture_dim": 
+      {
+        "width": 5,
+        "height": 0.8
+      },
       "position": [6,2.5],
       "dim":
       {
         "width": 5,
-        "height": 0.1
+        "height": 0.5
       }
     },
     {
-      "texture": "textures/ArrowTest.png",
+      "texture": "textures/terrain/terrain.png",
+      "texture_dim": 
+      {
+        "width": 5,
+        "height": 0.8
+      },
       "position": [-6,2.5],
       "dim":
       {
         "width": 5,
-        "height": 0.1
+        "height": 0.5
       }
     }
   ],
