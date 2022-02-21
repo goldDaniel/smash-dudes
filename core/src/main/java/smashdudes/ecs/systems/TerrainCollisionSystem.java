@@ -56,7 +56,7 @@ public class TerrainCollisionSystem extends GameSystem
                 r.width = t.terrain.width;
                 r.height = t.terrain.height;
 
-                debug.pushShape(ShapeRenderer.ShapeType.Filled, r, Color.FOREST.cpy().sub(0.1f, 0.1f, 0.1f, 0.0f));
+                debug.pushShape(ShapeRenderer.ShapeType.Filled, r, Color.SKY.cpy().sub(0.1f, 0.1f, 0.1f, 0.0f));
             }
         }
     }
