@@ -1,6 +1,5 @@
 package smashdudes.ecs.systems;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.ArrayMap;
 import smashdudes.ecs.Engine;

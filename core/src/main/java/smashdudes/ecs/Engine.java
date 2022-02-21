@@ -43,7 +43,7 @@ public class Engine
 
         rs = new RenderSystem(this, RenderResources.getSpriteBatch());
         drs = new RenderDebugSystem(this, RenderResources.getShapeRenderer());
-        urs = new UIRenderSystem(this, RenderResources.getSpriteBatch(), RenderResources.getFont("crimes", 24));
+        urs = new UIRenderSystem(this, RenderResources.getSpriteBatch(), RenderResources.getFont("KeepOnTruckin", 24));
 
 
         PlayerControllerSystem ctrlSys = new PlayerControllerSystem(this);

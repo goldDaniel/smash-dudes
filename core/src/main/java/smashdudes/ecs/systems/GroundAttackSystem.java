@@ -2,6 +2,7 @@ package smashdudes.ecs.systems;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ArrayMap;
 import smashdudes.core.PlayerHandle;
 import smashdudes.core.Projectile;
 import smashdudes.ecs.Engine;
@@ -11,6 +12,7 @@ import smashdudes.ecs.components.*;
 public class GroundAttackSystem extends GameSystem
 {
     private Array<PlayerHandle> hasEntered = new Array<>();
+    private ArrayMap<PlayerHandle, CharacterInputComponent> removedInputs = new ArrayMap<>();
 
     public GroundAttackSystem(Engine engine)
     {
@@ -26,6 +28,7 @@ public class GroundAttackSystem extends GameSystem
     @Override
     public void updateEntity(Entity entity, float dt)
     {
+
         PlayerAnimationContainerComponent container = entity.getComponent(PlayerAnimationContainerComponent.class);
         PlayerComponent play = entity.getComponent(PlayerComponent.class);
 
@@ -72,10 +75,19 @@ public class GroundAttackSystem extends GameSystem
             }
         }
 
+        if(!removedInputs.containsKey(play.handle))
+        {
+            CharacterInputComponent input = entity.removeComponent(CharacterInputComponent.class);
+            removedInputs.put(play.handle, input);
+        }
+
         if(anim.isFinished())
         {
             entity.removeComponent(PlayerOnGroundAttackStateComponent.class);
+
             entity.addComponent(new PlayerIdleComponent());
+            entity.addComponent(removedInputs.removeKey(play.handle));
+
             hasEntered.removeValue(play.handle, true);
         }
     }
