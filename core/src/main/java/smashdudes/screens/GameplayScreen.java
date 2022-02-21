@@ -124,23 +124,29 @@ public class GameplayScreen extends GameScreen
 
     private void buildParallaxBackground()
     {
-        for(int i = 0; i < 5; i++)
+        for(int i = 0; i < 10; i++)
         {
-            PositionComponent p = new PositionComponent();
-            BackgroundComponent background = new BackgroundComponent();
-            background.offset.y = -0.2f;
-            background.parallax.x = 0.05f * i;
-            background.parallax.y = 0.01f * i;
 
-            DrawComponent draw = new DrawComponent();
-            draw.scale = 30;
-            draw.texture = RenderResources.getTexture("textures/background/layer" + i + ".png");
-            draw.zIndex = -10 + i;
+            for(int adjustment = -1; adjustment <= 1; adjustment++)
+            {
+                PositionComponent p = new PositionComponent();
+                BackgroundComponent background = new BackgroundComponent();
+                background.offset.y = 2;
 
-            Entity entity = ecsEngine.createEntity();
-            entity.addComponent(p);
-            entity.addComponent(background);
-            entity.addComponent(draw);
+                background.parallax.x = 0.1f * i;
+
+                DrawComponent draw = new DrawComponent();
+                draw.scale = 20;
+                background.offset.x = draw.scale * adjustment;
+
+                draw.texture = RenderResources.getTexture("textures/background/layer" + i + ".png");
+                draw.zIndex = -10 + i;
+
+                Entity entity = ecsEngine.createEntity();
+                entity.addComponent(p);
+                entity.addComponent(background);
+                entity.addComponent(draw);
+            }
         }
     }
 

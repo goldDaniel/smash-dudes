@@ -41,8 +41,8 @@ public class BackgroundSystem extends GameSystem
             initialScale.put(draw, draw.scale);
         }
 
-        float x = camera.position.x + background.offset.x + camera.position.x * background.parallax.x;
-        float y = camera.position.y + background.offset.y + camera.position.y * background.parallax.y;
+        float x = camera.position.x + background.offset.x * camera.zoom + camera.position.x * background.parallax.x;
+        float y = camera.position.y + background.offset.y * camera.zoom + camera.position.y * background.parallax.y;
 
         pos.position.set(x, y);
 
