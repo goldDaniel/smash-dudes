@@ -28,21 +28,18 @@ public class Engine
     private final RenderDebugSystem drs;
     private final UIRenderSystem urs;
 
-    public Engine(GameOverSystem.IScreenTransition transition)
+    public Engine(int worldWidth, int worldHeight, GameOverSystem.IScreenTransition transition)
     {
-        int WORLD_WIDTH = 20;
-        int WORLD_HEIGHT = 12;
-
         Entity camEntity = createEntity();
         CameraComponent cam = new CameraComponent();
         camEntity.addComponent(new CountdownComponent(3));
         camEntity.addComponent(cam);
 
-        OrthographicCamera camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
+        OrthographicCamera camera = new OrthographicCamera(worldWidth, worldHeight);
         cam.camera = camera;
         camera.zoom = 5f;
 
-        ExtendViewport viewport = new ExtendViewport(WORLD_WIDTH,WORLD_HEIGHT, camera);
+        ExtendViewport viewport = new ExtendViewport(worldWidth,worldHeight, camera);
 
         rs = new RenderSystem(this, RenderResources.getSpriteBatch());
         drs = new RenderDebugSystem(this, RenderResources.getShapeRenderer());
@@ -87,6 +84,11 @@ public class Engine
 
         gameSystems.add(new CountdownCameraSystem(this));
         gameSystems.add(new AveragePositionCameraSystem(this));
+
+        BackgroundSystem backgroundSystem = new BackgroundSystem(this);
+        backgroundSystem.setCamera(camera);
+        gameSystems.add(backgroundSystem);
+
         renderSystems.add(rs);
         renderSystems.add(drs);
         renderSystems.add(urs);
