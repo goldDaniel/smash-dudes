@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -18,6 +19,7 @@ import org.libsdl.SDL;
 import smashdudes.content.ContentRepo;
 import smashdudes.content.DTO;
 import smashdudes.content.ContentLoader;
+import smashdudes.core.Collisions;
 import smashdudes.core.PlayerHandle;
 import smashdudes.core.Projectile;
 import smashdudes.core.WorldUtils;
@@ -53,7 +55,6 @@ public class GameplayScreen extends GameScreen
         {
             buildTerrain(data);
         }
-
 
         for (CharacterSelectDescription.PlayerDescription p : desc.descriptions)
         {
