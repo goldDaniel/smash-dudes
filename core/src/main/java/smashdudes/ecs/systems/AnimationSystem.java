@@ -8,7 +8,7 @@ import smashdudes.ecs.components.PlayerAnimationContainerComponent;
 import smashdudes.ecs.events.Event;
 import smashdudes.ecs.events.RespawnEvent;
 
-public class AnimationSystem extends GameSystem
+public class AnimationSystem extends RenderSystem
 {
     public AnimationSystem(Engine engine)
     {
@@ -20,7 +20,7 @@ public class AnimationSystem extends GameSystem
     }
 
     @Override
-    protected void updateEntity(Entity entity, float dt)
+    protected void renderEntity(Entity entity, float dt, float alpha)
     {
         AnimationComponent anim = entity.getComponent(AnimationComponent.class);
         DrawComponent draw = entity.getComponent(DrawComponent.class);

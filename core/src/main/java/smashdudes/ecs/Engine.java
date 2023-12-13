@@ -70,16 +70,15 @@ public class Engine
         gameSystems.add(new RespawnSystem(this));
         gameSystems.add(new AudioSystem(this));
 
-        gameSystems.add(new AnimationSystem(this));
+
         gameSystems.add(new ParticleSystem(this));
         gameSystems.add(new ParticleEmitterSystem(this));
         gameSystems.add(new AnimationDebugSystem(this));
-
         gameSystems.add(new GameOverSystem(this, transition));
 
-        gameSystems.add(new CountdownCameraSystem(this));
 
-
+        renderSystems.add(new CountdownCameraSystem(this));
+        renderSystems.add(new AnimationSystem(this));
         BackgroundSystem backgroundSystem = new BackgroundSystem(this);
         backgroundSystem.setCamera(camera);
         renderSystems.add(backgroundSystem);
