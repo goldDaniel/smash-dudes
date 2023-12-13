@@ -9,7 +9,7 @@ import smashdudes.ecs.components.BackgroundComponent;
 import smashdudes.ecs.components.DrawComponent;
 import smashdudes.ecs.components.PositionComponent;
 
-public class BackgroundSystem extends GameSystem
+public class BackgroundSystem extends RenderSystem
 {
     private OrthographicCamera camera;
 
@@ -30,7 +30,7 @@ public class BackgroundSystem extends GameSystem
     }
 
     @Override
-    protected void updateEntity(Entity entity, float dt)
+    protected void renderEntity(Entity entity, float dt, float alpha)
     {
         PositionComponent pos = entity.getComponent(PositionComponent.class);
         BackgroundComponent background = entity.getComponent(BackgroundComponent.class);
@@ -45,6 +45,7 @@ public class BackgroundSystem extends GameSystem
         float y = camera.position.y + background.offset.y * camera.zoom + camera.position.y * background.parallax.y;
 
         pos.position.set(x, y);
+        pos.prevPosition.set(x,y);
         draw.scale.set(initialScale.get(draw).cpy().scl(camera.zoom));
     }
 }

@@ -9,7 +9,7 @@ import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.DebugDrawComponent;
 
-public class RenderDebugSystem extends GameSystem
+public class RenderDebugSystem extends RenderSystem
 {
 
     private OrthographicCamera camera;
@@ -42,13 +42,13 @@ public class RenderDebugSystem extends GameSystem
     }
 
     @Override
-    public void preUpdate()
+    public void preRender()
     {
         sh.setProjectionMatrix(camera.combined);
     }
 
     @Override
-    public void updateEntity(Entity entity, float dt)
+    public void renderEntity(Entity entity, float dt, float alpha)
     {
         DebugDrawComponent d = entity.getComponent(DebugDrawComponent.class);
 

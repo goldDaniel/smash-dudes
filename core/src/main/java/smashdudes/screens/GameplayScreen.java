@@ -39,6 +39,11 @@ public class GameplayScreen extends GameScreen
     private GameInputHandler inputHandler;
     private Engine ecsEngine;
 
+    private float accumulator = 0;
+
+    private float delta = 0;
+    private float alpha = 0;
+
     public GameplayScreen(Game game, CharacterSelectDescription desc)
     {
         super(game);
@@ -91,6 +96,7 @@ public class GameplayScreen extends GameScreen
     @Override
     public void update(float dt)
     {
+        delta = dt;
         for (Controller c : Controllers.getControllers())
         {
             if (c.getButton(SDL.SDL_CONTROLLER_BUTTON_START))
@@ -104,17 +110,24 @@ public class GameplayScreen extends GameScreen
         {
             game.setScreen(new PauseScreen(game, this));
         }
-        float maxStep = 1 / 30f;
+        float stepSize = 1 / 60f;
 
-        if (dt > maxStep) dt = maxStep;
-        ecsEngine.update(dt);
+        accumulator += dt;
+        while (accumulator >= stepSize)
+        {
+            ecsEngine.update(stepSize);
+
+            accumulator -= stepSize;
+        }
+
+        alpha = accumulator / stepSize;
     }
 
     @Override
     public void render()
     {
         ScreenUtils.clear(Color.SKY);
-        ecsEngine.render();
+        ecsEngine.render(delta, alpha);
     }
 
     @Override
@@ -134,7 +147,7 @@ public class GameplayScreen extends GameScreen
                 BackgroundComponent background = new BackgroundComponent();
                 background.offset.y = 6;
 
-                background.parallax.x = 0.05f * i;
+                background.parallax.x = -0.05f * i;
 
                 DrawComponent draw = new DrawComponent();
                 draw.scale.x = 30;
@@ -235,7 +248,7 @@ public class GameplayScreen extends GameScreen
                                                    RenderResources.getTexture(projectile.texturePath)));
                 }
                 AnimationFrame frame =
-                        new AnimationFrame(RenderResources.getTextureDownsampled(dtoFrame.texturePath, 64),
+                        new AnimationFrame(RenderResources.getTexture(dtoFrame.texturePath),
                                            dtoFrame.attackboxes, dtoFrame.bodyboxes, projectiles);
 
                 frames.add(frame);
