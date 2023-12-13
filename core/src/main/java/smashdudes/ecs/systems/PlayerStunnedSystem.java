@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
+import smashdudes.gameplay.PlayerState;
 import smashdudes.graphics.RenderPass;
 
 
@@ -13,6 +14,7 @@ public class PlayerStunnedSystem extends GameSystem
     {
         super(engine);
 
+        registerComponentType(PlayerComponent.class);
         registerComponentType(PlayerStunnedComponent.class);
     }
 
@@ -20,17 +22,14 @@ public class PlayerStunnedSystem extends GameSystem
     protected void updateEntity(Entity entity, float dt)
     {
         PlayerStunnedComponent stun = entity.getComponent(PlayerStunnedComponent.class);
-
-        entity.removeComponent(PlayerIdleComponent.class);
-        entity.removeComponent(PlayerInAirComponent.class);
-        entity.removeComponent(PlayerOnGroundAttackStateComponent.class);
-        entity.removeComponent(PlayerRunningComponent.class);
+        PlayerComponent player = entity.getComponent(PlayerComponent.class);
+        player.currentState = PlayerState.Ground_Stunned;
 
         stun.update(dt);
         if(!stun.isStunned())
         {
+            player.currentState = PlayerState.Air_Idle;
             entity.removeComponent(PlayerStunnedComponent.class);
-            entity.addComponent(new PlayerInAirComponent());
             if(entity.hasComponent(DrawComponent.class))
             {
                 DrawComponent d = entity.getComponent(DrawComponent.class);

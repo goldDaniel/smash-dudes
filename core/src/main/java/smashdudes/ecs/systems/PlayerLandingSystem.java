@@ -8,6 +8,7 @@ import smashdudes.ecs.components.*;
 import smashdudes.ecs.events.JumpEvent;
 import smashdudes.ecs.events.TerrainCollisionEvent;
 import smashdudes.ecs.events.Event;
+import smashdudes.gameplay.PlayerState;
 
 public class PlayerLandingSystem extends GameSystem
 {
@@ -26,16 +27,18 @@ public class PlayerLandingSystem extends GameSystem
         {
             TerrainCollisionEvent e = (TerrainCollisionEvent)event;
             JumpComponent j = entity.getComponent(JumpComponent.class);
+            PlayerComponent player = entity.getComponent(PlayerComponent.class);
+            VelocityComponent v = entity.getComponent(VelocityComponent.class);
 
             if(e.collisionSide == Collisions.CollisionSide.Top)
             {
-                entity.removeComponent(PlayerInAirComponent.class);
-                if(!entity.hasComponent(PlayerIdleComponent.class) &&
-                   !entity.hasComponent(PlayerRunningComponent.class) &&
-                   !entity.hasComponent(PlayerOnGroundAttackStateComponent.class) &&
-                   !entity.hasComponent(PlayerStunnedComponent.class))
+                if(Math.abs(v.velocity.x) > 0)
                 {
-                    entity.addComponent(new PlayerIdleComponent());
+                    player.currentState = PlayerState.Ground_Running;
+                }
+                else
+                {
+                    player.currentState = PlayerState.Ground_Idle;
                 }
             }
         }

@@ -3,6 +3,7 @@ package smashdudes.ecs.systems;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
+import smashdudes.gameplay.PlayerState;
 
 public class HitResolutionSystem extends GameSystem
 {
@@ -19,9 +20,10 @@ public class HitResolutionSystem extends GameSystem
     {
         HitResolutionComponent res = entity.getComponent(HitResolutionComponent.class);
 
-        if(!res.attacked.hasComponent(PlayerStunnedComponent.class))
+        PlayerComponent attackedPlayer = res.attacked.getComponent(PlayerComponent.class);
+        if(attackedPlayer.currentState != PlayerState.Ground_Stunned)
         {
-            res.attacked.addComponent(new PlayerStunnedComponent(res.stunTime));
+            attackedPlayer.currentState = PlayerState.Ground_Stunned;
 
             if(res.attacked.hasComponent(VelocityComponent.class))
             {

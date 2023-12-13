@@ -50,10 +50,7 @@ public class Engine
         ctrlSys.setEnabled(false);
 
         gameSystems.add(new CountdownSystem(this));
-        gameSystems.add(new PlayerIdleSystem(this));
-        gameSystems.add(new PlayerRunningSystem(this));
-        gameSystems.add(new PlayerInAirSystem(this));
-        gameSystems.add(new GroundAttackSystem(this));
+        gameSystems.add(new PlayerStateSystem(this));
         gameSystems.add(new PlayerLandingSystem(this));
         gameSystems.add(new RenderDirectionSystem(this));
         gameSystems.add(ctrlSys);

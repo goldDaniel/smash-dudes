@@ -57,7 +57,7 @@ public class DeathSystem extends GameSystem
         {
             engine.addEvent(new WinEvent(alivePlayers.get(0)));
             hasFiredWinEvent = true;
-            engine.createEntity().addComponent(new GameOverComponent());
+            //engine.createEntity().addComponent(new GameOverComponent());
         }
 
         alivePlayers.clear();
