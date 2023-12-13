@@ -16,8 +16,7 @@ public class PlayerStateSystem extends GameSystem
 
     // NOTE (danielg): These are from the old attack system. refactor out
     private Array<PlayerHandle> hasEntered = new Array<>();
-    private ArrayMap<PlayerHandle, CharacterInputComponent> removedInputs = new ArrayMap<>();
-
+    
     public PlayerStateSystem(Engine engine)
     {
         super(engine);
@@ -50,6 +49,7 @@ public class PlayerStateSystem extends GameSystem
     private void GroundAttack(Entity entity, PlayerComponent player, float dt)
     {
         PlayerAnimationContainerComponent container = entity.getComponent(PlayerAnimationContainerComponent.class);
+        CharacterInputComponent ci = entity.getComponent(CharacterInputComponent.class);
 
         VelocityComponent v = entity.getComponent(VelocityComponent.class);
         v.velocity.x = 0;
@@ -94,15 +94,8 @@ public class PlayerStateSystem extends GameSystem
             }
         }
 
-        if(!removedInputs.containsKey(player.handle))
-        {
-            CharacterInputComponent input = entity.removeComponent(CharacterInputComponent.class);
-            removedInputs.put(player.handle, input);
-        }
-
         if(anim.isFinished())
         {
-            entity.addComponent(removedInputs.removeKey(player.handle));
             hasEntered.removeValue(player.handle, true);
             player.currentState = PlayerState.Ground_Idle;
         }
