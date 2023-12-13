@@ -22,10 +22,6 @@ public class PlayerStateSystem extends GameSystem
     {
         super(engine);
         registerComponentType(PlayerComponent.class);
-        registerComponentType(PlayerAnimationContainerComponent.class);
-        registerComponentType(CharacterInputComponent.class);
-        registerComponentType(VelocityComponent.class);
-        registerComponentType(JumpComponent.class);
     }
     @Override
     public void updateEntity(Entity entity, float dt)
@@ -51,7 +47,7 @@ public class PlayerStateSystem extends GameSystem
         }
     }
 
-    private void GroundAttack(Entity entity, PlayerComponent play, float dt)
+    private void GroundAttack(Entity entity, PlayerComponent player, float dt)
     {
         PlayerAnimationContainerComponent container = entity.getComponent(PlayerAnimationContainerComponent.class);
 
@@ -67,7 +63,7 @@ public class PlayerStateSystem extends GameSystem
 
         AnimationComponent anim = entity.getComponent(AnimationComponent.class);
 
-        if(!hasEntered.contains(play.handle, true))
+        if(!hasEntered.contains(player.handle, true))
         {
             for (Projectile projectile : anim.getCurrentFrame().projectiles)
             {
@@ -86,7 +82,7 @@ public class PlayerStateSystem extends GameSystem
                 bullet.addComponent(pos);
 
                 VelocityComponent vel = new VelocityComponent();
-                int dir = play.facingLeft ? -1 : 1;
+                int dir = player.facingLeft ? -1 : 1;
                 vel.velocity.set(dir * projectile.speed.x, projectile.speed.y);
                 bullet.addComponent(vel);
 
@@ -94,22 +90,21 @@ public class PlayerStateSystem extends GameSystem
                 draw.texture = projectile.texture;
                 bullet.addComponent(draw);
 
-                hasEntered.add(play.handle);
+                hasEntered.add(player.handle);
             }
         }
 
-        if(!removedInputs.containsKey(play.handle))
+        if(!removedInputs.containsKey(player.handle))
         {
             CharacterInputComponent input = entity.removeComponent(CharacterInputComponent.class);
-            removedInputs.put(play.handle, input);
+            removedInputs.put(player.handle, input);
         }
 
         if(anim.isFinished())
         {
-            play.currentState = PlayerState.Ground_Idle;
-            entity.addComponent(removedInputs.removeKey(play.handle));
-
-            hasEntered.removeValue(play.handle, true);
+            entity.addComponent(removedInputs.removeKey(player.handle));
+            hasEntered.removeValue(player.handle, true);
+            player.currentState = PlayerState.Ground_Idle;
         }
     }
 

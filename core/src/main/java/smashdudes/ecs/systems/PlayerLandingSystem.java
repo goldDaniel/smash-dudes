@@ -32,11 +32,10 @@ public class PlayerLandingSystem extends GameSystem
 
             if(e.collisionSide == Collisions.CollisionSide.Top)
             {
-                if(Math.abs(v.velocity.x) > 0)
-                {
-                    player.currentState = PlayerState.Ground_Running;
-                }
-                else
+                if( player.currentState != PlayerState.Ground_Idle &&
+                    player.currentState != PlayerState.Ground_Running &&
+                    player.currentState != PlayerState.Ground_Attack &&
+                    player.currentState != PlayerState.Ground_Stunned)
                 {
                     player.currentState = PlayerState.Ground_Idle;
                 }
