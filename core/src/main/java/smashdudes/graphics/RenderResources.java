@@ -2,6 +2,7 @@ package smashdudes.graphics;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -44,6 +45,22 @@ public class RenderResources
         textures = new ArrayMap<>();
         shaders = new ArrayMap<>();
         fonts = new ArrayMap<>();
+    }
+
+    public static Texture getColor1x1(Color color)
+    {
+        String key = color.toString() + "1x1";
+        if(textures.containsKey(key))
+        {
+            return textures.get(key);
+        }
+
+        Pixmap map = new Pixmap(1,1, Pixmap.Format.RGBA8888);
+        map.setColor(color);
+        map.fill();
+        textures.put(key, new Texture(map));
+
+        return textures.get(key);
     }
 
     public static Texture getTexture(String fileName)

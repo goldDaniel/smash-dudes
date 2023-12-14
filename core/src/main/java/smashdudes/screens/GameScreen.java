@@ -17,6 +17,8 @@ public abstract class GameScreen implements Screen
 {
     private InputMultiplexer multiplexer;
     private GameSkin skin;
+
+    private Table table;
     private Stage uiStage;
     private Viewport viewport;
 
@@ -33,7 +35,7 @@ public abstract class GameScreen implements Screen
 
         multiplexer = new InputMultiplexer(uiStage);
 
-        Table table = new Table();
+        table = new Table();
         table.setFillParent(true);
         uiStage.addActor(table);
         buildUI(table, skin);
@@ -49,14 +51,30 @@ public abstract class GameScreen implements Screen
         uiStage.draw();
     }
 
+    public final void rebuildUI()
+    {
+        table.layout();
+    }
+
+
     public abstract void buildUI(Table table, Skin skin);
     public abstract void update(float dt);
     public abstract void render();
+
+    public void setViewport(Viewport viewport)
+    {
+        this.viewport = viewport;
+        uiStage.setViewport(viewport);
+    }
 
 
     protected final void addInputProcessor(InputProcessor processor)
     {
         multiplexer.addProcessor(processor);
+    }
+    protected final void removeInputProcessor(InputProcessor processor)
+    {
+        multiplexer.removeProcessor(processor);
     }
 
     protected final void transitionTo(GameScreen screen)
@@ -99,5 +117,9 @@ public abstract class GameScreen implements Screen
     }
 
     @Override
-    public void dispose() {}
+    public void dispose()
+    {
+        multiplexer = null;
+        Gdx.input.setInputProcessor(null);
+    }
 }

@@ -26,10 +26,8 @@ import smashdudes.core.input.IGameInputRetriever;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
-import smashdudes.ecs.systems.GameOverSystem;
 import smashdudes.graphics.AnimationFrame;
 import smashdudes.graphics.RenderResources;
-import smashdudes.util.CharacterSelectDescription;
 
 public class GameplayScreen extends GameScreen
 {
@@ -44,10 +42,10 @@ public class GameplayScreen extends GameScreen
     private float delta = 0;
     private float alpha = 0;
 
-    public GameplayScreen(Game game, CharacterSelectDescription desc)
+    public GameplayScreen(Game game)
     {
         super(game);
-        this.inputHandler = desc.gameInput;
+        //this.inputHandler = desc.gameInput;
         ecsEngine = new Engine(WORLD_WIDTH, WORLD_HEIGHT, () -> transitionTo(new MainMenuScreen(game)));
 
         DTO.Stage stage = ContentLoader.loadStage("stage.json");
@@ -60,16 +58,16 @@ public class GameplayScreen extends GameScreen
         }
 
 
-        for (CharacterSelectDescription.PlayerDescription p : desc.descriptions)
-        {
-            DTO.Character characterData = ContentRepo.loadCharacter(p.identifier);
-            Entity player = buildPlayer(p.portrait, p.handle, characterData, stage.spawnPoints);
-
-            IGameInputRetriever retriever = inputHandler.getGameInput(p.handle);
-
-            PlayerControllerComponent pc = new PlayerControllerComponent(retriever);
-            player.addComponent(pc);
-        }
+//        for (CharacterSelectDescription.PlayerDescription p : desc.descriptions)
+//        {
+//            DTO.Character characterData = ContentRepo.loadCharacter(p.identifier);
+//            Entity player = buildPlayer(p.portrait, p.handle, characterData, stage.spawnPoints);
+//
+//            IGameInputRetriever retriever = inputHandler.getGameInput(p.handle);
+//
+//            PlayerControllerComponent pc = new PlayerControllerComponent(retriever);
+//            player.addComponent(pc);
+//        }
 
         buildParallaxBackground();
     }
