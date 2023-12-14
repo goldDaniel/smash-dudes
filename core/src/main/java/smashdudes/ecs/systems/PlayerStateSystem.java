@@ -1,5 +1,6 @@
 package smashdudes.ecs.systems;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
@@ -128,7 +129,14 @@ public class PlayerStateSystem extends GameSystem
         else if( (ci.currentState.left && ci.currentState.right) ||
                 !(ci.currentState.left || ci.currentState.right))
         {
-            player.currentState = PlayerState.Ground_Idle;
+            if(Math.abs(v.velocity.y) > 0)
+            {
+                player.currentState = PlayerState.Air_Idle;
+            }
+            else
+            {
+                player.currentState = PlayerState.Ground_Idle;
+            }
         }
         else
         {
