@@ -19,7 +19,7 @@ import smashdudes.ecs.events.Event;
 import smashdudes.ecs.events.WinEvent;
 import smashdudes.graphics.RenderResources;
 
-public class UIRenderSystem extends GameSystem
+public class UIRenderSystem extends RenderSystem
 {
     private class CharacterDisplay implements Comparable
     {
@@ -95,13 +95,13 @@ public class UIRenderSystem extends GameSystem
     }
 
     @Override
-    public void preUpdate()
+    public void preRender()
     {
         sb.setProjectionMatrix(camera.combined);
     }
 
     @Override
-    public void updateEntity(Entity entity, float dt)
+    public void renderEntity(Entity entity, float dt, float alpha)
     {
         PlayerComponent play = entity.getComponent(PlayerComponent.class);
         HealthComponent health = entity.getComponent(HealthComponent.class);
@@ -115,7 +115,7 @@ public class UIRenderSystem extends GameSystem
 
         if(countDisplay.equals("GO!"))
         {
-            displayTimer += dt;
+            displayTimer += 0.01f;
 
             if(displayTimer >= 1)
             {
@@ -126,7 +126,7 @@ public class UIRenderSystem extends GameSystem
     }
 
     @Override
-    public void postUpdate()
+    public void postRender()
     {
         sb.setColor(Color.WHITE);
         sb.begin();

@@ -7,7 +7,7 @@ import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
 
-public class CountdownCameraSystem extends GameSystem
+public class CountdownCameraSystem extends RenderSystem
 {
     private final Vector2 position = new Vector2(0, 0);
     private int numPlayers;
@@ -25,7 +25,7 @@ public class CountdownCameraSystem extends GameSystem
     }
 
     @Override
-    public void preUpdate()
+    public void preRender()
     {
         Array<Entity> entities = engine.getEntities(PositionComponent.class, PlayerComponent.class);
         numPlayers = entities.size;
@@ -40,7 +40,7 @@ public class CountdownCameraSystem extends GameSystem
     }
 
     @Override
-    public void updateEntity(Entity entity, float dt)
+    public void renderEntity(Entity entity, float dt, float alpha)
     {
         CountdownComponent count = entity.getComponent(CountdownComponent.class);
         CameraComponent cam = entity.getComponent(CameraComponent.class);

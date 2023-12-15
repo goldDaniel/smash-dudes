@@ -12,7 +12,7 @@ import smashdudes.ecs.components.CameraComponent;
 import smashdudes.ecs.components.PlayerComponent;
 import smashdudes.ecs.components.PositionComponent;
 
-public class AveragePositionCameraSystem extends GameSystem
+public class AveragePositionCameraSystem extends RenderSystem
 {
     private final float excludeThreshold = 50f;
 
@@ -30,7 +30,7 @@ public class AveragePositionCameraSystem extends GameSystem
     }
 
     @Override
-    protected void preUpdate()
+    protected void preRender()
     {
         min.set(Float.MAX_VALUE, Float.MAX_VALUE);
         max.set(Float.MIN_VALUE, Float.MIN_VALUE);
@@ -65,7 +65,7 @@ public class AveragePositionCameraSystem extends GameSystem
     }
 
     @Override
-    protected void updateEntity(Entity entity, float dt)
+    protected void renderEntity(Entity entity, float dt, float alpha)
     {
         CameraComponent cam = entity.getComponent(CameraComponent.class);
 

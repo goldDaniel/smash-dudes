@@ -1,6 +1,5 @@
 package smashdudes.ecs;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Queue;
@@ -18,15 +17,11 @@ public class Engine
     private final Array<Entity> deadEntities = new Array<>();
 
     private final Array<GameSystem> gameSystems = new Array<>();
-    private final Array<GameSystem> renderSystems = new Array<>();
+    private final Array<RenderSystem> renderSystems = new Array<>();
 
     private final Queue<Event> events = new Queue<>();
 
     private boolean isUpdating = false;
-
-    private final RenderSystem rs;
-    private final RenderDebugSystem drs;
-    private final UIRenderSystem urs;
 
     public Engine(int worldWidth, int worldHeight, GameOverSystem.IScreenTransition transition)
     {
@@ -41,14 +36,20 @@ public class Engine
 
         ExtendViewport viewport = new ExtendViewport(worldWidth,worldHeight, camera);
 
-        rs = new RenderSystem(this, RenderResources.getSpriteBatch());
-        drs = new RenderDebugSystem(this, RenderResources.getShapeRenderer());
-        urs = new UIRenderSystem(this, RenderResources.getSpriteBatch(), RenderResources.getFont("KeepOnTruckin", 24));
+        RenderDrawSystem rs = new RenderDrawSystem(this, RenderResources.getSpriteBatch());
+        RenderDebugSystem drs = new RenderDebugSystem(this, RenderResources.getShapeRenderer());
+        UIRenderSystem urs = new UIRenderSystem(this, RenderResources.getSpriteBatch(), RenderResources.getFont("KeepOnTruckin", 24));
 
+        rs.setCamera(camera);
+        drs.setCamera(camera);
+
+        rs.setViewport(viewport);
+        drs.setViewport(viewport);
 
         PlayerControllerSystem ctrlSys = new PlayerControllerSystem(this);
         ctrlSys.setEnabled(false);
 
+        gameSystems.add(new PreviousPositionSystem(this));
         gameSystems.add(new CountdownSystem(this));
         gameSystems.add(new PlayerIdleSystem(this));
         gameSystems.add(new PlayerRunningSystem(this));
@@ -69,27 +70,20 @@ public class Engine
         gameSystems.add(new RespawnSystem(this));
         gameSystems.add(new AudioSystem(this));
 
-        gameSystems.add(new AnimationSystem(this));
+
         gameSystems.add(new ParticleSystem(this));
         gameSystems.add(new ParticleEmitterSystem(this));
         gameSystems.add(new AnimationDebugSystem(this));
-
         gameSystems.add(new GameOverSystem(this, transition));
 
 
-        rs.setCamera(camera);
-        drs.setCamera(camera);
-
-        rs.setViewport(viewport);
-        drs.setViewport(viewport);
-
-        gameSystems.add(new CountdownCameraSystem(this));
-        gameSystems.add(new AveragePositionCameraSystem(this));
-
+        renderSystems.add(new CountdownCameraSystem(this));
+        renderSystems.add(new AnimationSystem(this));
         BackgroundSystem backgroundSystem = new BackgroundSystem(this);
         backgroundSystem.setCamera(camera);
-        gameSystems.add(backgroundSystem);
+        renderSystems.add(backgroundSystem);
 
+        renderSystems.add(new AveragePositionCameraSystem(this));
         renderSystems.add(rs);
         renderSystems.add(drs);
         renderSystems.add(urs);
@@ -165,7 +159,7 @@ public class Engine
                 {
                     s.receiveEvent(e);
                 }
-                for (GameSystem s : renderSystems)
+                for (RenderSystem s : renderSystems)
                 {
                     s.receiveEvent(e);
                 }
@@ -181,13 +175,13 @@ public class Engine
         createdEntities.clear();
     }
 
-    public void render()
+    public void render(float dt, float alpha)
     {
-        for (int i = 0; i < renderSystems.size; i++)
+        for (RenderSystem r : renderSystems)
         {
-            if(renderSystems.get(i).isEnabled())
+            if(r.isEnabled())
             {
-                renderSystems.get(i).update(Gdx.graphics.getDeltaTime());
+                r.render(dt, alpha);
             }
         }
     }
@@ -199,9 +193,10 @@ public class Engine
 
     public void resize(int w, int h)
     {
-        rs.resize(w, h);
-        drs.resize(w, h);
-        urs.resize(w, h);
+        for(RenderSystem r : renderSystems)
+        {
+            r.resize(w, h);
+        }
     }
 
     public <T extends GameSystem> void enableSystem(Class<T> clazz)
@@ -215,7 +210,7 @@ public class Engine
             }
         }
 
-        for(GameSystem system : renderSystems)
+        for(RenderSystem system : renderSystems)
         {
             if(system.getClass().equals(clazz))
             {
@@ -236,7 +231,7 @@ public class Engine
             }
         }
 
-        for(GameSystem system : renderSystems)
+        for(RenderSystem system : renderSystems)
         {
             if(system.getClass().equals(clazz))
             {
