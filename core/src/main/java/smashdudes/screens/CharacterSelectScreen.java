@@ -12,15 +12,19 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.utils.*;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ArrayMap;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import smashdudes.core.PlayerHandle;
 import smashdudes.core.input.*;
 import smashdudes.graphics.RenderResources;
-import smashdudes.graphics.ui.GameSkin;
+import smashdudes.ui.GameSkin;
+import smashdudes.ui.characterselect.CharacterSelectionOverlay;
+import smashdudes.ui.characterselect.CharacterSlot;
 import smashdudes.util.CharacterData;
 
 public class CharacterSelectScreen extends GameScreen
@@ -35,7 +39,7 @@ public class CharacterSelectScreen extends GameScreen
 
     final int charactersPerRow = 4;
     private Table playerTable;
-    private Array<Stack> characterEntries;
+    private Array<CharacterSlot> characterEntries;
 
     static class SelectScreenPlayer
     {
@@ -70,34 +74,13 @@ public class CharacterSelectScreen extends GameScreen
                 joinedPlayers.put(handle, joinedPlayer);
 
                 playerTable.add(joinedPlayer.playerImageStack).size(192, 192).padLeft(worldWidth / 20).padRight(worldHeight / 20);
-                if(device == CharacterSelectInputAssigner.InputDevice.Keyboard)
+                if(joinedPlayer.input.getDeviceType() == InputDeviceType.Keyboard)
                 {
                     addInputProcessor((InputAdapter)joinedPlayer.input);
                 }
                 else
                 {
                     Controllers.addListener((ControllerListener)joinedPlayer.input);
-                }
-            },
-            (device, handle) -> // on leaving game
-            {
-                SelectScreenPlayer player = joinedPlayers.removeKey(handle);
-
-                Cell<?> cell = playerTable.getCell(player.playerImageStack);
-                cell.size(0,0);
-                cell.padLeft(0);
-                cell.padRight(0);
-                player.playerImageStack.remove();
-
-                availableColors.add(player.color);
-
-                if(device == CharacterSelectInputAssigner.InputDevice.Keyboard)
-                {
-                    removeInputProcessor((InputAdapter)player.input);
-                }
-                else
-                {
-                    Controllers.removeListener((ControllerListener)player.input);
                 }
             }
          );
@@ -108,8 +91,6 @@ public class CharacterSelectScreen extends GameScreen
     @Override
     public void buildUI(Table table, Skin skin)
     {
-        table.setDebug(true);
-
         Table availableCharacters = new Table();
         table.add(availableCharacters).padTop(120).row();
 
@@ -128,18 +109,10 @@ public class CharacterSelectScreen extends GameScreen
 
                 CharacterData data = CharacterData.LoadCharacter(characterDir);
 
-                Image characterImage = new Image(data.texture);
-                Label characterName = new Label(data.name, skin, "splash_continue");
+                CharacterSlot selectableCharacter = new CharacterSlot(data);
+                characterEntries.add(selectableCharacter);
 
-                Stack stack = new Stack();
-                Table characterGroup = new Table();
-                characterGroup.add(characterImage).grow().row();
-                characterGroup.add(characterName).bottom();
-                stack.add(characterGroup);
-
-                characterEntries.add(stack);
-
-                availableCharacters.add(stack).width(128).height(128).pad(20).top();
+                availableCharacters.add(selectableCharacter);
 
                 if((availableCharacters.getChildren().size) % charactersPerRow == 0) {
                     availableCharacters.row();
@@ -211,7 +184,7 @@ public class CharacterSelectScreen extends GameScreen
 
         sb.setProjectionMatrix(proj);
         sb.begin();
-        sb.draw(RenderResources.getTexture("textures/character_select.png"), 0,0, viewport.getWorldWidth(), viewport.getWorldHeight());
+        sb.draw(RenderResources.getTexture("textures/character_select.jpg"), 0,0, viewport.getWorldWidth(), viewport.getWorldHeight());
 
 
         final String message = "Choose your Character";
@@ -228,15 +201,15 @@ public class CharacterSelectScreen extends GameScreen
         sb.end();
     }
 
-    private SelectScreenPlayer CreatePlayerEntry(CharacterSelectInputAssigner.InputDevice device, PlayerHandle handle)
+    private SelectScreenPlayer CreatePlayerEntry(InputDeviceType device, PlayerHandle handle)
     {
         SelectScreenPlayer joinedPlayer = new SelectScreenPlayer();
 
-        if(device == CharacterSelectInputAssigner.InputDevice.Keyboard)
+        if(device == InputDeviceType.Keyboard)
         {
             joinedPlayer.input = new KeyboardInputListener(new InputConfig(Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.UP, Input.Keys.DOWN, Input.Keys.Z));
         }
-        else if(device == CharacterSelectInputAssigner.InputDevice.Controller)
+        else if(device == InputDeviceType.Controller)
         {
             joinedPlayer.input = new ControllerInputListener(assigner.GetController(handle));
         }
@@ -255,59 +228,76 @@ public class CharacterSelectScreen extends GameScreen
 
     private void updateSelectionUI()
     {
-        for(Stack entry : characterEntries)
+
+        // reset selected entries
+        for(CharacterSlot slot : characterEntries)
         {
-            while(entry.getChildren().size > 1)
-            {
-                entry.removeActorAt(entry.getChildren().size - 1, false);
-            }
+            slot.resetSelection();
         }
 
         for(int i = 0; i < joinedPlayers.size; ++i)
         {
             SelectScreenPlayer player = joinedPlayers.getValueAt(i);
-            Stack entry = characterEntries.get(player.selectedCharacterIndex);
-
-
-            Image image = new Image(RenderResources.getColor1x1(player.color));
-            Container<Image> container = new Container<>(image);
-            container.minSize(32, 32);
-
-            if(i == 0) container.align(Align.topLeft);
-            if(i == 1) container.align(Align.topRight);
-            if(i == 2) container.align(Align.bottomLeft);
-            if(i == 3) container.align(Align.bottomRight);
-
-            entry.add(container);
+            CharacterSlot slot = characterEntries.get(player.selectedCharacterIndex);
+            slot.addSelection(new CharacterSelectionOverlay(player.color, i + 1));
         }
     }
 
     private void playerSelection()
     {
+        Array<PlayerHandle> toRemove = new Array<>();
         for(int i = 0; i < joinedPlayers.size; ++i)
         {
             SelectScreenPlayer player = joinedPlayers.getValueAt(i);
+            boolean cancelPressed = player.input.cancelPressed();
+            boolean confirmPressed = player.input.confirmPressed();
 
-            if(!player.lockedIn && player.input.confirmPressed())
+            if(!player.lockedIn && confirmPressed)
             {
                 player.lockedIn = true;
 
                 // TODO (daniel): find way to access gameSkin more appropriately
-                Label lockedInLabel = new Label("Locked In", new GameSkin(), "splash_continue");
+                Label lockedInLabel = new Label("Locked In", GameSkin.Get(), "splash_continue");
                 player.lockedInContainer = new Container<>(lockedInLabel).align(Align.bottom);
                 player.playerImageStack.add(player.lockedInContainer);
             }
-            else if(player.lockedIn && player.input.cancelPressed())
+            else if(player.lockedIn && cancelPressed)
             {
                 player.lockedIn = false;
                 player.playerImageStack.removeActor(player.lockedInContainer);
                 player.lockedInContainer = null;
             }
+            else if(!player.lockedIn && cancelPressed)
+            {
+                PlayerHandle handle = joinedPlayers.getKeyAt(i);
+                assigner.requestLeave(handle);
+                toRemove.add(handle);
 
-            if(!player.lockedIn)
+                Cell<?> cell = playerTable.getCell(player.playerImageStack);
+                cell.size(0,0);
+                cell.padLeft(0);
+                cell.padRight(0);
+                player.playerImageStack.remove();
+
+                availableColors.add(player.color);
+
+                if(player.input.getDeviceType() == InputDeviceType.Keyboard)
+                {
+                    removeInputProcessor((InputAdapter)player.input);
+                }
+                else if(player.input.getDeviceType() == InputDeviceType.Controller)
+                {
+                    Controllers.removeListener((ControllerListener)player.input);
+                }
+            }
+            else if(!player.lockedIn)
             {
                 player.selectedCharacterIndex = getPlayerSelection(player.input, player.selectedCharacterIndex);
             }
+        }
+        for(PlayerHandle handle : toRemove)
+        {
+            joinedPlayers.removeKey(handle);
         }
     }
 

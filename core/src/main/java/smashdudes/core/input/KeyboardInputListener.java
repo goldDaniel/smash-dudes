@@ -164,4 +164,10 @@ public class KeyboardInputListener extends InputAdapter implements IGameInputLis
         cancelPressed = false;
         return result;
     }
+
+    @Override
+    public InputDeviceType getDeviceType()
+    {
+        return InputDeviceType.Keyboard;
+    }
 }

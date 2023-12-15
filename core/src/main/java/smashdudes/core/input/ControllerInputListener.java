@@ -189,4 +189,10 @@ public class ControllerInputListener extends ControllerAdapter implements IGameI
         cancelPressed = false;
         return result;
     }
+
+    @Override
+    public InputDeviceType getDeviceType()
+    {
+        return InputDeviceType.Controller;
+    }
 }

@@ -12,40 +12,47 @@ import smashdudes.core.PlayerHandle;
 
 public class CharacterSelectInputAssigner implements InputProcessor, ControllerListener
 {
-    public enum InputDevice
-    {
-        Controller,
-        Keyboard,
-    }
 
     @FunctionalInterface
     public interface JoinAction
     {
-        void execute(InputDevice device, PlayerHandle handle);
-    }
-
-    @FunctionalInterface
-    public interface LeaveAction
-    {
-        void execute(InputDevice device, PlayerHandle handle);
+        void execute(InputDeviceType type, PlayerHandle handle);
     }
 
     private JoinAction join;
-    private LeaveAction leave;
 
     private PlayerHandle keyboardHandle = null;
 
     private ArrayMap<Controller, PlayerHandle>  controllerHandles = new ArrayMap<>();
 
-    public CharacterSelectInputAssigner(JoinAction join, LeaveAction leave)
+    public CharacterSelectInputAssigner(JoinAction join)
     {
         this.join = join;
-        this.leave = leave;
     }
 
     public Controller GetController(PlayerHandle handle)
     {
         return controllerHandles.getKey(handle, false);
+    }
+
+    public void requestLeave(PlayerHandle handle)
+    {
+        if(keyboardHandle.equals(handle))
+        {
+            keyboardHandle = null;
+        }
+        else
+        {
+            for(int i = 0; i < controllerHandles.size; ++i)
+            {
+                PlayerHandle player = controllerHandles.getValueAt(i);
+                if(player.equals(handle))
+                {
+                    controllerHandles.removeValue(player, false);
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -56,7 +63,7 @@ public class CharacterSelectInputAssigner implements InputProcessor, ControllerL
             if(keyboardHandle != null) return false;
 
             keyboardHandle = new PlayerHandle();
-            join.execute(InputDevice.Keyboard, keyboardHandle);
+            join.execute(InputDeviceType.Keyboard, keyboardHandle);
 
             return true;
         }
@@ -126,7 +133,7 @@ public class CharacterSelectInputAssigner implements InputProcessor, ControllerL
             if(controllerHandles.containsKey(controller)) return false;
 
             controllerHandles.put(controller, new PlayerHandle());
-            join.execute(InputDevice.Controller, controllerHandles.get(controller));
+            join.execute(InputDeviceType.Controller, controllerHandles.get(controller));
 
             return true;
 

@@ -1,4 +1,4 @@
-package smashdudes.graphics.ui;
+package smashdudes.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -6,7 +6,19 @@ import smashdudes.graphics.RenderResources;
 
 public class GameSkin extends Skin
 {
-    public GameSkin()
+    private static GameSkin globalSkin;
+
+    public static GameSkin Get()
+    {
+        if(globalSkin == null)
+        {
+            globalSkin = new GameSkin();
+        }
+        return globalSkin;
+    }
+
+
+    private GameSkin()
     {
         //SPLASH SCREEN UI/////////////////////////////////////////////////////////////////////////////////
         add("splash_title_font", RenderResources.getFont("rexlia", 128));
@@ -58,5 +70,10 @@ public class GameSkin extends Skin
 
 
         add("slider_settings", sliderStyle);
+
+        // CHARACTER SELECT
+        add("character_select_cursor_font", RenderResources.getFont("rexlia", 16));
+
+        add("character_select_selection_overlay", new Label.LabelStyle(getFont("character_select_cursor_font"), Color.WHITE));
     }
 }

@@ -1,22 +1,19 @@
 package smashdudes.screens;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import smashdudes.graphics.RenderResources;
-import smashdudes.graphics.ui.GameSkin;
+import smashdudes.ui.GameSkin;
 
 public abstract class GameScreen implements Screen
 {
     private InputMultiplexer multiplexer;
-    private GameSkin skin;
 
     private Table table;
     private Stage uiStage;
@@ -29,7 +26,6 @@ public abstract class GameScreen implements Screen
     {
         this.game = game;
 
-        skin = new GameSkin();
         viewport = new ExtendViewport(1280, 720);
         uiStage = new Stage(viewport, RenderResources.getSpriteBatch());
 
@@ -38,7 +34,7 @@ public abstract class GameScreen implements Screen
         table = new Table();
         table.setFillParent(true);
         uiStage.addActor(table);
-        buildUI(table, skin);
+        buildUI(table, GameSkin.Get());
     }
 
     @Override

@@ -9,6 +9,9 @@ public class PlayerHandle
     @Override
     public boolean equals(Object obj)
     {
-        return ((PlayerHandle)obj).ID == this.ID;
-    }
-}
+        if(obj instanceof PlayerHandle)
+        {
+            return ((PlayerHandle)obj).ID == this.ID;
+        }
+        return false;
+    }}
