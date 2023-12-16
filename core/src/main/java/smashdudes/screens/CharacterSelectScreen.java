@@ -30,15 +30,13 @@ import smashdudes.util.CharacterData;
 public class CharacterSelectScreen extends GameScreen
 {
     //RENDERING================================================
-    private final float worldWidth = 1280;
-    private final float worldHeight = 720;
-    private FitViewport viewport = new FitViewport(worldWidth, worldHeight);
+    private final FitViewport viewport = new FitViewport(1280, 720);
 
     //SELECTION================================================
     private CharacterSelectInputAssigner assigner = null;
 
-    final int charactersPerRow = 4;
     private Table playerTable;
+    final int charactersPerRow = 4;
     private Array<CharacterSlot> characterEntries;
 
     static class SelectScreenPlayer
@@ -62,10 +60,10 @@ public class CharacterSelectScreen extends GameScreen
     public CharacterSelectScreen(Game game)
     {
         super(game);
-        viewport.getCamera().translate(worldWidth / 2, worldHeight / 2, 0);
+        viewport.getCamera().translate(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
         viewport.getCamera().update();
 
-        availableColors.add(Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW);
+        availableColors.add(Color.GOLDENROD, Color.OLIVE, Color.SALMON, Color.FIREBRICK);
 
         assigner = new CharacterSelectInputAssigner(
             (device, handle) -> // on joining game
@@ -73,7 +71,7 @@ public class CharacterSelectScreen extends GameScreen
                 SelectScreenPlayer joinedPlayer = CreatePlayerEntry(device, handle);
                 joinedPlayers.put(handle, joinedPlayer);
 
-                playerTable.add(joinedPlayer.playerImageStack).size(192, 192).padLeft(worldWidth / 20).padRight(worldHeight / 20);
+                playerTable.add(joinedPlayer.playerImageStack).size(192, 192).padLeft(viewport.getWorldWidth() / 20).padRight(viewport.getWorldHeight() / 20);
                 if(joinedPlayer.input.getDeviceType() == InputDeviceType.Keyboard)
                 {
                     addInputProcessor((InputAdapter)joinedPlayer.input);

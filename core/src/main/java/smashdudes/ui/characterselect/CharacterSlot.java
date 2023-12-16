@@ -2,6 +2,7 @@ package smashdudes.ui.characterselect;
 
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Array;
+import smashdudes.graphics.RenderResources;
 import smashdudes.ui.GameSkin;
 import smashdudes.util.CharacterData;
 
@@ -16,12 +17,15 @@ public class CharacterSlot extends Table
         // not the text. So the stack only contains the image
         overlayStack = new Stack();
 
+        Image portraitBackground = new Image(RenderResources.getTexture("textures/portrait_background.jpg"));
+        Image portraitBorder = new Image(RenderResources.getTexture("textures/portrait_border.png"));
         Image characterImage = new Image(data.texture);
         Label characterName = new Label(data.name, GameSkin.Get(), "splash_continue");
 
         selectionOverlay = new Array<>();
-
+        overlayStack.add(portraitBackground);
         overlayStack.add(characterImage);
+        overlayStack.add(portraitBorder);
         this.add(overlayStack).width(128).height(128).row();
         this.add(characterName);
 
