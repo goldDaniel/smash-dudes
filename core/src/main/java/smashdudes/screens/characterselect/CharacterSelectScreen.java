@@ -13,19 +13,15 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import smashdudes.core.input.CharacterSelectInputAssigner;
 import smashdudes.core.input.IGameInputListener;
-import smashdudes.core.input.IMenuInputRetriever;
 import smashdudes.core.input.InputDeviceType;
 import smashdudes.graphics.RenderResources;
 import smashdudes.screens.GameScreen;
 import smashdudes.screens.GameplayScreen;
 import smashdudes.ui.characterselect.AvailableCharactersDisplay;
-import smashdudes.ui.characterselect.CharacterSelectionOverlay;
-import smashdudes.ui.characterselect.CharacterSlot;
 import smashdudes.ui.characterselect.SelectedCharacterDisplay;
 import smashdudes.util.CharacterData;
 
@@ -41,7 +37,8 @@ public class CharacterSelectScreen extends GameScreen
     public CharacterSelectScreen(Game game)
     {
         super(game);
-        lobby = new PlayerLobby((input, handle) ->
+
+        lobby = new PlayerLobby((input, handle) -> // on leaving game
         {
             if(input.getDeviceType() == InputDeviceType.Keyboard)
             {
@@ -171,93 +168,4 @@ public class CharacterSelectScreen extends GameScreen
 
         sb.end();
     }
-
-    private void playerSelection()
-    {
-        /*Array<PlayerHandle> toRemove = new Array<>();
-        for(int i = 0; i < joinedPlayers.size; ++i)
-        {
-            SelectScreenPlayer player = joinedPlayers.getValueAt(i);
-            boolean cancelPressed = player.input.cancelPressed();
-            boolean confirmPressed = player.input.confirmPressed();
-
-            if(!player.lockedIn && confirmPressed)
-            {
-                player.lockedIn = true;
-
-                // TODO (daniel): find way to access gameSkin more appropriately
-                Label lockedInLabel = new Label("Locked In", GameSkin.Get(), "splash_continue");
-                player.lockedInContainer = new Container<>(lockedInLabel).align(Align.bottom);
-                player.playerImageStack.add(player.lockedInContainer);
-            }
-            else if(player.lockedIn && cancelPressed)
-            {
-                player.lockedIn = false;
-                player.playerImageStack.removeActor(player.lockedInContainer);
-                player.lockedInContainer = null;
-            }
-            else if(!player.lockedIn && cancelPressed)
-            {
-                selectedCharacterDisplay.removeDisplay(handle);
-                lobby.leave(handle);
-                assigner.requestLeave(handle);
-
-                if(player.input.getDeviceType() == InputDeviceType.Keyboard)
-                {
-                    removeInputProcessor((InputAdapter)player.input);
-                }
-                else if(player.input.getDeviceType() == InputDeviceType.Controller)
-                {
-                    Controllers.removeListener((ControllerListener)player.input);
-                }
-            }
-            else if(!player.lockedIn)
-            {
-                player.selectedCharacterIndex = getPlayerSelection(player.input, player.selectedCharacterIndex);
-            }
-        }
-        for(PlayerHandle handle : toRemove)
-        {
-            joinedPlayers.removeKey(handle);
-        }*/
-    }
-
-    // NOTE (danielg): This only works if each row is the same size
-//    private int getPlayerSelection(IMenuInputRetriever input, int currentIndex)
-//    {
-//        if(input.leftPressed())
-//        {
-//            if(currentIndex % charactersPerRow == 0)
-//            {
-//                currentIndex += charactersPerRow;
-//            }
-//            currentIndex--;
-//        }
-//        if(input.rightPressed())
-//        {
-//            currentIndex++;
-//            if(currentIndex % charactersPerRow == 0)
-//            {
-//                currentIndex -= charactersPerRow;
-//            }
-//        }
-//        if(input.upPressed())
-//        {
-//            currentIndex -= charactersPerRow;
-//            if(currentIndex < 0)
-//            {
-//                currentIndex += characterEntries.size;
-//            }
-//        }
-//        if(input.downPressed())
-//        {
-//            currentIndex += charactersPerRow;
-//            if(currentIndex > (characterEntries.size - 1))
-//            {
-//                currentIndex -= characterEntries.size;
-//            }
-//        }
-//
-//        return currentIndex;
-//    }
 }

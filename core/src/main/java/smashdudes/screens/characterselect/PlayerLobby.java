@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 import smashdudes.core.PlayerHandle;
+import smashdudes.core.PlayerLobbyInfo;
 import smashdudes.core.input.*;
 
 public class PlayerLobby

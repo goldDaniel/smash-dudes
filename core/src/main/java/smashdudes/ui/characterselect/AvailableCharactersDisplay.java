@@ -2,7 +2,8 @@ package smashdudes.ui.characterselect;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
-import smashdudes.screens.characterselect.PlayerLobbyInfo;
+import smashdudes.core.PlayerLobbyInfo;
+import smashdudes.core.input.IMenuInputRetriever;
 import smashdudes.util.CharacterData;
 
 public class AvailableCharactersDisplay extends Table
@@ -18,13 +19,14 @@ public class AvailableCharactersDisplay extends Table
     public void insertCharacter(CharacterData data)
     {
         CharacterSlot selectableCharacter = new CharacterSlot(data);
+
         characterEntries.add(selectableCharacter);
+
         this.add(selectableCharacter);
         if((characterEntries.size) % charactersPerRow == 0) {
             this.row();
         }
     }
-
 
     public void updateSelection(Array<PlayerLobbyInfo> players)
     {
@@ -35,7 +37,54 @@ public class AvailableCharactersDisplay extends Table
 
         for(PlayerLobbyInfo info : players)
         {
+            updatePlayerSelection(info);
             characterEntries.get(info.selectedCharacterIndex).addSelection(new CharacterSelectionOverlay(info.color, info.playerNumber));
         }
+    }
+
+    private void updatePlayerSelection(PlayerLobbyInfo player)
+    {
+        if(!player.lockedIn)
+        {
+            player.selectedCharacterIndex = getPlayerSelection(player.input, player.selectedCharacterIndex);
+        }
+    }
+
+    private int getPlayerSelection(IMenuInputRetriever input, int currentIndex)
+    {
+        if(input.leftPressed())
+        {
+            if(currentIndex % charactersPerRow == 0)
+            {
+                currentIndex += charactersPerRow;
+            }
+            currentIndex--;
+        }
+        if(input.rightPressed())
+        {
+            currentIndex++;
+            if(currentIndex % charactersPerRow == 0)
+            {
+                currentIndex -= charactersPerRow;
+            }
+        }
+        if(input.upPressed())
+        {
+            currentIndex -= charactersPerRow;
+            if(currentIndex < 0)
+            {
+                currentIndex += characterEntries.size;
+            }
+        }
+        if(input.downPressed())
+        {
+            currentIndex += charactersPerRow;
+            if(currentIndex > (characterEntries.size - 1))
+            {
+                currentIndex -= characterEntries.size;
+            }
+        }
+
+        return currentIndex;
     }
 }

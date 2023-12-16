@@ -22,6 +22,7 @@ public class CharacterSelectionOverlay extends Container<Stack>
         float rotationAngle = 0;
         this.minSize(size,size);
         this.maxSize(size,size);
+
         if(playerNumber == 1)
         {
             this.align(Align.topLeft);
