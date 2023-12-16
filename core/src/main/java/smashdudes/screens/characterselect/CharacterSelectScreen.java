@@ -2,6 +2,7 @@ package smashdudes.screens.characterselect;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.Color;
@@ -16,11 +17,13 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import smashdudes.core.input.CharacterSelectInputAssigner;
+import smashdudes.core.input.IGameInputListener;
 import smashdudes.core.input.IMenuInputRetriever;
 import smashdudes.core.input.InputDeviceType;
 import smashdudes.graphics.RenderResources;
 import smashdudes.screens.GameScreen;
 import smashdudes.screens.GameplayScreen;
+import smashdudes.ui.characterselect.AvailableCharactersDisplay;
 import smashdudes.ui.characterselect.CharacterSelectionOverlay;
 import smashdudes.ui.characterselect.CharacterSlot;
 import smashdudes.ui.characterselect.SelectedCharacterDisplay;
@@ -29,17 +32,16 @@ import smashdudes.util.CharacterData;
 public class CharacterSelectScreen extends GameScreen
 {
     private FitViewport viewport;
-    private CharacterSelectInputAssigner assigner = null;
-    private final PlayerLobby lobby;
+    private CharacterSelectInputAssigner assigner;
     private SelectedCharacterDisplay selectedCharacterDisplay;
-    final int charactersPerRow = 4;
-    private Array<CharacterSlot> characterEntries;
+    private AvailableCharactersDisplay availableCharactersDisplay;
+    private final PlayerLobby lobby;
     private float gameStartCountdown = 4;
 
     public CharacterSelectScreen(Game game)
     {
         super(game);
-        lobby = new PlayerLobby((input) ->
+        lobby = new PlayerLobby((input, handle) ->
         {
             if(input.getDeviceType() == InputDeviceType.Keyboard)
             {
@@ -49,12 +51,26 @@ public class CharacterSelectScreen extends GameScreen
             {
                 Controllers.removeListener((ControllerListener)input);
             }
+
+            selectedCharacterDisplay.removeDisplay(handle);
+            assigner.requestLeave(handle);
         });
 
         assigner = new CharacterSelectInputAssigner(
             (device, handle) -> // on joining game
             {
                 lobby.join(assigner, device, handle);
+
+                IGameInputListener input = lobby.getPlayer(handle).input;
+                if(device == InputDeviceType.Controller)
+                {
+                    Controllers.addListener((ControllerListener)input);
+                }
+                else if(device == InputDeviceType.Keyboard)
+                {
+                    addInputProcessor((InputProcessor)input);
+                }
+
                 selectedCharacterDisplay.addDisplay(handle, lobby.getPlayerColor(handle));
             }
          );
@@ -68,23 +84,14 @@ public class CharacterSelectScreen extends GameScreen
         viewport.getCamera().update();
         setViewport(viewport);
 
-        selectedCharacterDisplay = new SelectedCharacterDisplay(viewport.getWorldWidth(), viewport.getWorldHeight());
-        characterEntries = new Array<>();
-
-        Table availableCharacters = new Table();
-        table.add(availableCharacters).padTop(120).row();
-
-        Array<CharacterData> characterData = CharacterData.loadAllCharacters();
-        for(CharacterData data : characterData)
+        availableCharactersDisplay = new AvailableCharactersDisplay();
+        for(CharacterData data : CharacterData.loadAllCharacters())
         {
-            CharacterSlot selectableCharacter = new CharacterSlot(data);
-            characterEntries.add(selectableCharacter);
-            availableCharacters.add(selectableCharacter);
-            if((availableCharacters.getChildren().size) % charactersPerRow == 0) {
-                availableCharacters.row();
-            }
+            availableCharactersDisplay.insertCharacter(data);
         }
+        table.add(availableCharactersDisplay).padTop(120).row();
 
+        selectedCharacterDisplay = new SelectedCharacterDisplay(viewport.getWorldWidth(), viewport.getWorldHeight());
         table.add(selectedCharacterDisplay).expandX().fillX().height(192);
     }
 
@@ -114,8 +121,8 @@ public class CharacterSelectScreen extends GameScreen
     @Override
     public void update(float dt)
     {
-        playerSelection();
-        updateSelectionUI();
+        lobby.handlePlayerInput();
+        availableCharactersDisplay.updateSelection(lobby.getPlayers());
 
         if(lobby.allPlayersLockedIn())
         {
@@ -163,23 +170,6 @@ public class CharacterSelectScreen extends GameScreen
         }
 
         sb.end();
-    }
-
-
-    private void updateSelectionUI()
-    {
-
-        // reset selected entries
-        for(CharacterSlot slot : characterEntries)
-        {
-            slot.resetSelection();
-        }
-
-        for(PlayerLobby.PlayerID id : lobby.getPlayers())
-        {
-            CharacterSlot slot = characterEntries.get(id.selected);
-            slot.addSelection(new CharacterSelectionOverlay(id.color, id.playerNumber));
-        }
     }
 
     private void playerSelection()
@@ -233,41 +223,41 @@ public class CharacterSelectScreen extends GameScreen
     }
 
     // NOTE (danielg): This only works if each row is the same size
-    private int getPlayerSelection(IMenuInputRetriever input, int currentIndex)
-    {
-        if(input.leftPressed())
-        {
-            if(currentIndex % charactersPerRow == 0)
-            {
-                currentIndex += charactersPerRow;
-            }
-            currentIndex--;
-        }
-        if(input.rightPressed())
-        {
-            currentIndex++;
-            if(currentIndex % charactersPerRow == 0)
-            {
-                currentIndex -= charactersPerRow;
-            }
-        }
-        if(input.upPressed())
-        {
-            currentIndex -= charactersPerRow;
-            if(currentIndex < 0)
-            {
-                currentIndex += characterEntries.size;
-            }
-        }
-        if(input.downPressed())
-        {
-            currentIndex += charactersPerRow;
-            if(currentIndex > (characterEntries.size - 1))
-            {
-                currentIndex -= characterEntries.size;
-            }
-        }
-
-        return currentIndex;
-    }
+//    private int getPlayerSelection(IMenuInputRetriever input, int currentIndex)
+//    {
+//        if(input.leftPressed())
+//        {
+//            if(currentIndex % charactersPerRow == 0)
+//            {
+//                currentIndex += charactersPerRow;
+//            }
+//            currentIndex--;
+//        }
+//        if(input.rightPressed())
+//        {
+//            currentIndex++;
+//            if(currentIndex % charactersPerRow == 0)
+//            {
+//                currentIndex -= charactersPerRow;
+//            }
+//        }
+//        if(input.upPressed())
+//        {
+//            currentIndex -= charactersPerRow;
+//            if(currentIndex < 0)
+//            {
+//                currentIndex += characterEntries.size;
+//            }
+//        }
+//        if(input.downPressed())
+//        {
+//            currentIndex += charactersPerRow;
+//            if(currentIndex > (characterEntries.size - 1))
+//            {
+//                currentIndex -= characterEntries.size;
+//            }
+//        }
+//
+//        return currentIndex;
+//    }
 }

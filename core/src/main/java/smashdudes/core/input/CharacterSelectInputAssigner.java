@@ -23,7 +23,7 @@ public class CharacterSelectInputAssigner implements InputProcessor, ControllerL
 
     private PlayerHandle keyboardHandle = null;
 
-    private ArrayMap<Controller, PlayerHandle>  controllerHandles = new ArrayMap<>();
+    private final ArrayMap<Controller, PlayerHandle>  controllerHandles = new ArrayMap<>();
 
     public CharacterSelectInputAssigner(JoinAction join)
     {
@@ -154,26 +154,23 @@ public class CharacterSelectInputAssigner implements InputProcessor, ControllerL
         return false;
     }
 
-    @Override
+
     public boolean povMoved(Controller controller, int i, PovDirection povDirection)
     {
         return false;
     }
 
-    @Override
     public boolean xSliderMoved(Controller controller, int i, boolean b)
     {
         return false;
     }
 
-    @Override
     public boolean ySliderMoved(Controller controller, int i, boolean b)
     {
         return false;
     }
 
-    @Override
-    public boolean accelerometerMoved(Controller controller, int i, Vector3 vector3)
+    public boolean accelerometerMoved(Controller controller ,int axis,Vector3 dir)
     {
         return false;
     }

@@ -15,7 +15,7 @@ public class SelectedCharacterDisplay extends Table
     private final float screenWidth;
     private final float screenHeight;
 
-    private ArrayMap<PlayerHandle, Stack> playerImageStacks;
+    private final ArrayMap<PlayerHandle, Stack> playerImageStacks;
 
     public SelectedCharacterDisplay(float screenWidth, float screenHeight)
     {

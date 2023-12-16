@@ -9,30 +9,13 @@ import smashdudes.core.input.*;
 
 public class PlayerLobby
 {
-    private static class JoinedPlayer
-    {
-        public PlayerHandle handle;
-        public IGameInputListener input;
-        public int selectedCharacterIndex;
-        public Color color;
-        public boolean lockedIn = false;
-    }
-
-    public static class PlayerID
-    {
-        public Color color;
-        public int playerNumber;
-
-        public int selected = 0;
-    }
-
     public interface OnLeave
     {
-        void execute(IGameInputListener input);
+        void execute(IGameInputListener input, PlayerHandle handle);
     }
 
     private final Array<Color> availableColors = new Array<>();
-    private final ArrayMap<PlayerHandle, JoinedPlayer> players = new ArrayMap<>();
+    private final ArrayMap<PlayerHandle, PlayerLobbyInfo> players = new ArrayMap<>();
 
     private final OnLeave onLeave;
 
@@ -44,7 +27,7 @@ public class PlayerLobby
 
     public void join(CharacterSelectInputAssigner assigner, InputDeviceType device, PlayerHandle handle)
     {
-        JoinedPlayer joinedPlayer = new JoinedPlayer();
+        PlayerLobbyInfo joinedPlayer = new PlayerLobbyInfo();
         joinedPlayer.handle = handle;
 
         if(device == InputDeviceType.Keyboard)
@@ -60,6 +43,7 @@ public class PlayerLobby
         availableColors.removeValue(joinedPlayer.color, false);
 
         joinedPlayer.selectedCharacterIndex = 0;
+        joinedPlayer.playerNumber = players.size + 1;
 
         players.put(handle, joinedPlayer);
     }
@@ -69,30 +53,22 @@ public class PlayerLobby
         return players.get(handle).color;
     }
 
-    public void leave(PlayerHandle handle)
+    public Array<PlayerLobbyInfo> getPlayers()
     {
-        JoinedPlayer player = players.removeKey(handle);
-        availableColors.add(player.color);
-
-        onLeave.execute(player.input);
-    }
-
-    public Array<PlayerID> getPlayers()
-    {
-        Array<PlayerID> result = new Array<>();
+        Array<PlayerLobbyInfo> result = new Array<>();
 
         for(int i = 0; i < players.size; ++i)
         {
-            JoinedPlayer player = players.getValueAt(i);
-
-            PlayerID id = new PlayerID();
-            id.color = player.color;
-            id.playerNumber = i + 1;
-
-            result.add(id);
+            PlayerLobbyInfo player = players.getValueAt(i);
+            result.add(player);
         }
 
         return result;
+    }
+
+    public PlayerLobbyInfo getPlayer(PlayerHandle handle)
+    {
+        return players.get(handle);
     }
 
     public void setLockedIn(PlayerHandle handle, boolean value)
@@ -102,12 +78,50 @@ public class PlayerLobby
 
     public boolean allPlayersLockedIn()
     {
+        if(players.size < 2) return false;
+
         for(int i = 0; i < players.size; ++i)
         {
-            JoinedPlayer player = players.getValueAt(i);
+            PlayerLobbyInfo player = players.getValueAt(i);
             if(!player.lockedIn) return false;
         }
 
         return true;
+    }
+
+    public void handlePlayerInput()
+    {
+        Array<PlayerHandle> toRemove = new Array<>();
+        for(int i = 0; i < players.size; ++i)
+        {
+            PlayerLobbyInfo player = players.getValueAt(i);
+            boolean cancelPressed = player.input.cancelPressed();
+            boolean confirmPressed = player.input.confirmPressed();
+
+            if(!player.lockedIn && confirmPressed)
+            {
+                player.lockedIn = true;
+            }
+            else if(player.lockedIn && cancelPressed)
+            {
+                player.lockedIn = false;
+            }
+            else if(!player.lockedIn && cancelPressed)
+            {
+                onLeave.execute(player.input, player.handle);
+                availableColors.add(player.color);
+                toRemove.add(player.handle);
+            }
+        }
+
+        for(PlayerHandle handle : toRemove)
+        {
+            players.removeKey(handle);
+        }
+
+        for(int i = 0; i < players.size; ++i)
+        {
+            players.getValueAt(i).playerNumber = i + 1;
+        }
     }
 }
