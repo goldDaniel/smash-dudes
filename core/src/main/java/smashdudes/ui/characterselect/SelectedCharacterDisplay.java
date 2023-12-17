@@ -36,7 +36,8 @@ public class SelectedCharacterDisplay extends Table
     {
         Stack imageStack = new Stack();
 
-        Image bgImage = new Image(RenderResources.getColor1x1(color));
+        Image bgImage = new Image(RenderResources.getColor1x1(Color.WHITE));
+        bgImage.setColor(color);
         imageStack.add(bgImage);
 
         Image borderImage = new Image(new Texture("textures/portrait_border.png"));

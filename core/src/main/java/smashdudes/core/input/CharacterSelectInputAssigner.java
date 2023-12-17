@@ -19,7 +19,7 @@ public class CharacterSelectInputAssigner implements InputProcessor, ControllerL
         void execute(InputDeviceType type, PlayerHandle handle);
     }
 
-    private JoinAction join;
+    private final JoinAction join;
 
     private PlayerHandle keyboardHandle = null;
 

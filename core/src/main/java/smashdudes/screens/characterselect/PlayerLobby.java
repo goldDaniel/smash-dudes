@@ -25,6 +25,7 @@ public class PlayerLobby
     {
         onLeave = action;
         availableColors.add(Color.GOLDENROD, Color.OLIVE, Color.SALMON, Color.ROYAL);
+        availableColors.add(Color.BROWN, Color.FOREST, Color.FIREBRICK, Color.NAVY);
     }
 
     public void join(CharacterSelectInputAssigner assigner, InputDeviceType device, PlayerHandle handle)
