@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import smashdudes.core.input.IGameInputListener;
+import smashdudes.core.input.MenuNavigator;
 import smashdudes.graphics.RenderResources;
 import smashdudes.ui.GameSkin;
 
@@ -21,6 +22,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public abstract class GameScreen implements Screen
 {
     private InputMultiplexer multiplexer;
+    private MenuNavigator menuNavigator;
 
     private Table table;
     private Stage uiStage;
@@ -43,7 +45,9 @@ public abstract class GameScreen implements Screen
         table = new Table();
         table.setFillParent(true);
         uiStage.addActor(table);
-        buildUI(table, GameSkin.Get());
+
+        menuNavigator = new MenuNavigator();
+        buildUI(table, GameSkin.Get(), menuNavigator);
     }
 
     @Override
@@ -56,7 +60,7 @@ public abstract class GameScreen implements Screen
         uiStage.draw();
     }
 
-    public abstract void buildUI(Table table, Skin skin);
+    public abstract void buildUI(Table table, Skin skin, MenuNavigator navigator);
     public abstract void update(float dt);
     public abstract void render();
 
@@ -161,12 +165,16 @@ public abstract class GameScreen implements Screen
     public void show()
     {
         Gdx.input.setInputProcessor(multiplexer);
+        multiplexer.addProcessor(menuNavigator);
+        Controllers.addListener(menuNavigator);
+
         uiStage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.65f)));
     }
 
     @Override
     public void hide()
     {
+        Controllers.removeListener(menuNavigator);
         while(gameListeners.notEmpty())
         {
             removeInputProcessor(gameListeners.pop());

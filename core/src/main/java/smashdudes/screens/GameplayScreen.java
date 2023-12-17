@@ -22,6 +22,7 @@ import smashdudes.core.PlayerHandle;
 import smashdudes.core.PlayerLobbyInfo;
 import smashdudes.core.Projectile;
 import smashdudes.core.WorldUtils;
+import smashdudes.core.input.MenuNavigator;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
@@ -84,7 +85,7 @@ public class GameplayScreen extends GameScreen
     }
 
     @Override
-    public void buildUI(Table table, Skin skin)
+    public void buildUI(Table table, Skin skin, MenuNavigator menuNavigator)
     {
 
     }

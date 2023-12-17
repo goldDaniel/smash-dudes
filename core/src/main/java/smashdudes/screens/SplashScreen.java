@@ -3,12 +3,16 @@ package smashdudes.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import org.libsdl.SDL;
+import smashdudes.core.input.MenuNavigator;
 import smashdudes.graphics.RenderResources;
 
 public class SplashScreen extends GameScreen
@@ -20,7 +24,7 @@ public class SplashScreen extends GameScreen
     }
 
     @Override
-    public void buildUI(Table table, Skin skin)
+    public void buildUI(Table table, Skin skin, MenuNavigator menuNavigator)
     {
         table.top();
         table.add(new Label("Smash Dudes", skin, "splash_title"));
@@ -38,6 +42,14 @@ public class SplashScreen extends GameScreen
         if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER))
         {
             transitionTo(MainMenuScreen.class);
+        }
+        for(Controller c : Controllers.getControllers())
+        {
+            if(c.getButton(SDL.SDL_CONTROLLER_BUTTON_A))
+            {
+                transitionTo(MainMenuScreen.class);
+                break;
+            }
         }
     }
 

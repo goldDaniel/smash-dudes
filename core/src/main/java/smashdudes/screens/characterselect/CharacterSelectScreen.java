@@ -17,6 +17,7 @@ import smashdudes.core.AudioResources;
 import smashdudes.core.PlayerLobbyInfo;
 import smashdudes.core.input.CharacterSelectInputAssigner;
 import smashdudes.core.input.IGameInputListener;
+import smashdudes.core.input.MenuNavigator;
 import smashdudes.graphics.RenderResources;
 import smashdudes.screens.GameScreen;
 import smashdudes.screens.GameplayScreen;
@@ -63,7 +64,7 @@ public class CharacterSelectScreen extends GameScreen
     }
 
     @Override
-    public void buildUI(Table table, Skin skin)
+    public void buildUI(Table table, Skin skin, MenuNavigator navigator)
     {
         viewport = new FitViewport(1280, 720);
         viewport.getCamera().translate(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);

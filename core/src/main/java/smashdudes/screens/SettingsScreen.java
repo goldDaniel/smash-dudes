@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ScreenUtils;
+import smashdudes.core.input.MenuNavigator;
 
 public class SettingsScreen extends GameScreen
 {
@@ -16,12 +17,14 @@ public class SettingsScreen extends GameScreen
     }
 
     @Override
-    public void buildUI(Table table, Skin skin)
+    public void buildUI(Table table, Skin skin, MenuNavigator menuNavigator)
     {
         table.top();
 
         Label settingsLabel = new Label("Settings", skin, "splash_title");
         table.add(settingsLabel).padTop(100).row();
+
+        Table menu = new Table();
 
         CheckBox fullscreenCheckbox = new CheckBox("  Fullscreen", skin, "checkbox_settings");
         fullscreenCheckbox.setChecked(Gdx.graphics.isFullscreen());
@@ -42,7 +45,7 @@ public class SettingsScreen extends GameScreen
                 }
             }
         });
-        table.add(fullscreenCheckbox).padTop(20).row();
+        menu.add(fullscreenCheckbox).padTop(20).row();
 
         TextButton backButton = new TextButton("Back", skin, "text_button_main_menu");
         backButton.addListener(new ChangeListener()
@@ -53,7 +56,10 @@ public class SettingsScreen extends GameScreen
                 transitionTo(MainMenuScreen.class);
             }
         });
-        table.add(backButton).padTop(100);
+        menu.add(backButton).padTop(100);
+
+        table.add(menu);
+        menuNavigator.setButtonGroup(menu);
     }
 
     @Override
