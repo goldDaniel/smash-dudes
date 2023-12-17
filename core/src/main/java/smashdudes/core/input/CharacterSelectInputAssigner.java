@@ -37,7 +37,7 @@ public class CharacterSelectInputAssigner implements InputProcessor, ControllerL
 
     public void requestLeave(PlayerHandle handle)
     {
-        if(keyboardHandle.equals(handle))
+        if(keyboardHandle != null && keyboardHandle.equals(handle))
         {
             keyboardHandle = null;
         }

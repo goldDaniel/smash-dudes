@@ -2,6 +2,7 @@ package smashdudes.ui.characterselect;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
+import smashdudes.core.AudioResources;
 import smashdudes.core.PlayerLobbyInfo;
 import smashdudes.core.input.IMenuInputRetriever;
 import smashdudes.util.CharacterData;
@@ -52,8 +53,11 @@ public class AvailableCharactersDisplay extends Table
 
     private int getPlayerSelection(IMenuInputRetriever input, int currentIndex)
     {
+        boolean playSound = false;
+
         if(input.leftPressed())
         {
+            playSound = true;
             if(currentIndex % charactersPerRow == 0)
             {
                 currentIndex += charactersPerRow;
@@ -62,6 +66,8 @@ public class AvailableCharactersDisplay extends Table
         }
         if(input.rightPressed())
         {
+            playSound = true;
+
             currentIndex++;
             if(currentIndex % charactersPerRow == 0)
             {
@@ -70,6 +76,8 @@ public class AvailableCharactersDisplay extends Table
         }
         if(input.upPressed())
         {
+            playSound = true;
+
             currentIndex -= charactersPerRow;
             if(currentIndex < 0)
             {
@@ -78,11 +86,18 @@ public class AvailableCharactersDisplay extends Table
         }
         if(input.downPressed())
         {
+            playSound = true;
+
             currentIndex += charactersPerRow;
             if(currentIndex > (characterEntries.size - 1))
             {
                 currentIndex -= characterEntries.size;
             }
+        }
+
+        if(playSound)
+        {
+            AudioResources.getSoundEffect("audio/ui/navigate.ogg").play();
         }
 
         return currentIndex;

@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import smashdudes.core.AudioResources;
 import smashdudes.core.PlayerLobbyInfo;
 import smashdudes.core.input.CharacterSelectInputAssigner;
 import smashdudes.core.input.IGameInputListener;
@@ -57,6 +58,7 @@ public class CharacterSelectScreen extends GameScreen
 
             selectedCharacterDisplay.removeDisplay(handle);
             assigner.requestLeave(handle);
+            AudioResources.getSoundEffect("audio/ui/lobby_leave.ogg").play();
         });
 
         assigner = new CharacterSelectInputAssigner(
@@ -75,6 +77,7 @@ public class CharacterSelectScreen extends GameScreen
                 }
 
                 selectedCharacterDisplay.addDisplay(handle, lobby.getPlayerColor(handle));
+                AudioResources.getSoundEffect("audio/ui/lobby_join.ogg").play();
             }
          );
     }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
+import smashdudes.core.AudioResources;
 import smashdudes.core.PlayerHandle;
 import smashdudes.core.PlayerLobbyInfo;
 import smashdudes.core.input.*;
@@ -97,10 +98,12 @@ public class PlayerLobby
             if(!player.lockedIn && confirmPressed)
             {
                 player.lockedIn = true;
+                AudioResources.getSoundEffect("audio/ui/select.ogg").play();
             }
             else if(player.lockedIn && cancelPressed)
             {
                 player.lockedIn = false;
+                AudioResources.getSoundEffect("audio/ui/cancel.ogg").play();
             }
             else if(!player.lockedIn && cancelPressed)
             {
