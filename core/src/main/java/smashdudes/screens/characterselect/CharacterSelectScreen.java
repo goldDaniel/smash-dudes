@@ -6,8 +6,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
@@ -135,25 +133,18 @@ public class CharacterSelectScreen extends GameScreen
     public void render()
     {
         SpriteBatch sb = RenderResources.getSpriteBatch();
-        ShapeRenderer sh = RenderResources.getShapeRenderer();
         BitmapFont font = RenderResources.getFont("crimes", 32);
 
         ScreenUtils.clear(0,0,0,1);
 
-        Matrix4 proj = viewport.getCamera().combined;
-        sh.setProjectionMatrix(proj);
-        sb.setProjectionMatrix(proj);
+        sb.setProjectionMatrix(viewport.getCamera().combined);
         sb.setColor(Color.WHITE);
-
-        sb.setProjectionMatrix(proj);
         sb.begin();
         sb.draw(RenderResources.getTexture("textures/character_select.jpg"), 0,0, viewport.getWorldWidth(), viewport.getWorldHeight());
-
 
         final String message = "Choose your Character";
         final GlyphLayout layout = new GlyphLayout(font, message);
         font.draw(sb, message, viewport.getWorldWidth() / 2 - layout.width / 2, viewport.getWorldHeight() - layout.height);
-
 
         sb.end();
     }
