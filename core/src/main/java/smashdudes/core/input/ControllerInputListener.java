@@ -5,16 +5,20 @@ import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerAdapter;
 import com.badlogic.gdx.math.Vector2;
 import org.libsdl.SDL;
-import smashdudes.core.input.InputState;
 
 /**
  * Listens for controller input and allows retrieval of state through the GameInputRetriever interface
  */
-public class ControllerInputListener extends ControllerAdapter implements IGameInputRetriever, IMenuInputRetriever
+public class ControllerInputListener extends ControllerAdapter implements IGameInputListener
 {
-    private InputState state = new InputState();
+    private InputState gameInputstate = new InputState();
 
-    private Vector2 menuDir = new Vector2();
+
+    // menu input state
+    private boolean leftPressed = false;
+    private boolean rightPressed = false;
+    private boolean upPressed = false;
+    private boolean downPressed = false;
     private boolean confirmPressed = false;
     private boolean cancelPressed = false;
 
@@ -24,64 +28,71 @@ public class ControllerInputListener extends ControllerAdapter implements IGameI
         controller.addListener(this);
     }
 
-    @Override
-    public boolean buttonDown (Controller controller, int buttonIndex)
+    private void assignValue(int buttonIndex, boolean value)
     {
         if(buttonIndex == SDL.SDL_CONTROLLER_BUTTON_A)
         {
-            state.up = true;
-            confirmPressed = true;
+            gameInputstate.up = value;
+            confirmPressed = value;
         }
         if(buttonIndex == SDL.SDL_CONTROLLER_BUTTON_B)
         {
-            cancelPressed = true;
+            cancelPressed = value;
         }
 
         if(buttonIndex == SDL.SDL_CONTROLLER_BUTTON_X)
         {
-            state.punch = true;
+            gameInputstate.punch = value;
         }
 
+        if(buttonIndex == SDL.SDL_CONTROLLER_BUTTON_DPAD_LEFT)
+        {
+            leftPressed = value;
+        }
+        if(buttonIndex == SDL.SDL_CONTROLLER_BUTTON_DPAD_RIGHT)
+        {
+            rightPressed = value;
+        }
+        if(buttonIndex == SDL.SDL_CONTROLLER_BUTTON_DPAD_UP)
+        {
+            upPressed = value;
+        }
+        if(buttonIndex == SDL.SDL_CONTROLLER_BUTTON_DPAD_DOWN)
+        {
+            downPressed = value;
+        }
+    }
+
+    @Override
+    public boolean buttonDown (Controller controller, int buttonIndex)
+    {
+        assignValue(buttonIndex, true);
         return false;
     }
 
     @Override
     public boolean buttonUp (Controller controller, int buttonIndex)
     {
-        if(buttonIndex == SDL.SDL_CONTROLLER_BUTTON_A)
-        {
-            state.up = false;
-            confirmPressed = false;
-        }
-        if(buttonIndex == SDL.SDL_CONTROLLER_BUTTON_B)
-        {
-            cancelPressed = false;
-        }
-
-        if(buttonIndex == SDL.SDL_CONTROLLER_BUTTON_X)
-        {
-            state.punch = false;
-        }
-
+        assignValue(buttonIndex, false);
         return false;
     }
 
     @Override
     public boolean axisMoved (Controller controller, int axisIndex, float value)
     {
-        float deadzone = 0.2f;
-        if(Math.abs(value) < deadzone)
+        final float deadZone = 0.2f;
+        if(Math.abs(value) < deadZone)
         {
             if(axisIndex == SDL.SDL_CONTROLLER_AXIS_LEFTX)
             {
-                menuDir.x = 0;
-                state.left = false;
-                state.right = false;
+                gameInputstate.left = false;
+                gameInputstate.right = false;
             }
             else if(axisIndex == SDL.SDL_CONTROLLER_AXIS_LEFTY)
             {
-                menuDir.y = 0;
-                state.down = false;
+                upPressed = false;
+                downPressed = false;
+                gameInputstate.down = false;
             }
 
             return false;
@@ -89,14 +100,12 @@ public class ControllerInputListener extends ControllerAdapter implements IGameI
 
         if(axisIndex == SDL.SDL_CONTROLLER_AXIS_LEFTX)
         {
-            menuDir.x = value;
-            state.left = value < 0;
-            state.right = value > 0;
+            gameInputstate.left = value < 0;
+            gameInputstate.right = value > 0;
         }
         if(axisIndex == SDL.SDL_CONTROLLER_AXIS_LEFTY)
         {
-            menuDir.y = -value;
-            state.down = value > 0;
+            gameInputstate.down = value > 0;
         }
 
 
@@ -106,48 +115,84 @@ public class ControllerInputListener extends ControllerAdapter implements IGameI
     @Override
     public boolean getLeft()
     {
-        return state.left;
+        return gameInputstate.left;
     }
 
     @Override
     public boolean getRight()
     {
-        return state.right;
+        return gameInputstate.right;
     }
 
     @Override
     public boolean getUp()
     {
-        return state.up;
+        return gameInputstate.up;
     }
 
     @Override
     public boolean getDown()
     {
-        return state.down;
+        return gameInputstate.down;
     }
 
     @Override
     public boolean punch()
     {
-        return state.punch;
+        return gameInputstate.punch;
     }
 
     @Override
-    public Vector2 getDirection()
+    public boolean leftPressed()
     {
-        return menuDir.nor();
+        boolean result = leftPressed;
+        leftPressed = false;
+        return result;
+    }
+
+    @Override
+    public boolean rightPressed()
+    {
+        boolean result = rightPressed;
+        rightPressed = false;
+        return result;
+    }
+
+    @Override
+    public boolean upPressed()
+    {
+        boolean result = upPressed;
+        upPressed = false;
+        return result;
+    }
+
+    @Override
+    public boolean downPressed()
+    {
+        boolean result = downPressed;
+        downPressed = false;
+        return result;
     }
 
     @Override
     public boolean confirmPressed()
     {
-        return confirmPressed;
+        boolean result = confirmPressed;
+        confirmPressed = false;
+        return result;
     }
 
     @Override
     public boolean cancelPressed()
     {
-        return cancelPressed;
+        boolean result = cancelPressed;
+        cancelPressed = false;
+        return result;
+    }
+
+    @Override
+    public InputDeviceType getDeviceType()
+    {
+        return InputDeviceType.Controller;
     }
 }

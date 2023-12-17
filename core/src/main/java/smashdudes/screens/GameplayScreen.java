@@ -13,30 +13,28 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ScreenUtils;
 import org.libsdl.SDL;
-import smashdudes.content.ContentRepo;
-import smashdudes.content.DTO;
 import smashdudes.content.ContentLoader;
+import smashdudes.content.DTO;
 import smashdudes.core.PlayerHandle;
+import smashdudes.core.PlayerLobbyInfo;
 import smashdudes.core.Projectile;
 import smashdudes.core.WorldUtils;
-import smashdudes.core.input.GameInputHandler;
-import smashdudes.core.input.IGameInputRetriever;
+import smashdudes.core.input.MenuNavigator;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
-import smashdudes.ecs.systems.GameOverSystem;
 import smashdudes.graphics.AnimationFrame;
 import smashdudes.graphics.RenderResources;
-import smashdudes.util.CharacterSelectDescription;
+import smashdudes.util.CharacterData;
 
 public class GameplayScreen extends GameScreen
 {
     private final int WORLD_WIDTH = 20;
     private final int WORLD_HEIGHT = 12;
 
-    private GameInputHandler inputHandler;
     private Engine ecsEngine;
 
     private float accumulator = 0;
@@ -44,31 +42,31 @@ public class GameplayScreen extends GameScreen
     private float delta = 0;
     private float alpha = 0;
 
-    public GameplayScreen(Game game, CharacterSelectDescription desc)
+    public GameplayScreen(Game game, Array<PlayerLobbyInfo> players, Array<CharacterData> characterData)
     {
         super(game);
-        this.inputHandler = desc.gameInput;
-        ecsEngine = new Engine(WORLD_WIDTH, WORLD_HEIGHT, () -> transitionTo(new MainMenuScreen(game)));
+        //this.inputHandler = desc.gameInput;
+        ecsEngine = new Engine(WORLD_WIDTH, WORLD_HEIGHT, () -> transitionTo(MainMenuScreen.class));
 
         DTO.Stage stage = ContentLoader.loadStage("stage.json");
 
         WorldUtils.setStage(stage);
-
-        for (DTO.Terrain data : stage.terrain)
+        for (DTO.Terrain terrain : stage.terrain)
         {
-            buildTerrain(data);
+            buildTerrain(terrain);
         }
 
-
-        for (CharacterSelectDescription.PlayerDescription p : desc.descriptions)
+        for (PlayerLobbyInfo p : players)
         {
-            DTO.Character characterData = ContentRepo.loadCharacter(p.identifier);
-            Entity player = buildPlayer(p.portrait, p.handle, characterData, stage.spawnPoints);
+            CharacterData loadedData = characterData.get(p.selectedCharacterIndex);
+            DTO.Character character = new Json().fromJson(DTO.Character.class, loadedData.jsonData);
 
-            IGameInputRetriever retriever = inputHandler.getGameInput(p.handle);
+            Entity player = buildPlayer(loadedData.texture, p.handle, character, stage.spawnPoints);
 
-            PlayerControllerComponent pc = new PlayerControllerComponent(retriever);
+            PlayerControllerComponent pc = new PlayerControllerComponent(p.input);
             player.addComponent(pc);
+
+            addInputProcessor(p.input);
         }
 
         buildParallaxBackground();
@@ -78,7 +76,6 @@ public class GameplayScreen extends GameScreen
     public void show()
     {
         super.show();
-        addInputProcessor(inputHandler.getInputProcessor());
     }
 
     @Override
@@ -88,7 +85,7 @@ public class GameplayScreen extends GameScreen
     }
 
     @Override
-    public void buildUI(Table table, Skin skin)
+    public void buildUI(Table table, Skin skin, MenuNavigator menuNavigator)
     {
 
     }

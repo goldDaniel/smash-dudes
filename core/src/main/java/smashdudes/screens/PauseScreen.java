@@ -7,11 +7,13 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import smashdudes.core.input.MenuNavigator;
 import smashdudes.graphics.RenderResources;
 
 public class PauseScreen extends GameScreen
@@ -25,7 +27,7 @@ public class PauseScreen extends GameScreen
     }
 
     @Override
-    public void buildUI(Table table, Skin skin)
+    public void buildUI(Table table, Skin skin, MenuNavigator menuNavigator)
     {
         table.top();
 
@@ -43,15 +45,19 @@ public class PauseScreen extends GameScreen
         });
         table.add(resumeButton).padTop(100).row();
 
+        Group buttonGroup = new Group();
         TextButton menuButton = new TextButton("Menu", skin, "text_button_main_menu");
         menuButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor)
             {
-                transitionTo(new MainMenuScreen(game));
+                transitionTo(MainMenuScreen.class);
             }
         });
-        table.add(menuButton).padTop(100);
+
+        buttonGroup.addActor(menuButton);
+        table.add(buttonGroup).padTop(100);
+        menuNavigator.setButtonGroup(buttonGroup);
     }
 
     @Override

@@ -7,11 +7,16 @@ import com.badlogic.gdx.math.Vector2;
 /**
  * Listens for keyboard input and allows retrieval of state through the GameInputRetriever interface
  */
-public class KeyboardInputListener extends InputAdapter implements IGameInputRetriever, IMenuInputRetriever
+public class KeyboardInputListener extends InputAdapter implements IGameInputListener
 {
 
     private final InputConfig config;
-    private final InputState state = new InputState();
+    private final InputState gameInputState = new InputState();
+
+    private boolean leftPressed = false;
+    private boolean rightPressed = false;
+    private boolean upPressed = false;
+    private boolean downPressed = false;
     private boolean confirmPressed = false;
     private boolean cancelPressed = false;
 
@@ -25,24 +30,24 @@ public class KeyboardInputListener extends InputAdapter implements IGameInputRet
     {
         if(keycode == config.left)
         {
-            state.left = true;
+            leftPressed = gameInputState.left = true;
         }
         if(keycode == config.right)
         {
-            state.right = true;
+            rightPressed = gameInputState.right = true;
         }
         if(keycode == config.up)
         {
-            state.up = true;
+            upPressed = gameInputState.up = true;
         }
         if(keycode == config.down)
         {
-            state.down = true;
+            downPressed = gameInputState.down = true;
         }
 
         if(keycode == config.punch)
         {
-            state.punch = true;
+            gameInputState.punch = true;
         }
 
         if(keycode == Input.Keys.SPACE)
@@ -62,87 +67,107 @@ public class KeyboardInputListener extends InputAdapter implements IGameInputRet
     {
         if(keycode == config.left)
         {
-            state.left = false;
+            leftPressed = gameInputState.left = false;
         }
         if(keycode == config.right)
         {
-            state.right = false;
+            rightPressed = gameInputState.right = false;
         }
         if(keycode == config.up)
         {
-            state.up = false;
+            upPressed = gameInputState.up = false;
         }
         if(keycode == config.down)
         {
-            state.down = false;
+            downPressed = gameInputState.down = false;
         }
 
         if(keycode == config.punch)
         {
-            state.punch = false;
-        }
-
-        if(keycode == Input.Keys.SPACE)
-        {
-            confirmPressed = false;
-        }
-        if(keycode == Input.Keys.ESCAPE)
-        {
-            cancelPressed = false;
+            gameInputState.punch = false;
         }
 
         return false;
     }
 
     @Override
-    public boolean getLeft() { return state.left; }
+    public boolean getLeft() { return gameInputState.left; }
 
     @Override
     public boolean getRight()
     {
-        return state.right;
+        return gameInputState.right;
     }
 
     @Override
     public boolean getUp()
     {
-        return state.up;
+        return gameInputState.up;
     }
 
     @Override
     public boolean getDown()
     {
-        return state.down;
+        return gameInputState.down;
     }
 
     @Override
     public boolean punch()
     {
-        return state.punch;
+        return gameInputState.punch;
     }
 
     @Override
-    public Vector2 getDirection()
+    public boolean leftPressed()
     {
-        Vector2 result = new Vector2();
-        if(state.left) result.x -= 1;
-        if(state.right) result.x += 1;
+        boolean result = leftPressed;
+        leftPressed = false;
+        return result;
+    }
 
-        if(state.down) result.y -= 1;
-        if(state.up) result.y += 1;
+    @Override
+    public boolean rightPressed()
+    {
+        boolean result = rightPressed;
+        rightPressed = false;
+        return result;
+    }
 
-        return result.nor();
+    @Override
+    public boolean upPressed()
+    {
+        boolean result = upPressed;
+        upPressed = false;
+        return result;
+    }
+
+    @Override
+    public boolean downPressed()
+    {
+        boolean result = downPressed;
+        downPressed = false;
+        return result;
     }
 
     @Override
     public boolean confirmPressed()
     {
-        return confirmPressed;
+        boolean result = confirmPressed;
+        confirmPressed = false;
+        return result;
     }
 
     @Override
     public boolean cancelPressed()
     {
-        return cancelPressed;
+        boolean result = cancelPressed;
+        cancelPressed = false;
+        return result;
+    }
+
+    @Override
+    public InputDeviceType getDeviceType()
+    {
+        return InputDeviceType.Keyboard;
     }
 }
