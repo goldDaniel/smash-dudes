@@ -1,13 +1,17 @@
 package smashdudes.screens;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.controllers.ControllerListener;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import smashdudes.core.input.IGameInputListener;
 import smashdudes.graphics.RenderResources;
 import smashdudes.ui.GameSkin;
 
@@ -24,6 +28,7 @@ public abstract class GameScreen implements Screen
 
     protected Game game;
 
+    private Array<IGameInputListener> gameListeners;
 
     public GameScreen(Game game)
     {
@@ -33,6 +38,7 @@ public abstract class GameScreen implements Screen
         uiStage = new Stage(viewport, RenderResources.getSpriteBatch());
 
         multiplexer = new InputMultiplexer(uiStage);
+        gameListeners = new Array<>();
 
         table = new Table();
         table.setFillParent(true);
@@ -69,9 +75,39 @@ public abstract class GameScreen implements Screen
     {
         multiplexer.addProcessor(processor);
     }
+
     protected final void removeInputProcessor(InputProcessor processor)
     {
         multiplexer.removeProcessor(processor);
+    }
+
+    protected final void addInputProcessor(IGameInputListener processor)
+    {
+        gameListeners.add(processor);
+
+        if(processor instanceof InputProcessor)
+        {
+            multiplexer.addProcessor((InputProcessor)processor);
+        }
+        else if(processor instanceof ControllerListener)
+        {
+            Controllers.addListener((ControllerListener)processor);
+        }
+
+
+    }
+    protected final void removeInputProcessor(IGameInputListener processor)
+    {
+        gameListeners.removeValue(processor, true);
+
+        if(processor instanceof InputProcessor)
+        {
+            multiplexer.removeProcessor((InputProcessor)processor);
+        }
+        else if(processor instanceof ControllerListener)
+        {
+            Controllers.removeListener((ControllerListener)processor);
+        }
     }
 
     protected final void transitionTo(Class<? extends GameScreen> screenClass)
@@ -131,6 +167,10 @@ public abstract class GameScreen implements Screen
     @Override
     public void hide()
     {
+        while(gameListeners.notEmpty())
+        {
+            removeInputProcessor(gameListeners.pop());
+        }
         Gdx.input.setInputProcessor(null);
     }
 

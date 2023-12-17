@@ -22,8 +22,6 @@ import smashdudes.core.PlayerHandle;
 import smashdudes.core.PlayerLobbyInfo;
 import smashdudes.core.Projectile;
 import smashdudes.core.WorldUtils;
-import smashdudes.core.input.ControllerInputListener;
-import smashdudes.core.input.KeyboardInputListener;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
@@ -65,19 +63,9 @@ public class GameplayScreen extends GameScreen
             Entity player = buildPlayer(loadedData.texture, p.handle, character, stage.spawnPoints);
 
             PlayerControllerComponent pc = new PlayerControllerComponent(p.input);
-
-            // TODO (danielg): find a better way to do this. It is currently replicated in CharacterSelect.
-            //                 maybe make it a part of  GameScreen
-            if(p.input instanceof KeyboardInputListener)
-            {
-                addInputProcessor((KeyboardInputListener)p.input);
-            }
-            else if(p.input instanceof ControllerInputListener)
-            {
-                Controllers.addListener((ControllerInputListener)p.input);
-            }
-
             player.addComponent(pc);
+
+            addInputProcessor(p.input);
         }
 
         buildParallaxBackground();

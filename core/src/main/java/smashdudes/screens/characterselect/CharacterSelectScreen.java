@@ -1,9 +1,6 @@
 package smashdudes.screens.characterselect;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -22,7 +19,6 @@ import smashdudes.core.AudioResources;
 import smashdudes.core.PlayerLobbyInfo;
 import smashdudes.core.input.CharacterSelectInputAssigner;
 import smashdudes.core.input.IGameInputListener;
-import smashdudes.core.input.InputDeviceType;
 import smashdudes.graphics.RenderResources;
 import smashdudes.screens.GameScreen;
 import smashdudes.screens.GameplayScreen;
@@ -47,14 +43,7 @@ public class CharacterSelectScreen extends GameScreen
         super(game);
         lobby = new PlayerLobby((input, handle) -> // on leaving game
         {
-            if(input.getDeviceType() == InputDeviceType.Keyboard)
-            {
-                removeInputProcessor((InputAdapter)input);
-            }
-            else if(input.getDeviceType() == InputDeviceType.Controller)
-            {
-                Controllers.removeListener((ControllerListener)input);
-            }
+            removeInputProcessor(input);
 
             selectedCharacterDisplay.removeDisplay(handle);
             assigner.requestLeave(handle);
@@ -67,14 +56,7 @@ public class CharacterSelectScreen extends GameScreen
                 lobby.join(assigner, device, handle);
 
                 IGameInputListener input = lobby.getPlayer(handle).input;
-                if(device == InputDeviceType.Controller)
-                {
-                    Controllers.addListener((ControllerListener)input);
-                }
-                else if(device == InputDeviceType.Keyboard)
-                {
-                    addInputProcessor((InputProcessor)input);
-                }
+                addInputProcessor(input);
 
                 selectedCharacterDisplay.addDisplay(handle, lobby.getPlayerColor(handle));
                 AudioResources.getSoundEffect("audio/ui/lobby_join.ogg").play();
@@ -135,6 +117,7 @@ public class CharacterSelectScreen extends GameScreen
     public void hide()
     {
         super.hide();
+        removeInputProcessor(assigner);
         Controllers.clearListeners();
     }
 
