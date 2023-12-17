@@ -48,7 +48,7 @@ public class PauseScreen extends GameScreen
             @Override
             public void changed(ChangeEvent event, Actor actor)
             {
-                transitionTo(new MainMenuScreen(game));
+                transitionTo(MainMenuScreen.class);
             }
         });
         table.add(menuButton).padTop(100);

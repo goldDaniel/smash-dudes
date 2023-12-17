@@ -11,10 +11,14 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import smashdudes.core.PlayerLobbyInfo;
 import smashdudes.core.input.CharacterSelectInputAssigner;
 import smashdudes.core.input.IGameInputListener;
 import smashdudes.core.input.InputDeviceType;
@@ -28,16 +32,18 @@ import smashdudes.util.CharacterData;
 public class CharacterSelectScreen extends GameScreen
 {
     private FitViewport viewport;
+
+    private Array<CharacterData> characterData;
     private CharacterSelectInputAssigner assigner;
     private SelectedCharacterDisplay selectedCharacterDisplay;
     private AvailableCharactersDisplay availableCharactersDisplay;
     private final PlayerLobby lobby;
-    private float gameStartCountdown = 4;
+
+    private Image readyBanner;
 
     public CharacterSelectScreen(Game game)
     {
         super(game);
-
         lobby = new PlayerLobby((input, handle) -> // on leaving game
         {
             if(input.getDeviceType() == InputDeviceType.Keyboard)
@@ -81,15 +87,29 @@ public class CharacterSelectScreen extends GameScreen
         viewport.getCamera().update();
         setViewport(viewport);
 
+        Stack uiStack = new Stack();
+
+        Table uiTable = new Table();
+        uiTable.setFillParent(true);
+
         availableCharactersDisplay = new AvailableCharactersDisplay();
-        for(CharacterData data : CharacterData.loadAllCharacters())
+
+        characterData = CharacterData.loadAllCharacters();
+        for(CharacterData data : characterData)
         {
             availableCharactersDisplay.insertCharacter(data);
         }
-        table.add(availableCharactersDisplay).padTop(120).row();
+        uiTable.add(availableCharactersDisplay).padTop(16).padBottom(64).row();
 
         selectedCharacterDisplay = new SelectedCharacterDisplay(viewport.getWorldWidth(), viewport.getWorldHeight());
-        table.add(selectedCharacterDisplay).expandX().fillX().height(192);
+        uiTable.add(selectedCharacterDisplay).expandX().fillX().fillY().height(192);
+
+        readyBanner = new Image(RenderResources.getTexture("textures/character_select_ready.png"));
+        readyBanner.setVisible(false);
+        uiStack.add(uiTable);
+        uiStack.add(readyBanner);
+
+        table.add(uiStack).grow();
     }
 
     @Override
@@ -118,22 +138,11 @@ public class CharacterSelectScreen extends GameScreen
     @Override
     public void update(float dt)
     {
+        handleLobbyReady();
+
         lobby.handlePlayerInput();
         availableCharactersDisplay.updateSelection(lobby.getPlayers());
-
-        if(lobby.allPlayersLockedIn())
-        {
-            gameStartCountdown -= dt;
-
-            if(gameStartCountdown <= 0)
-            {
-                game.setScreen(new GameplayScreen(game));
-            }
-        }
-        else
-        {
-            gameStartCountdown = 4;
-        }
+        selectedCharacterDisplay.updateSelection(lobby.getPlayers(), characterData);
     }
 
     @Override
@@ -159,13 +168,37 @@ public class CharacterSelectScreen extends GameScreen
         final GlyphLayout layout = new GlyphLayout(font, message);
         font.draw(sb, message, viewport.getWorldWidth() / 2 - layout.width / 2, viewport.getWorldHeight() - layout.height);
 
-        if(lobby.allPlayersLockedIn())
-        {
-            final String number = "" + Math.max((int)gameStartCountdown, 0);
-            final GlyphLayout numberLayout = new GlyphLayout(font, number);
-            font.draw(sb, number, viewport.getWorldWidth() / 2 - numberLayout.width / 2, viewport.getWorldHeight() - layout.height - numberLayout.height - 4);
-        }
 
         sb.end();
+    }
+
+    private void handleLobbyReady()
+    {
+        if(lobby.allPlayersLockedIn())
+        {
+            if(!readyBanner.isVisible())
+            {
+                readyBanner.setVisible(true);
+            }
+            else
+            {
+                for (PlayerLobbyInfo player : lobby.getPlayers())
+                {
+                    if(player.input.confirmPressed())
+                    {
+                        game.setScreen(new GameplayScreen(game, lobby.getPlayers(), characterData));
+                        break;
+                    }
+                }
+
+            }
+        }
+        else
+        {
+            if(readyBanner.isVisible())
+            {
+                readyBanner.setVisible(false);
+            }
+        }
     }
 }

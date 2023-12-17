@@ -11,6 +11,9 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import smashdudes.graphics.RenderResources;
 import smashdudes.ui.GameSkin;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.atomic.AtomicReference;
+
 public abstract class GameScreen implements Screen
 {
     private InputMultiplexer multiplexer;
@@ -47,12 +50,6 @@ public abstract class GameScreen implements Screen
         uiStage.draw();
     }
 
-    public final void rebuildUI()
-    {
-        table.layout();
-    }
-
-
     public abstract void buildUI(Table table, Skin skin);
     public abstract void update(float dt);
     public abstract void render();
@@ -63,6 +60,10 @@ public abstract class GameScreen implements Screen
         uiStage.setViewport(viewport);
     }
 
+    public Viewport getViewport()
+    {
+        return viewport;
+    }
 
     protected final void addInputProcessor(InputProcessor processor)
     {
@@ -73,17 +74,38 @@ public abstract class GameScreen implements Screen
         multiplexer.removeProcessor(processor);
     }
 
-    protected final void transitionTo(GameScreen screen)
+    protected final void transitionTo(Class<? extends GameScreen> screenClass)
     {
-        uiStage.addAction(Actions.sequence(Actions.fadeOut(0.5f), new Action()
+        AtomicReference<GameScreen> nextScreen = new AtomicReference<>();
+        Action loadScreenAction = new Action()
         {
             @Override
             public boolean act(float delta)
             {
-                game.setScreen(screen);
+                try
+                {
+                    nextScreen.set(screenClass.getDeclaredConstructor(Game.class).newInstance(game));
+                }
+                catch (NullPointerException | NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException e)
+                {
+                    throw new RuntimeException(e);
+                }
+
+                return true;
+            };
+        };
+
+        Action setScreenAction = new Action()
+        {
+            @Override
+            public boolean act(float delta)
+            {
+                game.setScreen(nextScreen.get());
                 return true;
             }
-        }));
+        };
+
+        uiStage.addAction(Actions.sequence(Actions.fadeOut(0.65f), loadScreenAction, setScreenAction));
     }
 
     @Override
@@ -103,7 +125,7 @@ public abstract class GameScreen implements Screen
     public void show()
     {
         Gdx.input.setInputProcessor(multiplexer);
-        uiStage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.5f)));
+        uiStage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.65f)));
     }
 
     @Override

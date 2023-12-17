@@ -3,9 +3,7 @@ package smashdudes.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -52,7 +50,7 @@ public class SettingsScreen extends GameScreen
             @Override
             public void changed(ChangeEvent event, Actor actor)
             {
-                transitionTo(new MainMenuScreen(game));
+                transitionTo(MainMenuScreen.class);
             }
         });
         table.add(backButton).padTop(100);

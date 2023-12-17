@@ -3,12 +3,13 @@ package smashdudes.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.ScreenUtils;
+import smashdudes.graphics.RenderResources;
 
 public class SplashScreen extends GameScreen
 {
@@ -36,13 +37,20 @@ public class SplashScreen extends GameScreen
     {
         if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER))
         {
-            transitionTo(new MainMenuScreen(game));
+            transitionTo(MainMenuScreen.class);
         }
     }
 
     @Override
     public void render()
     {
-        ScreenUtils.clear(0,0,0,1);
+        SpriteBatch sb = RenderResources.getSpriteBatch();
+
+        float width = getViewport().getWorldWidth();
+        float height = getViewport().getWorldHeight();
+        sb.setProjectionMatrix(getViewport().getCamera().combined);
+        sb.begin();
+        sb.draw(RenderResources.getTexture("textures/main_menu.jpg"), 0, 0, width, height);
+        sb.end();
     }
 }

@@ -72,11 +72,6 @@ public class PlayerLobby
         return players.get(handle);
     }
 
-    public void setLockedIn(PlayerHandle handle, boolean value)
-    {
-        players.get(handle).lockedIn = value;
-    }
-
     public boolean allPlayersLockedIn()
     {
         if(players.size < 2) return false;
