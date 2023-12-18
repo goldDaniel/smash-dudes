@@ -20,7 +20,6 @@ import smashdudes.content.ContentLoader;
 import smashdudes.content.DTO;
 import smashdudes.core.PlayerHandle;
 import smashdudes.core.PlayerLobbyInfo;
-import smashdudes.core.Projectile;
 import smashdudes.core.WorldUtils;
 import smashdudes.core.input.MenuNavigator;
 import smashdudes.ecs.Engine;
@@ -228,30 +227,20 @@ public class GameplayScreen extends GameScreen
         Array<AnimationFrame> frames = new Array<>();
         if(anim == null)
         {
-            frames.add(new AnimationFrame(RenderResources.getTexture("textures/default.png"), new Array<>(), new Array<>(), new Array<>()));
+            frames.add(new AnimationFrame(RenderResources.getTexture("textures/default.png"), new Array<>(), new Array<>()));
 
             return new AnimationComponent(frames, 1, mode);
         }
-        else
+
+        for (DTO.AnimationFrame dtoFrame : anim.frames)
         {
-            for (DTO.AnimationFrame dtoFrame : anim.frames)
-            {
-                Array<Projectile> projectiles = new Array<>();
-                for(DTO.Projectile projectile : dtoFrame.projectiles)
-                {
-                    projectiles.add(new Projectile(projectile.speed, projectile.dim, projectile.pos,
-                                                   projectile.knockback, projectile.damage, projectile.lifeTime,
-                                                   RenderResources.getTexture(projectile.texturePath)));
-                }
-                AnimationFrame frame =
-                        new AnimationFrame(RenderResources.getTexture(dtoFrame.texturePath),
-                                           dtoFrame.attackboxes, dtoFrame.bodyboxes, projectiles);
+            AnimationFrame frame =
+                    new AnimationFrame(RenderResources.getTexture(dtoFrame.texturePath), dtoFrame.attackboxes, dtoFrame.bodyboxes);
 
-                frames.add(frame);
-            }
-
-            return new AnimationComponent(frames,  anim.animationDuration, mode);
+            frames.add(frame);
         }
+
+        return new AnimationComponent(frames,  anim.animationDuration, mode);
     }
 
     public Entity buildTerrain(DTO.Terrain terrainData)

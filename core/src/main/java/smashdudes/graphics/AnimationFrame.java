@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import smashdudes.core.Projectile;
 
 public class AnimationFrame
 {
@@ -12,14 +11,12 @@ public class AnimationFrame
 
     public final Array<Rectangle> attackboxes;
     public final Array<Rectangle> bodyboxes;
-    public final Array<Projectile> projectiles;
 
-    public AnimationFrame(Texture texture, Array<Rectangle> attackboxes, Array<Rectangle> bodyboxes, Array<Projectile> projectiles)
+    public AnimationFrame(Texture texture, Array<Rectangle> attackboxes, Array<Rectangle> bodyboxes)
     {
         this.texture = texture;
         this.attackboxes = attackboxes;
         this.bodyboxes = bodyboxes;
-        this.projectiles = projectiles;
     }
 
     public Array<Rectangle> getAttackboxesRelativeTo(Vector2 pos, boolean mirrorX)
