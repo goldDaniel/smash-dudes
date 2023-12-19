@@ -80,17 +80,25 @@ public class AnimationViewerWidget extends ImGuiWidget
 
         frameBuffer.bind();
         ScreenUtils.clear(0,0,0,1);
-        sb.setProjectionMatrix(camera.combined);
-        sb.begin();
-
-        sb.draw(texture, drawX, drawY, drawWidth, drawHeight);
-
-        sb.end();
-
-
         sh.setProjectionMatrix(camera.combined);
         sh.begin(ShapeRenderer.ShapeType.Line);
+        sh.setColor(Color.LIGHT_GRAY);
+        for(int y = -5; y <= 5; ++y)
+        {
+            sh.line(-5, y, 5, y);
+        }
+        for(int x = -5; x <= 5; ++x)
+        {
+            sh.line(x, -5, x, 5);
+        }
+        sh.end();
 
+        sb.setProjectionMatrix(camera.combined);
+        sb.begin();
+        sb.draw(texture, drawX, drawY, drawWidth, drawHeight);
+        sb.end();
+
+        sh.begin(ShapeRenderer.ShapeType.Line);
         sh.setColor(Color.RED);
         for(Rectangle bodybox : currentFrame.bodyboxes)
         {
