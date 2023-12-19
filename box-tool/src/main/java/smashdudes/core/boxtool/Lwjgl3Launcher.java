@@ -11,8 +11,9 @@ public class Lwjgl3Launcher
     public static void main(String[] args)
     {
         Lwjgl3ApplicationConfiguration configuration = new Lwjgl3ApplicationConfiguration();
-        configuration.setTitle("smash-dudes");
-        configuration.setWindowedMode(1280, 720);
+        configuration.setTitle("Box Tool Character Editor");
+        configuration.setWindowedMode(1900, 1020);
+        configuration.setMaximized(true);
 
         new Lwjgl3Application(new BoxTool(), configuration);
     }

@@ -137,6 +137,7 @@ public class UI
 
     private void drawMainMenuBar()
     {
+        boolean newCharacterPopup = false;
         ImGui.beginMainMenuBar();
         {
             if(ImGui.beginMenu("File"))
@@ -144,7 +145,7 @@ public class UI
                 if(ImGui.menuItem("New..."))
                 {
                     addCharacterName.set("");
-                    ImGui.openPopup("Add New Character");
+                    newCharacterPopup = true;
                 }
 
                 if(ImGui.menuItem("Load..."))
@@ -176,13 +177,18 @@ public class UI
         ImGui.endMainMenuBar();
 
         ImGui.setNextWindowSize(360, 78);
+
+        if(newCharacterPopup)
+        {
+            ImGui.openPopup("Add New Character");
+        }
         if(ImGui.beginPopupModal("Add New Character", ImGuiWindowFlags.NoResize))
         {
             ImGui.inputText("Character Name", addCharacterName);
 
             if(ImGui.button("Confirm"))
             {
-                if(!addCharacterName.get().equals(""))
+                if(!addCharacterName.get().isEmpty())
                 {
                     String path = new ContentService().createCharacter(Gdx.files.getLocalStoragePath() + "/characters/", addCharacterName.get());
                     if(path != null)
@@ -194,7 +200,7 @@ public class UI
                         }
                         catch(IOException e)
                         {
-                            e.printStackTrace();
+                            // TODO (danielg): exception for control flow, bad-bad-bad
                         }
                     }
                     ImGui.closeCurrentPopup();
