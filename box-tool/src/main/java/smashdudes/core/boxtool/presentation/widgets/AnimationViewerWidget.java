@@ -1,21 +1,25 @@
 package smashdudes.core.boxtool.presentation.widgets;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import imgui.ImGui;
-import imgui.extension.imguizmo.ImGuizmo;
 import smashdudes.content.DTO;
 import smashdudes.core.boxtool.logic.BoxToolContext;
+import smashdudes.core.boxtool.presentation.commands.AddBoxCommand;
+import smashdudes.core.boxtool.presentation.commands.RectangleEditCommand;
 import smashdudes.graphics.RenderResources;
 
 public class AnimationViewerWidget extends ImGuiWidget
@@ -26,6 +30,13 @@ public class AnimationViewerWidget extends ImGuiWidget
     private final Camera camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
     private final Viewport viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
     private FrameBuffer frameBuffer;
+
+    private static class SelectedRectangle
+    {
+        private Rectangle original = null;
+        private Rectangle clone = null;
+    }
+    SelectedRectangle selectedRectangle = null;
 
     private DTO.Animation previousAnimation = null;
     Animation<DTO.AnimationFrame> currentAnimation = null;
@@ -51,11 +62,52 @@ public class AnimationViewerWidget extends ImGuiWidget
             drawCharacter(RenderResources.getTexture(currentFrame.texturePath), sb);
             drawBoxes(currentFrame.attackboxes, Color.RED, sh);
             drawBoxes(currentFrame.bodyboxes, Color.GREEN, sh);
-
-            drawDebugMouseCursor(sh);
         }
         FrameBuffer.unbind();
         ImGui.image(frameBuffer.getColorBufferTexture().getTextureObjectHandle(), frameBuffer.getWidth(),frameBuffer.getHeight(),0,1,1,0);
+
+        mouseMoveBoxes(currentFrame);
+
+        drawContextMenu(currentFrame);
+    }
+
+    private SelectedRectangle getSelectedRectangle(Array<Rectangle> rectangles, Vector2 mousePos)
+    {
+        Circle circle = new Circle();
+        for(Rectangle r : rectangles)
+        {
+            circle.set(r.x, r.y, boxCenterRadius);
+            if(circle.contains(mousePos))
+            {
+                SelectedRectangle rectangle = new SelectedRectangle();
+                rectangle.original = r;
+                rectangle.clone = new Rectangle(r);
+
+                return rectangle;
+            }
+        }
+        return null;
+    }
+
+    private void mouseMoveBoxes(DTO.AnimationFrame frame)
+    {
+        Vector2 mousePos = getMouseWorldPos();
+
+        if(selectedRectangle != null)
+        {
+            selectedRectangle.clone.x = mousePos.x;
+            selectedRectangle.clone.y = mousePos.y;
+        }
+        if(!Gdx.input.isButtonPressed(Input.Buttons.LEFT) && selectedRectangle != null)
+        {
+            context.execute(new RectangleEditCommand(selectedRectangle.original, new float[]{ mousePos.x, mousePos.y, selectedRectangle.clone.width, selectedRectangle.clone.height }));
+            selectedRectangle = null;
+        }
+        else if(Gdx.input.isButtonPressed(Input.Buttons.LEFT))
+        {
+            if(selectedRectangle == null) selectedRectangle = getSelectedRectangle(frame.bodyboxes, mousePos);
+            if(selectedRectangle == null) selectedRectangle = getSelectedRectangle(frame.attackboxes, mousePos);
+        }
     }
 
     private DTO.AnimationFrame animate(DTO.Animation animation)
@@ -109,6 +161,7 @@ public class AnimationViewerWidget extends ImGuiWidget
         {
             sh.line(x, -5, x, 5);
         }
+
         sh.end();
     }
 
@@ -131,8 +184,14 @@ public class AnimationViewerWidget extends ImGuiWidget
     {
         sh.setProjectionMatrix(camera.combined);
         sh.begin(ShapeRenderer.ShapeType.Line);
-        for(Rectangle box : boxes)
+        for(Rectangle b : boxes)
         {
+            Rectangle box = b;
+            if(selectedRectangle != null && selectedRectangle.original == b)
+            {
+                box = selectedRectangle.clone;
+            }
+
             float w = box.width;
             float h = box.height;
             float x = (box.x - w / 2);
@@ -147,29 +206,80 @@ public class AnimationViewerWidget extends ImGuiWidget
         sh.end();
 
         sh.begin(ShapeRenderer.ShapeType.Filled);
-        for(Rectangle box : boxes)
+
+        Circle circle = new Circle();
+        for(Rectangle b : boxes)
         {
+            Rectangle box = b;
+            if(selectedRectangle != null && selectedRectangle.original == b)
+            {
+                box = selectedRectangle.clone;
+            }
+
+            sh.setColor(Color.LIGHT_GRAY);
+            circle.set(box.x, box.y, boxCenterRadius);
+            if(circle.contains(getMouseWorldPos()))
+            {
+                sh.setColor(Color.WHITE);
+            }
             sh.circle(box.x, box.y, boxCenterRadius, 16);
         }
         sh.end();
     }
 
-    private void drawDebugMouseCursor(ShapeRenderer sh)
+    private void drawContextMenu(DTO.AnimationFrame currentFrame)
     {
+        final float viewportX  = ImGui.getWindowPosX();
+        final float viewportY = ImGui.getWindowPosY() + 32;
+        final float viewportW = frameBuffer.getWidth();
+        final float viewportH = frameBuffer.getHeight();
 
-        final float width  = ImGui.getWindowWidth();
-        final float height = ImGui.getWindowHeight();
-        final float mouseX = ImGui.getMousePosX() - ImGui.getWindowPosX();
-        final float mouseY = ImGui.getMousePosY() - ImGui.getWindowPosY();
+        if (ImGui.beginPopupContextItem("Add Box"))
         {
-            
-            final float worldX = MathUtils.map(0, width, -WORLD_WIDTH / 2, WORLD_WIDTH / 2, mouseX);
-            final float worldY = MathUtils.map(0, height, WORLD_HEIGHT / 2, -WORLD_HEIGHT / 2, mouseY);
+            final float mouseX = ImGui.getWindowPosX();
+            final float mouseY = ImGui.getWindowPosY();
+            Vector2 worldPos = getMouseWorldPos(mouseX ,mouseY, viewportX, viewportY, viewportW, viewportH);
 
-            sh.begin(ShapeRenderer.ShapeType.Filled);
-            sh.setColor(Color.WHITE);
-            sh.circle(worldX, worldY, 0.4f, 16);
-            sh.end();
+            if (ImGui.button("Create Attack Box"))
+            {
+                context.execute(new AddBoxCommand(currentFrame.attackboxes, new Rectangle(worldPos.x, worldPos.y, 0.5f, 0.5f)));
+                ImGui.closeCurrentPopup();
+            }
+            ImGui.sameLine();
+            if (ImGui.button("Create Body Box"))
+            {
+                context.execute(new AddBoxCommand(currentFrame.bodyboxes, new Rectangle(worldPos.x, worldPos.y, 0.5f, 0.5f)));
+                ImGui.closeCurrentPopup();
+            }
+            if (ImGui.button("Cancel"))
+            {
+                ImGui.closeCurrentPopup();
+            }
+
+            ImGui.endPopup();
         }
+    }
+
+    private Vector2 getMouseWorldPos()
+    {
+        final float mouseX = ImGui.getMousePosX();
+        final float mouseY = ImGui.getMousePosY();
+
+        final float viewportX  = ImGui.getWindowPosX();
+        final float viewportY = ImGui.getWindowPosY() + 16;
+        final float viewportW = frameBuffer.getWidth();
+        final float viewportH = frameBuffer.getHeight();
+
+        return getMouseWorldPos(mouseX, mouseY, viewportX, viewportY, viewportW, viewportH);
+    }
+
+    private Vector2 getMouseWorldPos(float mouseX, float mouseY, float viewportX, float viewportY, float viewportW, float viewportH)
+    {
+        Vector2 result = new Vector2();
+        Vector3 worldSpace = camera.unproject(new Vector3(mouseX, mouseY, 0), viewportX, viewportY, viewportW, viewportH);
+        result.x = worldSpace.x;
+        result.y = worldSpace.y;
+
+        return result;
     }
 }
