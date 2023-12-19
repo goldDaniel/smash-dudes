@@ -1,6 +1,5 @@
 package smashdudes.core.boxtool.presentation.commands;
 
-import com.badlogic.gdx.utils.Array;
 import smashdudes.content.DTO;
 
 public class RemoveFrameCommand extends Command
@@ -10,10 +9,10 @@ public class RemoveFrameCommand extends Command
 
     private final int prevIndex;
 
-    public RemoveFrameCommand(DTO.Animation animation, Array<DTO.AnimationFrame> toRemove)
+    public RemoveFrameCommand(DTO.Animation animation, DTO.AnimationFrame toRemove)
     {
         this.animation = animation;
-        this.toRemove = toRemove.first();
+        this.toRemove = toRemove;
         prevIndex = animation.frames.indexOf(this.toRemove, true);
     }
 

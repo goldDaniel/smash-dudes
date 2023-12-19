@@ -20,9 +20,7 @@ import imgui.type.ImString;
 import smashdudes.content.DTO;
 import smashdudes.core.boxtool.logic.BoxToolContext;
 import smashdudes.core.boxtool.logic.ContentService;
-import smashdudes.core.boxtool.presentation.widgets.CharacterEditorWidget;
-import smashdudes.core.boxtool.presentation.widgets.CharacterWidget;
-import smashdudes.core.boxtool.presentation.widgets.ImGuiWidget;
+import smashdudes.core.boxtool.presentation.widgets.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -31,13 +29,8 @@ import java.nio.file.StandardCopyOption;
 
 public class UI
 {
-    private ContentService service = new ContentService();
-    private String characterPath;
-
     //State--------------------------------------------------
-
-    private BoxToolContext context = new BoxToolContext();
-    DTO.Character character = null;
+    private final BoxToolContext context = new BoxToolContext();
     ImString addCharacterName = new ImString();
     //State--------------------------------------------------
 
@@ -58,8 +51,6 @@ public class UI
         this.sb = sb;
         this.sh = sh;
 
-        characterPath = Gdx.files.getLocalStoragePath() + "/characters/";
-
         long windowHandle = ((Lwjgl3Graphics) Gdx.graphics).getWindow().getWindowHandle();
         imGuiGlfw.init(windowHandle, true);
         imGuiGl3.init();
@@ -67,10 +58,14 @@ public class UI
         ImGui.getIO().addConfigFlags(ImGuiConfigFlags.DockingEnable);
 
         widgets.add(new CharacterWidget(context));
+        widgets.add(new AnimationWidget(context));
+        widgets.add(new AnimationFrameWidget(context));
     }
 
     public void draw()
     {
+        context.incrementTime(Gdx.graphics.getDeltaTime());
+
         if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) &&
            Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) &&
            Gdx.input.isKeyJustPressed(Input.Keys.Z))
@@ -90,8 +85,6 @@ public class UI
 
         setupDockspace();
         drawMainMenuBar();
-
-        ImGui.showDemoWindow();
 
         for(ImGuiWidget widget : widgets)
         {
@@ -143,15 +136,14 @@ public class UI
 
     private void drawMainMenuBar()
     {
-        boolean newCharFlag = false;
         ImGui.beginMainMenuBar();
         {
             if(ImGui.beginMenu("File"))
             {
-                if(ImGui.menuItem("New.."))
+                if(ImGui.menuItem("New..."))
                 {
                     addCharacterName.set("");
-                    newCharFlag = true;
+                    ImGui.openPopup("Add New Character");
                 }
 
                 if(ImGui.menuItem("Load..."))
@@ -182,11 +174,6 @@ public class UI
         }
         ImGui.endMainMenuBar();
 
-        if(newCharFlag)
-        {
-            ImGui.openPopup("Add New Character");
-        }
-
         ImGui.setNextWindowSize(360, 78);
         if(ImGui.beginPopupModal("Add New Character", ImGuiWindowFlags.NoResize))
         {
@@ -196,7 +183,7 @@ public class UI
             {
                 if(!addCharacterName.get().equals(""))
                 {
-                    String path = service.createCharacter(characterPath, addCharacterName.get());
+                    String path = new ContentService().createCharacter(Gdx.files.getLocalStoragePath() + "/characters/", addCharacterName.get());
                     if(path != null)
                     {
                         try
@@ -231,8 +218,7 @@ public class UI
 
     private DTO.Character loadCharacter(String filepath)
     {
-        CharacterEditorWidget.reset();
-        return service.readCharacter(filepath);
+        return new ContentService().readCharacter(filepath);
     }
 
     private void createDirectoryStructure(String filepath) throws IOException

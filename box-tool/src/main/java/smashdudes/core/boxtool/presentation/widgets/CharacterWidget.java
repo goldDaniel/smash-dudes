@@ -39,6 +39,9 @@ public class CharacterWidget extends ImGuiWidget
             return;
         }
 
+        ImGui.text("Character: " + context.getCharacter().name);
+        ImGui.separator();
+
         if(ImGui.button("Save.."))
         {
             String path = Utils.chooseFileToSave();
@@ -79,6 +82,14 @@ public class CharacterWidget extends ImGuiWidget
             }
 
             drawAddAnimationPopup();
+
+            for(DTO.Animation entry : context.getCharacter().animations)
+            {
+                if(ImGui.selectable(entry.animationName, context.getCurrentAnimation() == entry))
+                {
+                    context.setCurrentAnimation(entry);
+                }
+            }
         }
     }
 
@@ -147,6 +158,7 @@ public class CharacterWidget extends ImGuiWidget
 
     private void drawAddAnimationPopup()
     {
+        ImGui.setNextWindowSize(360, 78);
         if(ImGui.beginPopupModal("Add Animation?", ImGuiWindowFlags.NoResize))
         {
             ImGui.inputText("Animation Name", newAnimationName);
