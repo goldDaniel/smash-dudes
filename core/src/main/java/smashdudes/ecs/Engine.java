@@ -51,8 +51,7 @@ public class Engine
 
         gameSystems.add(new PreviousPositionSystem(this));
         gameSystems.add(new CountdownSystem(this));
-        gameSystems.add(new PlayerStateSystem(this));
-        gameSystems.add(new PlayerLandingSystem(this));
+        gameSystems.add(new StateSystem(this));
         gameSystems.add(new RenderDirectionSystem(this));
         gameSystems.add(ctrlSys);
         gameSystems.add(new AIControllerSystem(this));
