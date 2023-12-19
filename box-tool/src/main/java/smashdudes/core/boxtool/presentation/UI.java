@@ -10,19 +10,19 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import imgui.ImGui;
-import imgui.ImVec2;
+import imgui.flag.ImGuiCond;
 import imgui.flag.ImGuiConfigFlags;
+import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
+import imgui.type.ImBoolean;
 import imgui.type.ImString;
 import smashdudes.content.DTO;
 import smashdudes.core.boxtool.logic.ContentService;
 import smashdudes.core.boxtool.presentation.commands.CommandList;
 import smashdudes.core.boxtool.presentation.widgets.CharacterEditorWidget;
-import smashdudes.graphics.RenderResources;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -98,8 +98,10 @@ public class UI
         ScreenUtils.clear(0,0,0,1);
         ImGui.newFrame();
 
-        drawMainMenuBar();
 
+        setupDockspace();
+        drawMainMenuBar();
+        teardownDockspace();
 
         if(character != null)
         {
@@ -131,6 +133,35 @@ public class UI
         ImGui.destroyContext();
     }
 
+    private void setupDockspace()
+    {
+        int windowFlags = ImGuiWindowFlags.MenuBar |
+                          ImGuiWindowFlags.NoDocking |
+                          ImGuiWindowFlags.NoTitleBar |
+                          ImGuiWindowFlags.NoCollapse |
+                          ImGuiWindowFlags.NoResize |
+                          ImGuiWindowFlags.NoMove |
+                          ImGuiWindowFlags.NoBringToFrontOnFocus |
+                          ImGuiWindowFlags.NoNavFocus;
+
+        ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
+        ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
+        {
+            ImGui.setNextWindowPos(0,0, ImGuiCond.Always);
+            ImGui.setNextWindowSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            ImGui.begin("DockSpace", new ImBoolean(true), windowFlags);
+        }
+        ImGui.popStyleVar();
+        ImGui.popStyleVar();
+
+        ImGui.dockSpace(ImGui.getID("DockSpace"));
+    }
+
+    private void teardownDockspace()
+    {
+        ImGui.end();
+    }
+
     private void drawMainMenuBar()
     {
         boolean newCharFlag = false;
@@ -159,11 +190,11 @@ public class UI
 
             if(ImGui.beginMenu("Edit"))
             {
-                if(ImGui.menuItem("Redo"))
+                if(ImGui.menuItem("Redo", "SHIFT-CTRL-Z"))
                 {
                     commandList.redo();
                 }
-                if(ImGui.menuItem("Undo"))
+                if(ImGui.menuItem("Undo", "CTRL-Z"))
                 {
                     commandList.undo();
                 }
