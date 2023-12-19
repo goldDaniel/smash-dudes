@@ -9,10 +9,9 @@ public class ContentRepo
 {
     public static DTO.Character loadCharacter(String filepath)
     {
-        Scanner scanner = null;
         try
         {
-            scanner = new Scanner( new File(filepath) );
+            Scanner scanner = new Scanner( new File(filepath) );
             String jsonStr = scanner.useDelimiter("\\A").next();
 
             Json json = new Json();
@@ -66,10 +65,5 @@ public class ContentRepo
         }
 
         return null;
-    }
-
-    public static void deleteCharacter(DTO.Character character)
-    {
-
     }
 }

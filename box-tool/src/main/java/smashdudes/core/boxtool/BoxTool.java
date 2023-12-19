@@ -19,7 +19,7 @@ public class BoxTool implements ApplicationListener
     @Override
     public void resize(int width, int height)
     {
-        ui.resize(width, height);
+
     }
 
     @Override

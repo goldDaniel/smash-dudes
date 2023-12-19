@@ -4,25 +4,24 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import imgui.ImGui;
-import imgui.ImVec2;
+import imgui.flag.ImGuiCond;
 import imgui.flag.ImGuiConfigFlags;
+import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
+import imgui.type.ImBoolean;
 import imgui.type.ImString;
 import smashdudes.content.DTO;
+import smashdudes.core.boxtool.logic.BoxToolContext;
 import smashdudes.core.boxtool.logic.ContentService;
-import smashdudes.core.boxtool.presentation.commands.CommandList;
-import smashdudes.core.boxtool.presentation.widgets.CharacterEditorWidget;
-import smashdudes.graphics.RenderResources;
+import smashdudes.core.boxtool.presentation.widgets.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -30,12 +29,8 @@ import java.nio.file.StandardCopyOption;
 
 public class UI
 {
-    private ContentService service = new ContentService();
-    private String characterPath;
-
     //State--------------------------------------------------
-    private CommandList commandList = new CommandList();
-    DTO.Character character = null;
+    private final BoxToolContext context = new BoxToolContext();
     ImString addCharacterName = new ImString();
     //State--------------------------------------------------
 
@@ -45,10 +40,10 @@ public class UI
 
     private final SpriteBatch sb;
     private final ShapeRenderer sh;
-
-    private OrthographicCamera camera;
-    private ExtendViewport viewport;
     //Rendering---------------------------------------------
+
+
+    Array<ImGuiWidget> widgets = new Array<>();
 
     public UI(SpriteBatch sb, ShapeRenderer sh)
     {
@@ -56,72 +51,52 @@ public class UI
         this.sb = sb;
         this.sh = sh;
 
-        int WORLD_WIDTH = 16;
-        int WORLD_HEIGHT = 9;
-
-        characterPath = Gdx.files.getLocalStoragePath() + "/characters/";
-
-        camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
-        viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
-
         long windowHandle = ((Lwjgl3Graphics) Gdx.graphics).getWindow().getWindowHandle();
         imGuiGlfw.init(windowHandle, true);
         imGuiGl3.init();
 
         ImGui.getIO().addConfigFlags(ImGuiConfigFlags.DockingEnable);
-    }
 
-    public void resize(int w, int h)
-    {
-        viewport.update(w,h);
-        viewport.apply();
+        widgets.add(new CharacterWidget(context));
+        widgets.add(new AnimationWidget(context));
+        widgets.add(new AnimationFrameWidget(context));
+        widgets.add(new AnimationViewerWidget(context));
     }
 
     public void draw()
     {
+        context.incrementTime(Gdx.graphics.getDeltaTime());
+
         if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) &&
            Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) &&
            Gdx.input.isKeyJustPressed(Input.Keys.Z))
         {
-            commandList.redo();
+            context.redo();
         }
         else if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) &&
                 Gdx.input.isKeyJustPressed(Input.Keys.Z))
         {
-            commandList.undo();
+            context.undo();
         }
-
-        float dt = Gdx.graphics.getDeltaTime();
-        camera.update();
 
         imGuiGlfw.newFrame();
         ScreenUtils.clear(0,0,0,1);
         ImGui.newFrame();
 
+
+        setupDockspace();
         drawMainMenuBar();
 
-
-        if(character != null)
+        for(ImGuiWidget widget : widgets)
         {
-            CharacterEditorWidget.render(commandList, service, character, dt);
-
-            sb.setProjectionMatrix(camera.combined);
-            sb.begin();
-            CharacterEditorWidget.drawTexture(sb);
-            sb.end();
-
-            sh.setProjectionMatrix(camera.combined);
-            sh.begin(ShapeRenderer.ShapeType.Line);
-            CharacterEditorWidget.drawTerrainCollider(sh);
-            CharacterEditorWidget.drawAttackData(sh);
-            sh.end();
+            widget.DrawWindow(sh, sb);
         }
 
-        ImGui.showDemoWindow();
+        teardownDockspace();
 
         ImGui.render();
-
         imGuiGl3.renderDrawData(ImGui.getDrawData());
+        context.endFrame();
     }
 
     public void dispose()
@@ -131,17 +106,46 @@ public class UI
         ImGui.destroyContext();
     }
 
+    private void setupDockspace()
+    {
+        int windowFlags = ImGuiWindowFlags.MenuBar |
+                          ImGuiWindowFlags.NoDocking |
+                          ImGuiWindowFlags.NoTitleBar |
+                          ImGuiWindowFlags.NoCollapse |
+                          ImGuiWindowFlags.NoResize |
+                          ImGuiWindowFlags.NoMove |
+                          ImGuiWindowFlags.NoBringToFrontOnFocus |
+                          ImGuiWindowFlags.NoNavFocus;
+
+        ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
+        ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
+        {
+            ImGui.setNextWindowPos(0,0, ImGuiCond.Always);
+            ImGui.setNextWindowSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            ImGui.begin("DockSpace", new ImBoolean(true), windowFlags);
+        }
+        ImGui.popStyleVar();
+        ImGui.popStyleVar();
+
+        ImGui.dockSpace(ImGui.getID("DockSpace"));
+    }
+
+    private void teardownDockspace()
+    {
+        ImGui.end();
+    }
+
     private void drawMainMenuBar()
     {
-        boolean newCharFlag = false;
+        boolean newCharacterPopup = false;
         ImGui.beginMainMenuBar();
         {
             if(ImGui.beginMenu("File"))
             {
-                if(ImGui.menuItem("New.."))
+                if(ImGui.menuItem("New..."))
                 {
                     addCharacterName.set("");
-                    newCharFlag = true;
+                    newCharacterPopup = true;
                 }
 
                 if(ImGui.menuItem("Load..."))
@@ -150,7 +154,7 @@ public class UI
                     String filepath = Utils.chooseFileToLoad(dir, "json");
                     if(filepath != null)
                     {
-                        loadCharacter(filepath);
+                        context.setCurrentCharacter(loadCharacter(filepath));
                     }
                 }
 
@@ -159,44 +163,44 @@ public class UI
 
             if(ImGui.beginMenu("Edit"))
             {
-                if(ImGui.menuItem("Redo"))
+                if(ImGui.menuItem("Redo", "SHIFT-CTRL-Z"))
                 {
-                    commandList.redo();
+                    context.redo();
                 }
-                if(ImGui.menuItem("Undo"))
+                if(ImGui.menuItem("Undo", "CTRL-Z"))
                 {
-                    commandList.undo();
+                    context.undo();
                 }
                 ImGui.endMenu();
             }
         }
         ImGui.endMainMenuBar();
 
-        if(newCharFlag)
+        ImGui.setNextWindowSize(360, 78);
+
+        if(newCharacterPopup)
         {
             ImGui.openPopup("Add New Character");
         }
-
-        ImGui.setNextWindowSize(360, 78);
         if(ImGui.beginPopupModal("Add New Character", ImGuiWindowFlags.NoResize))
         {
             ImGui.inputText("Character Name", addCharacterName);
 
             if(ImGui.button("Confirm"))
             {
-                if(!addCharacterName.get().equals(""))
+                if(!addCharacterName.get().isEmpty())
                 {
-                    String path = service.createCharacter(characterPath, addCharacterName.get());
+                    String path = new ContentService().createCharacter(Gdx.files.getLocalStoragePath() + "/characters/", addCharacterName.get());
                     if(path != null)
                     {
                         try
                         {
                             createCharacter(path);
-                            loadCharacter(path);
+                            context.setCurrentCharacter(loadCharacter(path));
                         }
                         catch(IOException e)
                         {
-                            e.printStackTrace();
+                            // TODO (danielg): exception for control flow, bad-bad-bad
                         }
                     }
                     ImGui.closeCurrentPopup();
@@ -219,11 +223,9 @@ public class UI
         createPortrait(path);
     }
 
-    private void loadCharacter(String filepath)
+    private DTO.Character loadCharacter(String filepath)
     {
-        CharacterEditorWidget.reset();
-        character = service.readCharacter(filepath);
-        commandList.clear();
+        return new ContentService().readCharacter(filepath);
     }
 
     private void createDirectoryStructure(String filepath) throws IOException

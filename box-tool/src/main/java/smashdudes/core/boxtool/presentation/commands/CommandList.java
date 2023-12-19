@@ -4,7 +4,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class CommandList
 {
-    private Array<Command> commands = new Array<>();
+    private final Array<Command> commands = new Array<>();
     int currentIndex = -1;
 
 

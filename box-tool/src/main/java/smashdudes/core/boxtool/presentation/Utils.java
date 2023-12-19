@@ -18,14 +18,14 @@ public class Utils
     {
         if(!path.isDirectory()) throw new IllegalArgumentException("Filehandle must be a directory");
 
-        String desc = "(";
+        StringBuilder desc = new StringBuilder("(");
         for (String s : fileExtensions)
         {
-            desc += "*." + s + ", ";
+            desc.append("*.").append(s).append(", ");
         }
-        desc += ")";
+        desc.append(")");
 
-        FileNameExtensionFilter filter = new FileNameExtensionFilter(desc, fileExtensions);
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(desc.toString(), fileExtensions);
         final JFileChooser fc = new JFileChooser(path.toString());
 
         fc.setDialogTitle("Select a file to load...");
@@ -47,8 +47,7 @@ public class Utils
         int returnVal = fc.showSaveDialog(null);
         if (returnVal == JFileChooser.APPROVE_OPTION)
         {
-            String path = fc.getSelectedFile().getAbsolutePath();
-            return  path;
+            return fc.getSelectedFile().getAbsolutePath();
         }
 
         return null;
