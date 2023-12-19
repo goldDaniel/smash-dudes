@@ -61,6 +61,7 @@ public class AnimationWidget extends ImGuiWidget
         ImFloat duration = new ImFloat(animation.animationDuration);
         if(ImGui.inputFloat("Animation Duration", duration))
         {
+            if(duration.get() < 0) duration.set(0);
             context.execute(new PropertyEditCommand<>("animationDuration", duration.get(), animation));
         }
 
