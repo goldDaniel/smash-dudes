@@ -24,7 +24,7 @@ public class AnimationWidget extends ImGuiWidget
     }
 
     @Override
-    protected void Draw(ShapeRenderer sh, SpriteBatch sb)
+    protected void draw(ShapeRenderer sh, SpriteBatch sb)
     {
         DTO.Animation animation = context.getCurrentAnimation();
         if(animation == null)

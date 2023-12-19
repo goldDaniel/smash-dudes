@@ -23,9 +23,9 @@ public abstract class ImGuiWidget
     public final void DrawWindow(ShapeRenderer sh, SpriteBatch sb)
     {
         ImGui.begin(title, windowFlags);
-        this.Draw(sh, sb);
+        this.draw(sh, sb);
         ImGui.end();
     }
 
-    protected abstract void Draw(ShapeRenderer sh, SpriteBatch sb);
+    protected abstract void draw(ShapeRenderer sh, SpriteBatch sb);
 }

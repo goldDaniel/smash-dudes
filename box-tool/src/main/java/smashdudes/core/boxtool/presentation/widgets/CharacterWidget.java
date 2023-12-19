@@ -31,7 +31,7 @@ public class CharacterWidget extends ImGuiWidget
     }
 
     @Override
-    public void Draw(ShapeRenderer sh, SpriteBatch sb)
+    public void draw(ShapeRenderer sh, SpriteBatch sb)
     {
         if(context.getCharacter() == null)
         {
