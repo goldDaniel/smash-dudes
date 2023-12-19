@@ -25,8 +25,15 @@ public class BoxToolContext
         commandList.clear();
         commandQueue.clear();
         this.currentCharacter = character;
-        this.currentAnimation = null;
-        this.currentAnimationFrame = null;
+        if(character.animations.size > 0)
+        {
+            this.currentAnimation = character.animations.first();
+            if(this.currentAnimation.frames.size > 0)
+            {
+                this.currentAnimationFrame = this.currentAnimation.frames.first();
+            }
+        }
+
         this.playAnimation = false;
         this.currentTime = 0;
     }
