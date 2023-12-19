@@ -7,7 +7,6 @@ public class RectangleEditCommand extends Command
 {
     private final Rectangle rect;
     private final float[] data;
-
     private final float prevX;
     private final float prevY;
     private final float prevWidth;

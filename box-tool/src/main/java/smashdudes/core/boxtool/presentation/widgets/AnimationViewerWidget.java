@@ -91,6 +91,9 @@ public class AnimationViewerWidget extends ImGuiWidget
 
     private void mouseMoveBoxes(DTO.AnimationFrame frame)
     {
+        // no grabbing hitboxes when frames are changing
+        if(context.isPlayingAnimation()) return;
+
         Vector2 mousePos = getMouseWorldPos();
 
         if(selectedRectangle != null)
