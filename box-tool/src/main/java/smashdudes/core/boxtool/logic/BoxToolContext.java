@@ -1,12 +1,15 @@
 package smashdudes.core.boxtool.logic;
 
+import com.badlogic.gdx.utils.Queue;
 import smashdudes.content.DTO;
 import smashdudes.core.boxtool.presentation.commands.Command;
 import smashdudes.core.boxtool.presentation.commands.CommandList;
 
+
 public class BoxToolContext
 {
     private final CommandList commandList = new CommandList();
+    private final Queue<Command> commandQueue = new Queue<>();
     private DTO.Character currentCharacter = null;
 
     private DTO.Animation currentAnimation = null;
@@ -20,6 +23,7 @@ public class BoxToolContext
     public void setCurrentCharacter(DTO.Character character)
     {
         commandList.clear();
+        commandQueue.clear();
         this.currentCharacter = character;
         this.currentAnimation = null;
         this.currentAnimationFrame = null;
@@ -72,12 +76,15 @@ public class BoxToolContext
 
     public void execute(Command c)
     {
-        commandList.execute(c);
+        commandQueue.addLast(c);
     }
 
     public void incrementTime(float increment)
     {
-        currentTime += increment;
+        if(playAnimation)
+        {
+            currentTime += increment;
+        }
     }
 
     public float getCurrentTime()
@@ -104,5 +111,13 @@ public class BoxToolContext
     {
         currentTime = 0;
         playAnimation = false;
+    }
+
+    public void endFrame()
+    {
+        while(commandQueue.notEmpty())
+        {
+            commandList.execute(commandQueue.removeFirst());
+        }
     }
 }

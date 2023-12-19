@@ -85,28 +85,53 @@ public class AnimationWidget extends ImGuiWidget
 
             for(int i = 0; i < animation.frames.size; ++i)
             {
-
-                DTO.AnimationFrame frame = animation.frames.get(i);
-                ImGui.pushID(Utils.getUniqueKey(frame));
-
-                if(ImGui.button("Delete Frame..."))
-                {
-                    ImGui.openPopup("Delete Frame?");
-                }
-                drawDeleteFramePopup(animation, frame);
-
-                ImGui.sameLine();
-
-                ImGui.setNextItemWidth(120);
-                if(ImGui.selectable("Frame " + i, context.getAnimationFrame() == frame))
-                {
-                    context.setAnimationFrame(frame);
-                    context.stopAnimation();
-                }
-
-                ImGui.popID();
+                drawPerFrameControl(animation, animation.frames.get(i), i);
             }
         }
+    }
+
+    private void drawPerFrameControl(DTO.Animation animation, DTO.AnimationFrame frame, int frameNumber)
+    {
+        ImGui.pushID(Utils.getUniqueKey(frame));
+
+        if (ImGui.button("/\\"))
+        {
+            int index = animation.frames.indexOf(frame, true);
+            if (index > 0)
+            {
+                int swapIndex = index - 1;
+                context.execute(new ArraySwapCommand(animation.frames, index, swapIndex));
+            }
+        }
+        ImGui.sameLine();
+        if (ImGui.button("\\/"))
+        {
+            int index = animation.frames.indexOf(frame, true);
+            if (index < animation.frames.size - 1)
+            {
+                int swapIndex = index + 1;
+                context.execute(new ArraySwapCommand(animation.frames, index, swapIndex));
+            }
+        }
+
+        ImGui.sameLine();
+
+        if(ImGui.button("Delete Frame..."))
+        {
+            ImGui.openPopup("Delete Frame?");
+        }
+        drawDeleteFramePopup(animation, frame);
+
+        ImGui.sameLine();
+
+        ImGui.setNextItemWidth(120);
+        if(ImGui.selectable("Frame " + frameNumber, context.getAnimationFrame() == frame))
+        {
+            context.setAnimationFrame(frame);
+            context.stopAnimation();
+        }
+
+        ImGui.popID();
     }
 
     private void drawDeleteFramePopup(DTO.Animation animation, DTO.AnimationFrame frame)

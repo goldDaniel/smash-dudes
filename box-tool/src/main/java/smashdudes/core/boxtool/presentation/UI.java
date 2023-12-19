@@ -60,6 +60,7 @@ public class UI
         widgets.add(new CharacterWidget(context));
         widgets.add(new AnimationWidget(context));
         widgets.add(new AnimationFrameWidget(context));
+        widgets.add(new AnimationViewerWidget(context));
     }
 
     public void draw()
@@ -94,8 +95,8 @@ public class UI
         teardownDockspace();
 
         ImGui.render();
-
         imGuiGl3.renderDrawData(ImGui.getDrawData());
+        context.endFrame();
     }
 
     public void dispose()
