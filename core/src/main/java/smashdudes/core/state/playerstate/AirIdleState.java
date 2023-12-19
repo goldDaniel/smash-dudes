@@ -64,6 +64,6 @@ public class AirIdleState extends State
     @Override
     public State getNextState()
     {
-        return null;
+        return this;
     }
 }

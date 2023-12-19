@@ -15,6 +15,7 @@ public class StateSystem extends GameSystem
     {
         super(engine);
         registerComponentType(StateComponent.class);
+        registerEventType(LandingEvent.class);
     }
     @Override
     public void updateEntity(Entity entity, float dt)
