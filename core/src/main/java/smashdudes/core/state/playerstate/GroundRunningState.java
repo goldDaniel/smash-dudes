@@ -13,7 +13,7 @@ public class GroundRunningState extends State
     }
 
     @Override
-    public void innerOnEnter(float dt)
+    public void onEnter(float dt)
     {
         PlayerAnimationContainerComponent container = entity.getComponent(PlayerAnimationContainerComponent.class);
         entity.removeComponent(AnimationComponent.class);

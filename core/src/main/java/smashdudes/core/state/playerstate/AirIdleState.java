@@ -17,7 +17,7 @@ public class AirIdleState extends State
     }
 
     @Override
-    public void innerOnEnter(float dt)
+    public void onEnter(float dt)
     {
 
     }
@@ -29,8 +29,6 @@ public class AirIdleState extends State
         VelocityComponent v = entity.getComponent(VelocityComponent.class);
         PlayerAnimationContainerComponent container = entity.getComponent(PlayerAnimationContainerComponent.class);
         AnimationComponent current = entity.getComponent(AnimationComponent.class);
-
-        if (v == null) return;
 
         if(current != container.jumping || current != container.falling)
         {

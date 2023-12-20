@@ -15,7 +15,7 @@ public class GroundAttackState extends State
     }
 
     @Override
-    public void innerOnEnter(float dt)
+    public void onEnter(float dt)
     {
         VelocityComponent v = entity.getComponent(VelocityComponent.class);
         v.velocity.x = 0;

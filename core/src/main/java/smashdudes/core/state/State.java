@@ -15,22 +15,17 @@ public abstract class State
         this.entity = entity;
     }
 
-    public void onEnter(float dt)
-    {
-        innerOnEnter(dt);
-        onFirstRun = false;
-    }
-
-    public void update(float dt)
+    public final void update(float dt)
     {
         if(onFirstRun)
         {
             onEnter(dt);
+            onFirstRun = false;
         }
         innerUpdate(dt);
     }
 
-    public abstract void innerOnEnter(float dt);
+    public abstract void onEnter(float dt);
 
     public abstract void innerUpdate(float dt);
 
@@ -41,12 +36,12 @@ public abstract class State
         return this;
     }
 
-    protected void throwEvent(Event event)
+    protected final void throwEvent(Event event)
     {
         eventQueue.addLast(event);
     }
 
-    public Event popEvent()
+    public final Event popEvent()
     {
         if(eventQueue.notEmpty())
         {

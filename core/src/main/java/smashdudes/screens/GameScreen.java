@@ -64,8 +64,6 @@ public abstract class GameScreen implements Screen
     public abstract void update(float dt);
     public abstract void render();
 
-    public void endFrame(){}
-
     public void setViewport(Viewport viewport)
     {
         this.viewport = viewport;
