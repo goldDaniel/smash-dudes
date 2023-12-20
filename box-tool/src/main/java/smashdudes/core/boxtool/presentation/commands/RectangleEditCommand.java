@@ -7,7 +7,6 @@ public class RectangleEditCommand extends Command
 {
     private final Rectangle rect;
     private final float[] data;
-
     private final float prevX;
     private final float prevY;
     private final float prevWidth;
@@ -29,8 +28,8 @@ public class RectangleEditCommand extends Command
     {
         rect.x = data[0];
         rect.y = data[1];
-        rect.width = data[2];
-        rect.height = data[3];
+        rect.width = Math.abs(data[2]);
+        rect.height = Math.abs(data[3]);
     }
 
     @Override
