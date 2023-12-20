@@ -22,5 +22,7 @@ public class MovementSystem extends GameSystem
 
         p.position.x += v.velocity.x * dt;
         p.position.y += v.velocity.y * dt;
+
+        v.velocity.x *= v.deceleration * dt;
     }
 }

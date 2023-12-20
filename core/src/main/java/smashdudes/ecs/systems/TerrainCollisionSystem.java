@@ -10,6 +10,8 @@ import smashdudes.core.Collisions;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
+import smashdudes.ecs.events.CollisionEvent;
+import smashdudes.ecs.events.Event;
 import smashdudes.ecs.events.LandingEvent;
 import smashdudes.ecs.events.TerrainCollisionEvent;
 
@@ -129,7 +131,7 @@ public class TerrainCollisionSystem extends GameSystem
                     if (!onGroundLastFrame.get(entity))
                     {
                         Vector2 landingPoint = p.position.cpy().sub(0, r0.height / 2);
-                        engine.addEvent(new LandingEvent(entity, landingPoint));
+                        engine.addEvent(new CollisionEvent(entity, landingPoint).setImmediate(false));
                     }
 
                     touchedGround = true;

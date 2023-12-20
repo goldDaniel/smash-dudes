@@ -22,6 +22,8 @@ import smashdudes.core.PlayerHandle;
 import smashdudes.core.PlayerLobbyInfo;
 import smashdudes.core.WorldUtils;
 import smashdudes.core.input.MenuNavigator;
+import smashdudes.core.state.playerstate.AirIdleState;
+import smashdudes.core.state.playerstate.GroundIdleState;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
@@ -185,6 +187,9 @@ public class GameplayScreen extends GameScreen
 
         CharacterInputComponent i = new CharacterInputComponent();
         player.addComponent(i);
+
+        StateComponent s = new StateComponent(new AirIdleState(player));
+        player.addComponent(s);
 
 
         PlayerAnimationContainerComponent animContainer = new PlayerAnimationContainerComponent();
