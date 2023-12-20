@@ -2,9 +2,7 @@ package smashdudes.ecs.components;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 import smashdudes.ecs.Component;
@@ -13,8 +11,8 @@ public class DebugDrawComponent extends Component
 {
     public class DebugRect
     {
-        private Color color;
-        private Rectangle rect;
+        private final Color color;
+        private final Rectangle rect;
 
         public DebugRect(Color color, Rectangle rect)
         {
@@ -26,7 +24,7 @@ public class DebugDrawComponent extends Component
         public Rectangle getRect() { return rect; }
     }
 
-    private ArrayMap<ShapeRenderer.ShapeType, Array<DebugRect>> rectangles = new ArrayMap<>();
+    private final ArrayMap<ShapeRenderer.ShapeType, Array<DebugRect>> rectangles = new ArrayMap<>();
 
     public DebugDrawComponent()
     {

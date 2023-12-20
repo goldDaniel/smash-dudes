@@ -49,6 +49,7 @@ public class Engine
         PlayerControllerSystem ctrlSys = new PlayerControllerSystem(this);
         ctrlSys.setEnabled(false);
 
+        gameSystems.add(new DebugResetSystem(this));
         gameSystems.add(new PreviousPositionSystem(this));
         gameSystems.add(new CountdownSystem(this));
         gameSystems.add(new PlayerStateSystem(this));
