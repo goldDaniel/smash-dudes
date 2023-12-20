@@ -15,7 +15,7 @@ public class AnimationSelectionContext
 
     public static final float boxCenterRadius = 0.04f;
     public static final float scaleSelectionLength = 0.2f;
-    public static final float scaleSelectionWidth = 0.02f;
+    public static final float scaleSelectionWidth = 0.06f;
 
     private final SelectedRectangle selectedRectangle;
 

@@ -73,14 +73,11 @@ public class AnimationViewerWidget extends ImGuiWidget
         if(selectionContext.getSelectionType() != SelectionType.None) return;
 
         Rectangle grabRect = new Rectangle();
-        Rectangle endRect = new Rectangle();
-
         for(Rectangle r : rectangles)
         {
             // horizontal
             grabRect.set(r.x, r.y, scaleSelectionLength, scaleSelectionWidth);
-            endRect.set(r.x + scaleSelectionLength - scaleSelectionWidth, r.y - scaleSelectionWidth, scaleSelectionWidth * 2, scaleSelectionWidth * 2);
-            if(grabRect.contains(mousePos) || endRect.contains(mousePos))
+            if(grabRect.contains(mousePos))
             {
                 selectionContext.setRectangle(r, SelectionType.Scale, true);
                 return;
@@ -88,8 +85,7 @@ public class AnimationViewerWidget extends ImGuiWidget
 
             // vertical
             grabRect.set(r.x, r.y, scaleSelectionWidth, scaleSelectionLength);
-            endRect.set(r.x - scaleSelectionWidth, r.y + scaleSelectionLength - scaleSelectionWidth, scaleSelectionWidth * 2, scaleSelectionWidth * 2);
-            if(grabRect.contains(mousePos) || endRect.contains(mousePos))
+            if(grabRect.contains(mousePos))
             {
                 selectionContext.setRectangle(r, SelectionType.Scale, false);
                 return;
@@ -276,21 +272,20 @@ public class AnimationViewerWidget extends ImGuiWidget
                 }
 
                 Vector2 mousePos = getMouseWorldPos();
+                Rectangle rect = new Rectangle();
                 {
-                    drawGrabNode(sh, mousePos, box, scaleSelectionLength, scaleSelectionWidth, Color.FOREST, Color.GREEN);
-                    drawGrabNode(sh, mousePos, box, scaleSelectionLength, scaleSelectionWidth, Color.FOREST, Color.GREEN);
+                    sh.setColor(Color.FOREST);
+                    rect.set(box.x, box.y, scaleSelectionLength, scaleSelectionWidth);
+                    if(rect.contains(mousePos)) sh.setColor(Color.GREEN);
 
+                    sh.rect(box.x - scaleSelectionWidth / 2, box.y - scaleSelectionWidth / 2, scaleSelectionLength, scaleSelectionWidth);
                 }
                 {
                     sh.setColor(Color.RED);
-                    rect.set(box.x, box.y, 0.02f, scaleSelectionLength);
+                    rect.set(box.x, box.y, scaleSelectionWidth, scaleSelectionLength);
                     if (rect.contains(mousePos)) sh.setColor(Color.SALMON);
 
-                    rect.set(box.x - scaleSelectionWidth, box.y + scaleSelectionLength - scaleSelectionWidth, scaleSelectionWidth * 2, scaleSelectionWidth * 2);
-                    if (rect.contains(mousePos)) sh.setColor(Color.SALMON);
-
-                    sh.rect(box.x - 0.01f, box.y - 0.01f, scaleSelectionWidth, scaleSelectionLength);
-                    sh.rect(rect.x - 0.01f, rect.y - 0.01f, rect.width, rect.height);
+                    sh.rect(box.x - scaleSelectionWidth / 2, box.y - scaleSelectionWidth / 2, scaleSelectionWidth, scaleSelectionLength);
                 }
             }
 
