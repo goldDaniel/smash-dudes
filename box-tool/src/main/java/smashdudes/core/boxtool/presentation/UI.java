@@ -42,6 +42,7 @@ public class UI
     private final ShapeRenderer sh;
     //Rendering---------------------------------------------
 
+    boolean firstFrame = true;
 
     Array<ImGuiWidget> widgets = new Array<>();
 
@@ -79,10 +80,18 @@ public class UI
             context.undo();
         }
 
+
         imGuiGlfw.newFrame();
         ScreenUtils.clear(0,0,0,1);
         ImGui.newFrame();
 
+        if(firstFrame)
+        {
+            firstFrame = false;
+            final float scale = ImGui.getWindowDpiScale();
+            ImGui.getIO().setFontGlobalScale(scale);
+            ImGui.getStyle().scaleAllSizes(scale);
+        }
 
         setupDockspace();
         drawMainMenuBar();

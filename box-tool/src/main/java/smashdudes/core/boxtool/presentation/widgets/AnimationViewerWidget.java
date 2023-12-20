@@ -35,6 +35,8 @@ public class AnimationViewerWidget extends ImGuiWidget
     private final Camera camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
     private final Viewport viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
     private FrameBuffer frameBuffer;
+
+    private int previousAnimationFrameCount = 0;
     private DTO.Animation previousAnimation = null;
     private Animation<DTO.AnimationFrame> currentAnimation = null;
 
@@ -49,6 +51,7 @@ public class AnimationViewerWidget extends ImGuiWidget
         DTO.Animation animation = context.getCurrentAnimation();
         if(animation == null) return;
         DTO.AnimationFrame currentFrame = animate(animation);
+        if(currentFrame == null) return;
 
         // render character data to frameBuffer, then copy to imgui window
         resizeDrawBuffer();
@@ -167,16 +170,18 @@ public class AnimationViewerWidget extends ImGuiWidget
     private DTO.AnimationFrame animate(DTO.Animation animation)
     {
         float frameDuration = animation.animationDuration / animation.frames.size;
-        if(animation != previousAnimation)
+        if(animation != previousAnimation || previousAnimationFrameCount != animation.frames.size)
         {
             previousAnimation = animation;
+            previousAnimationFrameCount = animation.frames.size;
             context.stopAnimation();
             currentAnimation = new Animation<>(frameDuration, animation.frames, Animation.PlayMode.LOOP);
         }
         currentAnimation.setFrameDuration(frameDuration);
 
+
         DTO.AnimationFrame currentFrame = context.getAnimationFrame();
-        if(context.isPlayingAnimation())
+        if(currentFrame != null && context.isPlayingAnimation())
         {
             currentFrame = currentAnimation.getKeyFrame(context.getCurrentTime());
             context.setAnimationFrame(currentFrame);
@@ -221,8 +226,9 @@ public class AnimationViewerWidget extends ImGuiWidget
 
     private void drawCharacter(Texture texture, SpriteBatch sb)
     {
-        final float aspect = (float)texture.getWidth() / (float)texture.getHeight();
+        float aspect = (float)texture.getWidth() / (float)texture.getHeight();
 
+        if(aspect > 1) aspect = 1.0f / aspect;
         final float drawWidth = context.getCharacter().scale;
         final float drawHeight = drawWidth * aspect;
         final float drawX = -drawWidth / 2;

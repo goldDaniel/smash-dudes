@@ -46,11 +46,9 @@ public class BoxToolContext
     public void setCurrentAnimation(DTO.Animation animation)
     {
         this.currentAnimation = animation;
-        if(this.currentAnimation == null)
-        {
-            currentAnimationFrame = null;
-        }
-        else if(this.currentAnimation.frames.notEmpty())
+        this.currentAnimationFrame = null;
+
+        if(this.currentAnimation != null && this.currentAnimation.frames.notEmpty())
         {
             this.currentAnimationFrame = this.currentAnimation.frames.first();
         }
