@@ -16,11 +16,8 @@ public class GroundRunningState extends State
     public void innerOnEnter(float dt)
     {
         PlayerAnimationContainerComponent container = entity.getComponent(PlayerAnimationContainerComponent.class);
-        if(entity.getComponent(AnimationComponent.class) != container.running)
-        {
-            entity.removeComponent(AnimationComponent.class);
-            entity.addComponent(container.running);
-        }
+        entity.removeComponent(AnimationComponent.class);
+        entity.addComponent(container.running);
     }
 
     @Override
@@ -43,7 +40,8 @@ public class GroundRunningState extends State
     @Override
     public void onExit()
     {
-
+        PlayerAnimationContainerComponent container = entity.getComponent(PlayerAnimationContainerComponent.class);
+        container.running.reset();
     }
 
     @Override
@@ -75,6 +73,10 @@ public class GroundRunningState extends State
             {
                 return new GroundIdleState(entity);
             }
+        }
+        else if (v.velocity.y < 0)
+        {
+            return new AirIdleState(entity);
         }
 
         return this;

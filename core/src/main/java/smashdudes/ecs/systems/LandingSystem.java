@@ -24,10 +24,11 @@ public class LandingSystem extends GameSystem
 
         if(event instanceof CollisionEvent)
         {
-            LandingEvent le = new LandingEvent(entity, ((CollisionEvent) event).collisionPoint);
             VelocityComponent v = entity.getComponent(VelocityComponent.class);
-            v.velocity.y = Math.max(v.velocity.y, 0);
-            engine.addEvent(le);
+            if(v.velocity.y <= 0)
+            {
+                engine.addEvent(new LandingEvent(entity, ((CollisionEvent) event).collisionPoint));
+            }
         }
     }
 }

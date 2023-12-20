@@ -55,6 +55,10 @@ public class GroundIdleState extends State
             throwEvent(new JumpEvent(entity));
             return new AirIdleState(entity);
         }
+        else if(v.velocity.y < 0)
+        {
+            return new AirIdleState(entity);
+        }
 
         return this;
     }
