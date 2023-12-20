@@ -35,11 +35,14 @@ public class AnimationViewerWidget extends ImGuiWidget
     {
         private Rectangle original = null;
         private Rectangle clone = null;
+
+        boolean horizontal = false;
     }
-    SelectedRectangle selectedRectangle = null;
+    private SelectedRectangle moveSelectedRectangle = null;
+    private SelectedRectangle scaleSelectedRectangle = null;
 
     private DTO.Animation previousAnimation = null;
-    Animation<DTO.AnimationFrame> currentAnimation = null;
+    private Animation<DTO.AnimationFrame> currentAnimation = null;
 
     public AnimationViewerWidget(BoxToolContext context)
     {
@@ -71,7 +74,26 @@ public class AnimationViewerWidget extends ImGuiWidget
         drawContextMenu(currentFrame);
     }
 
-    private SelectedRectangle getSelectedRectangle(Array<Rectangle> rectangles, Vector2 mousePos)
+    private SelectedRectangle getScaleSelectedRectangle(Array<Rectangle> rectangles, Vector2 mousePos)
+    {
+        Rectangle horizontalRect = new Rectangle();
+        Rectangle verticalRect = new Rectangle();
+        for(Rectangle r : rectangles)
+        {
+            horizontalRect.set(r.x, r.y, 0.1f, 0.01f);
+            if(horizontalRect.contains(mousePos))
+            {
+                SelectedRectangle rectangle = new SelectedRectangle();
+                rectangle.original = r;
+                rectangle.clone = new Rectangle(r);
+                rectangle.horizontal = true;
+
+                return rectangle;
+            }
+        }
+        return null;
+    }
+    private SelectedRectangle getMoveSelectedRectangle(Array<Rectangle> rectangles, Vector2 mousePos)
     {
         Circle circle = new Circle();
         for(Rectangle r : rectangles)
@@ -92,24 +114,56 @@ public class AnimationViewerWidget extends ImGuiWidget
     private void mouseMoveBoxes(DTO.AnimationFrame frame)
     {
         // no grabbing hitboxes when frames are changing
-        if(context.isPlayingAnimation()) return;
+        if(context.isPlayingAnimation())
+        {
+            moveSelectedRectangle = null;
+            return;
+        }
 
         Vector2 mousePos = getMouseWorldPos();
+        if(moveSelectedRectangle != null && Gdx.input.isButtonPressed(Input.Buttons.LEFT))
+        {
+            moveSelectedRectangle.clone.x = mousePos.x;
+            moveSelectedRectangle.clone.y = mousePos.y;
+        }
+        else if(moveSelectedRectangle != null && !Gdx.input.isButtonPressed(Input.Buttons.LEFT))
+        {
+            context.execute(new RectangleEditCommand(moveSelectedRectangle.original, new float[]{ mousePos.x, mousePos.y, moveSelectedRectangle.original.width, moveSelectedRectangle.original.height }));
+            moveSelectedRectangle = null;
+        }
+        else if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT))
+        {
+            if(moveSelectedRectangle == null) moveSelectedRectangle = getMoveSelectedRectangle(frame.bodyboxes, mousePos);
+            if(moveSelectedRectangle == null) moveSelectedRectangle = getMoveSelectedRectangle(frame.attackboxes, mousePos);
+        }
+    }
 
-        if(selectedRectangle != null)
+    private void mouseScaleBoxes(DTO.AnimationFrame frame)
+    {
+        // no grabbing hitboxes when frames are changing
+        if(context.isPlayingAnimation())
         {
-            selectedRectangle.clone.x = mousePos.x;
-            selectedRectangle.clone.y = mousePos.y;
+            scaleSelectedRectangle = null;
+            return;
         }
-        if(!Gdx.input.isButtonPressed(Input.Buttons.LEFT) && selectedRectangle != null)
+
+        Vector2 mousePos = getMouseWorldPos();
+        if(!Gdx.input.isButtonPressed(Input.Buttons.LEFT) && scaleSelectedRectangle != null)
         {
-            context.execute(new RectangleEditCommand(selectedRectangle.original, new float[]{ mousePos.x, mousePos.y, selectedRectangle.clone.width, selectedRectangle.clone.height }));
-            selectedRectangle = null;
+            context.execute(new RectangleEditCommand(scaleSelectedRectangle.original, new float[]{ scaleSelectedRectangle.original.x, scaleSelectedRectangle.original.x, scaleSelectedRectangle.original.x, moveSelectedRectangle.clone.width, moveSelectedRectangle.clone.height }));
+            scaleSelectedRectangle = null;
         }
-        else if(Gdx.input.isButtonPressed(Input.Buttons.LEFT))
+
+        if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT))
         {
-            if(selectedRectangle == null) selectedRectangle = getSelectedRectangle(frame.bodyboxes, mousePos);
-            if(selectedRectangle == null) selectedRectangle = getSelectedRectangle(frame.attackboxes, mousePos);
+            if(scaleSelectedRectangle == null) scaleSelectedRectangle = getScaleSelectedRectangle(frame.bodyboxes, mousePos);
+            if(scaleSelectedRectangle == null) scaleSelectedRectangle = getScaleSelectedRectangle(frame.attackboxes, mousePos);
+        }
+
+        if(scaleSelectedRectangle != null && Gdx.input.isButtonPressed(Input.Buttons.LEFT))
+        {
+            if(scaleSelectedRectangle.horizontal) scaleSelectedRectangle.clone.width  += Gdx.input.getDeltaX() * 0.001f;
+            else                                  scaleSelectedRectangle.clone.height += Gdx.input.getDeltaY() * 0.001f;
         }
     }
 
@@ -190,9 +244,9 @@ public class AnimationViewerWidget extends ImGuiWidget
         for(Rectangle b : boxes)
         {
             Rectangle box = b;
-            if(selectedRectangle != null && selectedRectangle.original == b)
+            if(moveSelectedRectangle != null && moveSelectedRectangle.original == b)
             {
-                box = selectedRectangle.clone;
+                box = moveSelectedRectangle.clone;
             }
 
             float w = box.width;
@@ -214,9 +268,9 @@ public class AnimationViewerWidget extends ImGuiWidget
         for(Rectangle b : boxes)
         {
             Rectangle box = b;
-            if(selectedRectangle != null && selectedRectangle.original == b)
+            if(moveSelectedRectangle != null && moveSelectedRectangle.original == b)
             {
-                box = selectedRectangle.clone;
+                box = moveSelectedRectangle.clone;
             }
 
             sh.setColor(Color.LIGHT_GRAY);
