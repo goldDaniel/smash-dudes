@@ -288,8 +288,7 @@ public class AnimationViewerWidget extends ImGuiWidget
                     sh.rect(box.x - scaleSelectionWidth / 2, box.y - scaleSelectionWidth / 2, scaleSelectionWidth, scaleSelectionLength);
                 }
             }
-
-
+            
             // move grab node
             {
                 Circle circle = new Circle();
@@ -313,21 +312,6 @@ public class AnimationViewerWidget extends ImGuiWidget
 
         }
         sh.end();
-    }
-
-    private void drawGrabNode(ShapeRenderer sh, Vector2 mousePos, Rectangle box, float width, float height, Color normal, Color hovered)
-    {
-        Rectangle rect = new Rectangle();
-
-        sh.setColor(normal);
-        rect.set(box.x, box.y, width, height);
-        if(rect.contains(mousePos)) sh.setColor(hovered);
-
-        rect.set(box.x + width - height, box.y - width, height * 2, height * 2);
-        if(rect.contains(mousePos)) sh.setColor(Color.GREEN);
-
-        sh.rect(box.x - 0.01f, box.y - 0.01f, width, height);
-        sh.rect(rect.x - 0.01f, rect.y - 0.01f, rect.width, rect.height);
     }
 
     private void drawContextMenu(DTO.AnimationFrame currentFrame)
