@@ -22,7 +22,8 @@ public class Engine
     private final Array<GameSystem> gameSystems = new Array<>();
     private final Array<RenderSystem> renderSystems = new Array<>();
 
-    private final List<Event> events = new ArrayList<>();
+    private final Queue<Event> gameEvents = new Queue<>();
+    private final Queue<Event> renderEvents = new Queue<>();
 
     private boolean isUpdating = false;
 
@@ -152,12 +153,13 @@ public class Engine
                 }
             }
 
-            for (int i = 0; i < events.size(); i++)
+            while(gameEvents.notEmpty())
             {
-                Event e = events.get(i);
-                for (GameSystem s : gameSystems)
+                Event ge = gameEvents.removeFirst();
+
+                for(int i = 0; i < gameSystems.size; i++)
                 {
-                    s.receiveEvent(e);
+                    gameSystems.get(i).receiveEvent(ge);
                 }
             }
         }
@@ -181,19 +183,15 @@ public class Engine
             }
         }
 
-        for (int i = 0; i < events.size(); i++)
+        while(renderEvents.notEmpty())
         {
-            Event e = events.get(i);
-            for (RenderSystem s : renderSystems)
+            Event re = renderEvents.removeFirst();
+
+            for(int i = 0; i < gameSystems.size; i++)
             {
-                s.receiveEvent(e);
+                gameSystems.get(i).receiveEvent(re);
             }
         }
-    }
-
-    public void endFrame()
-    {
-        events.clear();
     }
 
     public void addEvent(Event event)
@@ -211,7 +209,8 @@ public class Engine
         }
         else
         {
-            events.add(event);
+            gameEvents.addLast(event);
+            renderEvents.addLast(event);
         }
     }
 
