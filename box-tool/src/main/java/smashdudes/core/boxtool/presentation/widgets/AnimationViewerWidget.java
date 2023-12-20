@@ -25,6 +25,10 @@ import smashdudes.graphics.RenderResources;
 public class AnimationViewerWidget extends ImGuiWidget
 {
     static final float boxCenterRadius = 0.04f;
+
+    static final float scaleSelectionLength = 0.2f;
+    static final float scaleSelectionWidth = 0.02f;
+
     static final float WORLD_WIDTH = 4;
     static final float WORLD_HEIGHT = 4;
     private final Camera camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
@@ -77,11 +81,15 @@ public class AnimationViewerWidget extends ImGuiWidget
     private SelectedRectangle getScaleSelectedRectangle(Array<Rectangle> rectangles, Vector2 mousePos)
     {
         Rectangle grabRect = new Rectangle();
+        Rectangle endRect = new Rectangle();
+
+
         for(Rectangle r : rectangles)
         {
             // horizontal
-            grabRect.set(r.x, r.y, 0.2f, 0.02f);
-            if(grabRect.contains(mousePos))
+            grabRect.set(r.x, r.y, scaleSelectionLength, scaleSelectionWidth);
+            endRect.set(r.x + scaleSelectionLength - scaleSelectionWidth, r.y - scaleSelectionWidth, scaleSelectionWidth * 2, scaleSelectionWidth * 2);
+            if(grabRect.contains(mousePos) || endRect.contains(mousePos))
             {
                 SelectedRectangle rectangle = new SelectedRectangle();
                 rectangle.original = r;
@@ -92,8 +100,9 @@ public class AnimationViewerWidget extends ImGuiWidget
             }
 
             // vertical
-            grabRect.set(r.x, r.y, 0.02f, 0.2f);
-            if(grabRect.contains(mousePos))
+            grabRect.set(r.x, r.y, scaleSelectionWidth, scaleSelectionLength);
+            endRect.set(r.x - scaleSelectionWidth, r.y + scaleSelectionLength - scaleSelectionWidth, scaleSelectionWidth * 2, scaleSelectionWidth * 2);
+            if(grabRect.contains(mousePos) || endRect.contains(mousePos))
             {
                 SelectedRectangle rectangle = new SelectedRectangle();
                 rectangle.original = r;
@@ -125,7 +134,6 @@ public class AnimationViewerWidget extends ImGuiWidget
 
     private void mouseMoveBoxes(DTO.AnimationFrame frame)
     {
-        if(scaleSelectedRectangle != null) return;
         // no grabbing hitboxes when frames are changing
         if(context.isPlayingAnimation())
         {
@@ -153,8 +161,6 @@ public class AnimationViewerWidget extends ImGuiWidget
 
     private void mouseScaleBoxes(DTO.AnimationFrame frame)
     {
-        if(moveSelectedRectangle != null) return;
-
         // no grabbing hitboxes when frames are changing
         if(context.isPlayingAnimation())
         {
@@ -292,15 +298,29 @@ public class AnimationViewerWidget extends ImGuiWidget
                     box = moveSelectedRectangle.clone;
                 }
 
-                sh.setColor(Color.GREEN);
-                rect.set(box.x, box.y, 0.2f, 0.02f);
-                if(rect.contains(getMouseWorldPos())) sh.setColor(Color.LIME);
-                sh.rect(box.x - 0.01f, box.y - 0.01f, 0.2f, 0.02f);
+                Vector2 mousePos = getMouseWorldPos();
+                {
+                    sh.setColor(Color.FOREST);
+                    rect.set(box.x, box.y, scaleSelectionLength, scaleSelectionWidth);
+                    if(rect.contains(mousePos)) sh.setColor(Color.GREEN);
 
-                sh.setColor(Color.RED);
-                rect.set(box.x, box.y, 0.02f, 0.2f);
-                if(rect.contains(getMouseWorldPos())) sh.setColor(Color.SALMON);
-                sh.rect(box.x - 0.01f, box.y - 0.01f, 0.02f, 0.2f);
+                    rect.set(box.x + scaleSelectionLength - scaleSelectionWidth, box.y - scaleSelectionWidth, scaleSelectionWidth * 2, scaleSelectionWidth * 2);
+                    if(rect.contains(mousePos)) sh.setColor(Color.GREEN);
+
+                    sh.rect(box.x - 0.01f, box.y - 0.01f, scaleSelectionLength, scaleSelectionWidth);
+                    sh.rect(rect.x - 0.01f, rect.y - 0.01f, rect.width, rect.height);
+                }
+                {
+                    sh.setColor(Color.RED);
+                    rect.set(box.x, box.y, 0.02f, scaleSelectionLength);
+                    if (rect.contains(mousePos)) sh.setColor(Color.SALMON);
+
+                    rect.set(box.x - scaleSelectionWidth, box.y + scaleSelectionLength - scaleSelectionWidth, scaleSelectionWidth * 2, scaleSelectionWidth * 2);
+                    if (rect.contains(mousePos)) sh.setColor(Color.SALMON);
+
+                    sh.rect(box.x - 0.01f, box.y - 0.01f, scaleSelectionWidth, scaleSelectionLength);
+                    sh.rect(rect.x - 0.01f, rect.y - 0.01f, rect.width, rect.height);
+                }
             }
 
 

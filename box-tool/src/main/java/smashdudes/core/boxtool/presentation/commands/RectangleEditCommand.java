@@ -28,8 +28,8 @@ public class RectangleEditCommand extends Command
     {
         rect.x = data[0];
         rect.y = data[1];
-        rect.width = Math.max(data[2], 0.05f);
-        rect.height = Math.max(data[3], 0.05f);
+        rect.width = Math.abs(data[2]);
+        rect.height = Math.abs(data[3]);
     }
 
     @Override
