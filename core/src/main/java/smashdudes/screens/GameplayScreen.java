@@ -134,6 +134,12 @@ public class GameplayScreen extends GameScreen
         ecsEngine.resize(width, height);
     }
 
+    @Override
+    public void endFrame()
+    {
+        ecsEngine.endFrame();
+    }
+
     private void buildParallaxBackground()
     {
         for(int i = 0; i < 10; i++)

@@ -6,6 +6,8 @@ import smashdudes.ecs.components.AnimationComponent;
 import smashdudes.ecs.components.CharacterInputComponent;
 import smashdudes.ecs.components.PlayerAnimationContainerComponent;
 import smashdudes.ecs.components.VelocityComponent;
+import smashdudes.ecs.events.Event;
+import smashdudes.ecs.events.LandingEvent;
 
 public class AirIdleState extends State
 {
@@ -62,8 +64,13 @@ public class AirIdleState extends State
     }
 
     @Override
-    public State getNextState()
+    public State handleEvent(Event event)
     {
+        if (event instanceof LandingEvent)
+        {
+            return new GroundIdleState(entity);
+        }
+
         return this;
     }
 }

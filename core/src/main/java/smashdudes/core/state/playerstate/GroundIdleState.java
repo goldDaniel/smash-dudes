@@ -17,11 +17,8 @@ public class GroundIdleState extends State
     public void innerOnEnter(float dt)
     {
         PlayerAnimationContainerComponent container = entity.getComponent(PlayerAnimationContainerComponent.class);
-        if(entity.getComponent(AnimationComponent.class) != container.idle)
-        {
-            entity.removeComponent(AnimationComponent.class);
-            entity.addComponent(container.idle);
-        }
+        entity.removeComponent(AnimationComponent.class);
+        entity.addComponent(container.idle);
     }
 
     @Override
@@ -50,11 +47,12 @@ public class GroundIdleState extends State
         else if( !(i.currentState.left && i.currentState.right) &&
                 (i.currentState.left || i.currentState.right) )
         {
-            //player.currentState = PlayerState.Ground_Running;
+            return new GroundRunningState(entity);
         }
         else if(i.currentState.up)
         {
             v.velocity.y = j.jumpStrength;
+            throwEvent(new JumpEvent(entity));
             return new AirIdleState(entity);
         }
 

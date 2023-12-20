@@ -10,6 +10,9 @@ import smashdudes.ecs.events.Event;
 import smashdudes.ecs.systems.*;
 import smashdudes.graphics.RenderResources;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Engine
 {
     private final Array<Entity> activeEntities = new Array<>();
@@ -19,7 +22,7 @@ public class Engine
     private final Array<GameSystem> gameSystems = new Array<>();
     private final Array<RenderSystem> renderSystems = new Array<>();
 
-    private final Queue<Event> events = new Queue<>();
+    private final List<Event> events = new ArrayList<>();
 
     private boolean isUpdating = false;
 
@@ -58,6 +61,7 @@ public class Engine
         gameSystems.add(new GravitySystem(this));
         gameSystems.add(new MovementSystem(this));
         gameSystems.add(new TerrainCollisionSystem(this));
+        gameSystems.add(new LandingSystem(this));
         gameSystems.add(new HitDetectionSystem(this));
         gameSystems.add(new HitResolutionSystem(this));
         gameSystems.add(new PlayerStunnedSystem(this));
@@ -148,14 +152,10 @@ public class Engine
                 }
             }
 
-            while (events.notEmpty())
+            for (int i = 0; i < events.size(); i++)
             {
-                Event e = events.removeFirst();
+                Event e = events.get(i);
                 for (GameSystem s : gameSystems)
-                {
-                    s.receiveEvent(e);
-                }
-                for (RenderSystem s : renderSystems)
                 {
                     s.receiveEvent(e);
                 }
@@ -180,11 +180,39 @@ public class Engine
                 r.render(dt, alpha);
             }
         }
+
+        for (int i = 0; i < events.size(); i++)
+        {
+            Event e = events.get(i);
+            for (RenderSystem s : renderSystems)
+            {
+                s.receiveEvent(e);
+            }
+        }
+    }
+
+    public void endFrame()
+    {
+        events.clear();
     }
 
     public void addEvent(Event event)
     {
-        events.addLast(event);
+        if (event.isImmediate())
+        {
+            for(int i = 0; i < gameSystems.size; i++)
+            {
+                gameSystems.get(i).receiveEvent(event);
+            }
+            for(int i = 0; i < renderSystems.size; i++)
+            {
+                renderSystems.get(i).receiveEvent(event);
+            }
+        }
+        else
+        {
+            events.add(event);
+        }
     }
 
     public void resize(int w, int h)

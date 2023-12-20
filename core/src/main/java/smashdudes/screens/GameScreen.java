@@ -58,11 +58,15 @@ public abstract class GameScreen implements Screen
 
         this.render();
         uiStage.draw();
+
+        endFrame();
     }
 
     public abstract void buildUI(Table table, Skin skin, MenuNavigator navigator);
     public abstract void update(float dt);
     public abstract void render();
+
+    public void endFrame(){}
 
     public void setViewport(Viewport viewport)
     {
