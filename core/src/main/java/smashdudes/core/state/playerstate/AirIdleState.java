@@ -30,6 +30,8 @@ public class AirIdleState extends State
         PlayerAnimationContainerComponent container = entity.getComponent(PlayerAnimationContainerComponent.class);
         AnimationComponent current = entity.getComponent(AnimationComponent.class);
 
+        if (v == null) return;
+
         if(current != container.jumping || current != container.falling)
         {
             entity.removeComponent(AnimationComponent.class);
