@@ -9,9 +9,9 @@ import imgui.ImGui;
 import smashdudes.content.DTO;
 import smashdudes.core.boxtool.logic.BoxToolContext;
 import smashdudes.core.boxtool.presentation.Utils;
-import smashdudes.core.boxtool.presentation.commands.AddBoxCommand;
-import smashdudes.core.boxtool.presentation.commands.RectangleEditCommand;
-import smashdudes.core.boxtool.presentation.commands.RemoveBoxCommand;
+import smashdudes.core.boxtool.logic.commands.AddBoxCommand;
+import smashdudes.core.boxtool.logic.commands.RectangleEditCommand;
+import smashdudes.core.boxtool.logic.commands.RemoveBoxCommand;
 import smashdudes.graphics.RenderResources;
 
 public class AnimationFrameWidget extends ImGuiWidget

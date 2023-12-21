@@ -2,8 +2,8 @@ package smashdudes.core.boxtool.logic;
 
 import com.badlogic.gdx.utils.Queue;
 import smashdudes.content.DTO;
-import smashdudes.core.boxtool.presentation.commands.Command;
-import smashdudes.core.boxtool.presentation.commands.CommandList;
+import smashdudes.core.boxtool.logic.commands.Command;
+import smashdudes.core.boxtool.logic.commands.CommandList;
 
 
 public class BoxToolContext
