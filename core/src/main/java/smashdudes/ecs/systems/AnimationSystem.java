@@ -1,10 +1,11 @@
 package smashdudes.ecs.systems;
 
+import smashdudes.core.state.playerstate.GroundIdleState;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.AnimationComponent;
 import smashdudes.ecs.components.DrawComponent;
-import smashdudes.ecs.components.PlayerAnimationContainerComponent;
+import smashdudes.ecs.components.AnimationContainerComponent;
 import smashdudes.ecs.events.Event;
 import smashdudes.ecs.events.RespawnEvent;
 
@@ -37,9 +38,9 @@ public class AnimationSystem extends RenderSystem
         {
             event.entity.removeComponent(AnimationComponent.class);
 
-            PlayerAnimationContainerComponent container = event.entity.getComponent(PlayerAnimationContainerComponent.class);
+            AnimationContainerComponent container = event.entity.getComponent(AnimationContainerComponent.class);
 
-            event.entity.addComponent(container.idle);
+            event.entity.addComponent(container.get(GroundIdleState.class).getAnimation(0)); // BAD!!
 
         }
     }

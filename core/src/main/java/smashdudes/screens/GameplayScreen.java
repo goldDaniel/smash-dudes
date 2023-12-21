@@ -18,12 +18,15 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import org.libsdl.SDL;
 import smashdudes.content.ContentLoader;
 import smashdudes.content.DTO;
+import smashdudes.core.AnimationSequence;
 import smashdudes.core.PlayerHandle;
 import smashdudes.core.PlayerLobbyInfo;
 import smashdudes.core.WorldUtils;
 import smashdudes.core.input.MenuNavigator;
 import smashdudes.core.state.playerstate.AirIdleState;
+import smashdudes.core.state.playerstate.GroundAttackState;
 import smashdudes.core.state.playerstate.GroundIdleState;
+import smashdudes.core.state.playerstate.GroundRunningState;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
@@ -192,15 +195,18 @@ public class GameplayScreen extends GameScreen
         player.addComponent(s);
 
 
-        PlayerAnimationContainerComponent animContainer = new PlayerAnimationContainerComponent();
-        animContainer.idle = loadPlayerAnimation(characterData, "idle", Animation.PlayMode.LOOP);
-        animContainer.running = loadPlayerAnimation(characterData, "run", Animation.PlayMode.LOOP);
-        animContainer.jumping = loadPlayerAnimation(characterData,"jump", Animation.PlayMode.LOOP);
-        animContainer.falling = loadPlayerAnimation(characterData,"fall", Animation.PlayMode.LOOP);
-        animContainer.attack_1 = loadPlayerAnimation(characterData,"attack_1", Animation.PlayMode.NORMAL);
+        AnimationContainerComponent animContainer = new AnimationContainerComponent();
+
+        animContainer.put(GroundIdleState.class, new AnimationSequence(loadPlayerAnimation(characterData, "idle", Animation.PlayMode.LOOP)));
+        animContainer.put(GroundRunningState.class, new AnimationSequence(loadPlayerAnimation(characterData, "run", Animation.PlayMode.LOOP)));
+        animContainer.put(AirIdleState.class, new AnimationSequence(
+            loadPlayerAnimation(characterData,"jump", Animation.PlayMode.NORMAL),
+            loadPlayerAnimation(characterData,"fall", Animation.PlayMode.LOOP)
+        ));
+        animContainer.put(GroundAttackState.class, new AnimationSequence(loadPlayerAnimation(characterData,"attack_1", Animation.PlayMode.NORMAL)));
         player.addComponent(animContainer);
 
-        player.addComponent(animContainer.idle);
+        player.addComponent(animContainer.get(GroundIdleState.class).getAnimation(0)); // This is really gross
 
         DrawComponent sd = new DrawComponent();
         sd.scale.x = characterData.scale;

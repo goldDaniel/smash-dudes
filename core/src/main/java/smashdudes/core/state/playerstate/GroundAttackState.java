@@ -1,11 +1,11 @@
 package smashdudes.core.state.playerstate;
 
+import smashdudes.core.AnimationSequence;
 import smashdudes.core.state.State;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.AnimationComponent;
-import smashdudes.ecs.components.PlayerAnimationContainerComponent;
+import smashdudes.ecs.components.AnimationContainerComponent;
 import smashdudes.ecs.components.VelocityComponent;
-import smashdudes.gameplay.PlayerState;
 
 public class GroundAttackState extends State
 {
@@ -20,10 +20,12 @@ public class GroundAttackState extends State
         VelocityComponent v = entity.getComponent(VelocityComponent.class);
         v.velocity.x = 0;
 
-        PlayerAnimationContainerComponent container = entity.getComponent(PlayerAnimationContainerComponent.class);
-        entity.removeComponent(AnimationComponent.class).reset();
-        entity.addComponent(container.attack_1);
-        container.attack_1.reset();
+        AnimationContainerComponent container = entity.getComponent(AnimationContainerComponent.class);
+        entity.removeComponent(AnimationComponent.class);
+        AnimationSequence seq = container.get(this.getClass());
+        seq.reset();
+        AnimationComponent anim = seq.getAnimation(0);
+        entity.addComponent(anim);
     }
 
     @Override
@@ -35,8 +37,6 @@ public class GroundAttackState extends State
     @Override
     public void onExit()
     {
-        PlayerAnimationContainerComponent container = entity.getComponent(PlayerAnimationContainerComponent.class);
-        container.attack_1.reset();
     }
 
     @Override

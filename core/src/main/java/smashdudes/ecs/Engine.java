@@ -188,9 +188,9 @@ public class Engine
         {
             Event re = renderEvents.removeFirst();
 
-            for(int i = 0; i < gameSystems.size; i++)
+            for(int i = 0; i < renderSystems.size; i++)
             {
-                gameSystems.get(i).receiveEvent(re);
+                renderSystems.get(i).receiveEvent(re);
             }
         }
     }

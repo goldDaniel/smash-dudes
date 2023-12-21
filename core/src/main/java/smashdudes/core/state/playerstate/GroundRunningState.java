@@ -1,5 +1,6 @@
 package smashdudes.core.state.playerstate;
 
+import smashdudes.core.AnimationSequence;
 import smashdudes.core.state.State;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
@@ -15,9 +16,12 @@ public class GroundRunningState extends State
     @Override
     public void onEnter(float dt)
     {
-        PlayerAnimationContainerComponent container = entity.getComponent(PlayerAnimationContainerComponent.class);
+        AnimationContainerComponent container = entity.getComponent(AnimationContainerComponent.class);
         entity.removeComponent(AnimationComponent.class);
-        entity.addComponent(container.running);
+        AnimationSequence seq = container.get(this.getClass());
+        seq.reset();
+        AnimationComponent anim = seq.getAnimation(0);
+        entity.addComponent(anim);
     }
 
     @Override
@@ -40,8 +44,8 @@ public class GroundRunningState extends State
     @Override
     public void onExit()
     {
-        PlayerAnimationContainerComponent container = entity.getComponent(PlayerAnimationContainerComponent.class);
-        container.running.reset();
+        AnimationContainerComponent container = entity.getComponent(AnimationContainerComponent.class);
+        container.get(this.getClass()).reset();
     }
 
     @Override

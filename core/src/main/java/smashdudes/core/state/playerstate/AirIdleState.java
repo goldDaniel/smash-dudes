@@ -1,25 +1,33 @@
 package smashdudes.core.state.playerstate;
 
+import smashdudes.core.AnimationSequence;
 import smashdudes.core.state.State;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.AnimationComponent;
 import smashdudes.ecs.components.CharacterInputComponent;
-import smashdudes.ecs.components.PlayerAnimationContainerComponent;
+import smashdudes.ecs.components.AnimationContainerComponent;
 import smashdudes.ecs.components.VelocityComponent;
 import smashdudes.ecs.events.Event;
 import smashdudes.ecs.events.LandingEvent;
 
 public class AirIdleState extends State
 {
+    private boolean beginFall = false;
     public AirIdleState(Entity entity)
     {
         super(entity);
     }
 
+    // works in parent class? animation component not guaranteed for stateful entities
     @Override
     public void onEnter(float dt)
     {
-
+        AnimationContainerComponent container = entity.getComponent(AnimationContainerComponent.class);
+        entity.removeComponent(AnimationComponent.class);
+        AnimationSequence seq = container.get(this.getClass());
+        seq.reset();
+        AnimationComponent anim = seq.getAnimation(0);
+        entity.addComponent(anim);
     }
 
     @Override
@@ -27,20 +35,13 @@ public class AirIdleState extends State
     {
         CharacterInputComponent ci = entity.getComponent(CharacterInputComponent.class);
         VelocityComponent v = entity.getComponent(VelocityComponent.class);
-        PlayerAnimationContainerComponent container = entity.getComponent(PlayerAnimationContainerComponent.class);
-        AnimationComponent current = entity.getComponent(AnimationComponent.class);
+        AnimationContainerComponent container = entity.getComponent(AnimationContainerComponent.class);
 
-        if(current != container.jumping || current != container.falling)
+        if(!beginFall && v.velocity.y <= 0)
         {
             entity.removeComponent(AnimationComponent.class);
-            if(v.velocity.y > 0)
-            {
-                entity.addComponent(container.jumping);
-            }
-            else
-            {
-                entity.addComponent(container.falling);
-            }
+            entity.addComponent(container.get(this.getClass()).getAnimation(1)); // ew
+            beginFall = true;
         }
 
         if(ci.currentState.left || ci.currentState.right)
