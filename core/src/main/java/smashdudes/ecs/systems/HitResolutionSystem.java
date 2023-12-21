@@ -22,12 +22,14 @@ public class HitResolutionSystem extends GameSystem
     {
         HitResolutionComponent res = entity.getComponent(HitResolutionComponent.class);
 
+        boolean facingLeft = res.attacker.getComponent(PlayerComponent.class).facingLeft;
+
         engine.addEvent(new StunnedEvent(res.attacked, 0.5f));
 
         if(res.attacked.hasComponent(VelocityComponent.class))
         {
             VelocityComponent v = res.attacked.getComponent(VelocityComponent.class);
-            v.velocity.set(new Vector2(1, 1).nor().scl(20)); // res.knockback
+            v.velocity.set(new Vector2((facingLeft ? -1 : 1), 1).nor().scl(20)); // res.knockback
         }
 
         if(res.attacked.hasComponent(HealthComponent.class))
