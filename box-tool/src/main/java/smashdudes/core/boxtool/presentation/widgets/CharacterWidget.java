@@ -15,6 +15,7 @@ import smashdudes.core.boxtool.logic.ContentService;
 import smashdudes.core.boxtool.presentation.Utils;
 import smashdudes.core.boxtool.presentation.commands.AddAnimationCommand;
 import smashdudes.core.boxtool.presentation.commands.PropertyEditCommand;
+import smashdudes.core.boxtool.presentation.commands.ScaleCharacterCommand;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -152,7 +153,7 @@ public class CharacterWidget extends ImGuiWidget
         ImFloat scale = new ImFloat(context.getCharacter().scale);
         if (ImGui.inputFloat("Scale", scale))
         {
-            context.execute(new PropertyEditCommand<>("scale", scale.get(), context.getCharacter()));
+            context.execute(new ScaleCharacterCommand(context.getCharacter(), scale.get()));
         }
     }
 
