@@ -1,4 +1,4 @@
-package smashdudes.core.boxtool.presentation.commands;
+package smashdudes.core.boxtool.logic.commands;
 
 import smashdudes.content.DTO;
 

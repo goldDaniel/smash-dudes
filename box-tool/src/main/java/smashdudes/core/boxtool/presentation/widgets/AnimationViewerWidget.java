@@ -20,8 +20,8 @@ import smashdudes.content.DTO;
 import smashdudes.core.boxtool.logic.AnimationSelectionContext;
 import smashdudes.core.boxtool.logic.BoxToolContext;
 import smashdudes.core.boxtool.logic.SelectionType;
-import smashdudes.core.boxtool.presentation.commands.AddBoxCommand;
-import smashdudes.core.boxtool.presentation.commands.RectangleEditCommand;
+import smashdudes.core.boxtool.logic.commands.AddBoxCommand;
+import smashdudes.core.boxtool.logic.commands.RectangleEditCommand;
 import smashdudes.graphics.RenderResources;
 
 import static smashdudes.core.boxtool.logic.AnimationSelectionContext.*;

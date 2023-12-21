@@ -13,9 +13,9 @@ import smashdudes.content.DTO;
 import smashdudes.core.boxtool.logic.BoxToolContext;
 import smashdudes.core.boxtool.logic.ContentService;
 import smashdudes.core.boxtool.presentation.Utils;
-import smashdudes.core.boxtool.presentation.commands.AddAnimationCommand;
-import smashdudes.core.boxtool.presentation.commands.PropertyEditCommand;
-import smashdudes.core.boxtool.presentation.commands.ScaleCharacterCommand;
+import smashdudes.core.boxtool.logic.commands.AddAnimationCommand;
+import smashdudes.core.boxtool.logic.commands.PropertyEditCommand;
+import smashdudes.core.boxtool.logic.commands.ScaleCharacterCommand;
 
 import java.io.IOException;
 import java.nio.file.Files;
