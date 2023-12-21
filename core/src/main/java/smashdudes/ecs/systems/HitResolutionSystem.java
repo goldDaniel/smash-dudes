@@ -5,7 +5,6 @@ import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
 import smashdudes.ecs.events.StunnedEvent;
-import smashdudes.gameplay.CLASSTOREMOVE;
 
 public class HitResolutionSystem extends GameSystem
 {
