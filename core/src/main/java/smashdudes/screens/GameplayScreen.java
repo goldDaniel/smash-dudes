@@ -22,11 +22,11 @@ import smashdudes.core.PlayerHandle;
 import smashdudes.core.PlayerLobbyInfo;
 import smashdudes.core.WorldUtils;
 import smashdudes.core.input.MenuNavigator;
-import smashdudes.core.state.State;
-import smashdudes.core.state.playerstate.*;
+import smashdudes.gameplay.state.State;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
+import smashdudes.gameplay.state.playerstate.*;
 import smashdudes.graphics.AnimationFrame;
 import smashdudes.graphics.RenderResources;
 import smashdudes.util.CharacterData;
@@ -194,10 +194,11 @@ public class GameplayScreen extends GameScreen
         animContainer.put(JumpState.class, loadPlayerAnimation(characterData,"jump", Animation.PlayMode.NORMAL));
         animContainer.put(FallingState.class, loadPlayerAnimation(characterData, "fall", Animation.PlayMode.LOOP));
         animContainer.put(GroundAttackState.class, loadPlayerAnimation(characterData,"attack_1", Animation.PlayMode.NORMAL));
+        animContainer.put(StunnedState.class, loadPlayerAnimation(characterData, "stunned", Animation.PlayMode.NORMAL));
         animContainer.setDefault(GroundIdleState.class);
         player.addComponent(animContainer);
 
-        StateComponent s = new StateComponent(new FallingState(player), new GroundIdleState(player));
+        StateComponent s = new StateComponent(new FallingState(player));
         player.addComponent(s);
 
         DrawComponent sd = new DrawComponent();

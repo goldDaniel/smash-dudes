@@ -1,11 +1,9 @@
 package smashdudes.ecs.systems;
 
-import smashdudes.core.state.playerstate.GroundIdleState;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.AnimationComponent;
 import smashdudes.ecs.components.DrawComponent;
-import smashdudes.ecs.components.AnimationContainerComponent;
 import smashdudes.ecs.components.StateComponent;
 import smashdudes.ecs.events.Event;
 import smashdudes.ecs.events.RespawnEvent;

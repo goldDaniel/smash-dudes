@@ -1,6 +1,6 @@
-package smashdudes.core.state.playerstate;
+package smashdudes.gameplay.state.playerstate;
 
-import smashdudes.core.state.State;
+import smashdudes.gameplay.state.State;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.AnimationComponent;
 import smashdudes.ecs.components.AnimationContainerComponent;
@@ -9,21 +9,11 @@ import smashdudes.ecs.components.VelocityComponent;
 import smashdudes.ecs.events.Event;
 import smashdudes.ecs.events.LandingEvent;
 
-public class FallingState extends State
+public class FallingState extends PlayerState
 {
     public FallingState(Entity entity)
     {
         super(entity);
-    }
-
-    @Override
-    public void onEnter(float dt)
-    {
-        AnimationContainerComponent container = entity.getComponent(AnimationContainerComponent.class);
-        entity.removeComponent(AnimationComponent.class);
-        AnimationComponent anim = container.get(this.getClass());
-        anim.reset();
-        entity.addComponent(anim);
     }
 
     @Override
@@ -67,11 +57,12 @@ public class FallingState extends State
     @Override
     public State handleEvent(Event event)
     {
-        if (event instanceof LandingEvent)
+        State result = super.handleEvent(event);
+        if (result != this && event instanceof LandingEvent)
         {
-            return new GroundIdleState(entity);
+            result = new GroundIdleState(entity);
         }
 
-        return this;
+        return result;
     }
 }

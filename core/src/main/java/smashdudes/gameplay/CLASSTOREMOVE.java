@@ -1,6 +1,6 @@
 package smashdudes.gameplay;
 
-public enum PlayerState
+public enum CLASSTOREMOVE
 {
     Ground_Idle,
     Ground_Attack,

@@ -1,29 +1,16 @@
-package smashdudes.core.state.playerstate;
+package smashdudes.gameplay.state.playerstate;
 
-import smashdudes.core.state.State;
+import smashdudes.gameplay.state.State;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.AnimationComponent;
 import smashdudes.ecs.components.AnimationContainerComponent;
 import smashdudes.ecs.components.VelocityComponent;
 
-public class GroundAttackState extends State
+public class GroundAttackState extends PlayerState
 {
     public GroundAttackState(Entity entity)
     {
         super(entity);
-    }
-
-    @Override
-    public void onEnter(float dt)
-    {
-        VelocityComponent v = entity.getComponent(VelocityComponent.class);
-        v.velocity.x = 0;
-
-        AnimationContainerComponent container = entity.getComponent(AnimationContainerComponent.class);
-        entity.removeComponent(AnimationComponent.class);
-        AnimationComponent anim = container.get(this.getClass());
-        anim.reset();
-        entity.addComponent(anim);
     }
 
     @Override

@@ -66,7 +66,6 @@ public class Engine
         gameSystems.add(new LandingSystem(this));
         gameSystems.add(new HitDetectionSystem(this));
         gameSystems.add(new HitResolutionSystem(this));
-        gameSystems.add(new PlayerStunnedSystem(this));
         gameSystems.add(new ProjectileSystem(this));
         gameSystems.add(new DeathSystem(this));
         gameSystems.add(new RespawnSystem(this));
