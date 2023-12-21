@@ -1,6 +1,5 @@
 package smashdudes.core.state.playerstate;
 
-import smashdudes.core.AnimationSequence;
 import smashdudes.core.state.State;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
@@ -18,9 +17,8 @@ public class GroundRunningState extends State
     {
         AnimationContainerComponent container = entity.getComponent(AnimationContainerComponent.class);
         entity.removeComponent(AnimationComponent.class);
-        AnimationSequence seq = container.get(this.getClass());
-        seq.reset();
-        AnimationComponent anim = seq.getAnimation(0);
+        AnimationComponent anim = container.get(this.getClass());
+        anim.reset();
         entity.addComponent(anim);
     }
 
@@ -63,7 +61,7 @@ public class GroundRunningState extends State
         {
             v.velocity.y = j.jumpStrength;
             throwEvent(new JumpEvent(entity));
-            return new AirIdleState(entity);
+            return new JumpState(entity);
         }
         else if( (ci.currentState.left && ci.currentState.right) ||
                 !(ci.currentState.left || ci.currentState.right) ||
@@ -71,7 +69,7 @@ public class GroundRunningState extends State
         {
             if(Math.abs(v.velocity.y) > 0)
             {
-                return new AirIdleState(entity);
+                return new JumpState(entity);
             }
             else
             {
@@ -80,7 +78,7 @@ public class GroundRunningState extends State
         }
         else if (v.velocity.y < 0)
         {
-            return new AirIdleState(entity);
+            return new JumpState(entity);
         }
 
         return this;

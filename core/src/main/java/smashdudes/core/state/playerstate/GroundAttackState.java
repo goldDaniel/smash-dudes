@@ -1,6 +1,5 @@
 package smashdudes.core.state.playerstate;
 
-import smashdudes.core.AnimationSequence;
 import smashdudes.core.state.State;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.AnimationComponent;
@@ -22,9 +21,8 @@ public class GroundAttackState extends State
 
         AnimationContainerComponent container = entity.getComponent(AnimationContainerComponent.class);
         entity.removeComponent(AnimationComponent.class);
-        AnimationSequence seq = container.get(this.getClass());
-        seq.reset();
-        AnimationComponent anim = seq.getAnimation(0);
+        AnimationComponent anim = container.get(this.getClass());
+        anim.reset();
         entity.addComponent(anim);
     }
 

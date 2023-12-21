@@ -1,6 +1,5 @@
 package smashdudes.core.state.playerstate;
 
-import smashdudes.core.AnimationSequence;
 import smashdudes.core.state.State;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
@@ -18,9 +17,8 @@ public class GroundIdleState extends State
     {
         AnimationContainerComponent container = entity.getComponent(AnimationContainerComponent.class);
         entity.removeComponent(AnimationComponent.class);
-        AnimationSequence seq = container.get(this.getClass());
-        seq.reset();
-        AnimationComponent anim = seq.getAnimation(0);
+        AnimationComponent anim = container.get(this.getClass());
+        anim.reset();
         entity.addComponent(anim);
     }
 
@@ -56,11 +54,11 @@ public class GroundIdleState extends State
         {
             v.velocity.y = j.jumpStrength;
             throwEvent(new JumpEvent(entity));
-            return new AirIdleState(entity);
+            return new JumpState(entity);
         }
         else if(v.velocity.y < 0)
         {
-            return new AirIdleState(entity);
+            return new FallingState(entity);
         }
 
         return this;

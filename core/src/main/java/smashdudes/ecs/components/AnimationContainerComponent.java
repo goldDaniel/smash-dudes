@@ -1,34 +1,31 @@
 package smashdudes.ecs.components;
 
 import com.badlogic.gdx.utils.ObjectMap;
-import smashdudes.core.AnimationSequence;
-import smashdudes.core.state.State;
 import smashdudes.ecs.Component;
 
-
-
-public class AnimationContainerComponent extends Component
+public class AnimationContainerComponent<T> extends Component
 {
-    private AnimationSequence defaultSequence = null;
-    private final ObjectMap<Class<?>, AnimationSequence> animationSequenceMap = new ObjectMap<>();
+    private AnimationComponent defaultComponent;
 
-    public AnimationSequence get(Class<?> clazz)
+    private final ObjectMap<Class<? extends T>, AnimationComponent> animationMap = new ObjectMap<>();
+
+    public AnimationComponent get(Class<? extends T> clazz)
     {
-        return animationSequenceMap.get(clazz);
+        return animationMap.get(clazz);
     }
 
-    public void put(Class<?> clazz, AnimationSequence seq)
+    public void put(Class<? extends T> clazz, AnimationComponent comp)
     {
-        animationSequenceMap.put(clazz, seq);
+        animationMap.put(clazz, comp);
     }
 
-    public AnimationSequence get()
+    public AnimationComponent getDefault()
     {
-        return defaultSequence;
+        return defaultComponent;
     }
 
-    public void setDefault(Class<?> clazz)
+    public void setDefault(Class<? extends T> clazz)
     {
-        defaultSequence = animationSequenceMap.get(clazz);
+        defaultComponent = animationMap.get(clazz);
     }
 }

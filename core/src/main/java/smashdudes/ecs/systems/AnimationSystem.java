@@ -39,8 +39,7 @@ public class AnimationSystem extends RenderSystem
             event.entity.removeComponent(AnimationComponent.class);
 
             AnimationContainerComponent container = event.entity.getComponent(AnimationContainerComponent.class);
-
-            event.entity.addComponent(container.get().getAnimation(0)); // BAD!!
+            event.entity.addComponent(container.getDefault());
 
         }
     }

@@ -1,7 +1,5 @@
 package smashdudes.ecs.systems;
 
-import smashdudes.core.state.playerstate.AirIdleState;
-import smashdudes.core.state.playerstate.GroundIdleState;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.StateComponent;
