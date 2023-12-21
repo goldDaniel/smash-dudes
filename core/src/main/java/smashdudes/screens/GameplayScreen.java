@@ -197,7 +197,7 @@ public class GameplayScreen extends GameScreen
         animContainer.setDefault(GroundIdleState.class);
         player.addComponent(animContainer);
 
-        StateComponent s = new StateComponent(new FallingState(player));
+        StateComponent s = new StateComponent(new FallingState(player), new GroundIdleState(player));
         player.addComponent(s);
 
         DrawComponent sd = new DrawComponent();
