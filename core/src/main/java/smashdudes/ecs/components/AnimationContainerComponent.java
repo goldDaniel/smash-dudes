@@ -9,15 +9,26 @@ import smashdudes.ecs.Component;
 
 public class AnimationContainerComponent extends Component
 {
-    private final ObjectMap<Class<? extends State>, AnimationSequence> animationSequenceMap = new ObjectMap<>();
+    private AnimationSequence defaultSequence = null;
+    private final ObjectMap<Class<?>, AnimationSequence> animationSequenceMap = new ObjectMap<>();
 
-    public AnimationSequence get(Class<? extends State> clazz)
+    public AnimationSequence get(Class<?> clazz)
     {
         return animationSequenceMap.get(clazz);
     }
 
-    public void put(Class<? extends State> clazz, AnimationSequence seq)
+    public void put(Class<?> clazz, AnimationSequence seq)
     {
         animationSequenceMap.put(clazz, seq);
+    }
+
+    public AnimationSequence get()
+    {
+        return defaultSequence;
+    }
+
+    public void setDefault(Class<?> clazz)
+    {
+        defaultSequence = animationSequenceMap.get(clazz);
     }
 }

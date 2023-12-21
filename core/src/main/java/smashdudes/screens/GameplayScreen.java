@@ -204,6 +204,7 @@ public class GameplayScreen extends GameScreen
             loadPlayerAnimation(characterData,"fall", Animation.PlayMode.LOOP)
         ));
         animContainer.put(GroundAttackState.class, new AnimationSequence(loadPlayerAnimation(characterData,"attack_1", Animation.PlayMode.NORMAL)));
+        animContainer.setDefault(GroundIdleState.class);
         player.addComponent(animContainer);
 
         player.addComponent(animContainer.get(GroundIdleState.class).getAnimation(0)); // This is really gross
