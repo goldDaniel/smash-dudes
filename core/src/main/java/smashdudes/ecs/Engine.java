@@ -66,7 +66,6 @@ public class Engine
         gameSystems.add(new LandingSystem(this));
         gameSystems.add(new HitDetectionSystem(this));
         gameSystems.add(new HitResolutionSystem(this));
-        gameSystems.add(new PlayerStunnedSystem(this));
         gameSystems.add(new ProjectileSystem(this));
         gameSystems.add(new DeathSystem(this));
         gameSystems.add(new RespawnSystem(this));
@@ -188,9 +187,9 @@ public class Engine
         {
             Event re = renderEvents.removeFirst();
 
-            for(int i = 0; i < gameSystems.size; i++)
+            for(int i = 0; i < renderSystems.size; i++)
             {
-                gameSystems.get(i).receiveEvent(re);
+                renderSystems.get(i).receiveEvent(re);
             }
         }
     }

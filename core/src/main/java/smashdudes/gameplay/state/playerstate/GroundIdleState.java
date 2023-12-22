@@ -1,24 +1,15 @@
-package smashdudes.core.state.playerstate;
+package smashdudes.gameplay.state.playerstate;
 
-import smashdudes.core.state.State;
+import smashdudes.gameplay.state.State;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
 import smashdudes.ecs.events.JumpEvent;
-import smashdudes.gameplay.PlayerState;
 
-public class GroundIdleState extends State
+public class GroundIdleState extends PlayerState
 {
     public GroundIdleState(Entity entity)
     {
         super(entity);
-    }
-
-    @Override
-    public void onEnter(float dt)
-    {
-        PlayerAnimationContainerComponent container = entity.getComponent(PlayerAnimationContainerComponent.class);
-        entity.removeComponent(AnimationComponent.class);
-        entity.addComponent(container.idle);
     }
 
     @Override
@@ -53,11 +44,11 @@ public class GroundIdleState extends State
         {
             v.velocity.y = j.jumpStrength;
             throwEvent(new JumpEvent(entity));
-            return new AirIdleState(entity);
+            return new JumpState(entity);
         }
         else if(v.velocity.y < 0)
         {
-            return new AirIdleState(entity);
+            return new FallingState(entity);
         }
 
         return this;

@@ -1,12 +1,11 @@
 package smashdudes.ecs.systems;
 
-import smashdudes.core.state.playerstate.AirIdleState;
-import smashdudes.core.state.playerstate.GroundIdleState;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.StateComponent;
 import smashdudes.ecs.events.Event;
 import smashdudes.ecs.events.LandingEvent;
+import smashdudes.ecs.events.StunnedEvent;
 
 public class StateSystem extends GameSystem
 {
@@ -14,7 +13,8 @@ public class StateSystem extends GameSystem
     {
         super(engine);
         registerComponentType(StateComponent.class);
-        registerEventType(LandingEvent.class);
+        registerEventType(LandingEvent.class); // Todo (Nathan): use state events instead to avoid manually registering events
+        registerEventType(StunnedEvent.class);
     }
     @Override
     public void updateEntity(Entity entity, float dt)

@@ -4,7 +4,7 @@ import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.AnimationComponent;
 import smashdudes.ecs.components.DrawComponent;
-import smashdudes.ecs.components.PlayerAnimationContainerComponent;
+import smashdudes.ecs.components.StateComponent;
 import smashdudes.ecs.events.Event;
 import smashdudes.ecs.events.RespawnEvent;
 
@@ -35,12 +35,8 @@ public class AnimationSystem extends RenderSystem
     {
         if(event instanceof RespawnEvent)
         {
-            event.entity.removeComponent(AnimationComponent.class);
-
-            PlayerAnimationContainerComponent container = event.entity.getComponent(PlayerAnimationContainerComponent.class);
-
-            event.entity.addComponent(container.idle);
-
+            StateComponent state = event.entity.getComponent(StateComponent.class);
+            state.setNextState(state.defaultState);
         }
     }
 }

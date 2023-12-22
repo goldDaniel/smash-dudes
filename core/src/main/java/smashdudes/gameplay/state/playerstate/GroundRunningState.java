@@ -1,23 +1,15 @@
-package smashdudes.core.state.playerstate;
+package smashdudes.gameplay.state.playerstate;
 
-import smashdudes.core.state.State;
+import smashdudes.gameplay.state.State;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
 import smashdudes.ecs.events.JumpEvent;
 
-public class GroundRunningState extends State
+public class GroundRunningState extends PlayerState
 {
     public GroundRunningState(Entity entity)
     {
         super(entity);
-    }
-
-    @Override
-    public void onEnter(float dt)
-    {
-        PlayerAnimationContainerComponent container = entity.getComponent(PlayerAnimationContainerComponent.class);
-        entity.removeComponent(AnimationComponent.class);
-        entity.addComponent(container.running);
     }
 
     @Override
@@ -40,8 +32,8 @@ public class GroundRunningState extends State
     @Override
     public void onExit()
     {
-        PlayerAnimationContainerComponent container = entity.getComponent(PlayerAnimationContainerComponent.class);
-        container.running.reset();
+        AnimationContainerComponent container = entity.getComponent(AnimationContainerComponent.class);
+        container.get(this.getClass()).reset();
     }
 
     @Override
@@ -59,7 +51,7 @@ public class GroundRunningState extends State
         {
             v.velocity.y = j.jumpStrength;
             throwEvent(new JumpEvent(entity));
-            return new AirIdleState(entity);
+            return new JumpState(entity);
         }
         else if( (ci.currentState.left && ci.currentState.right) ||
                 !(ci.currentState.left || ci.currentState.right) ||
@@ -67,7 +59,7 @@ public class GroundRunningState extends State
         {
             if(Math.abs(v.velocity.y) > 0)
             {
-                return new AirIdleState(entity);
+                return new JumpState(entity);
             }
             else
             {
@@ -76,7 +68,7 @@ public class GroundRunningState extends State
         }
         else if (v.velocity.y < 0)
         {
-            return new AirIdleState(entity);
+            return new JumpState(entity);
         }
 
         return this;

@@ -1,25 +1,19 @@
-package smashdudes.core.state.playerstate;
+package smashdudes.gameplay.state.playerstate;
 
-import smashdudes.core.state.State;
+import smashdudes.gameplay.state.State;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.AnimationComponent;
+import smashdudes.ecs.components.AnimationContainerComponent;
 import smashdudes.ecs.components.CharacterInputComponent;
-import smashdudes.ecs.components.PlayerAnimationContainerComponent;
 import smashdudes.ecs.components.VelocityComponent;
 import smashdudes.ecs.events.Event;
 import smashdudes.ecs.events.LandingEvent;
 
-public class AirIdleState extends State
+public class FallingState extends PlayerState
 {
-    public AirIdleState(Entity entity)
+    public FallingState(Entity entity)
     {
         super(entity);
-    }
-
-    @Override
-    public void onEnter(float dt)
-    {
-
     }
 
     @Override
@@ -27,21 +21,6 @@ public class AirIdleState extends State
     {
         CharacterInputComponent ci = entity.getComponent(CharacterInputComponent.class);
         VelocityComponent v = entity.getComponent(VelocityComponent.class);
-        PlayerAnimationContainerComponent container = entity.getComponent(PlayerAnimationContainerComponent.class);
-        AnimationComponent current = entity.getComponent(AnimationComponent.class);
-
-        if(current != container.jumping || current != container.falling)
-        {
-            entity.removeComponent(AnimationComponent.class);
-            if(v.velocity.y > 0)
-            {
-                entity.addComponent(container.jumping);
-            }
-            else
-            {
-                entity.addComponent(container.falling);
-            }
-        }
 
         if(ci.currentState.left || ci.currentState.right)
         {
@@ -64,13 +43,26 @@ public class AirIdleState extends State
     }
 
     @Override
-    public State handleEvent(Event event)
+    public State getNextState()
     {
-        if (event instanceof LandingEvent)
+        VelocityComponent v = entity.getComponent(VelocityComponent.class);
+        if(v.velocity.y == 0)
         {
             return new GroundIdleState(entity);
         }
 
         return this;
+    }
+
+    @Override
+    public State handleEvent(Event event)
+    {
+        State result = super.handleEvent(event);
+        if (result != this && event instanceof LandingEvent)
+        {
+            result = new GroundIdleState(entity);
+        }
+
+        return result;
     }
 }

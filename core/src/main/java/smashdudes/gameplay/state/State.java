@@ -1,4 +1,4 @@
-package smashdudes.core.state;
+package smashdudes.gameplay.state;
 
 import com.badlogic.gdx.utils.Queue;
 import smashdudes.ecs.Entity;
