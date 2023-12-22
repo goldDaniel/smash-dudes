@@ -41,6 +41,12 @@ public class JumpState extends PlayerAirState
     @Override
     public State getNextState()
     {
+        CharacterInputComponent ci = entity.getComponent(CharacterInputComponent.class);
+        if(ci.currentState.punch)
+        {
+            return new AirAttackState(entity);
+        }
+
         VelocityComponent v = entity.getComponent(VelocityComponent.class);
         if(v.velocity.y <= 0)
         {

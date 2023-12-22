@@ -21,7 +21,6 @@ public class FallingState extends PlayerAirState
         CharacterInputComponent ci = entity.getComponent(CharacterInputComponent.class);
         VelocityComponent v = entity.getComponent(VelocityComponent.class);
 
-
         if(ci.currentState.left || ci.currentState.right)
         {
             float speed = v.airSpeed;
@@ -49,6 +48,12 @@ public class FallingState extends PlayerAirState
         if(v.velocity.y == 0)
         {
             return new GroundIdleState(entity);
+        }
+
+        CharacterInputComponent ci = entity.getComponent(CharacterInputComponent.class);
+        if(ci.currentState.punch)
+        {
+            return new AirAttackState(entity);
         }
 
         return this;
