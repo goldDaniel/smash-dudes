@@ -1,11 +1,11 @@
-package smashdudes.gameplay.state.playerstate;
+package smashdudes.gameplay.state.playerstate.air;
 
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.events.Event;
 import smashdudes.ecs.events.RespawnAwakeEvent;
 import smashdudes.gameplay.state.State;
 
-public class RespawnState extends PlayerState
+public class RespawnState extends PlayerAirState
 {
     public RespawnState(Entity entity)
     {
@@ -30,7 +30,7 @@ public class RespawnState extends PlayerState
         State result = super.handleEvent(event);
         if (result == this && event instanceof RespawnAwakeEvent)
         {
-            result = new GroundIdleState(entity);
+            result = new FallingState(entity);
         }
 
         return result;

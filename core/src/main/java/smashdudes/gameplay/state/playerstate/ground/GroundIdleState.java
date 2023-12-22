@@ -1,11 +1,15 @@
-package smashdudes.gameplay.state.playerstate;
+package smashdudes.gameplay.state.playerstate.ground;
 
-import smashdudes.gameplay.state.State;
 import smashdudes.ecs.Entity;
-import smashdudes.ecs.components.*;
+import smashdudes.ecs.components.CharacterInputComponent;
+import smashdudes.ecs.components.JumpComponent;
+import smashdudes.ecs.components.VelocityComponent;
 import smashdudes.ecs.events.JumpEvent;
+import smashdudes.gameplay.state.State;
+import smashdudes.gameplay.state.playerstate.air.FallingState;
+import smashdudes.gameplay.state.playerstate.air.JumpState;
 
-public class GroundIdleState extends PlayerState
+public class GroundIdleState extends PlayerGroundState
 {
     public GroundIdleState(Entity entity)
     {
@@ -15,7 +19,6 @@ public class GroundIdleState extends PlayerState
     @Override
     public void innerUpdate(float dt)
     {
-
     }
 
     @Override

@@ -3,7 +3,6 @@ package smashdudes.core.input;
 
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerAdapter;
-import com.badlogic.gdx.math.Vector2;
 import org.libsdl.SDL;
 
 /**
@@ -80,7 +79,7 @@ public class ControllerInputListener extends ControllerAdapter implements IGameI
     @Override
     public boolean axisMoved (Controller controller, int axisIndex, float value)
     {
-        final float deadZone = 0.2f;
+        final float deadZone = 0.4f;
         if(Math.abs(value) < deadZone)
         {
             if(axisIndex == SDL.SDL_CONTROLLER_AXIS_LEFTX)

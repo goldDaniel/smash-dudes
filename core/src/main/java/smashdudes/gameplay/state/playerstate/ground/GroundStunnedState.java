@@ -1,12 +1,12 @@
-package smashdudes.gameplay.state.playerstate;
+package smashdudes.gameplay.state.playerstate.ground;
 
 import smashdudes.ecs.Entity;
 import smashdudes.gameplay.state.State;
 
-public class StunnedState extends PlayerState
+public class GroundStunnedState extends PlayerGroundState
 {
-    private float stunTimer = 0;
-    public StunnedState(Entity entity, float stunTimer)
+    private float stunTimer;
+    public GroundStunnedState(Entity entity, float stunTimer)
     {
         super(entity);
         this.stunTimer = stunTimer;

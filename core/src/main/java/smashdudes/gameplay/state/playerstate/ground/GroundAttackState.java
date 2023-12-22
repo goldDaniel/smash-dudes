@@ -1,12 +1,10 @@
-package smashdudes.gameplay.state.playerstate;
+package smashdudes.gameplay.state.playerstate.ground;
 
-import smashdudes.gameplay.state.State;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.AnimationComponent;
-import smashdudes.ecs.components.AnimationContainerComponent;
-import smashdudes.ecs.components.VelocityComponent;
+import smashdudes.gameplay.state.State;
 
-public class GroundAttackState extends PlayerState
+public class GroundAttackState extends PlayerGroundState
 {
     public GroundAttackState(Entity entity)
     {
@@ -16,7 +14,6 @@ public class GroundAttackState extends PlayerState
     @Override
     public void innerUpdate(float dt)
     {
-
     }
 
     @Override
