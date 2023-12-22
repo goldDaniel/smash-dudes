@@ -46,7 +46,7 @@ public class DeathSystem extends GameSystem
         if(play.lives > 0)
         {
             alivePlayers.add(entity);
-            if(attemptRespawn) engine.addEvent(new RespawnEvent(entity, WorldUtils.getRespawnPoint()));
+            if(attemptRespawn) engine.addEvent(new RespawnEvent(entity, WorldUtils.getRespawnPoint()).setImmediate());
         }
     }
 

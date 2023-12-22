@@ -3,9 +3,7 @@ package smashdudes.ecs.systems;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.StateComponent;
-import smashdudes.ecs.events.Event;
-import smashdudes.ecs.events.LandingEvent;
-import smashdudes.ecs.events.StunnedEvent;
+import smashdudes.ecs.events.*;
 
 public class StateSystem extends GameSystem
 {
@@ -13,8 +11,14 @@ public class StateSystem extends GameSystem
     {
         super(engine);
         registerComponentType(StateComponent.class);
-        registerEventType(LandingEvent.class); // Todo (Nathan): use state events instead to avoid manually registering events
+
+        // Todo (Nathan): use a StateEvent class instead to avoid manually registering events
+        //                ISystem.receiveEvent kinda messes this up
+        //                This is the prime suspect for any state related bugs
+        registerEventType(LandingEvent.class);
         registerEventType(StunnedEvent.class);
+        registerEventType(RespawnEvent.class);
+        registerEventType(RespawnAwakeEvent.class);
     }
     @Override
     public void updateEntity(Entity entity, float dt)

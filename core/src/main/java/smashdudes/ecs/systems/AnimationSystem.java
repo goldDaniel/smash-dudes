@@ -29,14 +29,4 @@ public class AnimationSystem extends RenderSystem
 
         draw.texture = anim.getCurrentFrame().texture;
     }
-
-    @Override
-    protected void handleEvent(Event event)
-    {
-        if(event instanceof RespawnEvent)
-        {
-            StateComponent state = event.entity.getComponent(StateComponent.class);
-            state.setNextState(state.defaultState);
-        }
-    }
 }

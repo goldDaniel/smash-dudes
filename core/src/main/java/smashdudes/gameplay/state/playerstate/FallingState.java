@@ -58,7 +58,7 @@ public class FallingState extends PlayerState
     public State handleEvent(Event event)
     {
         State result = super.handleEvent(event);
-        if (result != this && event instanceof LandingEvent)
+        if (result == this && event instanceof LandingEvent)
         {
             result = new GroundIdleState(entity);
         }

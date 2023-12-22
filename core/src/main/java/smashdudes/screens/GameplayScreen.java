@@ -195,6 +195,7 @@ public class GameplayScreen extends GameScreen
         animContainer.put(FallingState.class, loadPlayerAnimation(characterData, "fall", Animation.PlayMode.LOOP));
         animContainer.put(GroundAttackState.class, loadPlayerAnimation(characterData,"attack_1", Animation.PlayMode.NORMAL));
         animContainer.put(StunnedState.class, loadPlayerAnimation(characterData, "stunned", Animation.PlayMode.NORMAL));
+        animContainer.put(RespawnState.class, loadPlayerAnimation(characterData, "idle", Animation.PlayMode.LOOP));
         animContainer.setDefault(GroundIdleState.class);
         player.addComponent(animContainer);
 
