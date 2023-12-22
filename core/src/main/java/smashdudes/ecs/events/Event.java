@@ -13,9 +13,9 @@ public abstract class Event
         this.entity = entity;
     }
 
-    public Event setImmediate(boolean immediate)
+    public Event setImmediate()
     {
-        this.immediate = immediate;
+        this.immediate = true;
         return this;
     }
 

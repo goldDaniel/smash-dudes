@@ -131,7 +131,7 @@ public class TerrainCollisionSystem extends GameSystem
                     if (!onGroundLastFrame.get(entity))
                     {
                         Vector2 landingPoint = p.position.cpy().sub(0, r0.height / 2);
-                        engine.addEvent(new CollisionEvent(entity, landingPoint).setImmediate(false));
+                        engine.addEvent(new CollisionEvent(entity, landingPoint).setImmediate());
                     }
 
                     touchedGround = true;

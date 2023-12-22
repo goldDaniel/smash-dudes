@@ -9,6 +9,7 @@ import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
 import smashdudes.ecs.events.Event;
+import smashdudes.ecs.events.RespawnAwakeEvent;
 import smashdudes.ecs.events.RespawnEvent;
 
 public class RespawnSystem extends GameSystem
@@ -39,6 +40,7 @@ public class RespawnSystem extends GameSystem
 
             removedComponents.get(play.handle).clear();
             entity.removeComponent(PlayerResetComponent.class);
+            engine.addEvent(new RespawnAwakeEvent(entity).setImmediate());
         }
 
         res.currDuration += dt;
