@@ -10,6 +10,8 @@ import smashdudes.ecs.components.AnimationComponent;
 import smashdudes.ecs.components.DebugDrawComponent;
 import smashdudes.ecs.components.PlayerComponent;
 import smashdudes.ecs.components.PositionComponent;
+import smashdudes.gameplay.AttackBox;
+import smashdudes.gameplay.BodyBox;
 import smashdudes.graphics.AnimationFrame;
 
 public class AnimationDebugSystem extends GameSystem
@@ -38,13 +40,13 @@ public class AnimationDebugSystem extends GameSystem
             mirror = entity.getComponent(PlayerComponent.class).facingLeft;
         }
 
-        Array<Rectangle> attackboxes = frame.getAttackboxesRelativeTo(pos.position, mirror);
+        Array<AttackBox> attackboxes = frame.getAttackboxesRelativeTo(pos.position, mirror);
         for(Rectangle r : attackboxes)
         {
             ddraw.pushShape(ShapeRenderer.ShapeType.Line, r, Color.BLUE);
         }
 
-        Array<Rectangle> bodyboxes = frame.getBodyboxesRelativeTo(pos.position, mirror);
+        Array<BodyBox> bodyboxes = frame.getBodyboxesRelativeTo(pos.position, mirror);
         for(Rectangle r : bodyboxes)
         {
             ddraw.pushShape(ShapeRenderer.ShapeType.Line, r, Color.RED);

@@ -12,7 +12,6 @@ public class BoxTool implements ApplicationListener
     public void create()
     {
         RenderResources.init();
-
         ui = new UI(RenderResources.getSpriteBatch(), RenderResources.getShapeRenderer());
     }
 

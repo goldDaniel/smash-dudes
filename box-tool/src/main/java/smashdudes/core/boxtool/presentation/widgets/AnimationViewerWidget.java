@@ -7,10 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -22,6 +19,9 @@ import smashdudes.core.boxtool.logic.BoxToolContext;
 import smashdudes.core.boxtool.logic.SelectionType;
 import smashdudes.core.boxtool.logic.commands.AddBoxCommand;
 import smashdudes.core.boxtool.logic.commands.RectangleEditCommand;
+import smashdudes.gameplay.AttackBox;
+import smashdudes.gameplay.BodyBox;
+import smashdudes.gameplay.CombatBox;
 import smashdudes.graphics.RenderResources;
 
 import static smashdudes.core.boxtool.logic.AnimationSelectionContext.*;
@@ -43,6 +43,7 @@ public class AnimationViewerWidget extends ImGuiWidget
     public AnimationViewerWidget(BoxToolContext context)
     {
         super("Character Viewer", 0, context);
+        context.setAnimationSelectionContext(selectionContext);
     }
 
     @Override
@@ -71,7 +72,7 @@ public class AnimationViewerWidget extends ImGuiWidget
         drawContextMenu(currentFrame);
     }
 
-    private void getScaleSelectedRectangle(Array<Rectangle> rectangles, Vector2 mousePos)
+    private <T extends CombatBox> void getScaleSelectedRectangle(Array<T> rectangles, Vector2 mousePos)
     {
         if(selectionContext.getSelectionType() != SelectionType.None) return;
 
@@ -95,7 +96,7 @@ public class AnimationViewerWidget extends ImGuiWidget
             }
         }
     }
-    private void getMoveSelectedRectangle(Array<Rectangle> rectangles, Vector2 mousePos)
+    private <T extends CombatBox> void getMoveSelectedRectangle(Array<T> rectangles, Vector2 mousePos)
     {
         Circle circle = new Circle();
         for(Rectangle r : rectangles)
@@ -240,7 +241,22 @@ public class AnimationViewerWidget extends ImGuiWidget
         sb.end();
     }
 
-    private void drawBoxes(Array<Rectangle> boxes, Color color, ShapeRenderer sh)
+    private static Color interpolateColor(Color start, Color mid, Color end, float t)
+    {
+        t = MathUtils.clamp(t, 0, 1);
+        Color result = new Color();
+        if(t < 0.5)
+        {
+            result.set(start).lerp(mid, t * 2f);
+        }
+        else
+        {
+            result.set(mid).lerp(end, (t - 0.5f) * 2f);
+        }
+        return result;
+    }
+
+    private <T extends CombatBox> void drawBoxes(Array<T> boxes, Color color, ShapeRenderer sh)
     {
         sh.setProjectionMatrix(camera.combined);
         sh.begin(ShapeRenderer.ShapeType.Line);
@@ -266,6 +282,35 @@ public class AnimationViewerWidget extends ImGuiWidget
         sh.end();
 
         sh.begin(ShapeRenderer.ShapeType.Filled);
+        for(Rectangle b : boxes)
+        {
+            Rectangle box = b;
+            if(selectionContext.getRectangleForSave() == b)
+            {
+                box = selectionContext.getRectangleForEdit();
+            }
+
+            float w = box.width;
+            float h = box.height;
+            float x = (box.x - w / 2);
+            float y = (box.y - h / 2);
+
+            if (b instanceof AttackBox)
+            {
+                AttackBox attack = (AttackBox) b;
+
+                Vector2 dir = new Vector2(MathUtils.cos(attack.angle), MathUtils.sin(attack.angle));
+
+                float terminalX = box.x + dir.x * 1.25f;
+                ;
+                float terminalY = box.y + dir.y * 1.25f;
+
+                // TODO (danielg): 100 should be replaced by maximum power value when decided
+                float colorT = attack.power / 100;
+                sh.setColor(interpolateColor(Color.GREEN, Color.YELLOW, Color.RED, colorT));
+                sh.rectLine(box.x, box.y, terminalX, terminalY, 0.0125f);
+            }
+        }
 
         // scale grab node
         {
@@ -335,13 +380,13 @@ public class AnimationViewerWidget extends ImGuiWidget
 
             if (ImGui.button("Create Attack Box"))
             {
-                context.execute(new AddBoxCommand(currentFrame.attackboxes, new Rectangle(worldPos.x, worldPos.y, 0.5f, 0.5f)));
+                context.execute(new AddBoxCommand(currentFrame.attackboxes, AttackBox.class, new Rectangle(worldPos.x, worldPos.y, 0.5f, 0.5f)));
                 ImGui.closeCurrentPopup();
             }
             ImGui.sameLine();
             if (ImGui.button("Create Body Box"))
             {
-                context.execute(new AddBoxCommand(currentFrame.bodyboxes, new Rectangle(worldPos.x, worldPos.y, 0.5f, 0.5f)));
+                context.execute(new AddBoxCommand(currentFrame.bodyboxes, BodyBox.class, new Rectangle(worldPos.x, worldPos.y, 0.5f, 0.5f)));
                 ImGui.closeCurrentPopup();
             }
             if (ImGui.button("Cancel"))

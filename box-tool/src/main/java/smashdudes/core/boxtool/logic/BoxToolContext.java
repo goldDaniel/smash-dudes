@@ -1,5 +1,6 @@
 package smashdudes.core.boxtool.logic;
 
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Queue;
 import smashdudes.content.DTO;
 import smashdudes.core.boxtool.logic.commands.Command;
@@ -19,6 +20,18 @@ public class BoxToolContext
     private boolean playAnimation = false;
 
     private float currentTime = 0;
+
+    private AnimationSelectionContext animationSelectionContext;
+
+    public void setAnimationSelectionContext(AnimationSelectionContext context)
+    {
+        this.animationSelectionContext = context;
+    }
+
+    public boolean isSelectedRectangle(Rectangle rect)
+    {
+        return rect == this.animationSelectionContext.getRectangleForSave();
+    }
 
     public void setCurrentCharacter(DTO.Character character)
     {

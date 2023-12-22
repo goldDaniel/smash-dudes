@@ -1,16 +1,16 @@
 package smashdudes.core.boxtool.logic.commands;
 
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
+import smashdudes.gameplay.CombatBox;
 
-public class RemoveBoxCommand extends Command
+public class RemoveBoxCommand<T extends CombatBox> extends Command
 {
-    private final Array<Rectangle> boxes;
+    private final Array<T> boxes;
     private final int index;
-    private final Rectangle box;
+    private final T box;
 
 
-    public RemoveBoxCommand(Array<Rectangle> boxes, Rectangle box)
+    public RemoveBoxCommand(Array<T> boxes, T box)
     {
         this.boxes = boxes;
         this.box = box;
