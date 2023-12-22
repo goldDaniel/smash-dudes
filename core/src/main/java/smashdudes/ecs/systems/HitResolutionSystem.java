@@ -1,9 +1,10 @@
 package smashdudes.ecs.systems;
 
-import com.badlogic.gdx.math.Vector2;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
-import smashdudes.ecs.components.*;
+import smashdudes.ecs.components.HealthComponent;
+import smashdudes.ecs.components.HitResolutionComponent;
+import smashdudes.ecs.components.VelocityComponent;
 import smashdudes.ecs.events.StunnedEvent;
 
 public class HitResolutionSystem extends GameSystem
@@ -21,14 +22,14 @@ public class HitResolutionSystem extends GameSystem
     {
         HitResolutionComponent res = entity.getComponent(HitResolutionComponent.class);
 
-        boolean facingLeft = res.attacker.getComponent(PlayerComponent.class).facingLeft;
-
         engine.addEvent(new StunnedEvent(res.attacked, 0.5f));
 
         if(res.attacked.hasComponent(VelocityComponent.class))
         {
             VelocityComponent v = res.attacked.getComponent(VelocityComponent.class);
-            v.velocity.set(new Vector2((facingLeft ? -1 : 1), 1).nor().scl(20)); // res.knockback
+
+
+            v.velocity.set(res.launchVector);
         }
 
         if(res.attacked.hasComponent(HealthComponent.class))

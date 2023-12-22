@@ -11,6 +11,8 @@ import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
 import smashdudes.ecs.events.AttackEvent;
+import smashdudes.gameplay.AttackBox;
+import smashdudes.gameplay.BodyBox;
 import smashdudes.graphics.AnimationFrame;
 
 public class HitDetectionSystem extends GameSystem
@@ -47,25 +49,23 @@ public class HitDetectionSystem extends GameSystem
                     entity.getComponent(DebugDrawComponent.class).pushShape(ShapeRenderer.ShapeType.Filled, result.collisionArea, Color.WHITE);
                 }
 
-                submitAttackResolutionEntity(entity, other, result.direction, result.collisionArea);
+                submitAttackResolutionEntity(entity, other, result.launchVector, result.collisionArea);
             }
         }
     }
 
-    private void submitAttackResolutionEntity(Entity attacker, Entity attacked, Vector2 dir, Rectangle collisionArea)
+    private void submitAttackResolutionEntity(Entity attacker, Entity attacked, Vector2 launchVector, Rectangle collisionArea)
     {
         Entity entity = engine.createEntity();
 
         engine.addEvent(new AttackEvent(attacker, attacked, collisionArea));
 
-        HitResolutionComponent resolution = new HitResolutionComponent(attacker, attacked, dir.nor(), collisionArea, 0.2f, 1.0f, 1.0f);
+        HitResolutionComponent resolution = new HitResolutionComponent(attacker, attacked, launchVector, collisionArea, 0.2f, 1.0f, 1.0f);
         entity.addComponent(resolution);
     }
 
     private AttackResult hasEntityAttackedOther(Entity attacker, Entity attacked)
     {
-        AttackResult result = null;
-
         PositionComponent thisPos = attacker.getComponent(PositionComponent.class);
         PlayerComponent thisPlayer = attacker.getComponent(PlayerComponent.class);
         AnimationComponent thisAnim = attacker.getComponent(AnimationComponent.class);
@@ -77,29 +77,24 @@ public class HitDetectionSystem extends GameSystem
         AnimationFrame thisCurrentFrame = thisAnim.getCurrentFrame();
         AnimationFrame otherCurrentFrame = otherAnim.getCurrentFrame();
 
-        Array<Rectangle> attackboxes = thisCurrentFrame.getAttackboxesRelativeTo(thisPos.position, thisPlayer.facingLeft);
-        for(Rectangle attack: attackboxes)
+        Array<AttackBox> attackBoxes = thisCurrentFrame.getAttackboxesRelativeTo(thisPos.position, thisPlayer.facingLeft);
+        Array<BodyBox> bodyBoxes = otherCurrentFrame.getBodyboxesRelativeTo(otherPos.position, otherPlayer.facingLeft);
+
+        AttackResult result = null;
+        float largestCollisionArea = 0;
+
+        for(AttackBox attack: attackBoxes)
         {
-            Array<Rectangle> bodyboxes = otherCurrentFrame.getBodyboxesRelativeTo(otherPos.position, otherPlayer.facingLeft);
-            for(Rectangle body : bodyboxes)
+            for(BodyBox body : bodyBoxes)
             {
                 if(attack.overlaps(body))
                 {
-                    AttackResult attackRes = new AttackResult();
-
-                    attackRes.direction.set(body.x - body.width / 2, body.y - body.height / 2).sub(attack.x - attack.width / 2, attack.y - attack.height / 2).nor();
-                    attackRes.collisionArea.set(Collisions.calculateOverlapRectangle(body, attack));
-
-                    if(result != null)
+                    Rectangle area = Collisions.calculateOverlapRectangle(body, attack);
+                    if(area.area() > largestCollisionArea)
                     {
-                        if(attackRes.collisionArea.area() > result.collisionArea.area())
-                        {
-                            result = attackRes;
-                        }
-                    }
-                    else
-                    {
-                        result = attackRes;
+                        if(result == null) result = new AttackResult();
+                        result.launchVector.set(attack.getLaunchVector(thisPlayer.facingLeft));
+                        result.collisionArea.set(area);
                     }
                 }
             }

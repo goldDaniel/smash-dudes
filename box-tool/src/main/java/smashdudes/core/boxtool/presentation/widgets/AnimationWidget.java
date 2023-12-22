@@ -12,7 +12,6 @@ import smashdudes.content.DTO;
 import smashdudes.core.boxtool.logic.BoxToolContext;
 import smashdudes.core.boxtool.logic.commands.*;
 import smashdudes.core.boxtool.presentation.Utils;
-import smashdudes.core.boxtool.presentation.commands.*;
 
 public class AnimationWidget extends ImGuiWidget
 {

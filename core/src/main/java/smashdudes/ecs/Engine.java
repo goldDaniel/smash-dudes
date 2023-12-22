@@ -10,9 +10,6 @@ import smashdudes.ecs.events.Event;
 import smashdudes.ecs.systems.*;
 import smashdudes.graphics.RenderResources;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Engine
 {
     private final Array<Entity> activeEntities = new Array<>();
@@ -66,7 +63,6 @@ public class Engine
         gameSystems.add(new LandingSystem(this));
         gameSystems.add(new HitDetectionSystem(this));
         gameSystems.add(new HitResolutionSystem(this));
-        gameSystems.add(new ProjectileSystem(this));
         gameSystems.add(new DeathSystem(this));
         gameSystems.add(new RespawnSystem(this));
         gameSystems.add(new AudioSystem(this));

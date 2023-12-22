@@ -4,6 +4,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
+import smashdudes.gameplay.AttackBox;
+import smashdudes.gameplay.BodyBox;
 
 public class DTO
 {
@@ -61,12 +63,9 @@ public class DTO
 
     public static class Animation
     {
-        public String textureFilePath;
         public String animationName;
 
         public float animationDuration;
-
-        public boolean usesSpriteSheet;
 
         public Array<AnimationFrame> frames = new Array<>();
     }
@@ -76,8 +75,8 @@ public class DTO
         // TODO (danielg): texture atlases
         public Rectangle textureRegion;
 
-        public Array<Rectangle> attackboxes = new Array<>();
-        public Array<Rectangle> bodyboxes = new Array<>();
+        public Array<AttackBox> attackboxes = new Array<>();
+        public Array<BodyBox> bodyboxes = new Array<>();
 
         public String texturePath;
     }
