@@ -35,10 +35,13 @@ public class JumpState extends PlayerAirState
         {
             if(v.velocity.y > 0.1f)
             {
-                float decelerationThisFrame = 256 * dt;
-                if (Math.abs(v.velocity.y) > decelerationThisFrame) {
+                float decelerationThisFrame = 128 * dt;
+                if (Math.abs(v.velocity.y) > decelerationThisFrame)
+                {
                     v.velocity.y -= Math.signum(v.velocity.y) * decelerationThisFrame;
-                } else {
+                }
+                else
+                {
                     v.velocity.y = 0;
                 }
             }
