@@ -1,8 +1,6 @@
 package smashdudes.gameplay.state.playerstate.ground;
 
-import com.badlogic.gdx.math.MathUtils;
 import smashdudes.ecs.Entity;
-import smashdudes.ecs.components.AnimationContainerComponent;
 import smashdudes.ecs.components.CharacterInputComponent;
 import smashdudes.ecs.components.JumpComponent;
 import smashdudes.ecs.components.VelocityComponent;
@@ -41,8 +39,7 @@ public class GroundRunningState extends PlayerGroundState
     @Override
     public void onExit()
     {
-        AnimationContainerComponent container = entity.getComponent(AnimationContainerComponent.class);
-        container.get(this.getClass()).reset();
+        
     }
 
     @Override

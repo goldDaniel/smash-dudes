@@ -35,7 +35,8 @@ public abstract class PlayerState extends State
         if (event instanceof StunnedEvent)
         {
             StunnedEvent se = (StunnedEvent)event;
-            if(event.entity.getComponent(VelocityComponent.class).velocity.y > 0)
+            float velocityY = se.entity.getComponent(VelocityComponent.class).velocity.y;
+            if(Math.abs(velocityY) > 0)
             {
                 return new AirStunnedState(entity, se.stunTimer);
             }

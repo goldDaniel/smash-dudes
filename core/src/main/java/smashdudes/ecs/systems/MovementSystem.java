@@ -23,14 +23,7 @@ public class MovementSystem extends GameSystem
         p.position.x += v.velocity.x * dt;
         p.position.y += v.velocity.y * dt;
 
-        float decelerationThisFrame = v.deceleration * dt;
-        if (Math.abs(v.velocity.x) > decelerationThisFrame)
-        {
-            v.velocity.x -= Math.signum(v.velocity.x) * decelerationThisFrame;
-        }
-        else
-        {
-            v.velocity.x = 0;
-        }
+        float decelerationThisFrame = Math.signum(v.velocity.x) * v.deceleration * dt;
+        v.velocity.x -= Math.min(decelerationThisFrame, v.velocity.x);
     }
 }

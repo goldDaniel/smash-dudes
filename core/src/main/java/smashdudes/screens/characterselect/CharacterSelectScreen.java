@@ -12,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import smashdudes.core.AudioResources;
 import smashdudes.core.PlayerLobbyInfo;
 import smashdudes.core.input.CharacterSelectInputAssigner;
@@ -27,8 +26,6 @@ import smashdudes.util.CharacterData;
 
 public class CharacterSelectScreen extends GameScreen
 {
-    private FitViewport viewport;
-
     private Array<CharacterData> characterData;
     private CharacterSelectInputAssigner assigner;
     private SelectedCharacterDisplay selectedCharacterDisplay;
@@ -66,11 +63,6 @@ public class CharacterSelectScreen extends GameScreen
     @Override
     public void buildUI(Table table, Skin skin, MenuNavigator navigator)
     {
-        viewport = new FitViewport(1280, 720);
-        viewport.getCamera().translate(viewport.getWorldWidth() / 2, viewport.getWorldHeight() / 2, 0);
-        viewport.getCamera().update();
-        setViewport(viewport);
-
         Stack uiStack = new Stack();
 
         Table uiTable = new Table();
@@ -85,7 +77,7 @@ public class CharacterSelectScreen extends GameScreen
         }
         uiTable.add(availableCharactersDisplay).padTop(16).padBottom(64).row();
 
-        selectedCharacterDisplay = new SelectedCharacterDisplay(viewport.getWorldWidth(), viewport.getWorldHeight());
+        selectedCharacterDisplay = new SelectedCharacterDisplay(getViewport().getWorldWidth(), getViewport().getWorldHeight());
         uiTable.add(selectedCharacterDisplay).expandX().fillX().fillY().height(192);
 
         readyBanner = new Image(RenderResources.getTexture("textures/character_select_ready.png"));
@@ -94,14 +86,6 @@ public class CharacterSelectScreen extends GameScreen
         uiStack.add(readyBanner);
 
         table.add(uiStack).grow();
-    }
-
-    @Override
-    public void resize(int width, int height)
-    {
-        super.resize(width, height);
-        viewport.update(width, height);
-        viewport.apply();
     }
 
     @Override
@@ -138,14 +122,14 @@ public class CharacterSelectScreen extends GameScreen
 
         ScreenUtils.clear(0,0,0,1);
 
-        sb.setProjectionMatrix(viewport.getCamera().combined);
+        sb.setProjectionMatrix(getViewport().getCamera().combined);
         sb.setColor(Color.WHITE);
         sb.begin();
-        sb.draw(RenderResources.getTexture("textures/character_select.jpg"), 0,0, viewport.getWorldWidth(), viewport.getWorldHeight());
+        sb.draw(RenderResources.getTexture("textures/character_select.jpg"), 0,0, getViewport().getWorldWidth(), getViewport().getWorldHeight());
 
         final String message = "Choose your Character";
         final GlyphLayout layout = new GlyphLayout(font, message);
-        font.draw(sb, message, viewport.getWorldWidth() / 2 - layout.width / 2, viewport.getWorldHeight() - layout.height);
+        font.draw(sb, message, getViewport().getWorldWidth() / 2 - layout.width / 2, getViewport().getWorldHeight() - layout.height);
 
         sb.end();
     }
