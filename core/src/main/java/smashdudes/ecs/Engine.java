@@ -1,13 +1,17 @@
 package smashdudes.ecs;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Queue;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import smashdudes.ecs.components.CameraComponent;
 import smashdudes.ecs.components.CountdownComponent;
+import smashdudes.ecs.components.StateComponent;
 import smashdudes.ecs.events.Event;
+import smashdudes.ecs.events.StateEvent;
 import smashdudes.ecs.systems.*;
+import smashdudes.gameplay.state.State;
 import smashdudes.graphics.RenderResources;
 
 public class Engine
@@ -16,9 +20,11 @@ public class Engine
     private final Array<Entity> createdEntities = new Array<>();
     private final Array<Entity> deadEntities = new Array<>();
 
+    private final GameSystem stateSystem = new StateSystem(this);
     private final Array<GameSystem> gameSystems = new Array<>();
     private final Array<RenderSystem> renderSystems = new Array<>();
 
+    private final Queue<StateEvent> stateEvents = new Queue<>();
     private final Queue<Event> gameEvents = new Queue<>();
     private final Queue<Event> renderEvents = new Queue<>();
 
@@ -53,7 +59,7 @@ public class Engine
         gameSystems.add(new DebugResetSystem(this));
         gameSystems.add(new PreviousPositionSystem(this));
         gameSystems.add(new CountdownSystem(this));
-        gameSystems.add(new StateSystem(this));
+        //gameSystems.add(new StateSystem(this));
         gameSystems.add(new RenderDirectionSystem(this));
         gameSystems.add(ctrlSys);
         gameSystems.add(new AIControllerSystem(this));
@@ -141,12 +147,22 @@ public class Engine
     {
         isUpdating = true;
         {
+            if(stateSystem.isEnabled())
+            {
+                stateSystem.update(dt);
+            }
+
             for (int i = 0; i < gameSystems.size; i++)
             {
                 if(gameSystems.get(i).isEnabled())
                 {
                     gameSystems.get(i).update(dt);
                 }
+            }
+
+            while(stateEvents.notEmpty())
+            {
+                stateSystem.receiveEvent(stateEvents.removeFirst());
             }
 
             while(gameEvents.notEmpty())
@@ -192,6 +208,11 @@ public class Engine
 
     public void addEvent(Event event)
     {
+        if(event.entity.hasComponent(StateComponent.class))
+        {
+            addStateEvent(event);
+        }
+
         if (event.isImmediate())
         {
             for(int i = 0; i < gameSystems.size; i++)
@@ -207,6 +228,19 @@ public class Engine
         {
             gameEvents.addLast(event);
             renderEvents.addLast(event);
+        }
+    }
+
+    private void addStateEvent(Event event)
+    {
+        StateEvent stateEvent = new StateEvent(event);
+        if(event.isImmediate())
+        {
+            stateSystem.receiveEvent(stateEvent);
+        }
+        else
+        {
+            stateEvents.addLast(stateEvent);
         }
     }
 
