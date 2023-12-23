@@ -1,13 +1,17 @@
 package smashdudes.ecs;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Queue;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import smashdudes.ecs.components.CameraComponent;
 import smashdudes.ecs.components.CountdownComponent;
+import smashdudes.ecs.components.StateComponent;
 import smashdudes.ecs.events.Event;
+import smashdudes.ecs.events.StateEvent;
 import smashdudes.ecs.systems.*;
+import smashdudes.gameplay.state.State;
 import smashdudes.graphics.RenderResources;
 
 public class Engine
@@ -192,6 +196,12 @@ public class Engine
 
     public void addEvent(Event event)
     {
+        if(event.entity.hasComponent(StateComponent.class) && !(event instanceof StateEvent))
+        {
+            StateEvent stateEvent = new StateEvent(event);
+            addEvent(stateEvent);
+        }
+
         if (event.isImmediate())
         {
             for(int i = 0; i < gameSystems.size; i++)

@@ -11,14 +11,7 @@ public class StateSystem extends GameSystem
     {
         super(engine);
         registerComponentType(StateComponent.class);
-
-        // Todo (Nathan): use a StateEvent class instead to avoid manually registering events
-        //                ISystem.receiveEvent kinda messes this up
-        //                This is the prime suspect for any state related bugs
-        registerEventType(LandingEvent.class);
-        registerEventType(StunnedEvent.class);
-        registerEventType(RespawnEvent.class);
-        registerEventType(RespawnAwakeEvent.class);
+        registerEventType(StateEvent.class);
     }
     @Override
     public void updateEntity(Entity entity, float dt)
@@ -37,6 +30,9 @@ public class StateSystem extends GameSystem
     @Override
     protected void handleEvent(Event event)
     {
+        StateEvent stateEvent = (StateEvent)event;
+        event = stateEvent.event;
+
         Entity entity = event.entity;
         StateComponent s = entity.getComponent(StateComponent.class);
         s.handleEvent(event);
