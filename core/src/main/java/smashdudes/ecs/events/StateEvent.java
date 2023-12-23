@@ -11,4 +11,10 @@ public class StateEvent extends Event
         super(event.entity);
         this.event = event;
     }
+
+    @Override
+    public boolean isImmediate()
+    {
+        return event.isImmediate();
+    }
 }

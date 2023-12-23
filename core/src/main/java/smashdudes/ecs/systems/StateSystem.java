@@ -30,9 +30,11 @@ public class StateSystem extends GameSystem
     @Override
     protected void handleEvent(Event event)
     {
-        Entity entity = event.entity;
         StateEvent stateEvent = (StateEvent)event;
+        event = stateEvent.event;
+
+        Entity entity = event.entity;
         StateComponent s = entity.getComponent(StateComponent.class);
-        s.handleEvent(stateEvent.event);
+        s.handleEvent(event);
     }
 }
