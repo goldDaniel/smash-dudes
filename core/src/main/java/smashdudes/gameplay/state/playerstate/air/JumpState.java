@@ -3,6 +3,7 @@ package smashdudes.gameplay.state.playerstate.air;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.CharacterInputComponent;
 import smashdudes.ecs.components.VelocityComponent;
+import smashdudes.ecs.events.JumpEvent;
 import smashdudes.gameplay.state.State;
 
 public class JumpState extends PlayerAirState
@@ -10,6 +11,13 @@ public class JumpState extends PlayerAirState
     public JumpState(Entity entity)
     {
         super(entity);
+    }
+
+    @Override
+    public void onEnter(float dt)
+    {
+        super.onEnter(dt);
+        fireEvent.execute(new JumpEvent(entity));
     }
 
     @Override
