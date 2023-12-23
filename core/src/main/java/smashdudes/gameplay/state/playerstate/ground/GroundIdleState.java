@@ -5,6 +5,8 @@ import smashdudes.ecs.components.CharacterInputComponent;
 import smashdudes.ecs.components.JumpComponent;
 import smashdudes.ecs.components.VelocityComponent;
 import smashdudes.gameplay.state.State;
+import smashdudes.gameplay.state.playerstate.air.FallingState;
+import smashdudes.gameplay.state.playerstate.air.JumpState;
 
 public class GroundIdleState extends PlayerGroundState
 {
