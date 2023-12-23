@@ -25,12 +25,6 @@ public class StateSystem extends GameSystem
     {
         StateComponent s = entity.getComponent(StateComponent.class);
         s.state.update(dt);
-        Event event = s.state.popEvent();
-        while (event != null)
-        {
-            engine.addEvent(event);
-            event = s.state.popEvent();
-        }
         s.setNextState(s.state.getNextState());
     }
 

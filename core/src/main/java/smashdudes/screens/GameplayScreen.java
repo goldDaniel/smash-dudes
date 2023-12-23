@@ -205,6 +205,7 @@ public class GameplayScreen extends GameScreen
         animContainer.setDefault(GroundIdleState.class);
         player.addComponent(animContainer);
 
+        State.setFireEventCallback(event -> ecsEngine.addEvent(event));
         StateComponent s = new StateComponent(new FallingState(player));
         player.addComponent(s);
 
