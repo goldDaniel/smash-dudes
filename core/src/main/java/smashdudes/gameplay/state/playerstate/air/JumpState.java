@@ -35,6 +35,7 @@ public class JumpState extends PlayerAirState
         {
             if(v.velocity.y > 0.1f)
             {
+                // TODO (danielg): We may want this This jump-deceleration (extra gravity) to be set per character
                 float decelerationThisFrame = 128 * dt;
                 if (Math.abs(v.velocity.y) > decelerationThisFrame)
                 {
