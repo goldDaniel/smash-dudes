@@ -61,7 +61,7 @@ public class GameplayScreen extends GameScreen
         {
             CharacterData loadedData = characterData.get(p.selectedCharacterIndex);
             DTO.Character character = new Json().fromJson(DTO.Character.class, loadedData.jsonData);
-            Entity player = buildPlayer(loadedData.texture, p.handle, character, stage.spawnPoints);
+            Entity player = buildPlayer(loadedData.texture, p.handle, p.color, character, stage.spawnPoints);
 
             PlayerControllerComponent pc = new PlayerControllerComponent(p.input);
             player.addComponent(pc);
@@ -161,7 +161,7 @@ public class GameplayScreen extends GameScreen
         }
     }
 
-    private Entity buildPlayer(Texture portrait, PlayerHandle handle, DTO.Character characterData, Array<Vector2> spawnPoints)
+    private Entity buildPlayer(Texture portrait, PlayerHandle handle, Color playerColor, DTO.Character characterData, Array<Vector2> spawnPoints)
     {
         Entity player = ecsEngine.createEntity();
 
@@ -176,7 +176,7 @@ public class GameplayScreen extends GameScreen
         player.addComponent(new JumpComponent(characterData.jumpStrength));
         player.addComponent(new GravityComponent(characterData.gravity));
         player.addComponent(new HealthComponent());
-        player.addComponent(new UIComponent(portrait));
+        player.addComponent(new UIComponent(portrait, playerColor));
 
         VelocityComponent vc = new VelocityComponent();
         vc.runSpeed = characterData.runSpeed;
@@ -212,6 +212,16 @@ public class GameplayScreen extends GameScreen
         player.addComponent(collider);
 
         player.addComponent(new AttackableComponent());
+
+        Entity attachment = ecsEngine.createEntity();
+        attachment.addComponent(new PositionComponent());
+        attachment.addComponent(new PositionAttachmentComponent(player, new Vector2(0, characterData.terrainCollider.height * 0.75f)));
+
+        DrawComponent attachmentDraw = new DrawComponent();
+        attachmentDraw.texture = RenderResources.getTexture("textures/player_indicator.png");
+        attachmentDraw.getColor().set(playerColor);
+        attachmentDraw.scale.x = 0.5f;
+        attachment.addComponent(attachmentDraw);
 
         return player;
     }

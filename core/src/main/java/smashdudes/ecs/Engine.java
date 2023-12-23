@@ -72,7 +72,7 @@ public class Engine
         gameSystems.add(new ParticleEmitterSystem(this));
         gameSystems.add(new AnimationDebugSystem(this));
         gameSystems.add(new GameOverSystem(this, transition));
-
+        gameSystems.add(new PositionAttachmentSystem(this));
 
         renderSystems.add(new CountdownCameraSystem(this));
         renderSystems.add(new AnimationSystem(this));
