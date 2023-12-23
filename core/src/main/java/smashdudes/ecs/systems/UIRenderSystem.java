@@ -28,14 +28,17 @@ public class UIRenderSystem extends RenderSystem
         final float health;
         final Texture texture;
 
+        final Color color;
         int lives;
 
-        public CharacterDisplay(String name, int ID, float health, Texture texture, int lives)
+        public CharacterDisplay(String name, int ID, float health, Texture texture, Color color, int lives)
         {
             this.name = name;
             this.ID = ID;
             this.health = health;
             this.texture = texture;
+            this.color = new Color(color);
+            this.color.a = 0.8f;
             this.lives = lives;
         }
 
@@ -108,7 +111,7 @@ public class UIRenderSystem extends RenderSystem
         UIComponent UI = entity.getComponent(UIComponent.class);
 
         String name = play.name.substring(0, 1).toUpperCase() + play.name.substring(1);
-        CharacterDisplay portrait = new CharacterDisplay(name, play.handle.ID, health.health, UI.tex, play.lives);
+        CharacterDisplay portrait = new CharacterDisplay(name, play.handle.ID, health.health, UI.tex, UI.backgroundColor, play.lives);
 
         players.add(portrait);
         players.sort();
@@ -144,7 +147,13 @@ public class UIRenderSystem extends RenderSystem
             float ratio = (float) texture.getHeight() / (float) texture.getWidth();
             float width = 1.5f * nameWidth;
             float height = ratio * width;
+
+            if( players.get(i).color.r > 0 || players.get(i).color.g > 0 || players.get(i).color.b > 0)
+            {
+                sb.draw(RenderResources.getColor1x1(players.get(i).color), xOffset - width / 2, - worldHeight / 2, width, height);
+            }
             sb.draw(players.get(i).texture, xOffset - width / 2, - worldHeight / 2, width, height);
+            sb.draw(RenderResources.getTexture("textures/portrait_border.png"), xOffset - width / 2, - worldHeight / 2, width, height);
 
             font.draw(sb, players.get(i).name, xOffset - nameWidth / 2, nameHeight + yOffset - worldHeight / 2);
 
