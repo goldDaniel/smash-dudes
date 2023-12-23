@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import smashdudes.core.input.IGameInputListener;
 import smashdudes.core.input.MenuNavigator;
@@ -36,7 +36,7 @@ public abstract class GameScreen implements Screen
     {
         this.game = game;
 
-        viewport = new ExtendViewport(1280, 720);
+        viewport = new ScreenViewport();
         uiStage = new Stage(viewport, RenderResources.getSpriteBatch());
 
         multiplexer = new InputMultiplexer(uiStage);

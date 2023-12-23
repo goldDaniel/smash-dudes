@@ -1,15 +1,14 @@
-package smashdudes.gameplay.state.playerstate;
+package smashdudes.gameplay.state.playerstate.air;
 
-import smashdudes.gameplay.state.State;
 import smashdudes.ecs.Entity;
-import smashdudes.ecs.components.AnimationComponent;
-import smashdudes.ecs.components.AnimationContainerComponent;
 import smashdudes.ecs.components.CharacterInputComponent;
 import smashdudes.ecs.components.VelocityComponent;
 import smashdudes.ecs.events.Event;
 import smashdudes.ecs.events.LandingEvent;
+import smashdudes.gameplay.state.State;
+import smashdudes.gameplay.state.playerstate.ground.GroundIdleState;
 
-public class FallingState extends PlayerState
+public class FallingState extends PlayerAirState
 {
     public FallingState(Entity entity)
     {
@@ -27,11 +26,11 @@ public class FallingState extends PlayerState
             float speed = v.airSpeed;
             if(ci.currentState.left)
             {
-                v.velocity.x -= speed;
+                v.velocity.x = -speed;
             }
             if(ci.currentState.right)
             {
-                v.velocity.x += speed;
+                v.velocity.x = speed;
             }
         }
     }
@@ -49,6 +48,12 @@ public class FallingState extends PlayerState
         if(v.velocity.y == 0)
         {
             return new GroundIdleState(entity);
+        }
+
+        CharacterInputComponent ci = entity.getComponent(CharacterInputComponent.class);
+        if(ci.currentState.punch)
+        {
+            return new AirAttackState(entity);
         }
 
         return this;

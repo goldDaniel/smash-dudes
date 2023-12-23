@@ -11,7 +11,12 @@ public class AttackBox extends CombatBox
 
     public AttackBox()
     {
-        this(new Rectangle(), new Vector2());
+        this(new Rectangle());
+    }
+
+    public AttackBox(Rectangle rect)
+    {
+        this(rect, new Vector2());
     }
 
     public AttackBox(Rectangle rect, Vector2 knockback)

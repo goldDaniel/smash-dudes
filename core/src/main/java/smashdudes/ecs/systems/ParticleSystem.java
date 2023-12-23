@@ -1,10 +1,7 @@
 package smashdudes.ecs.systems;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import smashdudes.core.WorldUtils;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.DrawComponent;
@@ -91,22 +88,22 @@ public class ParticleSystem extends GameSystem
 
             comp.emissionPoint = e.collisionArea.getCenter(new Vector2());
 
-            comp.lifetime = 0.05f;
-            comp.emissionRate = 64;
+            comp.lifetime = 0.1f;
+            comp.emissionRate = 256;
 
             comp.colors.add(Color.RED.cpy());
             Color end = Color.ORANGE.cpy();
-            end.a = 0;
+            end.a = 0.1f;
             comp.colors.add(end);
 
-            comp.lifespanStartRange = 0.1f;
-            comp.lifespanEndRange = 0.2f;
+            comp.lifespanStartRange = 0.05f;
+            comp.lifespanEndRange = 0.1f;
 
-            comp.sizeStartRange = new Vector2(0.1f, 0.2f);
-            comp.sizeEndRange = new Vector2(0.0f, 0.1f);
+            comp.sizeStartRange = new Vector2(0.1f, 0.15f);
+            comp.sizeEndRange = new Vector2(0.15f, 0.2f);
 
-            comp.velocityMin = new Vector2(-8.f, -8f);
-            comp.velocityMax = new Vector2(8.f,   8f);
+            comp.velocityMin = new Vector2(-32, -32);
+            comp.velocityMax = new Vector2(32,   32);
 
             comp.zIndex = 50;
 

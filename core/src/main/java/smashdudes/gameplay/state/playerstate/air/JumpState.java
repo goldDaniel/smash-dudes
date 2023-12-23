@@ -1,13 +1,11 @@
-package smashdudes.gameplay.state.playerstate;
+package smashdudes.gameplay.state.playerstate.air;
 
-import smashdudes.gameplay.state.State;
 import smashdudes.ecs.Entity;
-import smashdudes.ecs.components.AnimationComponent;
 import smashdudes.ecs.components.CharacterInputComponent;
-import smashdudes.ecs.components.AnimationContainerComponent;
 import smashdudes.ecs.components.VelocityComponent;
+import smashdudes.gameplay.state.State;
 
-public class JumpState extends PlayerState
+public class JumpState extends PlayerAirState
 {
     public JumpState(Entity entity)
     {
@@ -25,11 +23,28 @@ public class JumpState extends PlayerState
             float speed = v.airSpeed;
             if(ci.currentState.left)
             {
-                v.velocity.x -= speed;
+                v.velocity.x = -speed;
             }
             if(ci.currentState.right)
             {
-                v.velocity.x += speed;
+                v.velocity.x = speed;
+            }
+        }
+
+        if(!ci.currentState.up)
+        {
+            if(v.velocity.y > 0.1f)
+            {
+                // TODO (danielg): We may want this This jump-deceleration (extra gravity) to be set per character
+                float decelerationThisFrame = 128 * dt;
+                if (Math.abs(v.velocity.y) > decelerationThisFrame)
+                {
+                    v.velocity.y -= Math.signum(v.velocity.y) * decelerationThisFrame;
+                }
+                else
+                {
+                    v.velocity.y = 0;
+                }
             }
         }
     }
@@ -43,6 +58,12 @@ public class JumpState extends PlayerState
     @Override
     public State getNextState()
     {
+        CharacterInputComponent ci = entity.getComponent(CharacterInputComponent.class);
+        if(ci.currentState.punch)
+        {
+            return new AirAttackState(entity);
+        }
+
         VelocityComponent v = entity.getComponent(VelocityComponent.class);
         if(v.velocity.y <= 0)
         {

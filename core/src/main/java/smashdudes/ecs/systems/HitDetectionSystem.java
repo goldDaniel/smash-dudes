@@ -58,7 +58,7 @@ public class HitDetectionSystem extends GameSystem
     {
         Entity entity = engine.createEntity();
 
-        engine.addEvent(new AttackEvent(attacker, attacked, collisionArea));
+        engine.addEvent(new AttackEvent(attacker, attacked, launchVector, collisionArea));
 
         HitResolutionComponent resolution = new HitResolutionComponent(attacker, attacked, launchVector, collisionArea, 0.2f, 1.0f, 1.0f);
         entity.addComponent(resolution);

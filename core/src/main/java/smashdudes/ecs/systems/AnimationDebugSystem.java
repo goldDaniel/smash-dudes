@@ -43,13 +43,13 @@ public class AnimationDebugSystem extends GameSystem
         Array<AttackBox> attackboxes = frame.getAttackboxesRelativeTo(pos.position, mirror);
         for(Rectangle r : attackboxes)
         {
-            ddraw.pushShape(ShapeRenderer.ShapeType.Line, r, Color.BLUE);
+            ddraw.pushShape(ShapeRenderer.ShapeType.Line, r, Color.RED);
         }
 
         Array<BodyBox> bodyboxes = frame.getBodyboxesRelativeTo(pos.position, mirror);
         for(Rectangle r : bodyboxes)
         {
-            ddraw.pushShape(ShapeRenderer.ShapeType.Line, r, Color.RED);
+            ddraw.pushShape(ShapeRenderer.ShapeType.Line, r, Color.GREEN);
         }
     }
 }
