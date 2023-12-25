@@ -63,8 +63,6 @@ public class AnimationFrameWidget extends ImGuiWidget
             for(T rect : boxes)
             {
                 ImGui.pushID(Utils.getUniqueKey(rect));
-                ImGui.selectable("" + (boxes.indexOf(rect, true) + 1), context.isSelectedRectangle(rect));
-                ImGui.sameLine();
                 float[] temp = {rect.x, rect.y, rect.width, rect.height};
                 if(ImGui.inputFloat4("", temp))
                 {
