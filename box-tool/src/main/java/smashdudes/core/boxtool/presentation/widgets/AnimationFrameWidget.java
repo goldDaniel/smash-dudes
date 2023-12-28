@@ -87,7 +87,7 @@ public class AnimationFrameWidget extends ImGuiWidget
                 ImGui.sameLine();
                 if(event.type == AnimationEventType.Audio)
                 {
-                    if(ImGui.button("Select Audio File..."))
+                    if(ImGui.button("Select Audio File...##" + event))
                     {
                         String file = Utils.chooseFileToLoad(Gdx.files.internal("Audio"), "mp3", "wav", "ogg");
                         if(file != null)
