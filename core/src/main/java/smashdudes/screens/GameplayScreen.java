@@ -249,15 +249,14 @@ public class GameplayScreen extends GameScreen
         Array<AnimationFrame> frames = new Array<>();
         if(anim == null)
         {
-            frames.add(new AnimationFrame(RenderResources.getTexture("textures/default.png"), new Array<>(), new Array<>()));
+            frames.add(new AnimationFrame(RenderResources.getTexture("textures/default.png"), new Array<>(), new Array<>(), new Array<>()));
 
             return new AnimationComponent(frames, 1, mode);
         }
 
         for (DTO.AnimationFrame dtoFrame : anim.frames)
         {
-            AnimationFrame frame =
-                    new AnimationFrame(RenderResources.getTexture(dtoFrame.texturePath), dtoFrame.attackboxes, dtoFrame.bodyboxes);
+            AnimationFrame frame = new AnimationFrame(RenderResources.getTexture(dtoFrame.texturePath), dtoFrame.attackboxes, dtoFrame.bodyboxes, dtoFrame.events);
 
             frames.add(frame);
         }
