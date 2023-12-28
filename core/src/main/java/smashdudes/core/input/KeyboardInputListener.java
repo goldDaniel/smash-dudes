@@ -50,6 +50,11 @@ public class KeyboardInputListener extends InputAdapter implements IGameInputLis
             gameInputState.punch = true;
         }
 
+        if(keycode == config.block)
+        {
+            gameInputState.block = true;
+        }
+
         if(keycode == Input.Keys.SPACE)
         {
             confirmPressed = true;
@@ -87,6 +92,11 @@ public class KeyboardInputListener extends InputAdapter implements IGameInputLis
             gameInputState.punch = false;
         }
 
+        if(keycode == config.block)
+        {
+            gameInputState.block = false;
+        }
+
         return false;
     }
 
@@ -116,6 +126,9 @@ public class KeyboardInputListener extends InputAdapter implements IGameInputLis
     {
         return gameInputState.punch;
     }
+
+    @Override
+    public boolean block(){return gameInputState.block;}
 
     @Override
     public boolean leftPressed()

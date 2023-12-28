@@ -20,7 +20,7 @@ public abstract class PlayerState extends State
     }
 
     @Override
-    public void onEnter(float dt)
+    public void onEnter()
     {
         AnimationContainerComponent container = entity.getComponent(AnimationContainerComponent.class);
         entity.removeComponent(AnimationComponent.class);

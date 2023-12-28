@@ -49,18 +49,18 @@ public class HitDetectionSystem extends GameSystem
                     entity.getComponent(DebugDrawComponent.class).pushShape(ShapeRenderer.ShapeType.Filled, result.collisionArea, Color.WHITE);
                 }
 
-                submitAttackResolutionEntity(entity, other, result.launchVector, result.collisionArea);
+                submitAttackResolutionEntity(entity, other, result);
             }
         }
     }
 
-    private void submitAttackResolutionEntity(Entity attacker, Entity attacked, Vector2 launchVector, Rectangle collisionArea)
+    private void submitAttackResolutionEntity(Entity attacker, Entity attacked, AttackResult result)
     {
         Entity entity = engine.createEntity();
 
-        engine.addEvent(new AttackEvent(attacker, attacked, launchVector, collisionArea));
+        engine.addEvent(new AttackEvent(attacker, attacked, result.launchVector, result.collisionArea));
 
-        HitResolutionComponent resolution = new HitResolutionComponent(attacker, attacked, launchVector, collisionArea, 0.2f, 1.0f, 1.0f);
+        HitResolutionComponent resolution = new HitResolutionComponent(attacker, attacked, result.launchVector, result.collisionArea, result.stunTime, result.damage, result.knockback, result.hitBlock);
         entity.addComponent(resolution);
     }
 
@@ -73,6 +73,7 @@ public class HitDetectionSystem extends GameSystem
         PositionComponent otherPos = attacked.getComponent(PositionComponent.class);
         PlayerComponent otherPlayer = attacked.getComponent(PlayerComponent.class);
         AnimationComponent otherAnim = attacked.getComponent(AnimationComponent.class);
+        BlockComponent otherBlock = attacked.getComponent(BlockComponent.class);
 
         AnimationFrame thisCurrentFrame = thisAnim.getCurrentFrame();
         AnimationFrame otherCurrentFrame = otherAnim.getCurrentFrame();
@@ -82,6 +83,15 @@ public class HitDetectionSystem extends GameSystem
 
         AttackResult result = null;
         float largestCollisionArea = 0;
+
+        BodyBox blockBox = new BodyBox(otherBlock.blockBox);
+        blockBox.x = otherPos.position.x + blockBox.x - blockBox.width / 2;
+        blockBox.y = otherPos.position.y + blockBox.y - blockBox.height / 2;
+
+        if(otherBlock.isEnabled)
+        {
+            bodyBoxes.add(blockBox);
+        }
 
         for(AttackBox attack: attackBoxes)
         {
@@ -95,6 +105,9 @@ public class HitDetectionSystem extends GameSystem
                         if(result == null) result = new AttackResult();
                         result.launchVector.set(attack.getLaunchVector(thisPlayer.facingLeft));
                         result.collisionArea.set(area);
+                        result.damage = attack.power;
+                        result.knockback = 1f;
+                        result.hitBlock = body.equals(blockBox);
                     }
                 }
             }

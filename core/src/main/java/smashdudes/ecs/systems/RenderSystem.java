@@ -3,7 +3,7 @@ package smashdudes.ecs.systems;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 
-public class RenderSystem extends ISystem
+public abstract class RenderSystem extends ISystem
 {
     public RenderSystem(Engine engine)
     {

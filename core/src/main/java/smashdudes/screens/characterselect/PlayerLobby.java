@@ -35,7 +35,7 @@ public class PlayerLobby
 
         if(device == InputDeviceType.Keyboard)
         {
-            joinedPlayer.input = new KeyboardInputListener(new InputConfig(Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.UP, Input.Keys.DOWN, Input.Keys.Z));
+            joinedPlayer.input = new KeyboardInputListener(new InputConfig(Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.UP, Input.Keys.DOWN, Input.Keys.Z, Input.Keys.X));
         }
         else if(device == InputDeviceType.Controller)
         {
