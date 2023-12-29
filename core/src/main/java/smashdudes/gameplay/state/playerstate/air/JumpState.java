@@ -14,9 +14,9 @@ public class JumpState extends PlayerAirState
     }
 
     @Override
-    public void onEnter(float dt)
+    public void onEnter()
     {
-        super.onEnter(dt);
+        super.onEnter();
         fireEvent.execute(new JumpEvent(entity));
     }
 
