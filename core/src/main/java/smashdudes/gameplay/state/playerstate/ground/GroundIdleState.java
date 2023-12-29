@@ -42,7 +42,7 @@ public class GroundIdleState extends PlayerGroundState
             return new BlockState(entity);
         }
         else if( !(i.currentState.left && i.currentState.right) &&
-                (i.currentState.left || i.currentState.right) )
+                  (i.currentState.left || i.currentState.right) )
         {
             return new GroundRunningState(entity);
         }

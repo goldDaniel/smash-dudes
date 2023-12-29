@@ -10,7 +10,7 @@ import org.libsdl.SDL;
  */
 public class ControllerInputListener extends ControllerAdapter implements IGameInputListener
 {
-    private final InputState gameInputstate = new InputState();
+    private final InputState gameInputState = new InputState();
     private final Controller controller;
 
     // menu input state
