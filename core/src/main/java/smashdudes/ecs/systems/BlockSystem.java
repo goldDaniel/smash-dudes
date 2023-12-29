@@ -37,9 +37,9 @@ public class BlockSystem extends GameSystem
 
         if(block.isEnabled)
         {
-            Color color = new Color(0, 1, 0, 1);
-            color.lerp(1, 0, 0, 1, 1 - block.shieldDuration / GameplayUtils.MAX_SHIELD_DURATION);
-            debug.pushShape(ShapeRenderer.ShapeType.Line, r, color);
+            Color color = new Color(0, 1, 0, 0.5f);
+            color.lerp(1, 0, 0, 0.5f, 1 - block.shieldDuration / GameplayUtils.MAX_SHIELD_DURATION);
+            debug.pushShape(ShapeRenderer.ShapeType.Filled, r, color);
         }
 
         if(block.shieldDuration <= 0)
