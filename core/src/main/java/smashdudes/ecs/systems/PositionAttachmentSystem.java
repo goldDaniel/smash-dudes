@@ -21,7 +21,10 @@ public class PositionAttachmentSystem extends GameSystem
         PositionComponent pos = entity.getComponent(PositionComponent.class);
         PositionAttachmentComponent attachment = entity.getComponent(PositionAttachmentComponent.class);
 
-        Vector2 relative = attachment.parent.getComponent(PositionComponent.class).position;
-        pos.position.set(relative).add(attachment.offset);
+        if(attachment.parent != null)
+        {
+            Vector2 relative = attachment.parent.getComponent(PositionComponent.class).position;
+            pos.position.set(relative).add(attachment.offset);
+        }
     }
 }

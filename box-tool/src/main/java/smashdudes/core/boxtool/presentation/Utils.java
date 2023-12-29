@@ -10,9 +10,7 @@ import java.util.UUID;
 
 public class Utils
 {
-    private static IdentityMap<Object, UUID> keys = new IdentityMap<>();
-
-
+    private static final IdentityMap<Object, UUID> keys = new IdentityMap<>();
 
     public static String chooseFileToLoad(FileHandle path, String... fileExtensions)
     {
