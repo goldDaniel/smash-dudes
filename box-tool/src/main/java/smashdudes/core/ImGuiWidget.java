@@ -1,4 +1,4 @@
-package smashdudes.boxtool.presentation.widgets;
+package smashdudes.core;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;

@@ -1,4 +1,4 @@
-package smashdudes.boxtool.presentation.widgets;
+package smashdudes.boxtool.presentation;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -11,6 +11,7 @@ import imgui.type.ImInt;
 import smashdudes.boxtool.logic.BoxToolContext;
 import smashdudes.boxtool.logic.commands.*;
 import smashdudes.content.DTO;
+import smashdudes.core.ImGuiWidget;
 import smashdudes.core.Utils;
 
 public class AnimationWidget extends ImGuiWidget

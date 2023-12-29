@@ -7,10 +7,10 @@ import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
 import smashdudes.boxtool.logic.BoxToolContext;
 import smashdudes.boxtool.logic.ContentService;
-import smashdudes.boxtool.presentation.widgets.AnimationFrameWidget;
-import smashdudes.boxtool.presentation.widgets.AnimationViewerWidget;
-import smashdudes.boxtool.presentation.widgets.AnimationWidget;
-import smashdudes.boxtool.presentation.widgets.CharacterWidget;
+import smashdudes.boxtool.presentation.AnimationFrameWidget;
+import smashdudes.boxtool.presentation.AnimationViewerWidget;
+import smashdudes.boxtool.presentation.AnimationWidget;
+import smashdudes.boxtool.presentation.CharacterWidget;
 import smashdudes.content.DTO;
 import smashdudes.core.Utils;
 

@@ -1,4 +1,4 @@
-package smashdudes.boxtool.presentation.widgets;
+package smashdudes.boxtool.presentation;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -13,6 +13,7 @@ import smashdudes.boxtool.logic.BoxToolContext;
 import smashdudes.boxtool.logic.ContentService;
 import smashdudes.boxtool.logic.commands.PropertyEditCommand;
 import smashdudes.content.DTO;
+import smashdudes.core.ImGuiWidget;
 import smashdudes.core.Utils;
 import smashdudes.boxtool.logic.commands.AddAnimationCommand;
 import smashdudes.boxtool.logic.commands.ScaleCharacterCommand;

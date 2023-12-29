@@ -1,4 +1,4 @@
-package smashdudes.boxtool.presentation.widgets;
+package smashdudes.boxtool.presentation;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -13,6 +13,7 @@ import smashdudes.boxtool.logic.commands.*;
 import smashdudes.content.AnimationEvent;
 import smashdudes.content.AnimationEventType;
 import smashdudes.content.DTO;
+import smashdudes.core.ImGuiWidget;
 import smashdudes.core.Utils;
 import smashdudes.gameplay.AttackBox;
 import smashdudes.gameplay.BodyBox;

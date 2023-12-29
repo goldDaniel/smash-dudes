@@ -15,7 +15,6 @@ import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import imgui.type.ImBoolean;
 import smashdudes.boxtool.logic.commands.CommandList;
-import smashdudes.boxtool.presentation.widgets.ImGuiWidget;
 import smashdudes.graphics.RenderResources;
 
 public abstract class UI extends ApplicationAdapter

@@ -1,4 +1,4 @@
-package smashdudes.boxtool.presentation.widgets;
+package smashdudes.boxtool.presentation;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -23,6 +23,7 @@ import smashdudes.content.DTO;
 import smashdudes.boxtool.logic.BoxToolContext;
 import smashdudes.boxtool.logic.commands.AddBoxCommand;
 import smashdudes.boxtool.logic.commands.RectangleEditCommand;
+import smashdudes.core.ImGuiWidget;
 import smashdudes.gameplay.AttackBox;
 import smashdudes.gameplay.BodyBox;
 import smashdudes.graphics.RenderResources;
