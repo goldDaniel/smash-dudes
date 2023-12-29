@@ -25,12 +25,10 @@ import smashdudes.core.input.MenuNavigator;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
+import smashdudes.gameplay.BodyBox;
 import smashdudes.gameplay.state.State;
 import smashdudes.gameplay.state.playerstate.air.*;
-import smashdudes.gameplay.state.playerstate.ground.GroundAttackState;
-import smashdudes.gameplay.state.playerstate.ground.GroundIdleState;
-import smashdudes.gameplay.state.playerstate.ground.GroundRunningState;
-import smashdudes.gameplay.state.playerstate.ground.GroundStunnedState;
+import smashdudes.gameplay.state.playerstate.ground.*;
 import smashdudes.graphics.AnimationFrame;
 import smashdudes.graphics.RenderResources;
 import smashdudes.util.CharacterData;
@@ -202,6 +200,8 @@ public class GameplayScreen extends GameScreen
         animContainer.put(AirStunnedState.class, loadPlayerAnimation(characterData, "stunned", Animation.PlayMode.NORMAL));
         animContainer.put(AirAttackState.class, loadPlayerAnimation(characterData, "attack_air", Animation.PlayMode.NORMAL));
         animContainer.put(RespawnState.class, loadPlayerAnimation(characterData, "idle", Animation.PlayMode.LOOP));
+        animContainer.put(BlockState.class, loadPlayerAnimation(characterData, "fall", Animation.PlayMode.NORMAL));
+        animContainer.put(BlockStunnedState.class, loadPlayerAnimation(characterData, "stunned", Animation.PlayMode.NORMAL));
         animContainer.setDefault(GroundIdleState.class);
         player.addComponent(animContainer);
 
@@ -217,6 +217,12 @@ public class GameplayScreen extends GameScreen
 
         TerrainColliderComponent collider = new TerrainColliderComponent(characterData.terrainCollider);
         player.addComponent(collider);
+
+        BlockComponent b = new BlockComponent();
+        b.blockBox = new BodyBox(characterData.terrainCollider);
+        b.blockBox.height *= 0.9f;
+        b.blockBox.width *= 0.9f;
+        player.addComponent(b);
 
         player.addComponent(new AttackableComponent());
 

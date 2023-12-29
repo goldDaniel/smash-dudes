@@ -9,4 +9,9 @@ public class AttackResult
     public Rectangle collisionArea = new Rectangle();
 
     public float stunTime = 0;
+
+    public float damage = 0;
+
+    public boolean hitBlock = false;
+    public float knockback = 0;
 }

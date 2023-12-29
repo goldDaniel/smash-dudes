@@ -27,13 +27,13 @@ public abstract class State
     {
         if(onFirstRun)
         {
-            onEnter(dt);
+            onEnter();
             onFirstRun = false;
         }
         innerUpdate(dt);
     }
 
-    public abstract void onEnter(float dt);
+    public abstract void onEnter();
 
     public abstract void innerUpdate(float dt);
 

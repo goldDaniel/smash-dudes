@@ -12,13 +12,15 @@ public class InputConfig
     public final int down;
 
     public final int punch;
+    public final int block;
 
-    public InputConfig(int left, int right, int up, int down, int punch)
+    public InputConfig(int left, int right, int up, int down, int punch, int block)
     {
         this.left = left;
         this.right = right;
         this.up = up;
         this.down = down;
         this.punch = punch;
+        this.block = block;
     }
 }

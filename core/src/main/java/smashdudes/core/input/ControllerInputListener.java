@@ -10,7 +10,7 @@ import org.libsdl.SDL;
  */
 public class ControllerInputListener extends ControllerAdapter implements IGameInputListener
 {
-    private InputState gameInputstate = new InputState();
+    private final InputState gameInputState = new InputState();
     private final Controller controller;
 
     // menu input state
@@ -21,6 +21,8 @@ public class ControllerInputListener extends ControllerAdapter implements IGameI
     private boolean confirmPressed = false;
     private boolean cancelPressed = false;
 
+    private boolean leftTriggerDown = false;
+    private boolean rightTriggerDown = false;
 
 
     public ControllerInputListener(Controller controller)
@@ -33,7 +35,7 @@ public class ControllerInputListener extends ControllerAdapter implements IGameI
     {
         if(buttonIndex == SDL.SDL_CONTROLLER_BUTTON_A)
         {
-            gameInputstate.up = value;
+            gameInputState.up = value;
             confirmPressed = value;
         }
         if(buttonIndex == SDL.SDL_CONTROLLER_BUTTON_B)
@@ -43,7 +45,7 @@ public class ControllerInputListener extends ControllerAdapter implements IGameI
 
         if(buttonIndex == SDL.SDL_CONTROLLER_BUTTON_X)
         {
-            gameInputstate.punch = value;
+            gameInputState.punch = value;
         }
 
         if(buttonIndex == SDL.SDL_CONTROLLER_BUTTON_DPAD_LEFT)
@@ -92,14 +94,27 @@ public class ControllerInputListener extends ControllerAdapter implements IGameI
         {
             if(axisIndex == SDL.SDL_CONTROLLER_AXIS_LEFTX)
             {
-                gameInputstate.left = false;
-                gameInputstate.right = false;
+                gameInputState.left = false;
+                gameInputState.right = false;
             }
             else if(axisIndex == SDL.SDL_CONTROLLER_AXIS_LEFTY)
             {
                 upPressed = false;
                 downPressed = false;
-                gameInputstate.down = false;
+                gameInputState.down = false;
+            }
+            else if(axisIndex == SDL.SDL_CONTROLLER_AXIS_TRIGGERLEFT)
+            {
+                leftTriggerDown = false;
+            }
+            else if(axisIndex == SDL.SDL_CONTROLLER_AXIS_TRIGGERRIGHT)
+            {
+                rightTriggerDown = false;
+            }
+
+            if(!leftTriggerDown && !rightTriggerDown)
+            {
+                gameInputState.block = false;
             }
 
             return false;
@@ -107,14 +122,25 @@ public class ControllerInputListener extends ControllerAdapter implements IGameI
 
         if(axisIndex == SDL.SDL_CONTROLLER_AXIS_LEFTX)
         {
-            gameInputstate.left = value < 0;
-            gameInputstate.right = value > 0;
+            gameInputState.left = value < 0;
+            gameInputState.right = value > 0;
         }
         if(axisIndex == SDL.SDL_CONTROLLER_AXIS_LEFTY)
         {
-            gameInputstate.down = value > 0;
+            gameInputState.down = value > 0;
         }
 
+        if(axisIndex == SDL.SDL_CONTROLLER_AXIS_TRIGGERRIGHT)
+        {
+            gameInputState.block = value > 0;
+            rightTriggerDown = true;
+        }
+
+        if(axisIndex == SDL.SDL_CONTROLLER_AXIS_TRIGGERLEFT)
+        {
+            gameInputState.block = value > 0;
+            leftTriggerDown = true;
+        }
 
         return false;
     }
@@ -122,31 +148,37 @@ public class ControllerInputListener extends ControllerAdapter implements IGameI
     @Override
     public boolean getLeft()
     {
-        return gameInputstate.left;
+        return gameInputState.left;
     }
 
     @Override
     public boolean getRight()
     {
-        return gameInputstate.right;
+        return gameInputState.right;
     }
 
     @Override
     public boolean getUp()
     {
-        return gameInputstate.up;
+        return gameInputState.up;
     }
 
     @Override
     public boolean getDown()
     {
-        return gameInputstate.down;
+        return gameInputState.down;
     }
 
     @Override
     public boolean punch()
     {
-        return gameInputstate.punch;
+        return gameInputState.punch;
+    }
+
+    @Override
+    public boolean block()
+    {
+        return gameInputState.block;
     }
 
     @Override

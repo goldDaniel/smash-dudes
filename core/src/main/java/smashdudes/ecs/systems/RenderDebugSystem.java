@@ -1,5 +1,7 @@
 package smashdudes.ecs.systems;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
@@ -53,6 +55,7 @@ public class RenderDebugSystem extends RenderSystem
 
         for(ShapeRenderer.ShapeType type : ShapeRenderer.ShapeType.values())
         {
+            Gdx.gl20.glEnable(GL20.GL_BLEND);
             sh.begin(type);
 
             for(DebugDrawComponent.DebugRect rect : d.get(type))

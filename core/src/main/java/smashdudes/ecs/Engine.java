@@ -1,5 +1,6 @@
 package smashdudes.ecs;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Queue;
@@ -10,6 +11,7 @@ import smashdudes.ecs.components.StateComponent;
 import smashdudes.ecs.events.Event;
 import smashdudes.ecs.events.StateEvent;
 import smashdudes.ecs.systems.*;
+import smashdudes.gameplay.state.State;
 import smashdudes.graphics.RenderResources;
 
 public class Engine
@@ -65,6 +67,7 @@ public class Engine
         gameSystems.add(new LandingSystem(this));
         gameSystems.add(new HitDetectionSystem(this));
         gameSystems.add(new HitResolutionSystem(this));
+        gameSystems.add(new BlockSystem(this));
         gameSystems.add(new DeathSystem(this));
         gameSystems.add(new RespawnSystem(this));
         gameSystems.add(new AudioSystem(this));
