@@ -1,5 +1,6 @@
 package smashdudes.core;
 
+import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
@@ -15,8 +16,9 @@ import imgui.glfw.ImGuiImplGlfw;
 import imgui.type.ImBoolean;
 import smashdudes.boxtool.logic.commands.CommandList;
 import smashdudes.boxtool.presentation.widgets.ImGuiWidget;
+import smashdudes.graphics.RenderResources;
 
-public abstract class UI
+public abstract class UI extends ApplicationAdapter
 {
     private final CommandList commandList = new CommandList();
 
@@ -24,25 +26,33 @@ public abstract class UI
     protected ImGuiImplGlfw imGuiGlfw = new ImGuiImplGlfw();
     protected ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
 
-    protected final SpriteBatch sb;
-    protected final ShapeRenderer sh;
+    protected SpriteBatch sb;
+    protected ShapeRenderer sh;
     //Rendering---------------------------------------------
 
     private boolean firstFrame = true;
 
     private Array<ImGuiWidget> widgets = new Array<>();
 
-    public UI(SpriteBatch sb, ShapeRenderer sh)
+    @Override
+    public void create()
     {
         ImGui.createContext();
-        this.sb = sb;
-        this.sh = sh;
+        RenderResources.init();
+        this.sb = RenderResources.getSpriteBatch();
+        this.sh = RenderResources.getShapeRenderer();
 
         long windowHandle = ((Lwjgl3Graphics) Gdx.graphics).getWindow().getWindowHandle();
         imGuiGlfw.init(windowHandle, true);
         imGuiGl3.init();
 
         ImGui.getIO().addConfigFlags(ImGuiConfigFlags.DockingEnable);
+    }
+
+    @Override
+    public void render()
+    {
+        this.RenderUI();
     }
 
     protected final CommandList getCommandList()

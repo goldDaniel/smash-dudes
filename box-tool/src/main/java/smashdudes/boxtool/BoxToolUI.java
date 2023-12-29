@@ -2,8 +2,6 @@ package smashdudes.boxtool;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
@@ -15,6 +13,7 @@ import smashdudes.boxtool.presentation.widgets.AnimationWidget;
 import smashdudes.boxtool.presentation.widgets.CharacterWidget;
 import smashdudes.content.DTO;
 import smashdudes.core.Utils;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -29,10 +28,8 @@ public class BoxToolUI extends smashdudes.core.UI
     //State--------------------------------------------------
 
 
-    public BoxToolUI(SpriteBatch sb, ShapeRenderer sh)
+    public BoxToolUI()
     {
-        super(sb, sh);
-
         context = new BoxToolContext(getCommandList());
 
         addWidget(new CharacterWidget(context));

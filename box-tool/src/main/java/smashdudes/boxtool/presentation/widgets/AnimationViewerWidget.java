@@ -37,6 +37,8 @@ public class AnimationViewerWidget extends ImGuiWidget
 
     // State tracking ///////////////////////////
     private int previousAnimationFrameCount = 0;
+
+    private DTO.AnimationFrame previousAnimationFrame = null;
     private DTO.Animation previousAnimation = null;
     private Animation<DTO.AnimationFrame> currentAnimation = null;
 
@@ -92,6 +94,12 @@ public class AnimationViewerWidget extends ImGuiWidget
 
 
         DTO.AnimationFrame currentFrame = context.getAnimationFrame();
+        if(previousAnimationFrame == null || currentFrame != previousAnimationFrame)
+        {
+            previousAnimationFrame = currentFrame;
+            rebuildSelectables = true;
+        }
+
         if(currentFrame != null && context.isPlayingAnimation())
         {
             currentFrame = currentAnimation.getKeyFrame(context.getCurrentTime());

@@ -1,4 +1,4 @@
-package smashdudes.boxtool;
+package smashdudes.stagetool;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
@@ -15,7 +15,7 @@ public class Lwjgl3Launcher
         configuration.setWindowedMode(1900, 1020);
         configuration.setMaximized(true);
 
-        new Lwjgl3Application(new BoxToolUI(), configuration);
+        new Lwjgl3Application(new StageToolUI(), configuration);
     }
 }
 
