@@ -197,7 +197,8 @@ public class Engine
 
     public void addEvent(Event event)
     {
-        if(event.entity.hasComponent(StateComponent.class) && !(event instanceof StateEvent))
+        // HACK (danielg): This should not be here. Find a way to move it out
+        if(event.entity != null && event.entity.hasComponent(StateComponent.class) && !(event instanceof StateEvent))
         {
             StateEvent stateEvent = new StateEvent(event);
             addEvent(stateEvent);

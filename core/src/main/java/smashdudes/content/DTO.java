@@ -78,6 +78,8 @@ public class DTO
         public Array<AttackBox> attackboxes = new Array<>();
         public Array<BodyBox> bodyboxes = new Array<>();
 
+        public Array<AnimationEvent> events = new Array<>();
+
         public String texturePath;
     }
 }

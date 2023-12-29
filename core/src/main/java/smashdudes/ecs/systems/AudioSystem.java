@@ -13,7 +13,7 @@ public class AudioSystem extends GameSystem
 {
     public static float masterVolume = 1f;
 
-    private class Audio
+    private static class Audio
     {
         private final Sound sound;
         private final float volume;
@@ -25,7 +25,7 @@ public class AudioSystem extends GameSystem
         }
     }
 
-    private Queue<Audio> sounds = new Queue<>();
+    private final Queue<Audio> sounds = new Queue<>();
 
     public AudioSystem(Engine engine)
     {
@@ -34,6 +34,7 @@ public class AudioSystem extends GameSystem
         registerEventType(JumpEvent.class);
         registerEventType(LandingEvent.class);
         registerEventType(CountdownEvent.class);
+        registerEventType(AudioEvent.class);
     }
 
     @Override
@@ -53,6 +54,13 @@ public class AudioSystem extends GameSystem
         if(event instanceof CountdownEvent)
         {
             Sound s = AudioResources.getSoundEffect("audio/effects/Jump.wav");
+            sounds.addLast(new Audio(s, 0.5f));
+        }
+
+        if(event instanceof AudioEvent)
+        {
+            AudioEvent e = (AudioEvent)event;
+            Sound s = AudioResources.getSoundEffect(e.audioFile);
             sounds.addLast(new Audio(s, 0.5f));
         }
     }

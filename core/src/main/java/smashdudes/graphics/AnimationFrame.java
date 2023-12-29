@@ -3,6 +3,7 @@ package smashdudes.graphics;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import smashdudes.content.AnimationEvent;
 import smashdudes.gameplay.AttackBox;
 import smashdudes.gameplay.BodyBox;
 import smashdudes.gameplay.CombatBox;
@@ -14,11 +15,23 @@ public class AnimationFrame
     public final Array<AttackBox> attackboxes;
     public final Array<BodyBox> bodyboxes;
 
-    public AnimationFrame(Texture texture, Array<AttackBox> attackboxes, Array<BodyBox> bodyboxes)
+    public final Array<AnimationEvent> events;
+
+
+    public AnimationFrame(Texture texture, Array<AttackBox> attackboxes, Array<BodyBox> bodyboxes, Array<AnimationEvent> events)
     {
         this.texture = texture;
         this.attackboxes = attackboxes;
         this.bodyboxes = bodyboxes;
+        this.events = events;
+    }
+
+    public void resetEvents()
+    {
+        for(AnimationEvent event : events)
+        {
+            event.eventFired = false;
+        }
     }
 
     public Array<AttackBox> getAttackboxesRelativeTo(Vector2 pos, boolean mirrorX)

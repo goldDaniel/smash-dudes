@@ -2,48 +2,55 @@ package smashdudes.core.boxtool.presentation.widgets;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.*;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import imgui.ImGui;
 import smashdudes.content.DTO;
-import smashdudes.core.boxtool.logic.AnimationSelectionContext;
 import smashdudes.core.boxtool.logic.BoxToolContext;
-import smashdudes.core.boxtool.logic.SelectionType;
 import smashdudes.core.boxtool.logic.commands.AddBoxCommand;
 import smashdudes.core.boxtool.logic.commands.RectangleEditCommand;
+import smashdudes.core.boxtool.logic.selectable.Selectable;
+import smashdudes.core.boxtool.logic.selectable.SelectableRectangle;
 import smashdudes.gameplay.AttackBox;
 import smashdudes.gameplay.BodyBox;
-import smashdudes.gameplay.CombatBox;
 import smashdudes.graphics.RenderResources;
-
-import static smashdudes.core.boxtool.logic.AnimationSelectionContext.*;
 
 public class AnimationViewerWidget extends ImGuiWidget
 {
-    private final AnimationSelectionContext selectionContext = new AnimationSelectionContext();
-
+    // Rendering ///////////////////////////////
     static final float WORLD_WIDTH = 4;
     static final float WORLD_HEIGHT = 4;
-    private final Camera camera = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT);
-    private final Viewport viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
+    private final Viewport viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT);
     private FrameBuffer frameBuffer;
 
+    // State tracking ///////////////////////////
     private int previousAnimationFrameCount = 0;
     private DTO.Animation previousAnimation = null;
     private Animation<DTO.AnimationFrame> currentAnimation = null;
 
+
+    // Selection ////////////////////////////////
+    boolean rebuildSelectables = true;
+    private Selectable selectedRect = null;
+    private final Array<Selectable> selectables = new Array<>();
+
     public AnimationViewerWidget(BoxToolContext context)
     {
         super("Character Viewer", 0, context);
-        context.setAnimationSelectionContext(selectionContext);
+        context.addRedoCallback(() -> rebuildSelectables = true);
+        context.addUndoCallback(() -> rebuildSelectables = true);
     }
 
     @Override
@@ -61,111 +68,13 @@ public class AnimationViewerWidget extends ImGuiWidget
             ScreenUtils.clear(0,0,0,1);
             drawWorldSpaceGrid(sh);
             drawCharacter(RenderResources.getTexture(currentFrame.texturePath), sb);
-            drawBoxes(currentFrame.attackboxes, Color.RED, sh);
-            drawBoxes(currentFrame.bodyboxes, Color.GREEN, sh);
+            drawBoxes(sh);
         }
         FrameBuffer.unbind();
         ImGui.image(frameBuffer.getColorBufferTexture().getTextureObjectHandle(), frameBuffer.getWidth(),frameBuffer.getHeight(),0,1,1,0);
 
-        mouseMoveBoxes(currentFrame);
-        mouseScaleBoxes(currentFrame);
+        doSelection();
         drawContextMenu(currentFrame);
-    }
-
-    private <T extends CombatBox> void getScaleSelectedRectangle(Array<T> rectangles, Vector2 mousePos)
-    {
-        if(selectionContext.getSelectionType() != SelectionType.None) return;
-
-        Rectangle grabRect = new Rectangle();
-        for(Rectangle r : rectangles)
-        {
-            // horizontal
-            grabRect.set(r.x, r.y, scaleSelectionLength, scaleSelectionWidth);
-            if(grabRect.contains(mousePos))
-            {
-                selectionContext.setRectangle(r, SelectionType.Scale, true);
-                return;
-            }
-
-            // vertical
-            grabRect.set(r.x, r.y, scaleSelectionWidth, scaleSelectionLength);
-            if(grabRect.contains(mousePos))
-            {
-                selectionContext.setRectangle(r, SelectionType.Scale, false);
-                return;
-            }
-        }
-    }
-    private <T extends CombatBox> void getMoveSelectedRectangle(Array<T> rectangles, Vector2 mousePos)
-    {
-        Circle circle = new Circle();
-        for(Rectangle r : rectangles)
-        {
-            circle.set(r.x, r.y, boxCenterRadius);
-            if(circle.contains(mousePos))
-            {
-                selectionContext.setRectangle(r, SelectionType.Move);
-                return;
-            }
-        }
-    }
-
-    private void mouseMoveBoxes(DTO.AnimationFrame frame)
-    {
-        // no grabbing hitboxes when frames are changing
-        if(context.isPlayingAnimation())
-        {
-            selectionContext.setRectangle(null, SelectionType.None);
-            return;
-        }
-
-        Vector2 mousePos = getMouseWorldPos();
-        if(selectionContext.isSelectionType(SelectionType.Move) && Gdx.input.isButtonPressed(Input.Buttons.LEFT))
-        {
-            Rectangle copy = selectionContext.getRectangleForEdit();
-            copy.x = mousePos.x;
-            copy.y = mousePos.y;
-        }
-        else if(selectionContext.isSelectionType(SelectionType.Move) && !Gdx.input.isButtonPressed(Input.Buttons.LEFT))
-        {
-            Rectangle copy = selectionContext.getRectangleForEdit();
-            context.execute(new RectangleEditCommand(selectionContext.getRectangleForSave(), new float[]{ mousePos.x, mousePos.y, copy.width, copy.height }));
-            selectionContext.setRectangle(null, SelectionType.None);
-        }
-        else if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT))
-        {
-            if(selectionContext.getSelectionType() == SelectionType.None) getMoveSelectedRectangle(frame.bodyboxes, mousePos);
-            if(selectionContext.getSelectionType() == SelectionType.None) getMoveSelectedRectangle(frame.attackboxes, mousePos);
-        }
-    }
-
-    private void mouseScaleBoxes(DTO.AnimationFrame frame)
-    {
-        // no grabbing hitboxes when frames are changing
-        if(context.isPlayingAnimation())
-        {
-            selectionContext.setRectangle(null, SelectionType.None);
-            return;
-        }
-
-        if(selectionContext.isSelectionType(SelectionType.Scale) && Gdx.input.isButtonPressed(Input.Buttons.LEFT))
-        {
-            Rectangle copy = selectionContext.getRectangleForEdit();
-            if(selectionContext.isHorizontalScaling()) copy.width  += Gdx.input.getDeltaX() * 0.0025f;
-            else                                       copy.height -= Gdx.input.getDeltaY() * 0.0025f;
-        }
-        else if(selectionContext.isSelectionType(SelectionType.Scale) && !Gdx.input.isButtonPressed(Input.Buttons.LEFT))
-        {
-            Rectangle copy = selectionContext.getRectangleForEdit();
-            context.execute(new RectangleEditCommand(selectionContext.getRectangleForSave(), new float[]{ copy.x, copy.y, copy.width, copy.height }));
-            selectionContext.setRectangle(null, SelectionType.None);
-        }
-        else if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT))
-        {
-            Vector2 mousePos = getMouseWorldPos();
-            if(selectionContext.isSelectionType(SelectionType.None)) getScaleSelectedRectangle(frame.bodyboxes, mousePos);
-            if(selectionContext.isSelectionType(SelectionType.None)) getScaleSelectedRectangle(frame.attackboxes, mousePos);
-        }
     }
 
     private DTO.AnimationFrame animate(DTO.Animation animation)
@@ -177,6 +86,7 @@ public class AnimationViewerWidget extends ImGuiWidget
             previousAnimationFrameCount = animation.frames.size;
             context.stopAnimation();
             currentAnimation = new Animation<>(frameDuration, animation.frames, Animation.PlayMode.LOOP);
+            rebuildSelectables = true;
         }
         currentAnimation.setFrameDuration(frameDuration);
 
@@ -186,6 +96,31 @@ public class AnimationViewerWidget extends ImGuiWidget
         {
             currentFrame = currentAnimation.getKeyFrame(context.getCurrentTime());
             context.setAnimationFrame(currentFrame);
+        }
+        if(currentFrame != null && rebuildSelectables)
+        {
+            selectables.clear();
+            for(Rectangle r : currentFrame.attackboxes)
+            {
+
+                selectables.add(new SelectableRectangle(r, Color.RED, (Selectable selectable) ->
+                {
+                    Rectangle copy = (Rectangle)selectable.getClone();
+                    float[] data = new float[]{copy.x, copy.y, copy.width, copy.height};
+                    context.execute(new RectangleEditCommand((Rectangle)selectable.getOriginal(), data));
+                }));
+            }
+            for(Rectangle r : currentFrame.bodyboxes)
+            {
+                selectables.add(new SelectableRectangle(r, Color.GREEN, (Selectable selectable) ->
+                {
+                    Rectangle copy = (Rectangle)selectable.getClone();
+                    float[] data = new float[]{copy.x, copy.y, copy.width, copy.height};
+                    context.execute(new RectangleEditCommand((Rectangle)selectable.getOriginal(), data));
+                }));
+            }
+
+            rebuildSelectables = false;
         }
 
         return currentFrame;
@@ -205,12 +140,21 @@ public class AnimationViewerWidget extends ImGuiWidget
         }
         viewport.update(width, height);
         viewport.apply();
-        camera.update();
+    }
+
+    private void drawBoxes(ShapeRenderer sh)
+    {
+        Vector2 mousePos = getMouseWorldPos();
+        sh.setProjectionMatrix(viewport.getCamera().combined);
+        for(Selectable rect : selectables)
+        {
+            rect.draw(mousePos, sh);
+        }
     }
 
     private void drawWorldSpaceGrid(ShapeRenderer sh)
     {
-        sh.setProjectionMatrix(camera.combined);
+        sh.setProjectionMatrix(viewport.getCamera().combined);
         sh.begin(ShapeRenderer.ShapeType.Line);
         sh.setColor(Color.LIGHT_GRAY);
         for(int y = -5; y <= 5; ++y)
@@ -235,134 +179,10 @@ public class AnimationViewerWidget extends ImGuiWidget
         final float drawX = -drawWidth / 2;
         final float drawY = -drawHeight / 2;
 
-        sb.setProjectionMatrix(camera.combined);
+        sb.setProjectionMatrix(viewport.getCamera().combined);
         sb.begin();
         sb.draw(texture, drawX, drawY, drawWidth, drawHeight);
         sb.end();
-    }
-
-    private static Color interpolateColor(Color start, Color mid, Color end, float t)
-    {
-        t = MathUtils.clamp(t, 0, 1);
-        Color result = new Color();
-        if(t < 0.5)
-        {
-            result.set(start).lerp(mid, t * 2f);
-        }
-        else
-        {
-            result.set(mid).lerp(end, (t - 0.5f) * 2f);
-        }
-        return result;
-    }
-
-    private <T extends CombatBox> void drawBoxes(Array<T> boxes, Color color, ShapeRenderer sh)
-    {
-        sh.setProjectionMatrix(camera.combined);
-        sh.begin(ShapeRenderer.ShapeType.Line);
-        for(Rectangle b : boxes)
-        {
-            Rectangle box = b;
-            if(selectionContext.getRectangleForSave() == b)
-            {
-                box = selectionContext.getRectangleForEdit();
-            }
-
-            float w = box.width;
-            float h = box.height;
-            float x = (box.x - w / 2);
-            float y = (box.y - h / 2);
-
-            sh.setColor(color);
-            sh.rect(x, y, w, h);
-
-            sh.line(x, y, x + w, y + h);
-            sh.line(x, y + h, x + w, y);
-        }
-        sh.end();
-
-        sh.begin(ShapeRenderer.ShapeType.Filled);
-        for(Rectangle b : boxes)
-        {
-            Rectangle box = b;
-            if(selectionContext.getRectangleForSave() == b)
-            {
-                box = selectionContext.getRectangleForEdit();
-            }
-
-            float w = box.width;
-            float h = box.height;
-            float x = (box.x - w / 2);
-            float y = (box.y - h / 2);
-
-            if (b instanceof AttackBox)
-            {
-                AttackBox attack = (AttackBox) b;
-
-                Vector2 dir = new Vector2(MathUtils.cos(attack.angle), MathUtils.sin(attack.angle));
-
-                float terminalX = box.x + dir.x * 1.25f;
-                ;
-                float terminalY = box.y + dir.y * 1.25f;
-
-                // TODO (danielg): 100 should be replaced by maximum power value when decided
-                float colorT = attack.power / 100;
-                sh.setColor(interpolateColor(Color.GREEN, Color.YELLOW, Color.RED, colorT));
-                sh.rectLine(box.x, box.y, terminalX, terminalY, 0.0125f);
-            }
-        }
-
-        // scale grab node
-        {
-            for(Rectangle b : boxes)
-            {
-                Rectangle box = b;
-                if(selectionContext.getRectangleForSave() == b)
-                {
-                    box = selectionContext.getRectangleForEdit();
-                }
-
-                Vector2 mousePos = getMouseWorldPos();
-                Rectangle rect = new Rectangle();
-                {
-                    sh.setColor(Color.FOREST);
-                    rect.set(box.x, box.y, scaleSelectionLength, scaleSelectionWidth);
-                    if(rect.contains(mousePos)) sh.setColor(Color.GREEN);
-
-                    sh.rect(box.x - scaleSelectionWidth / 2, box.y - scaleSelectionWidth / 2, scaleSelectionLength, scaleSelectionWidth);
-                }
-                {
-                    sh.setColor(Color.RED);
-                    rect.set(box.x, box.y, scaleSelectionWidth, scaleSelectionLength);
-                    if (rect.contains(mousePos)) sh.setColor(Color.SALMON);
-
-                    sh.rect(box.x - scaleSelectionWidth / 2, box.y - scaleSelectionWidth / 2, scaleSelectionWidth, scaleSelectionLength);
-                }
-            }
-            
-            // move grab node
-            {
-                Circle circle = new Circle();
-                for(Rectangle b : boxes)
-                {
-                    Rectangle box = b;
-                    if(selectionContext.getRectangleForSave() == b)
-                    {
-                        box = selectionContext.getRectangleForEdit();
-                    }
-
-                    sh.setColor(Color.LIGHT_GRAY);
-                    circle.set(box.x, box.y, boxCenterRadius);
-                    if(circle.contains(getMouseWorldPos()))
-                    {
-                        sh.setColor(Color.WHITE);
-                    }
-                    sh.circle(box.x, box.y, boxCenterRadius, 16);
-                }
-            }
-
-        }
-        sh.end();
     }
 
     private void drawContextMenu(DTO.AnimationFrame currentFrame)
@@ -381,12 +201,14 @@ public class AnimationViewerWidget extends ImGuiWidget
             if (ImGui.button("Create Attack Box"))
             {
                 context.execute(new AddBoxCommand(currentFrame.attackboxes, AttackBox.class, new Rectangle(worldPos.x, worldPos.y, 0.5f, 0.5f)));
+                rebuildSelectables = true;
                 ImGui.closeCurrentPopup();
             }
             ImGui.sameLine();
             if (ImGui.button("Create Body Box"))
             {
                 context.execute(new AddBoxCommand(currentFrame.bodyboxes, BodyBox.class, new Rectangle(worldPos.x, worldPos.y, 0.5f, 0.5f)));
+                rebuildSelectables = true;
                 ImGui.closeCurrentPopup();
             }
             if (ImGui.button("Cancel"))
@@ -398,13 +220,45 @@ public class AnimationViewerWidget extends ImGuiWidget
         }
     }
 
+    private void doSelection()
+    {
+        Vector2 mouseWorldPos = getMouseWorldPos();
+        Vector2 mouseDelta = new Vector2();
+        mouseDelta.x = Gdx.input.getDeltaX() * 0.005f;
+        mouseDelta.y = -Gdx.input.getDeltaY() * 0.005f;
+
+        // attempt selection
+        if(selectedRect == null && Gdx.input.isButtonJustPressed(Input.Buttons.LEFT))
+        {
+            for(Selectable selectable : selectables)
+            {
+                if(selectable.select(mouseWorldPos))
+                {
+                    selectedRect = selectable;
+                }
+            }
+        }
+        else if(!Gdx.input.isButtonPressed(Input.Buttons.LEFT))
+        {
+            if(selectedRect != null)
+            {
+                selectedRect.release();
+                selectedRect = null;
+            }
+        }
+        else if(selectedRect != null)
+        {
+            selectedRect.drag(mouseWorldPos, mouseDelta);
+        }
+    }
+
     private Vector2 getMouseWorldPos()
     {
         final float mouseX = ImGui.getMousePosX();
         final float mouseY = ImGui.getMousePosY();
 
         final float viewportX  = ImGui.getWindowPosX();
-        final float viewportY = ImGui.getWindowPosY() + 16;
+        final float viewportY = ImGui.getWindowPosY();
         final float viewportW = frameBuffer.getWidth();
         final float viewportH = frameBuffer.getHeight();
 
@@ -414,7 +268,7 @@ public class AnimationViewerWidget extends ImGuiWidget
     private Vector2 getMouseWorldPos(float mouseX, float mouseY, float viewportX, float viewportY, float viewportW, float viewportH)
     {
         Vector2 result = new Vector2();
-        Vector3 worldSpace = camera.unproject(new Vector3(mouseX, mouseY, 0), viewportX, viewportY, viewportW, viewportH);
+        Vector3 worldSpace = viewport.getCamera().unproject(new Vector3(mouseX, mouseY, 0), viewportX, viewportY, viewportW, viewportH);
         result.x = worldSpace.x;
         result.y = worldSpace.y;
 

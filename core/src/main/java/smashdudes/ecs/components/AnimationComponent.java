@@ -9,10 +9,10 @@ import smashdudes.graphics.AnimationFrame;
 public class AnimationComponent extends Component
 {
     private float currentTime;
-    private final Animation<AnimationFrame> currentAnimation;
+    private final Animation currentAnimation;
 
 
-    public AnimationComponent(Array<AnimationFrame> frames, float animationDuration, Animation.PlayMode mode)
+    public AnimationComponent(Array frames, float animationDuration, Animation.PlayMode mode)
     {
         float frameDuration = animationDuration / frames.size;
         currentAnimation = new Animation<>( frameDuration, frames, mode);
@@ -20,12 +20,17 @@ public class AnimationComponent extends Component
 
     public AnimationFrame getCurrentFrame()
     {
-        return currentAnimation.getKeyFrame(currentTime);
+        return (AnimationFrame)currentAnimation.getKeyFrame(currentTime);
     }
 
     public void reset()
     {
         currentTime = 0;
+        for(Object obj : currentAnimation.getKeyFrames())
+        {
+            AnimationFrame frame = (AnimationFrame)obj;
+            frame.resetEvents();
+        }
     }
 
     public void update(float dt)

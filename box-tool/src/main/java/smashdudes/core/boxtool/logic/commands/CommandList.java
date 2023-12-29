@@ -4,9 +4,31 @@ import com.badlogic.gdx.utils.Array;
 
 public class CommandList
 {
+    public interface OnUndo
+    {
+        void execute();
+    }
+
+    public interface OnRedo
+    {
+        void execute();
+    }
+
+    final Array<OnUndo> undoCallbacks = new Array<>();
+    final Array<OnRedo> redoCallbacks = new Array<>();
+
     private final Array<Command> commands = new Array<>();
     int currentIndex = -1;
 
+    public void addUndoCallback(OnUndo undo)
+    {
+        undoCallbacks.add(undo);
+    }
+
+    public void addRedoCallback(OnRedo redo)
+    {
+        redoCallbacks.add(redo);
+    }
 
     public void clear()
     {
@@ -36,6 +58,11 @@ public class CommandList
         {
             commands.get(++currentIndex).execute();
         }
+
+        for(OnRedo redo : redoCallbacks)
+        {
+            redo.execute();
+        }
     }
 
     public void undo()
@@ -44,6 +71,11 @@ public class CommandList
         {
             commands.get(currentIndex).undo();
             currentIndex--;
+        }
+
+        for(OnUndo undo : undoCallbacks)
+        {
+            undo.execute();
         }
     }
 }

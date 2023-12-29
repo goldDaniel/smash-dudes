@@ -4,8 +4,8 @@ import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.CharacterInputComponent;
 import smashdudes.ecs.components.JumpComponent;
 import smashdudes.ecs.components.VelocityComponent;
-import smashdudes.ecs.events.JumpEvent;
 import smashdudes.gameplay.state.State;
+import smashdudes.gameplay.state.playerstate.air.FallingState;
 import smashdudes.gameplay.state.playerstate.air.JumpState;
 
 public class GroundRunningState extends PlayerGroundState
@@ -49,33 +49,24 @@ public class GroundRunningState extends PlayerGroundState
         CharacterInputComponent ci = entity.getComponent(CharacterInputComponent.class);
         VelocityComponent v  = entity.getComponent(VelocityComponent.class);
 
-        if(ci.currentState.punch)
+        if (v.velocity.y < 0)
+        {
+            return new FallingState(entity);
+        }
+        else if(ci.currentState.punch)
         {
             return new GroundAttackState(entity);
         }
         else if(ci.currentState.up && v.velocity.y == 0)
         {
             v.velocity.y = j.jumpStrength;
-            throwEvent(new JumpEvent(entity));
             return new JumpState(entity);
         }
-        else if( (ci.currentState.left && ci.currentState.right) ||
-                !(ci.currentState.left || ci.currentState.right) ||
-                  Math.abs(v.velocity.y) > 0)
+        else if(Math.abs(v.velocity.x) < 0.01)
         {
-            if(Math.abs(v.velocity.y) > 0)
-            {
-                return new JumpState(entity);
-            }
-            else
-            {
-                return new GroundIdleState(entity);
-            }
+            return new GroundIdleState(entity);
         }
-        else if (v.velocity.y < 0)
-        {
-            return new JumpState(entity);
-        }
+
 
         return this;
     }

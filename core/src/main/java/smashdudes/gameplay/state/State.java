@@ -1,18 +1,26 @@
 package smashdudes.gameplay.state;
 
-import com.badlogic.gdx.utils.Queue;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.events.Event;
 
 public abstract class State
 {
+    public interface FireEvent
+    {
+        void execute(Event event);
+    }
+    protected static FireEvent fireEvent;
+
     protected final Entity entity;
     private boolean onFirstRun = true;
-    private final Queue<Event> eventQueue = new Queue<>();
-
     public State(Entity entity)
     {
         this.entity = entity;
+    }
+
+    public static final void setFireEventCallback(FireEvent fire)
+    {
+        fireEvent = fire;
     }
 
     public final void update(float dt)
@@ -34,23 +42,6 @@ public abstract class State
     public State getNextState()
     {
         return this;
-    }
-
-    protected final void throwEvent(Event event)
-    {
-        eventQueue.addLast(event);
-    }
-
-    public final Event popEvent()
-    {
-        if(eventQueue.notEmpty())
-        {
-            return eventQueue.removeFirst();
-        }
-        else
-        {
-            return null;
-        }
     }
 
     public State handleEvent(Event event)

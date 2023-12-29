@@ -10,8 +10,8 @@ import org.libsdl.SDL;
  */
 public class ControllerInputListener extends ControllerAdapter implements IGameInputListener
 {
-    private final InputState gameInputState = new InputState();
-
+    private final InputState gameInputstate = new InputState();
+    private final Controller controller;
 
     // menu input state
     private boolean leftPressed = false;
@@ -24,9 +24,11 @@ public class ControllerInputListener extends ControllerAdapter implements IGameI
     private boolean leftTriggerDown = false;
     private boolean rightTriggerDown = false;
 
+
     public ControllerInputListener(Controller controller)
     {
         controller.addListener(this);
+        this.controller = controller;
     }
 
     private void assignValue(int buttonIndex, boolean value)
@@ -67,6 +69,8 @@ public class ControllerInputListener extends ControllerAdapter implements IGameI
     @Override
     public boolean buttonDown (Controller controller, int buttonIndex)
     {
+        if(controller != this.controller) return false;
+
         assignValue(buttonIndex, true);
         return false;
     }
@@ -74,6 +78,8 @@ public class ControllerInputListener extends ControllerAdapter implements IGameI
     @Override
     public boolean buttonUp (Controller controller, int buttonIndex)
     {
+        if(controller != this.controller) return false;
+
         assignValue(buttonIndex, false);
         return false;
     }
@@ -81,6 +87,8 @@ public class ControllerInputListener extends ControllerAdapter implements IGameI
     @Override
     public boolean axisMoved (Controller controller, int axisIndex, float value)
     {
+        if(controller != this.controller) return false;
+
         final float deadZone = 0.4f;
         if(Math.abs(value) < deadZone)
         {
