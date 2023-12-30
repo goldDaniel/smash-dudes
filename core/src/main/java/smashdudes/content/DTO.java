@@ -11,6 +11,7 @@ public class DTO
 {
     public static class Stage
     {
+        public String name = "";
         public Array<Terrain> terrain = new Array<>();
         public Array<Vector2> spawnPoints = new Array<>();
 
