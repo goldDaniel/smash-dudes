@@ -46,9 +46,15 @@ public class ParticleEditorContext
         this.emitters.clear();
         this.selectedConfig = null;
 
+        this.playing = true;
+
         for (ParticleEmitterConfig config : effect.emitterConfigs)
         {
             emitters.put(config, new ParticleEmitter(config, particlePool));
+        }
+        if(effect.emitterConfigs.size > 0)
+        {
+            selectedConfig = effect.emitterConfigs.get(0);
         }
     }
 
