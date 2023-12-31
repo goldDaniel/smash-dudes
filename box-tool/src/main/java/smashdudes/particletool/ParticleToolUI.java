@@ -9,7 +9,7 @@ import imgui.type.ImString;
 import smashdudes.graphics.effects.ParticleEmitterConfig;
 import smashdudes.particletool.logic.ParticleEditorContext;
 import smashdudes.particletool.presentation.EmitterEditorWidget;
-import smashdudes.particletool.presentation.EmitterViewerWidget;
+import smashdudes.particletool.presentation.EffectViewerWidget;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,7 +26,7 @@ public class ParticleToolUI extends smashdudes.core.UI
     {
         super.create();
         context = new ParticleEditorContext(getCommandList());
-        addWidget(new EmitterViewerWidget(context));
+        addWidget(new EffectViewerWidget(context));
         addWidget(new EmitterEditorWidget(context));
     }
 

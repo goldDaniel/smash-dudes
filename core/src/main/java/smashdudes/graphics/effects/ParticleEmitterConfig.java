@@ -7,38 +7,39 @@ import com.badlogic.gdx.math.Vector2;
 public class ParticleEmitterConfig
 {
     // Emission
-    public float emissionRate;
+    public float emissionRate = 1000;
 
     // Life
-    public float initialLife;
+    public float initialLife = 1;
     public float initialLifeVar;
 
     // Velocity
-    public Vector2 velocity = new Vector2();
-    public Vector2 velocityVar = new Vector2();
+    public Vector2 velocity = new Vector2(0,0);
+    public Vector2 velocityVar = new Vector2(5,5);
 
     // Color
-    public Color startColor = new Color();
-    public Color startColorVar = new Color();
+    public Color startColor = new Color(1,1,1,1);
+    public Color startColorVar = new Color(0,0,0,0);
 
-    public Color endColor = new Color();
-    public Color endColorVar = new Color();
+    public Color endColor = new Color(0,0,0,0);
+    public Color endColorVar = new Color(0,0,0,0);
 
     // Scale
-    public float scaleStart;
-    public float scaleStartVar;
+    public float scaleStart = 1;
+    public float scaleStartVar = 0;
 
-    public float scaleEnd;
-    public float scaleEndVar;
+    public float scaleEnd = 0;
+    public float scaleEndVar = 0;
 
+    public ParticleEmitterShape spawnShape = ParticleEmitterShape.Point;
+    public float spawnShapeScale = 1.0f;
 
     public static Particle configureParticle(Particle result, ParticleEmitterConfig config)
     {
         result.initialLife = config.initialLife + config.initialLifeVar * range();
         result.life = result.initialLife;
 
-        result.x = 0;
-        result.y = 0;
+        getSpawnPosition(result, config.spawnShape, config.spawnShapeScale);
 
         result.vX = config.velocity.x + config.velocityVar.x * range();
         result.vY = config.velocity.y + config.velocityVar.y * range();
@@ -57,6 +58,67 @@ public class ParticleEmitterConfig
         result.aEnd = config.endColor.a + config.endColorVar.a * range();
 
         return result;
+    }
+
+    public static void getSpawnPosition(Particle result, ParticleEmitterShape shape, float emissionShapeScale)
+    {
+
+        switch (shape)
+        {
+            case Point:
+                {
+                    result.x = 0;
+                    result.y = 0;
+                }
+                break;
+            case Circle:
+                {
+                    float angle = MathUtils.random(0f, MathUtils.PI2);
+                    float radius = (float)Math.sqrt(MathUtils.random());
+
+                    result.x = radius * MathUtils.cos(angle);
+                    result.y = radius * MathUtils.sin(angle);
+                }
+                break;
+            case Ring:
+                {
+                    float angle = MathUtils.random(0f, MathUtils.PI2);
+                    result.x = MathUtils.cos(angle);
+                    result.y = MathUtils.sin(angle);
+                }
+                break;
+            case Square:
+                {
+                    int side = MathUtils.random(0, 3);
+                    if(side == 0)
+                    {
+                        result.x = -1;
+                        result.y = range();
+                    }
+                    if(side == 1)
+                    {
+                        result.x = 1;
+                        result.y = range();
+                    }
+                    if(side == 2)
+                    {
+                        result.x = range();
+                        result.y = -1;
+                    }
+                    if(side == 3)
+                    {
+                        result.x = range();
+                        result.y = 1;
+                    }
+                }
+                break;
+            case Box:
+                result.x = range();
+                result.y = range();
+        }
+
+        result.x *= emissionShapeScale;
+        result.y *= emissionShapeScale;
     }
 
     public static float range()

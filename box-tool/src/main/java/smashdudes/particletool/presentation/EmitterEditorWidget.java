@@ -9,6 +9,7 @@ import imgui.type.ImFloat;
 import smashdudes.core.ImGuiWidget;
 import smashdudes.core.logic.commands.PropertyEditCommand;
 import smashdudes.graphics.effects.ParticleEmitterConfig;
+import smashdudes.graphics.effects.ParticleEmitterShape;
 import smashdudes.particletool.logic.ParticleEditorContext;
 
 public class EmitterEditorWidget extends ImGuiWidget
@@ -35,7 +36,7 @@ public class EmitterEditorWidget extends ImGuiWidget
 
         ParticleEmitterConfig config = context.getParticleEmitterConfig();
 
-        ImGui.pushItemWidth(400);
+        ImGui.pushItemWidth(300);
 
         ImFloat emissionRate = new ImFloat(config.emissionRate);
         if(ImGui.inputFloat("Emission Rate", emissionRate, 1, 10))
@@ -43,6 +44,35 @@ public class EmitterEditorWidget extends ImGuiWidget
             if(emissionRate.get() < 0) emissionRate.set(0);
             context.execute(new PropertyEditCommand<>("emissionRate", emissionRate.get(), config));
         }
+
+        ParticleEmitterShape[] shapes = ParticleEmitterShape.values();
+        if(ImGui.beginCombo("Emission Shape", config.spawnShape.toString()))
+        {
+            for(ParticleEmitterShape shape : shapes)
+            {
+                String typeString = shape.toString();
+                boolean isSelected = typeString.equalsIgnoreCase(shape.toString());
+                if(ImGui.selectable(typeString, isSelected))
+                {
+                    context.execute(new PropertyEditCommand<>("spawnShape", shape, config));
+                }
+                if(isSelected)
+                {
+                    ImGui.setItemDefaultFocus();
+                }
+
+            }
+            ImGui.endCombo();
+        }
+
+        ImGui.sameLine();
+        ImFloat shapeScale = new ImFloat(config.spawnShapeScale);
+        if(ImGui.inputFloat("Emission Shape Scale", shapeScale))
+        {
+            if(shapeScale.get() < 0) shapeScale.set(0);
+            context.execute(new PropertyEditCommand<>("spawnShapeScale", shapeScale.get(), config));
+        }
+
 
         ImGui.separator();
         ImGui.text("Lifetime Variables");

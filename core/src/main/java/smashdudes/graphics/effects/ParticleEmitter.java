@@ -51,8 +51,7 @@ public class ParticleEmitter
     {
         for(Particle p : activeParticles)
         {
-            sb.setColor(p.r, p.g, p.b, p.a);
-            sb.draw(RenderResources.getTexture("textures/particleTexture.png"), p.x - p.scale / 2, p.y - p.scale / 2, p.scale, p.scale);
+            drawParticle(sb, p);
         }
     }
 
@@ -70,18 +69,23 @@ public class ParticleEmitter
 
     public void updateParticle(Particle p, float dt)
     {
-        float t = 1.0f  - p.life / p.initialLife;
-
         p.x += p.vX * dt;
         p.y += p.vY * dt;
-
-        p.scale = MathUtils.lerp(p.scaleStart, p.scaleEnd, t);
-
-        p.r = MathUtils.lerp(p.rStart, p.rEnd, t);
-        p.g = MathUtils.lerp(p.gStart, p.gEnd, t);
-        p.b = MathUtils.lerp(p.bStart, p.bEnd, t);
-        p.a = MathUtils.lerp(p.aStart, p.aEnd, t);
-
         p.life -= dt;
+    }
+
+    public void drawParticle(SpriteBatch sb, Particle p)
+    {
+        float t = 1.0f  - p.life / p.initialLife;
+
+        float scale = MathUtils.lerp(p.scaleStart, p.scaleEnd, t);
+
+        float r = MathUtils.lerp(p.rStart, p.rEnd, t);
+        float g = MathUtils.lerp(p.gStart, p.gEnd, t);
+        float b = MathUtils.lerp(p.bStart, p.bEnd, t);
+        float a = MathUtils.lerp(p.aStart, p.aEnd, t);
+
+        sb.setColor(r, g, b, a);
+        sb.draw(RenderResources.getTexture("textures/particleTexture.png"), p.x - scale / 2, p.y - scale / 2, scale, scale);
     }
 }
