@@ -66,7 +66,7 @@ public class ParticleEmitter
         }
     }
 
-    public boolean canSpawnParticle()
+    private boolean canSpawnParticle()
     {
         boolean result = spawnTimer >= (1.0 / config.emissionRate);
 
