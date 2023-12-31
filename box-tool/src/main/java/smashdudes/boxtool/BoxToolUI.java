@@ -5,7 +5,7 @@ import com.badlogic.gdx.files.FileHandle;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
-import smashdudes.core.logic.BoxToolContext;
+import smashdudes.boxtool.logic.BoxToolContext;
 import smashdudes.core.logic.ContentService;
 import smashdudes.boxtool.presentation.AnimationFrameWidget;
 import smashdudes.boxtool.presentation.AnimationViewerWidget;

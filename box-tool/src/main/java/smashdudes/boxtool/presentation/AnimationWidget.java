@@ -10,7 +10,7 @@ import imgui.type.ImFloat;
 import imgui.type.ImInt;
 import smashdudes.content.DTO;
 import smashdudes.core.Utils;
-import smashdudes.core.logic.BoxToolContext;
+import smashdudes.boxtool.logic.BoxToolContext;
 import smashdudes.core.logic.commands.*;
 
 public class AnimationWidget extends BoxToolWidget

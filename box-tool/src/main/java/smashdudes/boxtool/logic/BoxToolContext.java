@@ -1,4 +1,4 @@
-package smashdudes.core.logic;
+package smashdudes.boxtool.logic;
 
 import com.badlogic.gdx.utils.Queue;
 import smashdudes.content.DTO;

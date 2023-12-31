@@ -18,7 +18,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import imgui.ImGui;
 import smashdudes.content.DTO;
-import smashdudes.core.logic.BoxToolContext;
+import smashdudes.boxtool.logic.BoxToolContext;
 import smashdudes.core.logic.commands.AddBoxCommand;
 import smashdudes.core.logic.commands.RectangleEditCommand;
 import smashdudes.core.logic.selectable.Selectable;

@@ -1,7 +1,7 @@
 package smashdudes.boxtool.presentation;
 
 import smashdudes.core.ImGuiWidget;
-import smashdudes.core.logic.BoxToolContext;
+import smashdudes.boxtool.logic.BoxToolContext;
 
 public abstract class BoxToolWidget extends ImGuiWidget
 {
