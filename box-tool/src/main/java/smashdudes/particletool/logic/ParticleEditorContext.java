@@ -1,6 +1,5 @@
 package smashdudes.particletool.logic;
 
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.Pool;
 import smashdudes.content.DTO;
@@ -108,18 +107,6 @@ public class ParticleEditorContext
         }
 
         emitter.release();
-    }
-
-    public Iterable<ParticleEmitter> getEmitters()
-    {
-        // draw order is the order inside the effect
-        Array<ParticleEmitter> result = new Array<>();
-        for(ParticleEmitterConfig config : effect.emitterConfigs)
-        {
-            result.add(emitters.get(config));
-        }
-
-        return result;
     }
 
     public void play()
