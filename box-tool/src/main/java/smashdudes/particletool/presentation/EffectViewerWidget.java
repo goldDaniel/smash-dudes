@@ -19,7 +19,6 @@ import smashdudes.core.ImGuiWidget;
 import smashdudes.core.logic.commands.Command;
 import smashdudes.core.logic.selectable.SelectableMovable;
 import smashdudes.core.logic.selectable.SelectionContext;
-import smashdudes.graphics.effects.ParticleEmitter;
 import smashdudes.graphics.effects.ParticleEmitterConfig;
 import smashdudes.particletool.logic.ParticleEditorContext;
 
@@ -50,9 +49,9 @@ public class EffectViewerWidget extends ImGuiWidget
     {
         if(context.isPlaying())
         {
-            for(ParticleEmitter emitter : context.getEmitters())
+            for(ParticleEmitterConfig config : context.getEffect().emitterConfigs)
             {
-                emitter.update(Gdx.graphics.getDeltaTime());
+                context.getEmitter(config).update(Gdx.graphics.getDeltaTime());
             }
         }
 
@@ -115,9 +114,9 @@ public class EffectViewerWidget extends ImGuiWidget
             sb.setBlendFunctionSeparate(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA, GL20.GL_ONE, GL20.GL_ONE);
             sb.setProjectionMatrix(viewport.getCamera().combined);
             sb.begin();
-            for(ParticleEmitter emitter : context.getEmitters())
+            for(ParticleEmitterConfig config : context.getEffect().emitterConfigs)
             {
-                emitter.render(sb);
+                context.getEmitter(config).render(sb);
             }
             sb.end();
 
