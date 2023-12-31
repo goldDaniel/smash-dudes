@@ -71,6 +71,8 @@ public class EmitterEditorWidget extends ImGuiWidget
             context.execute(new PropertyEditCommand<>("emissionRate", emissionRate.get(), config));
         }
 
+        ImGui.sameLine();
+
         ParticleEmitterShape[] shapes = ParticleEmitterShape.values();
         if(ImGui.beginCombo("Emission Shape", config.spawnShape.toString()))
         {

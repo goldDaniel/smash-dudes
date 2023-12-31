@@ -7,6 +7,7 @@ import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
 import smashdudes.content.DTO;
+import smashdudes.core.Utils;
 import smashdudes.particletool.logic.ParticleEditorContext;
 import smashdudes.particletool.presentation.EffectEditorWidget;
 import smashdudes.particletool.presentation.EffectViewerWidget;
@@ -51,13 +52,19 @@ public class ParticleToolUI extends smashdudes.core.UI
                     newEffectPopup = true;
 
                 }
-                if(ImGui.menuItem("Save..."))
+                if(ImGui.menuItem("Save...", null, false, !context.getEffect().name.isEmpty()))
                 {
-
+                    saveEffectFile(context.getEffect());
                 }
                 if(ImGui.menuItem("Load..."))
                 {
 
+                    FileHandle dir = Gdx.files.internal("fx");
+                    String filepath = Utils.chooseFileToLoad(dir, "json");
+                    if(filepath != null)
+                    {
+                        context.setEffect(loadEffectFile(filepath));
+                    }
                 }
 
                 ImGui.endMenu();
@@ -94,9 +101,8 @@ public class ParticleToolUI extends smashdudes.core.UI
             ImGui.beginDisabled(newEffectName.isEmpty());
             if(ImGui.button("Confirm"))
             {
-                createEffectFile(newEffectName.get());
-                context.setEffect(loadEffectFile(newEffectName.get()));
-
+                context.setEffect(new DTO.EffectDescription());
+                createEffectFile(context.getEffect(), newEffectName.get());
                 ImGui.closeCurrentPopup();
             }
             ImGui.endDisabled();
@@ -111,9 +117,9 @@ public class ParticleToolUI extends smashdudes.core.UI
         }
     }
 
-    private void createEffectFile(String effectName)
+    private void createEffectFile(DTO.EffectDescription config, String effectName)
     {
-        DTO.EffectDescription config = new DTO.EffectDescription();
+        config.name = effectName;
         String jsonOutput = new Json().toJson(config);
 
         FileHandle jsonFile = Gdx.files.absolute("fx/" + effectName + ".json");
@@ -131,9 +137,18 @@ public class ParticleToolUI extends smashdudes.core.UI
         }
     }
 
-    private DTO.EffectDescription loadEffectFile(String effectName)
+    public void saveEffectFile(DTO.EffectDescription effect)
     {
-        FileHandle jsonFile = Gdx.files.absolute("fx/" + effectName + ".json");
+        FileHandle jsonFile = Gdx.files.absolute("fx/" + effect.name + ".json");
+
+        String jsonStr = new Json().toJson(effect);
+
+        jsonFile.writeString(jsonStr, false);
+    }
+
+    private DTO.EffectDescription loadEffectFile(String filepath)
+    {
+        FileHandle jsonFile = Gdx.files.internal(filepath);
         String jsonString = jsonFile.readString();
         return new Json().fromJson(DTO.EffectDescription.class, jsonString);
     }

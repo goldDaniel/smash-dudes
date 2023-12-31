@@ -45,7 +45,13 @@ public class ParticleEditorContext
         this.particlePool.clear();
         this.emitters.clear();
         this.selectedConfig = null;
+
+        for (ParticleEmitterConfig config : effect.emitterConfigs)
+        {
+            emitters.put(config, new ParticleEmitter(config, particlePool));
+        }
     }
+
 
     public DTO.EffectDescription getEffect()
     {

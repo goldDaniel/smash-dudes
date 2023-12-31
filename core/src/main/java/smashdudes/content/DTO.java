@@ -12,6 +12,7 @@ public class DTO
 {
     public static class EffectDescription
     {
+        public String name = "";
         public Array<ParticleEmitterConfig> emitterConfigs = new Array<>();
     }
 

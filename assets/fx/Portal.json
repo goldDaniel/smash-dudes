@@ -1,0 +1,1 @@
+{name:Portal,emitterConfigs:[{name:Emitter 1,emissionRate:5000,initialLife:2,velocityVar:{x:1,y:1},startColor:{r:0.44761902,b:0.4335763,a:0.19607843},spawnShape:Circle,spawnShapeScale:6},{name:Emitter 0,emissionRate:5000,velocityVar:{x:1,y:1},spawnShape:Ring,spawnShapeScale:6}]}
