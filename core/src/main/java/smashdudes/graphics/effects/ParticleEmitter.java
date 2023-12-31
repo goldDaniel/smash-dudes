@@ -14,6 +14,8 @@ public class ParticleEmitter
     private final Array<Particle> activeParticles;
     private final Array<Particle> deadParticles;
 
+    public boolean enabled = true;
+
     public ParticleEmitter(ParticleEmitterConfig config, Pool<Particle> particlePool)
     {
         this.config = config;
@@ -24,8 +26,15 @@ public class ParticleEmitter
         spawnTimer = 0;
     }
 
+    public void release()
+    {
+        particlePool.freeAll(activeParticles);
+    }
+
     public void update(float dt)
     {
+        if(!enabled) return;
+
         while(canSpawnParticle())
         {
             Particle p = ParticleEmitterConfig.configureParticle(particlePool.obtain(), config);
@@ -49,6 +58,8 @@ public class ParticleEmitter
 
     public void render(SpriteBatch sb)
     {
+        if(!enabled) return;
+
         for(Particle p : activeParticles)
         {
             drawParticle(sb, p);
@@ -67,14 +78,14 @@ public class ParticleEmitter
         return result;
     }
 
-    public void updateParticle(Particle p, float dt)
+    private static void updateParticle(Particle p, float dt)
     {
         p.x += p.vX * dt;
         p.y += p.vY * dt;
         p.life -= dt;
     }
 
-    public void drawParticle(SpriteBatch sb, Particle p)
+    private static void drawParticle(SpriteBatch sb, Particle p)
     {
         float t = 1.0f  - p.life / p.initialLife;
 

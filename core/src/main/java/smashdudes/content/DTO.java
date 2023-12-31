@@ -6,9 +6,15 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonValue;
 import smashdudes.gameplay.AttackBox;
 import smashdudes.gameplay.BodyBox;
+import smashdudes.graphics.effects.ParticleEmitterConfig;
 
 public class DTO
 {
+    public static class EffectDescription
+    {
+        public Array<ParticleEmitterConfig> emitterConfigs = new Array<>();
+    }
+
     public static class Stage
     {
         public String name = "";

@@ -6,6 +6,8 @@ import com.badlogic.gdx.math.Vector2;
 
 public class ParticleEmitterConfig
 {
+    public String name = "";
+
     // Emission
     public float emissionRate = 1000;
 
