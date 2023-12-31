@@ -17,18 +17,17 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import imgui.ImGui;
-import smashdudes.core.logic.selectable.Selectable;
-import smashdudes.core.logic.selectable.SelectableRectangle;
 import smashdudes.content.DTO;
 import smashdudes.core.logic.BoxToolContext;
 import smashdudes.core.logic.commands.AddBoxCommand;
 import smashdudes.core.logic.commands.RectangleEditCommand;
-import smashdudes.core.ImGuiWidget;
+import smashdudes.core.logic.selectable.Selectable;
+import smashdudes.core.logic.selectable.SelectableRectangle;
 import smashdudes.gameplay.AttackBox;
 import smashdudes.gameplay.BodyBox;
 import smashdudes.graphics.RenderResources;
 
-public class AnimationViewerWidget extends ImGuiWidget
+public class AnimationViewerWidget extends BoxToolWidget
 {
     // Rendering ///////////////////////////////
     static final float WORLD_WIDTH = 4;
