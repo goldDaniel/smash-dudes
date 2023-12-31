@@ -14,7 +14,7 @@ import imgui.flag.*;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import imgui.type.ImBoolean;
-import smashdudes.boxtool.logic.commands.CommandList;
+import smashdudes.core.logic.commands.CommandList;
 import smashdudes.graphics.RenderResources;
 
 public abstract class UI extends ApplicationAdapter

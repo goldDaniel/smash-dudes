@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
-import smashdudes.boxtool.logic.BoxToolContext;
+import smashdudes.core.logic.BoxToolContext;
 
 public abstract class ImGuiWidget
 {

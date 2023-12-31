@@ -1,4 +1,4 @@
-package smashdudes.boxtool.logic.commands;
+package smashdudes.core.logic.commands;
 
 public abstract class Command
 {
