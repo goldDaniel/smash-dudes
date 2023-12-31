@@ -16,14 +16,10 @@ public class Particle
     public float vY;
 
     // scale ///////////////////////
-
-    public float scale;
     public float scaleStart;
     public float scaleEnd;
 
     // color //////////////////////
-
-    public float r,g,b,a;
 
     public float rStart;
     public float gStart;

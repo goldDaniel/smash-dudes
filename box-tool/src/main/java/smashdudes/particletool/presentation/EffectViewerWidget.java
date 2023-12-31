@@ -3,11 +3,13 @@ package smashdudes.particletool.presentation;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -18,7 +20,7 @@ import smashdudes.graphics.effects.Particle;
 import smashdudes.graphics.effects.ParticleEmitter;
 import smashdudes.particletool.logic.ParticleEditorContext;
 
-public class EmitterViewerWidget extends ImGuiWidget
+public class EffectViewerWidget extends ImGuiWidget
 {
     // Rendering ///////////////////////////////
     static final float WORLD_WIDTH = 16;
@@ -31,21 +33,25 @@ public class EmitterViewerWidget extends ImGuiWidget
 
     // State ///////////////////////////////////
     private final ParticleEditorContext context;
-    private final ParticleEmitter emitter;
 
-    public EmitterViewerWidget(ParticleEditorContext context)
+    private final Array<ParticleEmitter> emitters = new Array<>();
+
+    private final Pool<Particle> particlePool = new Pool<Particle>(8192)
     {
-        super("Emitter View", 0);
+        @Override
+        protected Particle newObject()
+        {
+            return new Particle();
+        }
+    };
+
+    public EffectViewerWidget(ParticleEditorContext context)
+    {
+        super("Effect View", 0);
         this.context = context;
 
-        emitter = new ParticleEmitter(context.getParticleEmitterConfig(), new Pool<Particle>(2048)
-        {
-            @Override
-            protected Particle newObject()
-            {
-                return new Particle();
-            }
-        });
+        ParticleEmitter emitter = new ParticleEmitter(context.getParticleEmitterConfig(), particlePool);
+        emitters.add(emitter);
     }
 
     @Override
@@ -53,7 +59,7 @@ public class EmitterViewerWidget extends ImGuiWidget
     {
         if(context.isPlaying())
         {
-            emitter.update(Gdx.graphics.getDeltaTime());
+
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)  && Gdx.input.isKeyJustPressed(Input.Keys.EQUALS))
@@ -81,9 +87,13 @@ public class EmitterViewerWidget extends ImGuiWidget
             drawUnitGrid(sh);
 
             sb.enableBlending();
+            sb.setBlendFunctionSeparate(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA, GL20.GL_ONE, GL20.GL_ONE);
             sb.setProjectionMatrix(viewport.getCamera().combined);
             sb.begin();
-            emitter.render(sb);
+            for(ParticleEmitter emitter : emitters)
+            {
+                emitter.render(sb);
+            }
             sb.end();
         }
         FrameBuffer.unbind();
@@ -100,21 +110,31 @@ public class EmitterViewerWidget extends ImGuiWidget
         sh.begin(ShapeRenderer.ShapeType.Line);
         sh.setProjectionMatrix(camera.combined);
         sh.setColor(Color.LIGHT_GRAY);
-        for(float x = minX; x <= maxX; x++)
+        for(float x = 0; x <= maxX; x++)
         {
             sh.line(x, minY, x, maxY);
         }
-        for(float y = minY; y <= maxY; y++)
+        for(float x = -1; x >= minX; x--)
+        {
+            sh.line(x, minY, x, maxY);
+        }
+
+        for(float y = 0; y <= maxY; y++)
         {
             sh.line(minX, y, maxX, y);
         }
+        for(float y = -1; y >= minY; y--)
+        {
+            sh.line(minX, y, maxX, y);
+        }
+
         sh.end();
     }
 
     private void resizeDrawBuffer()
     {
         final int width = (int) ImGui.getWindowWidth();
-        final int height = (int)ImGui.getWindowHeight();
+        final int height = (int)ImGui.getWindowHeight() - 64;
 
         if(frameBuffer == null || frameBuffer.getWidth() != width || frameBuffer.getHeight() != height)
         {
