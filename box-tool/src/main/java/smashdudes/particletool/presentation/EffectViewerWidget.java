@@ -9,14 +9,11 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import imgui.ImGui;
 import smashdudes.core.ImGuiWidget;
-import smashdudes.graphics.effects.Particle;
 import smashdudes.graphics.effects.ParticleEmitter;
 import smashdudes.particletool.logic.ParticleEditorContext;
 
@@ -34,24 +31,11 @@ public class EffectViewerWidget extends ImGuiWidget
     // State ///////////////////////////////////
     private final ParticleEditorContext context;
 
-    private final Array<ParticleEmitter> emitters = new Array<>();
-
-    private final Pool<Particle> particlePool = new Pool<Particle>(8192)
-    {
-        @Override
-        protected Particle newObject()
-        {
-            return new Particle();
-        }
-    };
 
     public EffectViewerWidget(ParticleEditorContext context)
     {
         super("Effect View", 0);
         this.context = context;
-
-        ParticleEmitter emitter = new ParticleEmitter(context.getParticleEmitterConfig(), particlePool);
-        emitters.add(emitter);
     }
 
     @Override
@@ -59,7 +43,10 @@ public class EffectViewerWidget extends ImGuiWidget
     {
         if(context.isPlaying())
         {
-
+            for(ParticleEmitter emitter : context.getEmitters())
+            {
+                emitter.update(Gdx.graphics.getDeltaTime());
+            }
         }
 
         if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)  && Gdx.input.isKeyJustPressed(Input.Keys.EQUALS))
@@ -90,7 +77,7 @@ public class EffectViewerWidget extends ImGuiWidget
             sb.setBlendFunctionSeparate(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA, GL20.GL_ONE, GL20.GL_ONE);
             sb.setProjectionMatrix(viewport.getCamera().combined);
             sb.begin();
-            for(ParticleEmitter emitter : emitters)
+            for(ParticleEmitter emitter : context.getEmitters())
             {
                 emitter.render(sb);
             }

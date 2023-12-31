@@ -6,10 +6,11 @@ import com.badlogic.gdx.utils.Json;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
-import smashdudes.graphics.effects.ParticleEmitterConfig;
+import smashdudes.content.DTO;
 import smashdudes.particletool.logic.ParticleEditorContext;
-import smashdudes.particletool.presentation.EmitterEditorWidget;
+import smashdudes.particletool.presentation.EffectEditorWidget;
 import smashdudes.particletool.presentation.EffectViewerWidget;
+import smashdudes.particletool.presentation.EmitterEditorWidget;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,9 +26,10 @@ public class ParticleToolUI extends smashdudes.core.UI
     public void create()
     {
         super.create();
-        context = new ParticleEditorContext(getCommandList());
+        context = new ParticleEditorContext(getCommandList(), new DTO.EffectDescription());
         addWidget(new EffectViewerWidget(context));
         addWidget(new EmitterEditorWidget(context));
+        addWidget(new EffectEditorWidget(context));
     }
 
     @Override
@@ -39,18 +41,19 @@ public class ParticleToolUI extends smashdudes.core.UI
     @Override
     protected void drawMainMenuBar()
     {
-        boolean newStagePopup = false;
+        boolean newEffectPopup = false;
         ImGui.beginMainMenuBar();
         {
             if(ImGui.beginMenu("File"))
             {
                 if(ImGui.menuItem("New..."))
                 {
-                    newStagePopup = true;
+                    newEffectPopup = true;
+
                 }
                 if(ImGui.menuItem("Save..."))
                 {
-                    newStagePopup = true;
+
                 }
                 if(ImGui.menuItem("Load..."))
                 {
@@ -75,10 +78,10 @@ public class ParticleToolUI extends smashdudes.core.UI
         }
         ImGui.endMainMenuBar();
 
-        drawNewStagePopup(newStagePopup);
+        drawNewEffectPopup(newEffectPopup);
     }
 
-    private void drawNewStagePopup(boolean show)
+    private void drawNewEffectPopup(boolean show)
     {
         if(show)
         {
@@ -91,7 +94,9 @@ public class ParticleToolUI extends smashdudes.core.UI
             ImGui.beginDisabled(newEffectName.isEmpty());
             if(ImGui.button("Confirm"))
             {
-                createParticleFile(newEffectName.get());
+                createEffectFile(newEffectName.get());
+                context.setEffect(loadEffectFile(newEffectName.get()));
+
                 ImGui.closeCurrentPopup();
             }
             ImGui.endDisabled();
@@ -106,10 +111,9 @@ public class ParticleToolUI extends smashdudes.core.UI
         }
     }
 
-    private void createParticleFile(String effectName)
+    private void createEffectFile(String effectName)
     {
-        ParticleEmitterConfig config = new ParticleEmitterConfig();
-
+        DTO.EffectDescription config = new DTO.EffectDescription();
         String jsonOutput = new Json().toJson(config);
 
         FileHandle jsonFile = Gdx.files.absolute("fx/" + effectName + ".json");
@@ -125,5 +129,12 @@ public class ParticleToolUI extends smashdudes.core.UI
         {
 
         }
+    }
+
+    private DTO.EffectDescription loadEffectFile(String effectName)
+    {
+        FileHandle jsonFile = Gdx.files.absolute("fx/" + effectName + ".json");
+        String jsonString = jsonFile.readString();
+        return new Json().fromJson(DTO.EffectDescription.class, jsonString);
     }
 }

@@ -34,7 +34,12 @@ public class EmitterEditorWidget extends ImGuiWidget
             context.stop();
         }
 
-        ParticleEmitterConfig config = context.getParticleEmitterConfig();
+        ParticleEmitterConfig config = context.getSelectedConfig();
+        if(config == null)
+        {
+            ImGui.text("No selected particle emitter");
+            return;
+        }
 
         ImGui.pushItemWidth(300);
 
