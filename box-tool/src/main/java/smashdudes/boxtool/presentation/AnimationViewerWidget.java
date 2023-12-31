@@ -1,7 +1,5 @@
 package smashdudes.boxtool.presentation;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -12,17 +10,17 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import imgui.ImGui;
-import smashdudes.content.DTO;
 import smashdudes.boxtool.logic.BoxToolContext;
+import smashdudes.content.DTO;
 import smashdudes.core.logic.commands.AddBoxCommand;
 import smashdudes.core.logic.commands.RectangleEditCommand;
 import smashdudes.core.logic.selectable.Selectable;
 import smashdudes.core.logic.selectable.SelectableRectangle;
+import smashdudes.core.logic.selectable.SelectionContext;
 import smashdudes.gameplay.AttackBox;
 import smashdudes.gameplay.BodyBox;
 import smashdudes.graphics.RenderResources;
@@ -45,8 +43,7 @@ public class AnimationViewerWidget extends BoxToolWidget
 
     // Selection ////////////////////////////////
     boolean rebuildSelectables = true;
-    private Selectable selectedRect = null;
-    private final Array<Selectable> selectables = new Array<>();
+    private final SelectionContext selection = new SelectionContext();
 
     public AnimationViewerWidget(BoxToolContext context)
     {
@@ -75,7 +72,8 @@ public class AnimationViewerWidget extends BoxToolWidget
         FrameBuffer.unbind();
         ImGui.image(frameBuffer.getColorBufferTexture().getTextureObjectHandle(), frameBuffer.getWidth(),frameBuffer.getHeight(),0,1,1,0);
 
-        doSelection();
+
+        selection.doSelection(getMouseWorldPos());
         drawContextMenu(currentFrame);
     }
 
@@ -107,11 +105,11 @@ public class AnimationViewerWidget extends BoxToolWidget
         }
         if(currentFrame != null && rebuildSelectables)
         {
-            selectables.clear();
+            selection.clearSelectables();
             for(Rectangle r : currentFrame.attackboxes)
             {
 
-                selectables.add(new SelectableRectangle(r, Color.RED, (Selectable selectable) ->
+                selection.addSelectable(new SelectableRectangle(r, Color.RED, (Selectable selectable) ->
                 {
                     Rectangle copy = (Rectangle)selectable.getClone();
                     float[] data = new float[]{copy.x, copy.y, copy.width, copy.height};
@@ -120,7 +118,7 @@ public class AnimationViewerWidget extends BoxToolWidget
             }
             for(Rectangle r : currentFrame.bodyboxes)
             {
-                selectables.add(new SelectableRectangle(r, Color.GREEN, (Selectable selectable) ->
+                selection.addSelectable(new SelectableRectangle(r, Color.GREEN, (Selectable selectable) ->
                 {
                     Rectangle copy = (Rectangle)selectable.getClone();
                     float[] data = new float[]{copy.x, copy.y, copy.width, copy.height};
@@ -154,10 +152,7 @@ public class AnimationViewerWidget extends BoxToolWidget
     {
         Vector2 mousePos = getMouseWorldPos();
         sh.setProjectionMatrix(viewport.getCamera().combined);
-        for(Selectable rect : selectables)
-        {
-            rect.draw(mousePos, sh);
-        }
+        selection.draw(mousePos, sh);
     }
 
     private void drawWorldSpaceGrid(ShapeRenderer sh)
@@ -225,38 +220,6 @@ public class AnimationViewerWidget extends BoxToolWidget
             }
 
             ImGui.endPopup();
-        }
-    }
-
-    private void doSelection()
-    {
-        Vector2 mouseWorldPos = getMouseWorldPos();
-        Vector2 mouseDelta = new Vector2();
-        mouseDelta.x = Gdx.input.getDeltaX() * 0.005f;
-        mouseDelta.y = -Gdx.input.getDeltaY() * 0.005f;
-
-        // attempt selection
-        if(selectedRect == null && Gdx.input.isButtonJustPressed(Input.Buttons.LEFT))
-        {
-            for(Selectable selectable : selectables)
-            {
-                if(selectable.select(mouseWorldPos))
-                {
-                    selectedRect = selectable;
-                }
-            }
-        }
-        else if(!Gdx.input.isButtonPressed(Input.Buttons.LEFT))
-        {
-            if(selectedRect != null)
-            {
-                selectedRect.release();
-                selectedRect = null;
-            }
-        }
-        else if(selectedRect != null)
-        {
-            selectedRect.drag(mouseWorldPos, mouseDelta);
         }
     }
 
