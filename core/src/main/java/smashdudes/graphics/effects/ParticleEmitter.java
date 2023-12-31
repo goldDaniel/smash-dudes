@@ -1,9 +1,10 @@
 package smashdudes.graphics.effects;
 
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
+import smashdudes.graphics.RenderResources;
 
 public class ParticleEmitter
 {
@@ -20,7 +21,7 @@ public class ParticleEmitter
         this.activeParticles = new Array<>();
         this.deadParticles = new Array<>();
 
-        spawnTimer = 1.0f / config.emissionRate;
+        spawnTimer = 0;
     }
 
     public void update(float dt)
@@ -46,22 +47,22 @@ public class ParticleEmitter
         deadParticles.clear();
     }
 
-    public void render(ShapeRenderer sh)
+    public void render(SpriteBatch sb)
     {
         for(Particle p : activeParticles)
         {
-            sh.setColor(p.r, p.g, p.b, p.a);
-            sh.circle(p.x, p.y, p.scale, 16);
+            sb.setColor(p.r, p.g, p.b, p.a);
+            sb.draw(RenderResources.getTexture("textures/particleTexture.png"), p.x - p.scale / 2, p.y - p.scale / 2, p.scale, p.scale);
         }
     }
 
     public boolean canSpawnParticle()
     {
-        boolean result = spawnTimer >= 1.0 / config.emissionRate;
+        boolean result = spawnTimer >= (1.0 / config.emissionRate);
 
         if(result)
         {
-            spawnTimer -= 1.0f / config.emissionRate;
+            spawnTimer -= (1.0f / config.emissionRate);
         }
 
         return result;

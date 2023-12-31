@@ -7,6 +7,9 @@ import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
 import smashdudes.graphics.effects.ParticleEmitterConfig;
+import smashdudes.particletool.logic.ParticleEditorContext;
+import smashdudes.particletool.presentation.EmitterEditorWidget;
+import smashdudes.particletool.presentation.EmitterViewerWidget;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,10 +19,15 @@ public class ParticleToolUI extends smashdudes.core.UI
 {
     private final ImString newEffectName = new ImString();
 
+    private ParticleEditorContext context;
+
     @Override
     public void create()
     {
         super.create();
+        context = new ParticleEditorContext(getCommandList());
+        addWidget(new EmitterViewerWidget(context));
+        addWidget(new EmitterEditorWidget(context));
     }
 
     @Override
@@ -37,6 +45,10 @@ public class ParticleToolUI extends smashdudes.core.UI
             if(ImGui.beginMenu("File"))
             {
                 if(ImGui.menuItem("New..."))
+                {
+                    newStagePopup = true;
+                }
+                if(ImGui.menuItem("Save..."))
                 {
                     newStagePopup = true;
                 }

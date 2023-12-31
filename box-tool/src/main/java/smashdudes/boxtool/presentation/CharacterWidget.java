@@ -11,7 +11,7 @@ import imgui.type.ImFloat;
 import imgui.type.ImString;
 import smashdudes.content.DTO;
 import smashdudes.core.Utils;
-import smashdudes.core.logic.BoxToolContext;
+import smashdudes.boxtool.logic.BoxToolContext;
 import smashdudes.core.logic.ContentService;
 import smashdudes.core.logic.commands.AddAnimationCommand;
 import smashdudes.core.logic.commands.PropertyEditCommand;

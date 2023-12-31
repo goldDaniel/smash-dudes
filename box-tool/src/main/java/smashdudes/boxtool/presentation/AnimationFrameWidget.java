@@ -12,7 +12,7 @@ import smashdudes.content.AnimationEvent;
 import smashdudes.content.AnimationEventType;
 import smashdudes.content.DTO;
 import smashdudes.core.Utils;
-import smashdudes.core.logic.BoxToolContext;
+import smashdudes.boxtool.logic.BoxToolContext;
 import smashdudes.core.logic.commands.*;
 import smashdudes.gameplay.AttackBox;
 import smashdudes.gameplay.BodyBox;
