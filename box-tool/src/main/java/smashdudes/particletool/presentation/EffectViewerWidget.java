@@ -9,12 +9,18 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import imgui.ImGui;
 import smashdudes.core.ImGuiWidget;
+import smashdudes.core.logic.commands.Command;
+import smashdudes.core.logic.selectable.SelectableMovable;
+import smashdudes.core.logic.selectable.SelectionContext;
 import smashdudes.graphics.effects.ParticleEmitter;
+import smashdudes.graphics.effects.ParticleEmitterConfig;
 import smashdudes.particletool.logic.ParticleEditorContext;
 
 public class EffectViewerWidget extends ImGuiWidget
@@ -30,7 +36,8 @@ public class EffectViewerWidget extends ImGuiWidget
 
     // State ///////////////////////////////////
     private final ParticleEditorContext context;
-
+    private final SelectionContext selectionContext = new SelectionContext();
+    private int previousSelectableCount = 0;
 
     public EffectViewerWidget(ParticleEditorContext context)
     {
@@ -48,6 +55,37 @@ public class EffectViewerWidget extends ImGuiWidget
                 emitter.update(Gdx.graphics.getDeltaTime());
             }
         }
+
+        if(context.getEffect().emitterConfigs.size != previousSelectableCount)
+        {
+            previousSelectableCount = context.getEffect().emitterConfigs.size;
+            selectionContext.clearSelectables();
+            for(ParticleEmitterConfig config : context.getEffect().emitterConfigs)
+            {
+                selectionContext.addSelectable(new SelectableMovable(config.origin, selectable ->
+                {
+                    Vector2 next = (Vector2)selectable.getClone();
+                    context.execute(new Command()
+                    {
+                        final Vector2 ref = (Vector2)selectable.getOriginal();
+                        final Vector2 prevValue = ref.cpy();
+                        final Vector2 newValue = next.cpy();
+                        @Override
+                        protected void execute()
+                        {
+                            ref.set(newValue);
+                        }
+
+                        @Override
+                        protected void undo()
+                        {
+                            ref.set(prevValue);
+                        }
+                    });
+                }));
+            }
+        }
+
 
         if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)  && Gdx.input.isKeyJustPressed(Input.Keys.EQUALS))
         {
@@ -82,9 +120,13 @@ public class EffectViewerWidget extends ImGuiWidget
                 emitter.render(sb);
             }
             sb.end();
+
+            selectionContext.draw(getMouseWorldPos(), sh);
         }
         FrameBuffer.unbind();
         ImGui.image(frameBuffer.getColorBufferTexture().getTextureObjectHandle(), frameBuffer.getWidth(),frameBuffer.getHeight(),0,1,1,0);
+
+        selectionContext.doSelection(getMouseWorldPos());
     }
 
     private void drawUnitGrid(ShapeRenderer sh)
@@ -132,5 +174,28 @@ public class EffectViewerWidget extends ImGuiWidget
         }
         viewport.update(width, height);
         viewport.apply();
+    }
+
+    private Vector2 getMouseWorldPos()
+    {
+        final float mouseX = ImGui.getMousePosX();
+        final float mouseY = ImGui.getMousePosY();
+
+        final float viewportX  = ImGui.getWindowPosX();
+        final float viewportY = ImGui.getWindowPosY();
+        final float viewportW = frameBuffer.getWidth();
+        final float viewportH = frameBuffer.getHeight();
+
+        return getMouseWorldPos(mouseX, mouseY, viewportX, viewportY, viewportW, viewportH);
+    }
+
+    private Vector2 getMouseWorldPos(float mouseX, float mouseY, float viewportX, float viewportY, float viewportW, float viewportH)
+    {
+        Vector2 result = new Vector2();
+        Vector3 worldSpace = viewport.getCamera().unproject(new Vector3(mouseX, mouseY, 0), viewportX, viewportY, viewportW, viewportH);
+        result.x = worldSpace.x;
+        result.y = worldSpace.y;
+
+        return result;
     }
 }

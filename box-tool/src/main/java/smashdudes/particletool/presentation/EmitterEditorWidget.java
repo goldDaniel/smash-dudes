@@ -43,6 +43,27 @@ public class EmitterEditorWidget extends ImGuiWidget
 
         ImGui.pushItemWidth(300);
 
+        ImGui.separator();
+        ImGui.text("Emission Variables");
+        ImGui.newLine();
+        ImGui.newLine();
+
+        ImFloat emitterPosX = new ImFloat(config.origin.x);
+        if(ImGui.inputFloat("Emission Origin X", emitterPosX))
+        {
+            Vector2 next = new Vector2(emitterPosX.get(), config.origin.y);
+            context.execute(new PropertyEditCommand<>("origin", next, config));
+        }
+
+        ImGui.sameLine();
+        ImFloat emitterPosY = new ImFloat(config.origin.y);
+        if(ImGui.inputFloat("Emission Origin Y", emitterPosY))
+        {
+            Vector2 next = new Vector2(config.origin.x, emitterPosY.get());
+            context.execute(new PropertyEditCommand<>("origin", next, config));
+        }
+
+
         ImFloat emissionRate = new ImFloat(config.emissionRate);
         if(ImGui.inputFloat("Emission Rate", emissionRate, 1, 10))
         {

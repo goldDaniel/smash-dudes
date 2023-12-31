@@ -8,6 +8,8 @@ public class ParticleEmitterConfig
 {
     public String name = "";
 
+    public Vector2 origin = new Vector2();
+
     // Emission
     public float emissionRate = 1000;
 
@@ -41,7 +43,7 @@ public class ParticleEmitterConfig
         result.initialLife = config.initialLife + config.initialLifeVar * range();
         result.life = result.initialLife;
 
-        getSpawnPosition(result, config.spawnShape, config.spawnShapeScale);
+        setSpawnPosition(result, config.spawnShape, config.origin, config.spawnShapeScale);
 
         result.vX = config.velocity.x + config.velocityVar.x * range();
         result.vY = config.velocity.y + config.velocityVar.y * range();
@@ -62,7 +64,7 @@ public class ParticleEmitterConfig
         return result;
     }
 
-    public static void getSpawnPosition(Particle result, ParticleEmitterShape shape, float emissionShapeScale)
+    public static void setSpawnPosition(Particle result, ParticleEmitterShape shape, Vector2 origin, float emissionShapeScale)
     {
 
         switch (shape)
@@ -121,6 +123,9 @@ public class ParticleEmitterConfig
 
         result.x *= emissionShapeScale;
         result.y *= emissionShapeScale;
+
+        result.x += origin.x;
+        result.y += origin.y;
     }
 
     public static float range()
