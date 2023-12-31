@@ -11,7 +11,7 @@ public class StagetoolEntry
     public static void main(String[] args)
     {
         Lwjgl3ApplicationConfiguration configuration = new Lwjgl3ApplicationConfiguration();
-        configuration.setTitle("Box Tool Character Editor");
+        configuration.setTitle("Smash Dudes Stage Editor");
         configuration.setWindowedMode(1900, 1020);
         configuration.setMaximized(true);
 
