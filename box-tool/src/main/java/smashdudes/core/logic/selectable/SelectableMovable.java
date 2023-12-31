@@ -9,11 +9,13 @@ import com.badlogic.gdx.math.Vector2;
 public class SelectableMovable extends Selectable<Vector2>
 {
     private boolean selected = false;
-    private final float moveSelectionRadius = 0.04f;
+    private final float moveSelectionRadius = 0.1f;
 
-    public SelectableMovable(OnApply apply)
+    public SelectableMovable(Vector2 p, OnApply apply)
     {
         super(apply);
+        this.original = p;
+        this.clone = p.cpy();
     }
 
     @Override
@@ -27,6 +29,13 @@ public class SelectableMovable extends Selectable<Vector2>
         }
 
         return selected;
+    }
+
+    @Override
+    public void release()
+    {
+        super.release();
+        selected = false;
     }
 
     @Override
@@ -47,7 +56,7 @@ public class SelectableMovable extends Selectable<Vector2>
         Vector2 p = original;
         Color color = Color.LIGHT_GRAY;
 
-        if(selected)
+        if(selected || getGrabCircle(clone).contains(mouseWorldPos))
         {
             p = clone;
             color = Color.WHITE;
