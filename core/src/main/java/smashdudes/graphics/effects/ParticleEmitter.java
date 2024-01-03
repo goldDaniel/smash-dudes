@@ -2,9 +2,13 @@ package smashdudes.graphics.effects;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pools;
 import smashdudes.graphics.RenderResources;
+
+import java.util.stream.StreamSupport;
 
 public class ParticleEmitter
 {
@@ -34,6 +38,7 @@ public class ParticleEmitter
     public void update(float dt)
     {
         if(!enabled) return;
+        final float step = Math.min(dt, 0.2f);
 
         while(canSpawnParticle())
         {
@@ -44,10 +49,13 @@ public class ParticleEmitter
 
         for(Particle p : activeParticles)
         {
-            updateParticle(p, dt);
+            updateParticle(config, p, step);
             if(p.life <= 0)
             {
-                deadParticles.add(p);
+                synchronized (deadParticles)
+                {
+                    deadParticles.add(p);
+                }
             }
         }
 
@@ -78,8 +86,26 @@ public class ParticleEmitter
         return result;
     }
 
-    private static void updateParticle(Particle p, float dt)
+    private static void updateParticle(ParticleEmitterConfig config, Particle p, float dt)
     {
+        p.vX += config.gravity.x * dt;
+        p.vY += config.gravity.y * dt;
+
+        float dirX = p.x - p.spawnX;
+        float dirY = p.y - p.spawnY;
+        float mag = Vector2.len(dirX, dirY);
+        dirX /= mag;
+        dirY /= mag;
+
+        p.x += dirX * p.radialAcceleration * dt;
+        p.y += dirY * p.radialAcceleration * dt;
+
+        float tanX = dirY;
+        float tanY = -dirX;
+
+        p.x += tanX * p.tangentialAcceleration * dt;
+        p.y += tanY * p.tangentialAcceleration * dt;
+
         p.x += p.vX * dt;
         p.y += p.vY * dt;
         p.life -= dt;

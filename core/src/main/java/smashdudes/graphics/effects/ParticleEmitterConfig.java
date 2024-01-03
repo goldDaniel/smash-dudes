@@ -12,14 +12,23 @@ public class ParticleEmitterConfig
 
     // Emission
     public float emissionRate = 1000;
+    public ParticleEmitterShape spawnShape = ParticleEmitterShape.Point;
+    public float spawnShapeScale = 1.0f;
 
     // Life
     public float initialLife = 1;
-    public float initialLifeVar;
+    public float initialLifeVar = 0;
 
     // Velocity
     public Vector2 velocity = new Vector2(0,0);
     public Vector2 velocityVar = new Vector2(5,5);
+
+    // Acceleration
+    public Vector2 gravity = new Vector2();
+    public float radialAcceleration = 0;
+    public float radialAccelerationVar = 0;
+    public float tangentialAcceleration = 0;
+    public float tangentialAccelerationVar = 0;
 
     // Color
     public Color startColor = new Color(1,1,1,1);
@@ -32,11 +41,9 @@ public class ParticleEmitterConfig
     public float scaleStart = 1;
     public float scaleStartVar = 0;
 
+    // scale
     public float scaleEnd = 0;
     public float scaleEndVar = 0;
-
-    public ParticleEmitterShape spawnShape = ParticleEmitterShape.Point;
-    public float spawnShapeScale = 1.0f;
 
     public static Particle configureParticle(Particle result, ParticleEmitterConfig config)
     {
@@ -47,6 +54,9 @@ public class ParticleEmitterConfig
 
         result.vX = config.velocity.x + config.velocityVar.x * range();
         result.vY = config.velocity.y + config.velocityVar.y * range();
+
+        result.radialAcceleration = config.radialAcceleration + config.radialAccelerationVar * range();
+        result.tangentialAcceleration = config.tangentialAcceleration + config.tangentialAccelerationVar * range();
 
         result.scaleStart = config.scaleStart + config.scaleStartVar * range();
         result.scaleEnd   = config.scaleEnd + config.scaleEndVar * range();
@@ -126,6 +136,8 @@ public class ParticleEmitterConfig
 
         result.x += origin.x;
         result.y += origin.y;
+        result.spawnX = origin.x;
+        result.spawnY = origin.y;
     }
 
     public static float range()
