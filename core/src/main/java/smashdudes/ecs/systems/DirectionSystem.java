@@ -4,9 +4,9 @@ import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.*;
 
-public class RenderDirectionSystem extends GameSystem
+public class DirectionSystem extends GameSystem
 {
-    public RenderDirectionSystem(Engine engine)
+    public DirectionSystem(Engine engine)
     {
         super(engine);
 

@@ -1,6 +1,7 @@
 package smashdudes.ecs.systems;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -10,42 +11,13 @@ import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
 import smashdudes.ecs.components.DebugDrawComponent;
 
-public class RenderDebugSystem extends RenderSystem
+public class RenderDebugSystem extends DrawSystem
 {
-
-    private OrthographicCamera camera;
-    private Viewport viewport;
-
-    private final ShapeRenderer sh;
-
-    public RenderDebugSystem(Engine engine, ShapeRenderer sh)
+    public RenderDebugSystem(Engine engine, Camera camera, Viewport viewport)
     {
-        super(engine);
-        this.sh = sh;
+        super(engine, camera, viewport);
 
         registerComponentType(DebugDrawComponent.class);
-    }
-
-    public void setCamera(OrthographicCamera camera)
-    {
-        this.camera = camera;
-    }
-
-    public void setViewport(Viewport viewport)
-    {
-        this.viewport = viewport;
-    }
-
-    public void resize(int w, int h)
-    {
-        viewport.update(w, h);
-        viewport.apply();
-    }
-
-    @Override
-    public void preRender()
-    {
-        sh.setProjectionMatrix(camera.combined);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package smashdudes.ecs.systems;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -19,7 +20,7 @@ import smashdudes.ecs.events.Event;
 import smashdudes.ecs.events.WinEvent;
 import smashdudes.graphics.RenderResources;
 
-public class UIRenderSystem extends RenderSystem
+public class UIRenderSystem extends DrawSystem
 {
     private class CharacterDisplay implements Comparable
     {
@@ -50,15 +51,10 @@ public class UIRenderSystem extends RenderSystem
         }
     }
 
-    private final OrthographicCamera camera;
-    private final Viewport viewport;
-
     private final float worldWidth;
     private final float worldHeight;
 
     private final GlyphLayout layout;
-
-    private final SpriteBatch sb;
     private final BitmapFont font;
 
     private final Array<CharacterDisplay> players = new Array<>();
@@ -68,20 +64,16 @@ public class UIRenderSystem extends RenderSystem
     private String countDisplay = " ";
     private float displayTimer;
 
-    public UIRenderSystem(Engine engine, SpriteBatch sb, BitmapFont font)
+    public UIRenderSystem(Engine engine, Camera camera, Viewport viewport, BitmapFont font)
     {
-        super(engine);
-        this.sb = sb;
+        super(engine, camera, viewport);
         this.font = font;
 
-        worldWidth = 1280;
-        worldHeight = 720;
+        worldWidth = viewport.getWorldWidth();
+        worldHeight = viewport.getWorldHeight();
         layout = new GlyphLayout(font, "");
 
         displayTimer = 0;
-
-        this.viewport = new ExtendViewport(worldWidth, worldHeight);
-        this.camera = (OrthographicCamera)viewport.getCamera();
 
         registerComponentType(PlayerComponent.class);
         registerComponentType(HealthComponent.class);
@@ -89,18 +81,6 @@ public class UIRenderSystem extends RenderSystem
 
         registerEventType(CountdownEvent.class);
         registerEventType(WinEvent.class);
-    }
-
-    public void resize(int w, int h)
-    {
-        viewport.update(w, h);
-        viewport.apply();
-    }
-
-    @Override
-    public void preRender()
-    {
-        sb.setProjectionMatrix(camera.combined);
     }
 
     @Override

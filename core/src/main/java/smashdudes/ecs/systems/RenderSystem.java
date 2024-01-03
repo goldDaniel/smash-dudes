@@ -1,7 +1,13 @@
 package smashdudes.ecs.systems;
 
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import smashdudes.ecs.Engine;
 import smashdudes.ecs.Entity;
+import smashdudes.graphics.RenderResources;
 
 public abstract class RenderSystem extends ISystem
 {
