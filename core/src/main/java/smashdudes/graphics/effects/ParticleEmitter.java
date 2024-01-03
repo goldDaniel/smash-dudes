@@ -58,7 +58,7 @@ public class ParticleEmitter
             updateParticle(config, p, dt);
             if(p.life <= 0)
             {
-
+                deadParticles.add(p);
             }
         }
 
