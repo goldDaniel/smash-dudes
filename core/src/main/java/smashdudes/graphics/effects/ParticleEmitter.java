@@ -5,10 +5,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pools;
 import smashdudes.graphics.RenderResources;
-
-import java.util.stream.StreamSupport;
 
 public class ParticleEmitter
 {
@@ -98,11 +95,16 @@ public class ParticleEmitter
         p.vX += config.gravity.x * dt;
         p.vY += config.gravity.y * dt;
 
+
+
         float dirX = p.x - p.spawnX;
         float dirY = p.y - p.spawnY;
         float mag = Vector2.len(dirX, dirY);
-        dirX /= mag;
-        dirY /= mag;
+        if(!Float.isNaN(mag) && !MathUtils.isZero(mag))
+        {
+            dirX /= mag;
+            dirY /= mag;
+        }
 
         p.x += dirX * p.radialAcceleration * dt;
         p.y += dirY * p.radialAcceleration * dt;
