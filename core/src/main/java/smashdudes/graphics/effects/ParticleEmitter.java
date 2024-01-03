@@ -41,7 +41,14 @@ public class ParticleEmitter
 
         while(canSpawnParticle())
         {
-            Particle p = ParticleEmitterConfig.configureParticle(particlePool.obtain(), config);
+            Particle p ;
+            //NOTE (danielg): pool may be shared among threads, so we must sync
+            synchronized (particlePool)
+            {
+                p = particlePool.obtain();
+            }
+
+            ParticleEmitterConfig.configureParticle(p, config);
             activeParticles.add(p);
         }
         spawnTimer += dt;
@@ -51,15 +58,16 @@ public class ParticleEmitter
             updateParticle(config, p, dt);
             if(p.life <= 0)
             {
-                synchronized (deadParticles)
-                {
-                    deadParticles.add(p);
-                }
+
             }
         }
 
+        //NOTE (danielg): pool may be shared among threads, so we must sync
+        synchronized (particlePool)
+        {
+            particlePool.freeAll(deadParticles);
+        }
         activeParticles.removeAll(deadParticles, true);
-        particlePool.freeAll(deadParticles);
         deadParticles.clear();
     }
 

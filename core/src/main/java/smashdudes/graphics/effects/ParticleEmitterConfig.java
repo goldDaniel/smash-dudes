@@ -45,7 +45,7 @@ public class ParticleEmitterConfig
     public float scaleEnd = 0;
     public float scaleEndVar = 0;
 
-    public static Particle configureParticle(Particle result, ParticleEmitterConfig config)
+    public static void configureParticle(Particle result, ParticleEmitterConfig config)
     {
         result.initialLife = config.initialLife + config.initialLifeVar * range();
         result.life = result.initialLife;
@@ -70,8 +70,6 @@ public class ParticleEmitterConfig
         result.gEnd = config.endColor.g + config.endColorVar.g * range();
         result.bEnd = config.endColor.b + config.endColorVar.b * range();
         result.aEnd = config.endColor.a + config.endColorVar.a * range();
-
-        return result;
     }
 
     public static void setSpawnPosition(Particle result, ParticleEmitterShape shape, Vector2 origin, float emissionShapeScale)
