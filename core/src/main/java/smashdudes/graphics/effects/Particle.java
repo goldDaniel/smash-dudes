@@ -11,9 +11,17 @@ public class Particle
     public float x;
     public float y;
 
+    public float spawnX;
+    public float spawnY;
+
     // velocity //////////////////////
     public float vX;
     public float vY;
+
+    // acceleration /////////////////
+    public float radialAcceleration;
+    public float tangentialAcceleration;
+
 
     // scale ///////////////////////
     public float scaleStart;

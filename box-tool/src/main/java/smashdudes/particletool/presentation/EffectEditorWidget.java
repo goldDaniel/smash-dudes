@@ -35,16 +35,10 @@ public class EffectEditorWidget extends ImGuiWidget
             context.execute(new Command()
             {
                 @Override
-                protected void execute()
-                {
-                    context.addEmitter(config);
-                }
+                protected void execute() {context.addEmitter(config); }
 
                 @Override
-                protected void undo()
-                {
-                    context.removeEmitter(config);
-                }
+                protected void undo()  { context.removeEmitter(config); }
             });
 
         }
@@ -60,7 +54,7 @@ public class EffectEditorWidget extends ImGuiWidget
                 context.setSelectedConfig(config);
             }
 
-            if (ImGui.button("/\\##"))
+            if (ImGui.button("/\\"))
             {
                 int index = desc.emitterConfigs.indexOf(config, true);
                 if (index > 0)
@@ -70,7 +64,7 @@ public class EffectEditorWidget extends ImGuiWidget
                 }
             }
             ImGui.sameLine();
-            if (ImGui.button("\\/##"))
+            if (ImGui.button("\\/"))
             {
                 int index = desc.emitterConfigs.indexOf(config, true);
                 if (index < desc.emitterConfigs.size - 1)

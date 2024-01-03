@@ -22,6 +22,8 @@ import smashdudes.core.logic.selectable.SelectionContext;
 import smashdudes.graphics.effects.ParticleEmitterConfig;
 import smashdudes.particletool.logic.ParticleEditorContext;
 
+import java.util.stream.StreamSupport;
+
 public class EffectViewerWidget extends ImGuiWidget
 {
     // Rendering ///////////////////////////////
@@ -49,10 +51,8 @@ public class EffectViewerWidget extends ImGuiWidget
     {
         if(context.isPlaying())
         {
-            for(ParticleEmitterConfig config : context.getEffect().emitterConfigs)
-            {
-                context.getEmitter(config).update(Gdx.graphics.getDeltaTime());
-            }
+            StreamSupport.stream(context.getEffect().emitterConfigs.spliterator(), true)
+                         .forEach( config ->  context.getEmitter(config).update(Gdx.graphics.getDeltaTime()));
         }
 
         if(context.getEffect().emitterConfigs.size != previousSelectableCount)
@@ -111,6 +111,7 @@ public class EffectViewerWidget extends ImGuiWidget
             drawUnitGrid(sh);
 
             sb.enableBlending();
+            //sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
             sb.setBlendFunctionSeparate(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA, GL20.GL_ONE, GL20.GL_ONE);
             sb.setProjectionMatrix(viewport.getCamera().combined);
             sb.begin();

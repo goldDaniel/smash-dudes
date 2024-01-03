@@ -41,7 +41,7 @@ public class EmitterEditorWidget extends ImGuiWidget
             return;
         }
 
-        ImGui.pushItemWidth(300);
+        ImGui.pushItemWidth(300 * (ImGui.getIO().getFontGlobalScale() / 1.5f));
 
         ImGui.separator();
         ImGui.text("Emission Variables");
@@ -156,6 +156,49 @@ public class EmitterEditorWidget extends ImGuiWidget
         {
             Vector2 next = new Vector2(config.velocityVar.x, velocityVarY.get());
             context.execute(new PropertyEditCommand<>("velocityVar", next, config));
+        }
+
+        ImGui.separator();
+        ImGui.text("Acceleration Variables");
+        ImGui.newLine();
+        ImGui.newLine();
+
+        ImFloat gravityX = new ImFloat(config.gravity.x);
+        if(ImGui.inputFloat("Gravity X", gravityX))
+        {
+            Vector2 next = new Vector2(gravityX.get(), config.gravity.y);
+            context.execute(new PropertyEditCommand<>("gravity", next, config));
+        }
+        ImGui.sameLine();
+        ImFloat gravityY = new ImFloat(config.gravity.y);
+        if(ImGui.inputFloat("Gravity Y", gravityY))
+        {
+            Vector2 next = new Vector2(config.gravity.x, gravityY.get());
+            context.execute(new PropertyEditCommand<>("gravity", next, config));
+        }
+
+        ImFloat radial = new ImFloat(config.radialAcceleration);
+        if(ImGui.inputFloat("Radial Acceleration", radial))
+        {
+            context.execute(new PropertyEditCommand<>("radialAcceleration", radial.get(), config));
+        }
+        ImGui.sameLine();
+        ImFloat radialVar = new ImFloat(config.radialAccelerationVar);
+        if(ImGui.inputFloat("Radial Acceleration Variable", radialVar))
+        {
+            context.execute(new PropertyEditCommand<>("radialAccelerationVar", radialVar.get(), config));
+        }
+
+        ImFloat tangential = new ImFloat(config.tangentialAcceleration);
+        if(ImGui.inputFloat("Tangential Acceleration", tangential))
+        {
+            context.execute(new PropertyEditCommand<>("tangentialAcceleration", tangential.get(), config));
+        }
+        ImGui.sameLine();
+        ImFloat tangentialVar = new ImFloat(config.tangentialAccelerationVar);
+        if(ImGui.inputFloat("Tangential Acceleration Variable", tangentialVar))
+        {
+            context.execute(new PropertyEditCommand<>("tangentialAccelerationVar", tangentialVar.get(), config));
         }
 
         ImGui.separator();

@@ -31,7 +31,7 @@ public abstract class UI extends ApplicationAdapter
 
     private boolean firstFrame = true;
 
-    private Array<ImGuiWidget> widgets = new Array<>();
+    private final Array<ImGuiWidget> widgets = new Array<>();
 
     @Override
     public void create()
