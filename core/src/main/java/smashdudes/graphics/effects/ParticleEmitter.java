@@ -38,7 +38,6 @@ public class ParticleEmitter
     public void update(float dt)
     {
         if(!enabled) return;
-        final float step = Math.min(dt, 0.2f);
 
         while(canSpawnParticle())
         {
@@ -49,7 +48,7 @@ public class ParticleEmitter
 
         for(Particle p : activeParticles)
         {
-            updateParticle(config, p, step);
+            updateParticle(config, p, dt);
             if(p.life <= 0)
             {
                 synchronized (deadParticles)
