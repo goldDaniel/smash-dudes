@@ -51,8 +51,10 @@ public class EffectViewerWidget extends ImGuiWidget
     {
         if(context.isPlaying())
         {
+
+            final float dt = Math.min(Gdx.graphics.getDeltaTime(), 0.2f);
             StreamSupport.stream(context.getEffect().emitterConfigs.spliterator(), true)
-                         .forEach( config ->  context.getEmitter(config).update(Gdx.graphics.getDeltaTime()));
+                         .forEach( config ->  context.getEmitter(config).update(dt));
         }
 
         if(context.getEffect().emitterConfigs.size != previousSelectableCount)
