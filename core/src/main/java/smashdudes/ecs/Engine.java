@@ -1,6 +1,5 @@
 package smashdudes.ecs;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Queue;
@@ -11,7 +10,6 @@ import smashdudes.ecs.components.StateComponent;
 import smashdudes.ecs.events.Event;
 import smashdudes.ecs.events.StateEvent;
 import smashdudes.ecs.systems.*;
-import smashdudes.gameplay.state.State;
 import smashdudes.graphics.RenderResources;
 
 public class Engine
@@ -41,15 +39,12 @@ public class Engine
 
         ExtendViewport viewport = new ExtendViewport(worldWidth,worldHeight, camera);
 
-        RenderDrawSystem rs = new RenderDrawSystem(this, RenderResources.getSpriteBatch());
-        RenderDebugSystem drs = new RenderDebugSystem(this, RenderResources.getShapeRenderer());
-        UIRenderSystem urs = new UIRenderSystem(this, RenderResources.getSpriteBatch(), RenderResources.getFont("KeepOnTruckin", 24));
+        RenderDrawSystem rs = new RenderDrawSystem(this, camera, viewport);
+        RenderDebugSystem drs = new RenderDebugSystem(this, camera, viewport);
 
-        rs.setCamera(camera);
-        drs.setCamera(camera);
-
-        rs.setViewport(viewport);
-        drs.setViewport(viewport);
+        ExtendViewport uiVP = new ExtendViewport(1280, 720);
+        uiVP.update(1280, 720);
+        UIRenderSystem urs = new UIRenderSystem(this, uiVP.getCamera(), uiVP, RenderResources.getFont("KeepOnTruckin", 24));
 
         PlayerControllerSystem ctrlSys = new PlayerControllerSystem(this);
         ctrlSys.setEnabled(false);
@@ -58,7 +53,7 @@ public class Engine
         gameSystems.add(new PreviousPositionSystem(this));
         gameSystems.add(new CountdownSystem(this));
         gameSystems.add(new StateSystem(this));
-        gameSystems.add(new RenderDirectionSystem(this));
+        gameSystems.add(new DirectionSystem(this));
         gameSystems.add(ctrlSys);
         gameSystems.add(new AIControllerSystem(this));
         gameSystems.add(new GravitySystem(this));

@@ -1,5 +1,6 @@
 package smashdudes.ecs.systems;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -17,7 +18,7 @@ import smashdudes.graphics.RenderResources;
 
 import java.util.Comparator;
 
-public class RenderDrawSystem extends RenderSystem
+public class RenderDrawSystem extends DrawSystem
 {
     private class Renderable
     {
@@ -37,12 +38,9 @@ public class RenderDrawSystem extends RenderSystem
     private OrthographicCamera camera;
     private Viewport viewport;
 
-    private final SpriteBatch sb;
-
-    public RenderDrawSystem(Engine engine, SpriteBatch sb)
+    public RenderDrawSystem(Engine engine, Camera camera, Viewport viewport)
     {
-        super(engine);
-        this.sb = sb;
+        super(engine, camera, viewport);
 
         shaders.put(RenderPass.Default, null); //null will make the spritebatch use its default shader
         shaders.put(RenderPass.Stunned, RenderResources.getShader("shaders/spritebatch.default.vert.glsl", "shaders/spritebatch.stunned.frag.glsl"));
@@ -50,29 +48,6 @@ public class RenderDrawSystem extends RenderSystem
 
         registerComponentType(PositionComponent.class);
         registerComponentType(DrawComponent.class);
-    }
-
-    public void setCamera(OrthographicCamera camera)
-    {
-        this.camera = camera;
-    }
-
-    public void setViewport(Viewport viewport)
-    {
-        this.viewport = viewport;
-    }
-
-    public void resize(int w, int h)
-    {
-        viewport.update(w, h);
-        viewport.apply();
-    }
-
-    @Override
-    public void preRender()
-    {
-        renderables.clear();
-        sb.setProjectionMatrix(camera.combined);
     }
 
     @Override
@@ -134,5 +109,6 @@ public class RenderDrawSystem extends RenderSystem
         }
 
         if(sb.isDrawing()) sb.end();
+        renderables.clear();
     }
 }
