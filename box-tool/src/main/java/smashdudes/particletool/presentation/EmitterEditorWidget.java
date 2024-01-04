@@ -24,12 +24,17 @@ public class EmitterEditorWidget extends ImGuiWidget
     @Override
     protected void draw(ShapeRenderer sh, SpriteBatch sb)
     {
-        if(ImGui.button("Play"))
+        String playText = context.isFinished() ? "Reset" : "Play";
+        playText = !context.isPlaying() && !context.isFinished() && context.hasStarted() ? "Resume" : playText;
+        if(ImGui.button(playText))
         {
-            context.play();
             if(context.isFinished())
             {
                 context.reset();
+            }
+            else
+            {
+                context.play();
             }
         }
         ImGui.sameLine();

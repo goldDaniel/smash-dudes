@@ -32,6 +32,7 @@ public class ParticleEditorContext
     };
 
     private boolean playing = false;
+    private boolean started = false;
 
 
     public ParticleEditorContext(CommandList cl, DTO.EffectDescription effect)
@@ -115,6 +116,7 @@ public class ParticleEditorContext
     public void play()
     {
         playing = true;
+        started = true;
     }
 
     public void stop()
@@ -143,6 +145,11 @@ public class ParticleEditorContext
         }
 
         return true;
+    }
+
+    public boolean hasStarted()
+    {
+        return started;
     }
 
     public void reset()
