@@ -12,6 +12,7 @@ public class ParticleEmitterConfig
 
     // Emission
     public float emissionRate = 1000;
+    public float emissionDuration = 1;
     public ParticleEmitterShape spawnShape = ParticleEmitterShape.Point;
     public float spawnShapeScale = 1.0f;
 

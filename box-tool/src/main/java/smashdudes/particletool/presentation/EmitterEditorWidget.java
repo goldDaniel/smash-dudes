@@ -27,6 +27,10 @@ public class EmitterEditorWidget extends ImGuiWidget
         if(ImGui.button("Play"))
         {
             context.play();
+            if(context.isFinished())
+            {
+                context.reset();
+            }
         }
         ImGui.sameLine();
         if(ImGui.button("Pause"))
@@ -69,6 +73,13 @@ public class EmitterEditorWidget extends ImGuiWidget
         {
             if(emissionRate.get() < 0) emissionRate.set(0);
             context.execute(new PropertyEditCommand<>("emissionRate", emissionRate.get(), config));
+        }
+
+        ImFloat emissionDuration = new ImFloat(config.emissionDuration);
+        if(ImGui.inputFloat("Emission Duration", emissionDuration, 0.1f, 10))
+        {
+            if(emissionDuration.get() < 0) emissionDuration.set(0);
+            context.execute(new PropertyEditCommand<>("emissionDuration", emissionDuration.get(), config));
         }
 
         ImGui.sameLine();

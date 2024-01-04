@@ -9,6 +9,7 @@ import smashdudes.graphics.RenderResources;
 
 public class ParticleEmitter
 {
+    private float elapsedTime = 0;
     private float spawnTimer;
     private final ParticleEmitterConfig config;
     private final Pool<Particle> particlePool;
@@ -30,13 +31,17 @@ public class ParticleEmitter
     public void release()
     {
         particlePool.freeAll(activeParticles);
+        elapsedTime = config.emissionDuration + 1;
     }
 
     public void update(float dt)
     {
-        if(!enabled) return;
+        if(!enabled || depleted()) return;
 
-        while(canSpawnParticle())
+        elapsedTime += dt;
+        spawnTimer += dt;
+
+        while(spawnTimer >= (1.0 / config.emissionRate) && elapsedTime <= config.emissionDuration)
         {
             Particle p ;
             //NOTE (danielg): pool may be shared among threads, so we must sync
@@ -47,8 +52,8 @@ public class ParticleEmitter
 
             ParticleEmitterConfig.configureParticle(p, config);
             activeParticles.add(p);
+            spawnTimer -= (1.0f / config.emissionRate);
         }
-        spawnTimer += dt;
 
         for(Particle p : activeParticles)
         {
@@ -74,20 +79,8 @@ public class ParticleEmitter
 
         for(Particle p : activeParticles)
         {
-            drawParticle(sb, p);
+            p.render(sb);
         }
-    }
-
-    private boolean canSpawnParticle()
-    {
-        boolean result = spawnTimer >= (1.0 / config.emissionRate);
-
-        if(result)
-        {
-            spawnTimer -= (1.0f / config.emissionRate);
-        }
-
-        return result;
     }
 
     private static void updateParticle(ParticleEmitterConfig config, Particle p, float dt)
@@ -120,18 +113,23 @@ public class ParticleEmitter
         p.life -= dt;
     }
 
-    private static void drawParticle(SpriteBatch sb, Particle p)
+    public boolean depleted()
     {
-        float t = 1.0f  - p.life / p.initialLife;
+        return elapsedTime > config.emissionDuration && activeParticles.size == 0;
+    }
 
-        float scale = MathUtils.lerp(p.scaleStart, p.scaleEnd, t);
+    public void reset()
+    {
+        elapsedTime = 0;
+        spawnTimer = 0;
 
-        float r = MathUtils.lerp(p.rStart, p.rEnd, t);
-        float g = MathUtils.lerp(p.gStart, p.gEnd, t);
-        float b = MathUtils.lerp(p.bStart, p.bEnd, t);
-        float a = MathUtils.lerp(p.aStart, p.aEnd, t);
+        synchronized (particlePool)
+        {
+            particlePool.freeAll(activeParticles);
+            particlePool.freeAll(deadParticles);
+        }
 
-        sb.setColor(r, g, b, a);
-        sb.draw(RenderResources.getTexture("textures/particleTexture.png"), p.x - scale / 2, p.y - scale / 2, scale, scale);
+        activeParticles.clear();
+        deadParticles.clear();
     }
 }

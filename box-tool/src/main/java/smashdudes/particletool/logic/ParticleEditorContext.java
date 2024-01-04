@@ -1,6 +1,7 @@
 package smashdudes.particletool.logic;
 
 import com.badlogic.gdx.utils.ArrayMap;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pool;
 import smashdudes.content.DTO;
 import smashdudes.core.logic.commands.Command;
@@ -8,6 +9,8 @@ import smashdudes.core.logic.commands.CommandList;
 import smashdudes.graphics.effects.Particle;
 import smashdudes.graphics.effects.ParticleEmitter;
 import smashdudes.graphics.effects.ParticleEmitterConfig;
+
+import java.util.Arrays;
 
 public class ParticleEditorContext
 {
@@ -127,5 +130,26 @@ public class ParticleEditorContext
     public void execute(Command c)
     {
         cl.execute(c);
+    }
+
+    public boolean isFinished()
+    {
+        for(ParticleEmitter emitter : emitters.values().toArray())
+        {
+            if(!emitter.depleted())
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public void reset()
+    {
+        for(ParticleEmitter emitter : emitters.values().toArray())
+        {
+            emitter.reset();
+        }
     }
 }
