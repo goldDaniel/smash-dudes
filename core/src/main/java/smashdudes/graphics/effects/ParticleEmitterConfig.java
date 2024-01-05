@@ -6,6 +6,8 @@ import com.badlogic.gdx.math.Vector2;
 
 public class ParticleEmitterConfig
 {
+    public static final float ENDLESS = -1;
+
     public String name = "";
 
     public Vector2 origin = new Vector2();

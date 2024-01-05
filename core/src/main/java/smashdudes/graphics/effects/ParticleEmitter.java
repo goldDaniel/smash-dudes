@@ -41,7 +41,7 @@ public class ParticleEmitter
         elapsedTime += dt;
         spawnTimer += dt;
 
-        while(spawnTimer >= (1.0 / config.emissionRate) && elapsedTime <= config.emissionDuration)
+        while(checkSetSpawnTimer())
         {
             Particle p ;
             //NOTE (danielg): pool may be shared among threads, so we must sync
@@ -52,7 +52,6 @@ public class ParticleEmitter
 
             ParticleEmitterConfig.configureParticle(p, config);
             activeParticles.add(p);
-            spawnTimer -= (1.0f / config.emissionRate);
         }
 
         for(Particle p : activeParticles)
@@ -73,14 +72,43 @@ public class ParticleEmitter
         deadParticles.clear();
     }
 
+    public boolean checkSetSpawnTimer()
+    {
+        boolean result = false;
+
+        if(spawnTimer >= (1.0f / config.emissionRate) && elapsedTime <= config.emissionDuration)
+        {
+            spawnTimer -= 1.0f / config.emissionRate;
+            result = true;
+        }
+
+        return result;
+    }
+
     public void render(SpriteBatch sb)
     {
         if(!enabled) return;
 
         for(Particle p : activeParticles)
         {
-            p.render(sb);
+            renderParticle(p, sb);
         }
+    }
+
+    // TODO nathan: put this somewhere else
+    private void renderParticle(Particle p, SpriteBatch sb)
+    {
+        float t = 1.0f  - p.life / p.initialLife;
+
+        float scale = MathUtils.lerp(p.scaleStart, p.scaleEnd, t);
+
+        float r = MathUtils.lerp(p.rStart, p.rEnd, t);
+        float g = MathUtils.lerp(p.gStart, p.gEnd, t);
+        float b = MathUtils.lerp(p.bStart, p.bEnd, t);
+        float a = MathUtils.lerp(p.aStart, p.aEnd, t);
+
+        sb.setColor(r, g, b, a);
+        sb.draw(RenderResources.getTexture("textures/particleTexture.png"), p.x - scale / 2, p.y - scale / 2, scale, scale);
     }
 
     private static void updateParticle(ParticleEmitterConfig config, Particle p, float dt)
@@ -115,6 +143,11 @@ public class ParticleEmitter
 
     public boolean depleted()
     {
+        if(MathUtils.isEqual(config.emissionDuration, ParticleEmitterConfig.ENDLESS))
+        {
+            return false;
+        }
+
         return elapsedTime > config.emissionDuration && activeParticles.size == 0;
     }
 
@@ -123,11 +156,8 @@ public class ParticleEmitter
         elapsedTime = 0;
         spawnTimer = 0;
 
-        synchronized (particlePool)
-        {
-            particlePool.freeAll(activeParticles);
-            particlePool.freeAll(deadParticles);
-        }
+        particlePool.freeAll(activeParticles);
+        particlePool.freeAll(deadParticles);
 
         activeParticles.clear();
         deadParticles.clear();

@@ -42,19 +42,4 @@ public class Particle
     public float gEnd;
     public float bEnd;
     public float aEnd;
-
-    public void render(SpriteBatch sb)
-    {
-        float t = 1.0f  - life / initialLife;
-
-        float scale = MathUtils.lerp(scaleStart, scaleEnd, t);
-
-        float r = MathUtils.lerp(rStart, rEnd, t);
-        float g = MathUtils.lerp(gStart, gEnd, t);
-        float b = MathUtils.lerp(bStart, bEnd, t);
-        float a = MathUtils.lerp(aStart, aEnd, t);
-
-        sb.setColor(r, g, b, a);
-        sb.draw(RenderResources.getTexture("textures/particleTexture.png"), x - scale / 2, y - scale / 2, scale, scale);
-    }
 }
