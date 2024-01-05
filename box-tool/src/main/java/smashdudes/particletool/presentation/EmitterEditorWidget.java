@@ -24,9 +24,18 @@ public class EmitterEditorWidget extends ImGuiWidget
     @Override
     protected void draw(ShapeRenderer sh, SpriteBatch sb)
     {
-        if(ImGui.button("Play"))
+        String playText = context.isFinished() ? "Reset" : "Play";
+        playText = !context.isPlaying() && !context.isFinished() && context.hasStarted() ? "Resume" : playText;
+        if(ImGui.button(playText))
         {
-            context.play();
+            if(context.isFinished())
+            {
+                context.reset();
+            }
+            else
+            {
+                context.play();
+            }
         }
         ImGui.sameLine();
         if(ImGui.button("Pause"))
@@ -69,6 +78,13 @@ public class EmitterEditorWidget extends ImGuiWidget
         {
             if(emissionRate.get() < 0) emissionRate.set(0);
             context.execute(new PropertyEditCommand<>("emissionRate", emissionRate.get(), config));
+        }
+
+        ImFloat emissionDuration = new ImFloat(config.emissionDuration);
+        if(ImGui.inputFloat("Emission Duration", emissionDuration, 0.1f, 10))
+        {
+            if(emissionDuration.get() < 0) emissionDuration.set(0);
+            context.execute(new PropertyEditCommand<>("emissionDuration", emissionDuration.get(), config));
         }
 
         ImGui.sameLine();
