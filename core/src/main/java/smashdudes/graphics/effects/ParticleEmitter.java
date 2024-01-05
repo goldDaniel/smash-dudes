@@ -9,6 +9,7 @@ import smashdudes.graphics.RenderResources;
 
 public class ParticleEmitter
 {
+    private float elapsedTime = 0;
     private float spawnTimer;
     private final ParticleEmitterConfig config;
     private final Pool<Particle> particlePool;
@@ -30,13 +31,17 @@ public class ParticleEmitter
     public void release()
     {
         particlePool.freeAll(activeParticles);
+        elapsedTime = config.emissionDuration + 1;
     }
 
     public void update(float dt)
     {
-        if(!enabled) return;
+        if(!enabled || depleted()) return;
 
-        while(canSpawnParticle())
+        elapsedTime += dt;
+        spawnTimer += dt;
+
+        while(checkSetSpawnTimer())
         {
             Particle p ;
             //NOTE (danielg): pool may be shared among threads, so we must sync
@@ -48,7 +53,6 @@ public class ParticleEmitter
             ParticleEmitterConfig.configureParticle(p, config);
             activeParticles.add(p);
         }
-        spawnTimer += dt;
 
         for(Particle p : activeParticles)
         {
@@ -68,26 +72,43 @@ public class ParticleEmitter
         deadParticles.clear();
     }
 
+    public boolean checkSetSpawnTimer()
+    {
+        boolean result = false;
+
+        if(spawnTimer >= (1.0f / config.emissionRate) && elapsedTime <= config.emissionDuration)
+        {
+            spawnTimer -= 1.0f / config.emissionRate;
+            result = true;
+        }
+
+        return result;
+    }
+
     public void render(SpriteBatch sb)
     {
         if(!enabled) return;
 
         for(Particle p : activeParticles)
         {
-            drawParticle(sb, p);
+            renderParticle(p, sb);
         }
     }
 
-    private boolean canSpawnParticle()
+    // TODO nathan: put this somewhere else
+    private void renderParticle(Particle p, SpriteBatch sb)
     {
-        boolean result = spawnTimer >= (1.0 / config.emissionRate);
+        float t = 1.0f  - p.life / p.initialLife;
 
-        if(result)
-        {
-            spawnTimer -= (1.0f / config.emissionRate);
-        }
+        float scale = MathUtils.lerp(p.scaleStart, p.scaleEnd, t);
 
-        return result;
+        float r = MathUtils.lerp(p.rStart, p.rEnd, t);
+        float g = MathUtils.lerp(p.gStart, p.gEnd, t);
+        float b = MathUtils.lerp(p.bStart, p.bEnd, t);
+        float a = MathUtils.lerp(p.aStart, p.aEnd, t);
+
+        sb.setColor(r, g, b, a);
+        sb.draw(RenderResources.getTexture("textures/particleTexture.png"), p.x - scale / 2, p.y - scale / 2, scale, scale);
     }
 
     private static void updateParticle(ParticleEmitterConfig config, Particle p, float dt)
@@ -120,18 +141,25 @@ public class ParticleEmitter
         p.life -= dt;
     }
 
-    private static void drawParticle(SpriteBatch sb, Particle p)
+    public boolean depleted()
     {
-        float t = 1.0f  - p.life / p.initialLife;
+        if(MathUtils.isEqual(config.emissionDuration, ParticleEmitterConfig.ENDLESS))
+        {
+            return false;
+        }
 
-        float scale = MathUtils.lerp(p.scaleStart, p.scaleEnd, t);
+        return elapsedTime > config.emissionDuration && activeParticles.size == 0;
+    }
 
-        float r = MathUtils.lerp(p.rStart, p.rEnd, t);
-        float g = MathUtils.lerp(p.gStart, p.gEnd, t);
-        float b = MathUtils.lerp(p.bStart, p.bEnd, t);
-        float a = MathUtils.lerp(p.aStart, p.aEnd, t);
+    public void reset()
+    {
+        elapsedTime = 0;
+        spawnTimer = 0;
 
-        sb.setColor(r, g, b, a);
-        sb.draw(RenderResources.getTexture("textures/particleTexture.png"), p.x - scale / 2, p.y - scale / 2, scale, scale);
+        particlePool.freeAll(activeParticles);
+        particlePool.freeAll(deadParticles);
+
+        activeParticles.clear();
+        deadParticles.clear();
     }
 }
