@@ -5,6 +5,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import imgui.ImGui;
+import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImFloat;
 import imgui.type.ImInt;
@@ -130,6 +131,21 @@ public class AnimationWidget extends BoxToolWidget
         {
             context.setAnimationFrame(frame);
             context.stopAnimation();
+        }
+
+        if(frame.bodyboxes.notEmpty())
+        {
+            ImGui.sameLine();
+            ImGui.pushStyleColor(ImGuiCol.CheckMark, 0.1f,0.65f,0.1f,1f);
+            ImGui.radioButton("", true);
+            ImGui.popStyleColor();
+        }
+        if(frame.attackboxes.notEmpty())
+        {
+            ImGui.sameLine();
+            ImGui.pushStyleColor(ImGuiCol.CheckMark, 0.65f,0.1f,0.1f,1f);
+            ImGui.radioButton("", true);
+            ImGui.popStyleColor();
         }
 
         ImGui.popID();

@@ -97,9 +97,11 @@ public class AnimationFrameWidget extends BoxToolWidget
                             context.execute(new PropertyEditCommand<>("data", file, event));
                         }
                     }
+
+                    ImGui.sameLine();
+                    ImGui.text((String)event.data);
                 }
-                ImGui.sameLine();
-                ImGui.text(event.data);
+
                 ImGui.popItemWidth();
 
                 ImGui.sameLine();
