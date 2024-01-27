@@ -27,7 +27,7 @@ public class ParticleToolUI extends smashdudes.core.UI
     public void create()
     {
         super.create();
-        context = new ParticleEditorContext(getCommandList(), new DTO.EffectDescription());
+        context = new ParticleEditorContext(getCommandList());
         addWidget(new EffectViewerWidget(context));
         addWidget(new EmitterEditorWidget(context));
         addWidget(new EffectEditorWidget(context));
@@ -60,7 +60,7 @@ public class ParticleToolUI extends smashdudes.core.UI
                 {
 
                     FileHandle dir = Gdx.files.internal("fx");
-                    String filepath = Utils.chooseFileToLoad(dir, "json");
+                    String filepath = Utils.chooseFileToLoad(dir, "fx");
                     if(filepath != null)
                     {
                         context.setEffect(loadEffectFile(filepath));
@@ -139,7 +139,7 @@ public class ParticleToolUI extends smashdudes.core.UI
 
     public void saveEffectFile(DTO.EffectDescription effect)
     {
-        FileHandle jsonFile = Gdx.files.absolute("fx/" + effect.name + ".json");
+        FileHandle jsonFile = Gdx.files.absolute("fx/" + effect.name + ".fx");
 
         String jsonStr = new Json().toJson(effect);
 

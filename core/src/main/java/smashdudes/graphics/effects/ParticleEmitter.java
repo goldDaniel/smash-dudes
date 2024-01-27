@@ -28,6 +28,11 @@ public class ParticleEmitter
         spawnTimer = 0;
     }
 
+    public ParticleEmitterConfig getConfig()
+    {
+        return config;
+    }
+
     public void release()
     {
         particlePool.freeAll(activeParticles);
@@ -76,10 +81,13 @@ public class ParticleEmitter
     {
         boolean result = false;
 
-        if(spawnTimer >= (1.0f / config.emissionRate) && elapsedTime <= config.emissionDuration)
+        if(spawnTimer >= (1.0f / config.emissionRate))
         {
-            spawnTimer -= 1.0f / config.emissionRate;
-            result = true;
+            if(config.endlessEmission || elapsedTime <= config.emissionDuration)
+            {
+                spawnTimer -= 1.0f / config.emissionRate;
+                result = true;
+            }
         }
 
         return result;
@@ -143,7 +151,7 @@ public class ParticleEmitter
 
     public boolean depleted()
     {
-        if(MathUtils.isEqual(config.emissionDuration, ParticleEmitterConfig.ENDLESS))
+        if(config.endlessEmission)
         {
             return false;
         }

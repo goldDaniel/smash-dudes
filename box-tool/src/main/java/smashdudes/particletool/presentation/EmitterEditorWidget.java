@@ -24,13 +24,17 @@ public class EmitterEditorWidget extends ImGuiWidget
     @Override
     protected void draw(ShapeRenderer sh, SpriteBatch sb)
     {
-        String playText = context.isFinished() ? "Reset" : "Play";
-        playText = !context.isPlaying() && !context.isFinished() && context.hasStarted() ? "Resume" : playText;
-        if(ImGui.button(playText))
+        if(ImGui.button("Reset"))
         {
-            if(context.isFinished())
+            context.reset();
+        }
+        ImGui.sameLine();
+        String text = context.isPlaying() ? "Pause" : "Play";
+        if(ImGui.button(text))
+        {
+            if(context.isPlaying())
             {
-                context.reset();
+                context.pause();
             }
             else
             {
@@ -38,9 +42,10 @@ public class EmitterEditorWidget extends ImGuiWidget
             }
         }
         ImGui.sameLine();
-        if(ImGui.button("Pause"))
+        if(ImGui.button("Stop"))
         {
-            context.stop();
+            context.pause();
+            context.reset();
         }
 
         ParticleEmitterConfig config = context.getSelectedConfig();
@@ -80,14 +85,29 @@ public class EmitterEditorWidget extends ImGuiWidget
             context.execute(new PropertyEditCommand<>("emissionRate", emissionRate.get(), config));
         }
 
+        if(ImGui.checkbox("Endless", config.endlessEmission))
+        {
+            config.endlessEmission = !config.endlessEmission;
+        }
+
+        ImGui.sameLine();
+
+        if(config.endlessEmission)
+        {
+            ImGui.beginDisabled();
+        }
         ImFloat emissionDuration = new ImFloat(config.emissionDuration);
         if(ImGui.inputFloat("Emission Duration", emissionDuration, 0.1f, 10))
         {
             if(emissionDuration.get() < 0) emissionDuration.set(0);
             context.execute(new PropertyEditCommand<>("emissionDuration", emissionDuration.get(), config));
         }
+        if(config.endlessEmission)
+        {
+            ImGui.endDisabled();
+        }
 
-        ImGui.sameLine();
+
 
         ParticleEmitterShape[] shapes = ParticleEmitterShape.values();
         if(ImGui.beginCombo("Emission Shape", config.spawnShape.toString()))

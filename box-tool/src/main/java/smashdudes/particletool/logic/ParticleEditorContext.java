@@ -1,24 +1,21 @@
 package smashdudes.particletool.logic;
 
-import com.badlogic.gdx.utils.ArrayMap;
-import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pool;
 import smashdudes.content.DTO;
 import smashdudes.core.logic.commands.Command;
 import smashdudes.core.logic.commands.CommandList;
+import smashdudes.graphics.effects.Effect;
 import smashdudes.graphics.effects.Particle;
 import smashdudes.graphics.effects.ParticleEmitter;
 import smashdudes.graphics.effects.ParticleEmitterConfig;
-
-import java.util.Arrays;
 
 public class ParticleEditorContext
 {
     private final CommandList cl;
 
-    private DTO.EffectDescription effect;
+    private DTO.EffectDescription effectDesc;
 
-    private final ArrayMap<ParticleEmitterConfig, ParticleEmitter> emitters = new ArrayMap<>();
+    private Effect effect;
 
     private ParticleEmitterConfig selectedConfig;
 
@@ -32,39 +29,34 @@ public class ParticleEditorContext
     };
 
     private boolean playing = false;
-    private boolean started = false;
 
 
-    public ParticleEditorContext(CommandList cl, DTO.EffectDescription effect)
+    public ParticleEditorContext(CommandList cl)
     {
         this.cl = cl;
-        this.effect = effect;
+        setEffect(new DTO.EffectDescription());
     }
 
-    public void setEffect(DTO.EffectDescription effect)
+    public void setEffect(DTO.EffectDescription effectDesc)
     {
-        this.effect = effect;
         this.cl.clear();
         this.particlePool.clear();
-        this.emitters.clear();
         this.selectedConfig = null;
 
         this.playing = true;
 
-        for (ParticleEmitterConfig config : effect.emitterConfigs)
+        this.effectDesc = effectDesc;
+        this.effect = new Effect(effectDesc, particlePool);
+        if(effect.emitterCount() > 0)
         {
-            emitters.put(config, new ParticleEmitter(config, particlePool));
-        }
-        if(effect.emitterConfigs.size > 0)
-        {
-            selectedConfig = effect.emitterConfigs.get(0);
+            selectedConfig = effect.getConfig(0);
         }
     }
 
 
     public DTO.EffectDescription getEffect()
     {
-        return this.effect;
+        return this.effectDesc;
     }
 
 
@@ -80,52 +72,35 @@ public class ParticleEditorContext
 
     public void addEmitter(ParticleEmitterConfig config)
     {
-        if(emitters.containsKey(config))
-        {
-            throw new IllegalArgumentException("Context already contains this config");
-        }
-
-        effect.emitterConfigs.add(config);
-        config.name = "Emitter " + (effect.emitterConfigs.size - 1);
-
-        emitters.put(config, new ParticleEmitter(config, particlePool));
+        effect.addEmitter(config);
     }
 
     public ParticleEmitter getEmitter(ParticleEmitterConfig config)
     {
-        return emitters.get(config);
+        return effect.getEmitter(config);
     }
 
     public void removeEmitter(ParticleEmitterConfig config)
     {
-        if(!emitters.containsKey(config))
-        {
-            throw new IllegalArgumentException("Context must already contain config");
-        }
-
-        ParticleEmitter emitter = emitters.removeKey(config);
-        effect.emitterConfigs.removeValue(config, true);
-        for(int i = 0; i < effect.emitterConfigs.size; i++)
-        {
-             effect.emitterConfigs.get(i).name = "Emitter " + i;
-        }
-
-        emitter.release();
+        effect.removeEmitter(config);
     }
 
     public void play()
     {
         playing = true;
-        started = true;
     }
 
-    public void stop()
+    public void pause()
     {
         playing = false;
     }
 
     public boolean isPlaying()
     {
+        if(effect.isFinished())
+        {
+            playing = false;
+        }
         return playing;
     }
 
@@ -134,29 +109,8 @@ public class ParticleEditorContext
         cl.execute(c);
     }
 
-    public boolean isFinished()
-    {
-        for(ParticleEmitter emitter : emitters.values().toArray())
-        {
-            if(!emitter.depleted())
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public boolean hasStarted()
-    {
-        return started;
-    }
-
     public void reset()
     {
-        for(ParticleEmitter emitter : emitters.values().toArray())
-        {
-            emitter.reset();
-        }
+        effect.reset();
     }
 }

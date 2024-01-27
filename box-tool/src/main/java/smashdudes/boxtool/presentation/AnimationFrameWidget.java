@@ -99,7 +99,20 @@ public class AnimationFrameWidget extends BoxToolWidget
                     }
 
                     ImGui.sameLine();
-                    ImGui.text((String)event.data);
+                    ImGui.text(event.data);
+                }
+                else if(event.type == AnimationEventType.Particle)
+                {
+                    if(ImGui.button("Select FX File...##" + event))
+                    {
+                        String file = Utils.chooseFileToLoad(Gdx.files.internal("Audio"), "fx");
+                        if(file != null)
+                        {
+                            int idx = file.toLowerCase().indexOf("audio");
+                            file = file.substring(idx);
+                            context.execute(new PropertyEditCommand<>("data", file, event));
+                        }
+                    }
                 }
 
                 ImGui.popItemWidth();

@@ -18,7 +18,6 @@ public class ContentRepo
 
             scanner.close();
             return json.fromJson(DTO.Character.class, jsonStr);
-
         }
         catch (FileNotFoundException e)
         {
