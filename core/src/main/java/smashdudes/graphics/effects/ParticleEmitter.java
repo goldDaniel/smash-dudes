@@ -143,7 +143,7 @@ public class ParticleEmitter
 
     public boolean depleted()
     {
-        if(MathUtils.isEqual(config.emissionDuration, ParticleEmitterConfig.ENDLESS))
+        if(ParticleEmitterConfig.ENDLESS)
         {
             return false;
         }

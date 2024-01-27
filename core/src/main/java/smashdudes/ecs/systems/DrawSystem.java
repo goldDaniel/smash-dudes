@@ -7,7 +7,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import smashdudes.ecs.Engine;
 import smashdudes.graphics.RenderResources;
 
-public class DrawSystem extends RenderSystem
+public abstract class DrawSystem extends RenderSystem
 {
     protected final Camera camera;
     protected final Viewport viewport;

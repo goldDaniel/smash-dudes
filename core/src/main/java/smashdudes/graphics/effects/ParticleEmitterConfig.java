@@ -6,14 +6,14 @@ import com.badlogic.gdx.math.Vector2;
 
 public class ParticleEmitterConfig
 {
-    public static final float ENDLESS = -1;
+    public static final boolean ENDLESS = false;
 
     public String name = "";
 
     public Vector2 origin = new Vector2();
 
     // Emission
-    public float emissionRate = 1000;
+    public float emissionRate = 100;
     public float emissionDuration = 1;
     public ParticleEmitterShape spawnShape = ParticleEmitterShape.Point;
     public float spawnShapeScale = 1.0f;
