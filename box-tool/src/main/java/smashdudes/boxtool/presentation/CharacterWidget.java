@@ -9,21 +9,20 @@ import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImFloat;
 import imgui.type.ImString;
-import smashdudes.boxtool.logic.BoxToolContext;
-import smashdudes.boxtool.logic.ContentService;
-import smashdudes.boxtool.logic.commands.PropertyEditCommand;
 import smashdudes.content.DTO;
-import smashdudes.core.ImGuiWidget;
 import smashdudes.core.Utils;
-import smashdudes.boxtool.logic.commands.AddAnimationCommand;
-import smashdudes.boxtool.logic.commands.ScaleCharacterCommand;
+import smashdudes.boxtool.logic.BoxToolContext;
+import smashdudes.core.logic.ContentService;
+import smashdudes.core.logic.commands.AddAnimationCommand;
+import smashdudes.core.logic.commands.PropertyEditCommand;
+import smashdudes.core.logic.commands.ScaleCharacterCommand;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
-public class CharacterWidget extends ImGuiWidget
+public class CharacterWidget extends BoxToolWidget
 {
     private final ImString newAnimationName =  new ImString();
 

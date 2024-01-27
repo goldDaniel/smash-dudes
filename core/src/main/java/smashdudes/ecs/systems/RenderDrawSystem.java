@@ -35,9 +35,6 @@ public class RenderDrawSystem extends DrawSystem
     private final ArrayMap<RenderPass, ShaderProgram> shaders = new ArrayMap<>();
     private final Array<Renderable> renderables = new Array<>();
 
-    private OrthographicCamera camera;
-    private Viewport viewport;
-
     public RenderDrawSystem(Engine engine, Camera camera, Viewport viewport)
     {
         super(engine, camera, viewport);

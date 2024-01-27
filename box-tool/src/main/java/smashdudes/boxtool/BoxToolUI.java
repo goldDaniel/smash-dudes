@@ -6,7 +6,7 @@ import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImString;
 import smashdudes.boxtool.logic.BoxToolContext;
-import smashdudes.boxtool.logic.ContentService;
+import smashdudes.core.logic.ContentService;
 import smashdudes.boxtool.presentation.AnimationFrameWidget;
 import smashdudes.boxtool.presentation.AnimationViewerWidget;
 import smashdudes.boxtool.presentation.AnimationWidget;

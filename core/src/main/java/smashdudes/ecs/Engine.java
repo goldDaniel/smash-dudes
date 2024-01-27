@@ -40,6 +40,7 @@ public class Engine
         ExtendViewport viewport = new ExtendViewport(worldWidth,worldHeight, camera);
 
         RenderDrawSystem rs = new RenderDrawSystem(this, camera, viewport);
+        EffectSystem es = new EffectSystem(this, camera, viewport);
         RenderDebugSystem drs = new RenderDebugSystem(this, camera, viewport);
 
         ExtendViewport uiVP = new ExtendViewport(1280, 720);
@@ -68,8 +69,6 @@ public class Engine
         gameSystems.add(new AudioSystem(this));
 
 
-        gameSystems.add(new ParticleSystem(this));
-        gameSystems.add(new ParticleEmitterSystem(this));
         gameSystems.add(new AnimationDebugSystem(this));
         gameSystems.add(new GameOverSystem(this, transition));
         gameSystems.add(new PositionAttachmentSystem(this));
@@ -82,6 +81,7 @@ public class Engine
 
         renderSystems.add(new AveragePositionCameraSystem(this));
         renderSystems.add(rs);
+        renderSystems.add(es);
         renderSystems.add(drs);
         renderSystems.add(urs);
     }

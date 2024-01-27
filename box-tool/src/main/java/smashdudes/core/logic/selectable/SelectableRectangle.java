@@ -1,4 +1,4 @@
-package smashdudes.boxtool.logic.selectable;
+package smashdudes.core.logic.selectable;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;

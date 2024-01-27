@@ -8,13 +8,12 @@ import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImFloat;
 import imgui.type.ImInt;
-import smashdudes.boxtool.logic.BoxToolContext;
-import smashdudes.boxtool.logic.commands.*;
 import smashdudes.content.DTO;
-import smashdudes.core.ImGuiWidget;
 import smashdudes.core.Utils;
+import smashdudes.boxtool.logic.BoxToolContext;
+import smashdudes.core.logic.commands.*;
 
-public class AnimationWidget extends ImGuiWidget
+public class AnimationWidget extends BoxToolWidget
 {
     private final ImInt addFrameIdx = new ImInt();
     private String addFrameTexturePath = "";

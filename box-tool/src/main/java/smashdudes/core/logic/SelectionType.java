@@ -1,4 +1,4 @@
-package smashdudes.boxtool.logic;
+package smashdudes.core.logic;
 
 public enum SelectionType
 {

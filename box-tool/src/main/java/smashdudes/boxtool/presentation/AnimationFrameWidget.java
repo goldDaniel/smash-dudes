@@ -8,19 +8,18 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import imgui.ImGui;
 import imgui.type.ImFloat;
-import smashdudes.boxtool.logic.BoxToolContext;
-import smashdudes.boxtool.logic.commands.*;
 import smashdudes.content.AnimationEvent;
 import smashdudes.content.AnimationEventType;
 import smashdudes.content.DTO;
-import smashdudes.core.ImGuiWidget;
 import smashdudes.core.Utils;
+import smashdudes.boxtool.logic.BoxToolContext;
+import smashdudes.core.logic.commands.*;
 import smashdudes.gameplay.AttackBox;
 import smashdudes.gameplay.BodyBox;
 import smashdudes.gameplay.CombatBox;
 import smashdudes.graphics.RenderResources;
 
-public class AnimationFrameWidget extends ImGuiWidget
+public class AnimationFrameWidget extends BoxToolWidget
 {
     public AnimationFrameWidget(BoxToolContext context)
     {
