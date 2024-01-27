@@ -48,12 +48,15 @@ public class ParticleEmitterConfig
     public float scaleEnd = 0;
     public float scaleEndVar = 0;
 
+    // effect
+    public Vector2 effectPosition = new Vector2();
+
     public static void configureParticle(Particle result, ParticleEmitterConfig config)
     {
         result.initialLife = config.initialLife + config.initialLifeVar * range();
         result.life = result.initialLife;
 
-        setSpawnPosition(result, config.spawnShape, config.origin, config.spawnShapeScale);
+        setSpawnPosition(result, config.spawnShape, config.effectPosition, config.origin, config.spawnShapeScale);
 
         result.vX = config.velocity.x + config.velocityVar.x * range();
         result.vY = config.velocity.y + config.velocityVar.y * range();
@@ -75,7 +78,7 @@ public class ParticleEmitterConfig
         result.aEnd = config.endColor.a + config.endColorVar.a * range();
     }
 
-    public static void setSpawnPosition(Particle result, ParticleEmitterShape shape, Vector2 origin, float emissionShapeScale)
+    public static void setSpawnPosition(Particle result, ParticleEmitterShape shape, Vector2 effectOrigin, Vector2 emitterOrigin, float emissionShapeScale)
     {
 
         switch (shape)
@@ -135,10 +138,10 @@ public class ParticleEmitterConfig
         result.x *= emissionShapeScale;
         result.y *= emissionShapeScale;
 
-        result.x += origin.x;
-        result.y += origin.y;
-        result.spawnX = origin.x;
-        result.spawnY = origin.y;
+        result.x += effectOrigin.x + emitterOrigin.x;
+        result.y += effectOrigin.y + emitterOrigin.y;
+        result.spawnX = effectOrigin.x + emitterOrigin.x;
+        result.spawnY = effectOrigin.y + emitterOrigin.y;
     }
 
     public static float range()

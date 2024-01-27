@@ -72,7 +72,7 @@ public class ParticleEmitter
         deadParticles.clear();
     }
 
-    public boolean checkSetSpawnTimer()
+    private boolean checkSetSpawnTimer()
     {
         boolean result = false;
 
